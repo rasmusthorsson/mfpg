@@ -14,9 +14,13 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(mfpr_count src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
-	src/ConversionException.cpp src/NoteList.cpp)
-add_executable(tests src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp src/ConversionException.cpp src/NoteList.cpp)
+file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
+                           src/ConversionException.cpp src/NoteList.cpp)
+file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
+			    src/ConversionException.cpp src/NoteList.cpp)
+
+add_executable(mfpr_count ${SRC_BASE})
+add_executable(tests ${TEST_BASE}) 
 
 add_subdirectory(libs/mx)
 add_subdirectory(src)
@@ -34,8 +38,6 @@ gtest_discover_tests(tests)
 
 add_test(NAME fewer_args COMMAND mfpr_count)
 add_test(NAME many_args COMMAND mfpr_count one two)
-add_test(NAME A_W COMMAND mfpr_count "${CMAKE_SOURCE_DIR}/resources/A_W.xml")
-add_test(NAME A_D_o_F COMMAND mfpr_count "${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml")
 
 set_tests_properties(fewer_args
 	PROPERTIES PASS_REGULAR_EXPRESSION "Please specify an input MusicXML file.\n"
@@ -45,10 +47,3 @@ set_tests_properties(many_args
 	PROPERTIES PASS_REGULAR_EXPRESSION "Too many arguments.\n"
 )
 
-set_tests_properties(A_W
-	PROPERTIES PASS_REGULAR_EXPRESSION "56.\n"
-)
-
-set_tests_properties(A_D_o_F
-	PROPERTIES PASS_REGULAR_EXPRESSION "68.\n"
-)

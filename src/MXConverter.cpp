@@ -3,37 +3,37 @@
 using namespace noteenums;
 
 Note MXConverter::ConvertNote(mx::api::NoteData n) {
+	int base;
 	switch(n.pitchData.step) {
 		case mx::api::Step::a:
-			return Note::A;
+			base = 9;
+			break;
 		case mx::api::Step::b:
-			return Note::B;
+			base = 11;
+			break;
 		case mx::api::Step::c:
-			return Note::C;
+			base = 0;
+			break;
 		case mx::api::Step::d:
-			return Note::D;
+			base = 2;
+			break;
 		case mx::api::Step::e:
-			return Note::E;
+			base = 4;
+			break;
 		case mx::api::Step::f:
-			return Note::F;
+			base = 5;
+			break;
 		case mx::api::Step::g:
-			return Note::G;
+			base = 7;
+			break;
 		default:
 			throw ConversionException("Note not found.", n); 
 	}
-}
-
-Accidental MXConverter::ConvertAcc(mx::api::NoteData n) {
-	switch(n.pitchData.accidental) {
-		case mx::api::Accidental::sharp:
-			return Accidental::Sharp;
-		case mx::api::Accidental::flat:
-			return Accidental::Flat;
-		case mx::api::Accidental::natural:
-			return Accidental::Natural;
-		default:
-			return Accidental::None;
+	int simpNote = base + n.pitchData.octave * 12 + n.pitchData.alter;
+	if (simpNote > 107 || simpNote < 0) {
+		throw ConversionException("Note out of range.", n); 
 	}
+	return static_cast<Note>(simpNote);
 }
 
 Duration MXConverter::ConvertDuration(mx::api::NoteData n) {

@@ -40,48 +40,7 @@ int main (int argc, char *argv[]) {
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
 	NoteList n(score);
-
-	cout << n.size() << ".\n";	
 	
 	return 1;
 
 }
-/*
-int main (int argc, char *argv[]) {
-	ifstream myfile;
-	string temp;
-	string mystring;
-	myfile.open("../resources/test.txt");
-	while (myfile) {
-		getline(myfile, temp);
-		mystring = mystring + "\n" + temp; 
-	}
-	using namespace mx::api;
-	auto& mgr = DocumentManager::getInstance();
-	istringstream istr{mystring};
-	const auto documentID = mgr.createFromStream(istr);
-	const auto score = mgr.getData(documentID);
-	mgr.destroyDocument(documentID);
-	if (score.parts.size() != 1)
-	{
-		return 1;
-	}
-	const auto& part = score.parts.at(0);
-	const auto& measure = part.measures.at(0);
-	const auto& staff = measure.staves.at(0);
-	const auto& voice = staff.voices.at(0);
-	const auto& note = voice.notes.at(0);
-	SimplifiedNote note1(note);
-	std::cout << typeid(voice).name() << endl;
-	std::cout << typeid(note).name() << endl;
-	if (note.durationData.durationName != DurationName::whole)
-	{
-		return 1;
-	}
-	if (note.pitchData.step != Step::c) 
-	{
-		return 1;
-	}
-	return 1;
-}
-*/
