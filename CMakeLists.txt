@@ -15,9 +15,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
-                           src/ConversionException.cpp src/NoteList.cpp)
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/NoteMapper.cpp)
 file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
-			    src/ConversionException.cpp src/NoteList.cpp)
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/NoteMapper.cpp)
 
 add_executable(mfpr_count ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 

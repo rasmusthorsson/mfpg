@@ -15,6 +15,9 @@ class SimplifiedNote {
 		~SimplifiedNote();
 		Note getNote();
 		Duration getDuration();
+		bool operator <(const SimplifiedNote &rhs) const {
+			return (note < rhs.note);
+		}
 };
 
 }

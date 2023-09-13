@@ -40,7 +40,10 @@ int main (int argc, char *argv[]) {
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
 	NoteList n(score);
-	
+		
+	//given an instrument and a notelist, construct a valid and optimal position 
+	//graph corresponding to the notelist.
+
 	return 1;
 
 }

@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
-#include "SimplifiedNote.h"
 #include "ConversionException.h"
+#include "NoteList.h"
 
+//Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
 	using namespace mx::api;
 	using namespace simplifiednote;
@@ -14,6 +15,7 @@ TEST(SimplifiedNote, ValidInputs) {
 	EXPECT_EQ(noteenums::Note::Ds_3, simpleNote.getNote());
 }
 
+//Tests construction of a note higher than the allowed range of notes.
 TEST(SimplifiedNote, NoteTooHigh) {
 	using namespace mx::api;
 	using namespace simplifiednote;
@@ -30,6 +32,7 @@ TEST(SimplifiedNote, NoteTooHigh) {
 	}	
 }	
 
+//Tests construction of a note lower than the allowed range of notes.
 TEST(SimplifiedNote, NoteTooLow) {
 	using namespace mx::api;
 	using namespace simplifiednote;
@@ -46,7 +49,8 @@ TEST(SimplifiedNote, NoteTooLow) {
 	}	
 }	
 
-TEST(SimplifiedNote, Uninitialized) {
+//Tests construction of an undefined note.
+TEST(SimplifiedNote, Undefined) {
 	using namespace mx::api;
 	using namespace simplifiednote;
 	NoteData note = NoteData{};
@@ -56,4 +60,12 @@ TEST(SimplifiedNote, Uninitialized) {
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.err(), "Duration not found.");
 	}
+}
+
+//Tests an empty NoteList is the result of an empty score.
+TEST(NoteList, Undefined) {
+	using namespace mx::api;
+	ScoreData score = ScoreData{};
+	NoteList noteList(score);
+	ASSERT_EQ(noteList.size(), 0);
 }
