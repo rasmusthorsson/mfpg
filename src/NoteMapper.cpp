@@ -14,15 +14,14 @@ void NoteMapper::mapString(IString s) {
 	using namespace simplifiednote;
 	int s_pos = s.getPosition();
 	std::vector<SimplifiedNote> playableNotes = s.getPlayable();
-	int notes = s.getPlayable().size();
+	int notes = s.getPlayable().size() - 1;
+	//For loop dictates hand position since each finger per hand position can play two notes
 	for (int i = 0; i < notes; i = i + 2) { //TODO possible off by one
-		int f_temp = 4;
-		if (i < 6) {
-			f_temp = (i / 2) + 1;
-		} else if (i > (notes - 7)) {
-			f_temp = ((notes - i) / 2) + 1;
-		}
-		for (int j = ((i + 1) / 2) + 1; j < ((i + 1) / 2) + f_temp + 1; j++) {
+		int fingers = 4;
+		int f_temp = fingers; //TODO Re-add functionality for fewer finger positions
+				      //for low/high noters.
+		//If i < 7 then we are treating one of the first 7 notes
+		for (int j = (i / 2) + 1; j < (i / 2) + fingers + 1; j++) {
 			std::tuple<int, int, int> t_first = 
 				std::make_tuple(s_pos, j, f_temp);
 			std::tuple<int, int, int> t_second = 
@@ -34,6 +33,8 @@ void NoteMapper::mapString(IString s) {
 	}
 }
 
-std::map<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> NoteMapper::getMap() {
+std::multimap<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> NoteMapper::getMap() {
 	return this->mappedNotes;
 }
+
+

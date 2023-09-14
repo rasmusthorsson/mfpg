@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 namespace noteenums {
 
@@ -33,5 +34,4 @@ namespace noteenums {
 		ThirtySecond, 
 		SixtyFourth
 	};
-
 }

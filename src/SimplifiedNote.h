@@ -1,3 +1,6 @@
+#pragma once
+
+#include <iostream>
 #include "NoteEnums.h"
 #include "mx/api/ScoreData.h"
 
@@ -12,12 +15,18 @@ class SimplifiedNote {
 
 	public:
 		SimplifiedNote(mx::api::NoteData);
-		~SimplifiedNote();
 		Note getNote();
 		Duration getDuration();
-		bool operator <(const SimplifiedNote &rhs) const {
-			return (note < rhs.note);
+		bool operator < (const SimplifiedNote &rhs) const {
+			return (static_cast<int>(note) < static_cast<int>(rhs.note));
 		}
+		bool operator > (const SimplifiedNote &rhs) const {
+			return (static_cast<int>(note) > static_cast<int>(rhs.note));
+		}
+		friend inline std::ostream& operator<< (std::ostream& out, const SimplifiedNote n) {
+			out << static_cast<int>(n.note);
+			return out;	
+		};
 };
 
 }

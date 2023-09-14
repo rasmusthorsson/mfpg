@@ -1,6 +1,7 @@
 #include "SimplifiedNote.h"
 #include "mx/api/ScoreData.h"
 #include "MXConverter.h"
+#include <iostream>
 
 using namespace noteenums;
 using namespace simplifiednote;
@@ -12,10 +13,6 @@ catch (ConversionException ce) {
 	throw;	
 }
 
-SimplifiedNote::~SimplifiedNote() {
-
-}
-
 Note SimplifiedNote::getNote() {
 	return this->note;
 }
@@ -23,3 +20,4 @@ Note SimplifiedNote::getNote() {
 Duration SimplifiedNote::getDuration() {
 	return this->duration;
 }
+

@@ -10,9 +10,9 @@ class NoteMapper{
 		//
 		//TODO Consider modifying to allow for dynamic number of tuples with
 		//rules defined by the user instead.
-		std::map<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> mappedNotes;
+		std::multimap<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> mappedNotes;
 		void mapString(IString s);
 	public:
 		NoteMapper(std::vector<IString> strings);
-		std::map<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> getMap();
+		std::multimap<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> getMap();
 };
