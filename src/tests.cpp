@@ -73,6 +73,8 @@ TEST(NoteList, Undefined) {
 
 class NoteMapper_Tests : public ::testing::Test {
 	private:
+		//Creates two strings with 6 playable notes each, the strings overlap on 
+		//three notes.
 		std::pair<IString, IString> createStrings() {
 			using namespace std;
 			using namespace simplifiednote;
@@ -122,6 +124,21 @@ class NoteMapper_Tests : public ::testing::Test {
 			G_s.pitchData.step = Step::g;
 			G_s.pitchData.octave = 3;
 			G_s.pitchData.alter = 1;
+			NoteData A = NoteData{};
+			A.durationData.durationName = DurationName::whole;
+			A.pitchData.step = Step::a;
+			A.pitchData.octave = 3;
+			A.pitchData.alter = 0;
+			NoteData A_s = NoteData{};
+			A_s.durationData.durationName = DurationName::whole;
+			A_s.pitchData.step = Step::a;
+			A_s.pitchData.octave = 3;
+			A_s.pitchData.alter = 1;
+			NoteData B = NoteData{};
+			B.durationData.durationName = DurationName::whole;
+			B.pitchData.step = Step::b;
+			B.pitchData.octave = 3;
+			B.pitchData.alter = 0;
 			SimplifiedNote SC(C);
 			SimplifiedNote SC_s(C_s);
 			SimplifiedNote SD(D);
@@ -131,10 +148,13 @@ class NoteMapper_Tests : public ::testing::Test {
 			SimplifiedNote SF_s(F_s);
 			SimplifiedNote SG(G);
 			SimplifiedNote SG_s(G_s);
+			SimplifiedNote SA(A);
+			SimplifiedNote SA_s(A_s);
+			SimplifiedNote SB(B);
 			std::vector<simplifiednote::SimplifiedNote> 
-				notes_1{SC, SC_s, SD, SD_s, SE, SF};
+				notes_1{SC, SC_s, SD, SD_s, SE, SF, SF_s, SG, SG_s};
 			std::vector<simplifiednote::SimplifiedNote> 
-				notes_2{SD_s, SE, SF, SF_s, SG, SG_s};
+				notes_2{SD_s, SE, SF, SF_s, SG, SG_s, SA, SA_s, SB};
 			IString s1(1, notes_1);
 			IString s2(2, notes_2);
 			return make_pair(s1, s2);
@@ -146,7 +166,8 @@ class NoteMapper_Tests : public ::testing::Test {
 
 };
 
-TEST_F(NoteMapper_Tests, ValidNotes) { 
+TEST_F(NoteMapper_Tests, ValidNotes) {
+        using namespace noteenums;	
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper map(strings);
 	auto m = map.getMap();
@@ -165,6 +186,6 @@ TEST_F(NoteMapper_Tests, ValidNotes) {
 			<< " Finger: " 
 			<< std::get<2>(elem.second) << "\n";
 	}
-	ASSERT_EQ(noteCount, 9);
-	ASSERT_EQ(m.size(), 48);
+	ASSERT_EQ(noteCount, 12);
+	ASSERT_EQ(m.size(), 30);
 }
