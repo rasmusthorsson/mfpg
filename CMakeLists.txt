@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(mfpr_count)
+project(mfpr)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,11 +15,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
-	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/NoteMapper.cpp)
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/BasicNoteMapper.cpp
+	BasicHPSolver.cpp)
 file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
-	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/NoteMapper.cpp)
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/BasicNoteMapper.cpp
+	BasicHPSolver.cpp)
 
-add_executable(mfpr_count ${SRC_BASE})
+add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 
 
 add_subdirectory(libs/mx)
@@ -28,6 +30,7 @@ add_subdirectory(src)
 target_link_libraries(
 	tests
 	GTest::gtest_main
+	GTest::gmock_main
 )
 
 include(GoogleTest)
@@ -36,8 +39,8 @@ enable_testing()
 
 gtest_discover_tests(tests)
 
-add_test(NAME fewer_args COMMAND mfpr_count)
-add_test(NAME many_args COMMAND mfpr_count one two)
+add_test(NAME fewer_args COMMAND mfpr)
+add_test(NAME many_args COMMAND mfpr one two)
 
 set_tests_properties(fewer_args
 	PROPERTIES PASS_REGULAR_EXPRESSION "Please specify an input MusicXML file.\n"

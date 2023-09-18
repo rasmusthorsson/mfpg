@@ -1,8 +1,8 @@
-#include "NoteMapper.h"
+#include "BasicNoteMapper.h"
 
 using namespace noteenums;
 
-NoteMapper::NoteMapper(std::vector<IString> strings) {
+BasicNoteMapper::BasicNoteMapper(std::vector<IString> strings) {
 	for (IString s : strings) {
 		mapString(s);
 	}
@@ -10,11 +10,11 @@ NoteMapper::NoteMapper(std::vector<IString> strings) {
 
 //TODO Possible hand position constraints?
 //TODO NEXT: Test, refractor, improve
-void NoteMapper::mapString(IString s) {
-	using namespace simplifiednote;
+void BasicNoteMapper::mapString(IString s) {
+	using namespace noteenums;
 	
 	int s_pos = s.getPosition();
-	std::vector<SimplifiedNote> playableNotes = s.getPlayable();
+	std::vector<Note> playableNotes = s.getPlayable();
 	int notes = s.getPlayable().size() - 1;
 	
 	//For each note we construct a 3-tuple of each playable combination on the string.
@@ -25,9 +25,11 @@ void NoteMapper::mapString(IString s) {
 
 		//Lowest hand position is either position 1 or note position - 3.
 		int lowest_hand_position = std::max(1, ((note / 2) + 1) - 3);
+		
 		//Highest hand position is either highest allowed note on the string - 3,
 		//or note position.
 		int highest_hand_position = std::min((note / 2) + 1, ((notes / 2) + 1) - 3);
+		
 		//Which fingers can be used are calculated using note position - lowest
 		//hand position. This also gives us the highest finger which can play the
 		//note, allowing us to decrease in step with the increase in hand position
@@ -49,7 +51,7 @@ void NoteMapper::mapString(IString s) {
 	}
 }
 
-std::multimap<simplifiednote::SimplifiedNote, std::tuple<int, int, int>> NoteMapper::getMap() {
+std::multimap<noteenums::Note, std::tuple<int, int, int>> BasicNoteMapper::getMap() {
 	return this->mappedNotes;
 }
 

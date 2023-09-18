@@ -7,5 +7,6 @@ class NoteList : public std::list<simplifiednote::SimplifiedNote> {
 	private:
 		void loadNotes(mx::api::ScoreData score);
 	public:
+		NoteList() {};
 		NoteList(mx::api::ScoreData score);
 };

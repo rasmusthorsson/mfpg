@@ -35,3 +35,8 @@ namespace noteenums {
 		SixtyFourth
 	};
 }
+
+inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
+	out << static_cast<int>(n);
+	return out;	
+}

@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "ConversionException.h"
 #include "NoteList.h"
-#include "NoteMapper.h"
+#include "BasicNoteMapper.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -71,90 +72,111 @@ TEST(NoteList, Undefined) {
 	ASSERT_EQ(noteList.size(), 0);
 }
 
+//Test to make sure notes preserve their order when placed into a notelist from a score.
+TEST(NoteList, OrderPreserved) {
+	using namespace noteenums;
+	using namespace mx::api;
+
+	//Build structs
+	ScoreData score = ScoreData{};
+	score.parts.emplace_back(PartData{});
+	PartData& part = score.parts.back();
+	part.measures.emplace_back(MeasureData{});
+	MeasureData& measure = part.measures.back();
+	measure.staves.emplace_back(StaffData{});
+	StaffData& staff = measure.staves.back();
+	staff.voices[0] = VoiceData{};
+	VoiceData& voice = staff.voices.at(0);
+	auto currentTime = 0;
+	
+	//Add notes
+	NoteData note = NoteData{};
+	note.pitchData.step = Step::a;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 4;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::b;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 4;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::c;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 5;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::d;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 5;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::e;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 5;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+
+	NoteList notes(score);
+
+	ASSERT_EQ(notes.size(), 5);
+	ASSERT_EQ(notes.front().getNote(), Note::A_4);
+	notes.pop_front();
+	
+	ASSERT_EQ(notes.size(), 4);
+	ASSERT_EQ(notes.front().getNote(), Note::B_4);
+	notes.pop_front();
+	
+	ASSERT_EQ(notes.size(), 3);
+	ASSERT_EQ(notes.front().getNote(), Note::C_5);
+	notes.pop_front();
+	
+	ASSERT_EQ(notes.size(), 2);
+	ASSERT_EQ(notes.front().getNote(), Note::D_5);
+	notes.pop_front();
+	
+	ASSERT_EQ(notes.size(), 1);
+	ASSERT_EQ(notes.front().getNote(), Note::E_5);
+	notes.pop_front();
+}
+
 class NoteMapper_Tests : public ::testing::Test {
 	private:
-		//Creates two strings with 6 playable notes each, the strings overlap on 
+		//Creates two strings with 9 playable notes each, the strings overlap on 
 		//three notes.
 		std::pair<IString, IString> createStrings() {
 			using namespace std;
-			using namespace simplifiednote;
-			using namespace mx::api;
-			NoteData C = NoteData{};
-			C.durationData.durationName = DurationName::whole;
-			C.pitchData.step = Step::c;
-			C.pitchData.octave = 3;
-			C.pitchData.alter = 0;
-			NoteData C_s = NoteData{};
-			C_s.durationData.durationName = DurationName::whole;
-			C_s.pitchData.step = Step::c;
-			C_s.pitchData.octave = 3;
-			C_s.pitchData.alter = 1;
-			NoteData D = NoteData{};
-			D.durationData.durationName = DurationName::whole;
-			D.pitchData.step = Step::d;
-			D.pitchData.octave = 3;
-			D.pitchData.alter = 0;
-			NoteData D_s = NoteData{};
-			D_s.durationData.durationName = DurationName::whole;
-			D_s.pitchData.step = Step::d;
-			D_s.pitchData.octave = 3;
-			D_s.pitchData.alter = 1;
-			NoteData E = NoteData{};
-			E.durationData.durationName = DurationName::whole;
-			E.pitchData.step = Step::e;
-			E.pitchData.octave = 3;
-			E.pitchData.alter = 0;
-			NoteData F = NoteData{};
-			F.durationData.durationName = DurationName::whole;
-			F.pitchData.step = Step::f;
-			F.pitchData.octave = 3;
-			F.pitchData.alter = 0;
-			NoteData F_s = NoteData{};
-			F_s.durationData.durationName = DurationName::whole;
-			F_s.pitchData.step = Step::f;
-			F_s.pitchData.octave = 3;
-			F_s.pitchData.alter = 1;
-			NoteData G = NoteData{};
-			G.durationData.durationName = DurationName::whole;
-			G.pitchData.step = Step::g;
-			G.pitchData.octave = 3;
-			G.pitchData.alter = 0;
-			NoteData G_s = NoteData{};
-			G_s.durationData.durationName = DurationName::whole;
-			G_s.pitchData.step = Step::g;
-			G_s.pitchData.octave = 3;
-			G_s.pitchData.alter = 1;
-			NoteData A = NoteData{};
-			A.durationData.durationName = DurationName::whole;
-			A.pitchData.step = Step::a;
-			A.pitchData.octave = 3;
-			A.pitchData.alter = 0;
-			NoteData A_s = NoteData{};
-			A_s.durationData.durationName = DurationName::whole;
-			A_s.pitchData.step = Step::a;
-			A_s.pitchData.octave = 3;
-			A_s.pitchData.alter = 1;
-			NoteData B = NoteData{};
-			B.durationData.durationName = DurationName::whole;
-			B.pitchData.step = Step::b;
-			B.pitchData.octave = 3;
-			B.pitchData.alter = 0;
-			SimplifiedNote SC(C);
-			SimplifiedNote SC_s(C_s);
-			SimplifiedNote SD(D);
-			SimplifiedNote SD_s(D_s);
-			SimplifiedNote SE(E);
-			SimplifiedNote SF(F);
-			SimplifiedNote SF_s(F_s);
-			SimplifiedNote SG(G);
-			SimplifiedNote SG_s(G_s);
-			SimplifiedNote SA(A);
-			SimplifiedNote SA_s(A_s);
-			SimplifiedNote SB(B);
-			std::vector<simplifiednote::SimplifiedNote> 
-				notes_1{SC, SC_s, SD, SD_s, SE, SF, SF_s, SG, SG_s};
-			std::vector<simplifiednote::SimplifiedNote> 
-				notes_2{SD_s, SE, SF, SF_s, SG, SG_s, SA, SA_s, SB};
+			using namespace noteenums;
+			Note C(Note::C_3);
+			Note C_s(Note::Cs_3);
+			Note D(Note::D_3);
+			Note D_s(Note::Ds_3);
+			Note E(Note::E_3);
+			Note F(Note::F_3);
+			Note F_s(Note::Fs_3);
+			Note G(Note::G_3);
+			Note G_s(Note::Gs_3);
+			Note A(Note::A_3);
+			Note A_s(Note::As_3);
+			Note B(Note::B_3);
+			std::vector<Note> 
+				notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s};
+			std::vector<Note> 
+				notes_2{D_s, E, F, F_s, G, G_s, A, A_s, B};
 			IString s1(1, notes_1);
 			IString s2(2, notes_2);
 			return make_pair(s1, s2);
@@ -169,8 +191,8 @@ class NoteMapper_Tests : public ::testing::Test {
 TEST_F(NoteMapper_Tests, ValidNotes) {
         using namespace noteenums;	
 	std::vector<IString> strings = {s1, s2};
-	NoteMapper map(strings);
-	auto m = map.getMap();
+	NoteMapper* map = new BasicNoteMapper(strings);
+	auto m = map->getMap();
 	int noteCount = 0;
 	for (auto i = m.begin(), end = m.end(); i != end; 
 			i = m.upper_bound(i->first)) {
@@ -188,4 +210,74 @@ TEST_F(NoteMapper_Tests, ValidNotes) {
 	}
 	ASSERT_EQ(noteCount, 12);
 	ASSERT_EQ(m.size(), 30);
+}
+
+TEST_F(NoteMapper_Tests, SampleTests) {
+	using namespace noteenums;
+	using namespace mx::api;
+	using namespace simplifiednote;
+	std::vector<IString> strings = {s1, s2};
+	NoteMapper* map = new BasicNoteMapper(strings);
+	auto m = map->getMap();
+	auto C3 = m.equal_range(Note::C_3);
+	auto E3 = m.equal_range(Note::E_3);
+	auto As_3 = m.equal_range(Note::As_3);
+	int combCount = 0;
+	//Check valid combinations for C_3.
+	for (auto i = C3.first; i != C3.second; i++) {
+		combCount++;
+		if (combCount == 1) {
+			ASSERT_EQ(std::get<0>(i->second), 1);
+			ASSERT_EQ(std::get<1>(i->second), 1);
+			ASSERT_EQ(std::get<2>(i->second), 1);
+		}
+	}
+	//Check valid combinations for E_3.
+	for (auto i = E3.first; i != E3.second; i++) {
+		combCount++;
+		if (combCount == 2) {
+			ASSERT_EQ(std::get<0>(i->second), 1);
+			ASSERT_EQ(std::get<1>(i->second), 1);
+			ASSERT_EQ(std::get<2>(i->second), 3);
+		} else if (combCount == 3) {
+			ASSERT_EQ(std::get<0>(i->second), 1);
+			ASSERT_EQ(std::get<1>(i->second), 2);
+			ASSERT_EQ(std::get<2>(i->second), 2);
+		} else if (combCount == 4) {
+			ASSERT_EQ(std::get<0>(i->second), 2);
+			ASSERT_EQ(std::get<1>(i->second), 1);
+			ASSERT_EQ(std::get<2>(i->second), 1);
+		}
+	}
+	//Check valid combinations for As_3.
+	for (auto i = As_3.first; i != As_3.second; i++) {
+		combCount++;
+		if (combCount == 5) {
+			ASSERT_EQ(std::get<0>(i->second), 2);
+			ASSERT_EQ(std::get<1>(i->second), 1);
+			ASSERT_EQ(std::get<2>(i->second), 4);
+		} else if (combCount == 6) {
+			ASSERT_EQ(std::get<0>(i->second), 2);
+			ASSERT_EQ(std::get<1>(i->second), 2);
+			ASSERT_EQ(std::get<2>(i->second), 3);
+		} 
+	}
+	//Ensure there are no more unchecked combinations.
+	ASSERT_EQ(combCount, 6);
+}
+
+//Check that no only allowed strings, hand positions, and finger numbers are used.
+TEST_F(NoteMapper_Tests, ValidPosition) {
+	using namespace noteenums;
+	using namespace mx::api;
+	using namespace simplifiednote;
+	using namespace testing;
+	std::vector<IString> strings = {s1, s2};
+	NoteMapper* map = new BasicNoteMapper(strings);
+	auto m = map->getMap();
+	for (auto i = m.begin(); i != m.end(); i++) {
+		ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
+		ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(0)));
+		ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(0)));
+	}
 }

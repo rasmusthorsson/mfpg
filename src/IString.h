@@ -1,13 +1,14 @@
+#pragma once
 #include <vector>
-#include "SimplifiedNote.h"
+#include "NoteEnums.h"
 
 class IString {
 	private:
 		const int position;
-		const std::vector<simplifiednote::SimplifiedNote> playableNotes;
+		const std::vector<noteenums::Note> playableNotes;
 	public:
-		IString(int p, std::vector<simplifiednote::SimplifiedNote> n);
+		IString(int p, std::vector<noteenums::Note> n);
 		int getPosition();
-		std::vector<simplifiednote::SimplifiedNote> getPlayable();
-		simplifiednote::SimplifiedNote getNote(int i);
+		std::vector<noteenums::Note> getPlayable();
+		noteenums::Note getNote(int i);
 };
