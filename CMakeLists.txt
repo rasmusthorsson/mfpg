@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 
 project(mfpr)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
@@ -15,11 +15,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
-	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/BasicNoteMapper.cpp
-	BasicHPSolver.cpp)
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/BasicNoteMapper.cpp 
+	src/Layer.cpp src/NodeException.cpp)
 file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/BasicNoteMapper.cpp
-	BasicHPSolver.cpp)
+	src/Layer.cpp src/NodeException.cpp)
 
 add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 

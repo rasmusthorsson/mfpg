@@ -8,6 +8,6 @@ class ConversionException : public std::exception {
 		std::string errorMsg;
 	public:
 		ConversionException(std::string message, mx::api::NoteData);
-		std::string err();
+		std::string what();
 		mx::api::NoteData failedNote();
 };

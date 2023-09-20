@@ -4,7 +4,7 @@ ConversionException::ConversionException(std::string message, mx::api::NoteData 
        	errorMsg(message),  
 	note(n) {}
 
-std::string ConversionException::err() {
+std::string ConversionException::what() {
 	return this->errorMsg;
 }
 

@@ -3,6 +3,7 @@
 #include "ConversionException.h"
 #include "NoteList.h"
 #include "BasicNoteMapper.h"
+#include "Action.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -30,7 +31,7 @@ TEST(SimplifiedNote, NoteTooHigh) {
 	try {
 		SimplifiedNote simpleNote(note);
 	} catch (ConversionException ce) {
-		EXPECT_EQ(ce.err(), "Note out of range.");
+		EXPECT_EQ(ce.what(), "Note out of range.");
 	}	
 }	
 
@@ -47,7 +48,7 @@ TEST(SimplifiedNote, NoteTooLow) {
 	try {
 		SimplifiedNote simpleNote(note);
 	} catch (ConversionException ce) {
-		EXPECT_EQ(ce.err(), "Note out of range.");
+		EXPECT_EQ(ce.what(), "Note out of range.");
 	}	
 }	
 
@@ -60,7 +61,7 @@ TEST(SimplifiedNote, Undefined) {
 	try {
 		SimplifiedNote simpleNote(note);
 	} catch (ConversionException ce) {
-		EXPECT_EQ(ce.err(), "Duration not found.");
+		EXPECT_EQ(ce.what(), "Duration not found.");
 	}
 }
 
@@ -266,7 +267,7 @@ TEST_F(NoteMapper_Tests, SampleTests) {
 	ASSERT_EQ(combCount, 6);
 }
 
-//Check that no only allowed strings, hand positions, and finger numbers are used.
+//Check that only allowed strings, hand positions, and finger numbers are used.
 TEST_F(NoteMapper_Tests, ValidPosition) {
 	using namespace noteenums;
 	using namespace mx::api;
@@ -280,4 +281,47 @@ TEST_F(NoteMapper_Tests, ValidPosition) {
 		ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(0)));
 		ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(0)));
 	}
+}
+
+//Definition of a basic action using a 3-tuple with an int return.
+TEST(Action, BasicAction) {
+	typedef int (*a_type)(std::tuple<int, int, int>, std::tuple<int, int, int>);
+	a_type d_f = [] (std::tuple<int, int, int> s1, std::tuple<int, int, int> s2) {
+		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
+		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
+		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
+		return string + hand + finger;
+	};
+	Action<std::tuple<int, int, int>, int> NOC(d_f);
+	std::tuple<int, int, int> t1{1, 1, 1};
+	std::tuple<int, int, int> t2{2, 2, 2};
+	ASSERT_EQ(NOC.distance(t1, t2), 3);
+}
+
+//More complex action, using floats and booleans.
+TEST(Action, FiveTupleAction) {
+	typedef float (*a_type)(std::tuple<int, int, int, bool, float>, 
+			std::tuple<int, int, int, bool, float>);
+	a_type d_f = [] (std::tuple<int, int, int, bool, float> s1, 
+			std::tuple<int, int, int, bool, float> s2) {
+		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
+		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
+		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
+		int upStroke = std::get<3>(s1) || std::get<3>(s2);
+		float noteDistance = std::abs(std::get<4>(s1) - std::get<4>(s2));
+		float res;
+	       	if (upStroke) {
+			res = (string + hand + finger) * noteDistance;
+		} else{
+			res = (string + hand + finger);
+		}
+		return static_cast<float>(res);
+	};
+	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f);
+	std::tuple<int, int, int, bool, float> t1(1, 2, 1, false, 3.0);
+	std::tuple<int, int, int, bool, float> t2(1, 2, 3, false, 7.0);
+	std::tuple<int, int, int, bool, float> t3(1, 2, 1, true, 3.0);
+	std::tuple<int, int, int, bool, float> t4(1, 2, 3, false, 7.0);
+	ASSERT_EQ(UpstrokeDistance.distance(t1, t2), 2.0);
+	ASSERT_EQ(UpstrokeDistance.distance(t3, t4), 8.0);
 }
