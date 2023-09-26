@@ -2,14 +2,14 @@
 
 using namespace noteenums;
 
+//For each string, create a map of notes to tuples.
 BasicNoteMapper::BasicNoteMapper(std::vector<IString> strings) {
 	for (IString s : strings) {
 		mapString(s);
 	}
 }
 
-//TODO Possible hand position constraints?
-//TODO NEXT: Test, refractor, improve
+//Stringmapper for individual string.
 void BasicNoteMapper::mapString(IString s) {
 	using namespace noteenums;
 	

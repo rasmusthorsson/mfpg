@@ -4,6 +4,7 @@
 
 using namespace noteenums;
 
+//Used to convert mx notes to noteenums notes.
 class MXConverter {
 	public:
 		static Note ConvertNote(mx::api::NoteData);

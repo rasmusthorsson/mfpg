@@ -3,7 +3,7 @@
 #include "ConversionException.h"
 #include "NoteList.h"
 #include "BasicNoteMapper.h"
-#include "Action.h"
+#include "HPGraphBuilder.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -192,7 +192,7 @@ class NoteMapper_Tests : public ::testing::Test {
 TEST_F(NoteMapper_Tests, ValidNotes) {
         using namespace noteenums;	
 	std::vector<IString> strings = {s1, s2};
-	NoteMapper* map = new BasicNoteMapper(strings);
+	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
 	auto m = map->getMap();
 	int noteCount = 0;
 	for (auto i = m.begin(), end = m.end(); i != end; 
@@ -218,7 +218,7 @@ TEST_F(NoteMapper_Tests, SampleTests) {
 	using namespace mx::api;
 	using namespace simplifiednote;
 	std::vector<IString> strings = {s1, s2};
-	NoteMapper* map = new BasicNoteMapper(strings);
+	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
 	auto m = map->getMap();
 	auto C3 = m.equal_range(Note::C_3);
 	auto E3 = m.equal_range(Note::E_3);
@@ -274,7 +274,7 @@ TEST_F(NoteMapper_Tests, ValidPosition) {
 	using namespace simplifiednote;
 	using namespace testing;
 	std::vector<IString> strings = {s1, s2};
-	NoteMapper* map = new BasicNoteMapper(strings);
+	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
 	auto m = map->getMap();
 	for (auto i = m.begin(); i != m.end(); i++) {
 		ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
@@ -325,3 +325,72 @@ TEST(Action, FiveTupleAction) {
 	ASSERT_EQ(UpstrokeDistance.distance(t1, t2), 2.0);
 	ASSERT_EQ(UpstrokeDistance.distance(t3, t4), 8.0);
 }
+
+class Layer_Tests : public ::testing::Test {
+	typedef std::tuple<int, int, int> ret;
+	
+	private:
+		Layer<ret> createLayer() {
+			using namespace mx::api;
+			NoteData n = NoteData{};
+			n.durationData.durationName = DurationName::whole;
+			n.pitchData.step = Step::c;
+			n.pitchData.octave = 3;
+			n.pitchData.alter = 0;
+			simplifiednote::SimplifiedNote note(n);
+			return Layer<ret>(n);
+		}
+	public:
+		Layer_Tests() : l(createLayer()) {}
+		void SetUp() override {
+			l.clear();
+		}
+		void TearDown() override {
+			l.clear();
+		}
+		Layer<ret> l;
+};
+//Simple test for creating a basic layer using add and remove.
+TEST_F(Layer_Tests, BasicLayer) {
+	using namespace mx::api;
+	typedef std::tuple<int, int, int> ret;
+	
+	ret first{1, 1, 1};
+	EXPECT_NO_THROW(l.addNode(first));
+	ASSERT_EQ(l.getSize(), 1);
+	ret second{2, 1, 1};
+	EXPECT_NO_THROW(l.addNode(second));
+	ASSERT_EQ(l.getSize(), 2);
+	EXPECT_NO_THROW(l.removeNode(first));
+	ASSERT_EQ(l.getSize(), 1);
+	ret third{1, 2, 1};
+	EXPECT_NO_THROW(l.addNode(third));
+	ASSERT_EQ(l.getSize(), 2);
+	ret fourth{1, 1, 2};
+	EXPECT_NO_THROW(l.addNode(fourth));
+	ASSERT_EQ(l.getSize(), 3);
+	EXPECT_NO_THROW(l.removeNode(fourth));
+	ASSERT_EQ(l.getSize(), 2);
+}
+
+//Attempting to add duplicate node to a layer results in an exception.
+TEST_F(Layer_Tests, AddSameNodeTwice) {
+	using namespace mx::api;
+	typedef std::tuple<int, int, int> ret;
+
+	ret first{1, 1, 1};
+	ret second{1, 1, 1};
+	EXPECT_NO_THROW(l.addNode(first));
+	ASSERT_THROW(l.addNode(second), NodeException<ret>);
+}
+
+TEST_F(Layer_Tests, RemoveNonexistantNode) {
+	using namespace mx::api;
+	typedef std::tuple<int, int, int> ret;
+	
+	ret first{1, 1, 1};	
+	ret second{2, 2, 2};
+	EXPECT_NO_THROW(l.addNode(first));
+	ASSERT_THROW(l.removeNode(second), NodeException<ret>);	
+}
+

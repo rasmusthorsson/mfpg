@@ -6,6 +6,7 @@
 using namespace noteenums;
 using namespace simplifiednote;
 
+//Throws exception if the convertion between mx and noteenums failed during construction.
 SimplifiedNote::SimplifiedNote(mx::api::NoteData n) 
 	try : note(MXConverter::ConvertNote(n)), 
 	      duration(MXConverter::ConvertDuration(n)) {}

@@ -8,6 +8,7 @@ using namespace noteenums;
 
 namespace simplifiednote {
 
+//Simpler way to represent notes compared to mx.
 class SimplifiedNote {
 	private:
 		const Note note;

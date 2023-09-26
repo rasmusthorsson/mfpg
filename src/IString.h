@@ -2,6 +2,7 @@
 #include <vector>
 #include "NoteEnums.h"
 
+//Class to represent Instrument Strings (The phyiscal strings of a string instrument).
 class IString {
 	private:
 		const int position;

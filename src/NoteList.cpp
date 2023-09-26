@@ -7,6 +7,7 @@ NoteList::NoteList(ScoreData score) {
 	loadNotes(score);	
 }
 
+//Loads notes into list, implicit conversion to simplifiednote.
 void NoteList::loadNotes(ScoreData score) {
 	for (PartData p: score.parts) {
 		for (MeasureData m: p.measures) {

@@ -3,7 +3,9 @@
 #include <vector>
 #include "NoteMapper.h"
 
-class BasicNoteMapper : public virtual NoteMapper{
+//Basic implementation of NoteMapper as an example, converts notes into 3-tuples of String,
+//Hand Position, and Finger Position combinations.
+class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
 	private:
 		void mapString(IString s);
 	public:

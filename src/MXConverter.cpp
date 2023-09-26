@@ -2,6 +2,10 @@
 
 using namespace noteenums;
 
+//Converts notes based on a regular 12-step chromatic scale, notes are converted to their offset
+//within an octave, the octave is then added as a multiple of 12, with the alter added on the end.
+//The alter is used for sharps or flats, but could also be used to increase notes full steps if
+//desired.
 Note MXConverter::ConvertNote(mx::api::NoteData n) {
 	int base;
 	switch(n.pitchData.step) {
@@ -36,6 +40,7 @@ Note MXConverter::ConvertNote(mx::api::NoteData n) {
 	return static_cast<Note>(simpNote);
 }
 
+//Basic conversion between mx durations to noteenum durations.
 Duration MXConverter::ConvertDuration(mx::api::NoteData n) {
 	switch(n.durationData.durationName) {
 		case mx::api::DurationName::breve:

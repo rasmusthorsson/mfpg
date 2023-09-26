@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 
+//Simple way to define notes as we do not need functionality offered by the more complex mx
+//representation.
 namespace noteenums {
 
 	enum class Note {
