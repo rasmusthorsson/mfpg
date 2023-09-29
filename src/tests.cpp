@@ -3,7 +3,7 @@
 #include "ConversionException.h"
 #include "NoteList.h"
 #include "BasicNoteMapper.h"
-#include "HPGraphBuilder.h"
+#include "LayerListException.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -391,6 +391,73 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	ret first{1, 1, 1};	
 	ret second{2, 2, 2};
 	EXPECT_NO_THROW(l.addNode(first));
-	ASSERT_THROW(l.removeNode(second), NodeException<ret>);	
+	ASSERT_THROW({try {
+			l.removeNode(second);
+			} catch(NodeException<ret> e) {
+				EXPECT_EQ( "Could not locate node in note layer.", e.what());
+				throw;
+			}
+		}, NodeException<ret>);	
 }
 
+TEST(LayerList, Basic) {
+	using namespace mx::api;
+
+	NoteData d = {};
+	d.pitchData.step = Step::d;
+	d.pitchData.alter = 0;
+	d.pitchData.octave = 3;
+	d.durationData.durationName = DurationName::whole;
+	simplifiednote::SimplifiedNote d_s(d);
+	Layer<std::tuple<int, int, int>> first(d_s);
+
+	NoteData f = {};
+	f.pitchData.step = Step::f;
+	f.pitchData.alter = 0;
+	f.pitchData.octave = 3;
+	f.durationData.durationName = DurationName::whole;
+	simplifiednote::SimplifiedNote f_s(f);
+	Layer<std::tuple<int, int, int>> second(f_s);
+	
+	NoteData g = {};
+	g.pitchData.step = Step::g;
+	g.pitchData.alter = 0;
+	g.pitchData.octave = 3;
+	g.durationData.durationName = DurationName::whole;
+	simplifiednote::SimplifiedNote g_s(g);
+	Layer<std::tuple<int, int, int>> third(g_s);
+	
+	NoteData cs = {};
+	cs.pitchData.step = Step::c;
+	cs.pitchData.alter = 1;
+	cs.pitchData.octave = 3;
+	cs.durationData.durationName = DurationName::whole;
+	simplifiednote::SimplifiedNote cs_s(cs);
+	Layer<std::tuple<int, int, int>> fourth(cs_s);
+
+	Note C(Note::C_3);
+	Note C_s(Note::Cs_3);
+	Note D(Note::D_3);
+	Note D_s(Note::Ds_3);
+	Note E(Note::E_3);
+	Note F(Note::F_3);
+	Note F_s(Note::Fs_3);
+	Note G(Note::G_3);
+	Note G_s(Note::Gs_3);
+	Note A(Note::A_3);
+	Note A_s(Note::As_3);
+	Note B(Note::B_3);
+	std::vector<Note> notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	IString s1(1, notes_1);
+	std::vector<IString> sv{s1};
+
+	NoteMapper<std::tuple<int, int, int>>* notemap = new BasicNoteMapper(sv);
+	auto map = notemap->getMap();
+	auto range = map.equal_range(d_s.getNote());
+	for (auto i = range.first; i != range.second; ++i) {
+		first.addNode(i->second);
+	}
+
+	LayerList<std::tuple<int, int, int>, int> l_list1(first);
+	ASSERT_EQ(l_list1.getElem().getSize(), 2);
+}
