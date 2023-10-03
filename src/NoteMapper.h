@@ -9,6 +9,6 @@ template <class T> class NoteMapper {
                 std::multimap<noteenums::Note, T> mappedNotes;
         public:
 	       	NoteMapper() {};
-		virtual std::multimap<noteenums::Note, T> getMap() = 0;
+		virtual std::multimap<noteenums::Note, T> getMap() const = 0;
 
 };

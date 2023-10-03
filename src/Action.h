@@ -8,5 +8,5 @@ template <class T, class D> class Action {
 	public:
 		//Keep in header file for compilation reasons.
 		Action(distfun fun) {dist_fun = fun;}; 
-		D distance(T s1, T s2) {return dist_fun(s1, s2);};
+		D distance(T s1, T s2) const {return dist_fun(s1, s2);};
 };

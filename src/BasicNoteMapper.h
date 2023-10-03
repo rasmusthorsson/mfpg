@@ -10,5 +10,5 @@ class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
 		void mapString(IString s);
 	public:
 		BasicNoteMapper(std::vector<IString> strings);
-		std::multimap<noteenums::Note, std::tuple<int, int, int>> getMap();
+		std::multimap<noteenums::Note, std::tuple<int, int, int>> getMap() const;
 };

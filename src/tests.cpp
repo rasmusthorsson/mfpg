@@ -65,6 +65,61 @@ TEST(SimplifiedNote, Undefined) {
 	}
 }
 
+//Assert that all notes added to a string are in the same order as the vector used to add them.
+TEST(IString, SpecifiedNotes) {
+	using namespace noteenums;
+	Note C(Note::C_3);
+	Note C_s(Note::Cs_3);
+	Note D(Note::D_3);
+	Note D_s(Note::Ds_3);
+	Note E(Note::E_3);
+	Note F(Note::F_3);
+	Note F_s(Note::Fs_3);
+	Note G(Note::G_3);
+	Note G_s(Note::Gs_3);
+	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	IString s(1, notes);
+	for (int i = 0; i < s.getPlayable().size(); i++) {
+		ASSERT_EQ(s.getPlayable()[i], notes[i]);
+	}
+}
+
+TEST(IString, RangedInts) {
+	using namespace noteenums;
+	Note C(Note::C_3);
+	Note C_s(Note::Cs_3);
+	Note D(Note::D_3);
+	Note D_s(Note::Ds_3);
+	Note E(Note::E_3);
+	Note F(Note::F_3);
+	Note F_s(Note::Fs_3);
+	Note G(Note::G_3);
+	Note G_s(Note::Gs_3);
+	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	IString s(1, 36, 44);
+	for (int i = 0; i < s.getPlayable().size(); i++) {
+		ASSERT_EQ(s.getPlayable()[i], notes[i]);
+	}
+}
+
+TEST(IString, RangedNotes) {
+	using namespace noteenums;
+	Note C(Note::C_3);
+	Note C_s(Note::Cs_3);
+	Note D(Note::D_3);
+	Note D_s(Note::Ds_3);
+	Note E(Note::E_3);
+	Note F(Note::F_3);
+	Note F_s(Note::Fs_3);
+	Note G(Note::G_3);
+	Note G_s(Note::Gs_3);
+	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	IString s(1, Note::C_3, Note::Gs_3);
+	for (int i = 0; i < s.getPlayable().size(); i++) {
+		ASSERT_EQ(s.getPlayable()[i], notes[i]);
+	}
+}
+
 //Tests an empty NoteList is the result of an empty score.
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
@@ -401,55 +456,23 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 }
 
 TEST(LayerList, Basic) {
-	using namespace mx::api;
+	using namespace noteenums;
 
-	NoteData d = {};
-	d.pitchData.step = Step::d;
-	d.pitchData.alter = 0;
-	d.pitchData.octave = 3;
-	d.durationData.durationName = DurationName::whole;
-	simplifiednote::SimplifiedNote d_s(d);
+	simplifiednote::SimplifiedNote d_s(Note::D_3, Duration::Whole);
 	Layer<std::tuple<int, int, int>> first(d_s);
 
-	NoteData f = {};
-	f.pitchData.step = Step::f;
-	f.pitchData.alter = 0;
-	f.pitchData.octave = 3;
-	f.durationData.durationName = DurationName::whole;
-	simplifiednote::SimplifiedNote f_s(f);
+	simplifiednote::SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
 	Layer<std::tuple<int, int, int>> second(f_s);
 	
-	NoteData g = {};
-	g.pitchData.step = Step::g;
-	g.pitchData.alter = 0;
-	g.pitchData.octave = 3;
-	g.durationData.durationName = DurationName::whole;
-	simplifiednote::SimplifiedNote g_s(g);
+	simplifiednote::SimplifiedNote g_s(Note::G_3, Duration::Whole);
 	Layer<std::tuple<int, int, int>> third(g_s);
 	
-	NoteData cs = {};
-	cs.pitchData.step = Step::c;
-	cs.pitchData.alter = 1;
-	cs.pitchData.octave = 3;
-	cs.durationData.durationName = DurationName::whole;
-	simplifiednote::SimplifiedNote cs_s(cs);
+	simplifiednote::SimplifiedNote cs_s(Note::Cs_3, Duration::Whole);
 	Layer<std::tuple<int, int, int>> fourth(cs_s);
 
-	Note C(Note::C_3);
-	Note C_s(Note::Cs_3);
-	Note D(Note::D_3);
-	Note D_s(Note::Ds_3);
-	Note E(Note::E_3);
-	Note F(Note::F_3);
-	Note F_s(Note::Fs_3);
-	Note G(Note::G_3);
-	Note G_s(Note::Gs_3);
-	Note A(Note::A_3);
-	Note A_s(Note::As_3);
-	Note B(Note::B_3);
-	std::vector<Note> notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s};
-	IString s1(1, notes_1);
-	std::vector<IString> sv{s1};
+	IString s1(1, Note::C_3, Note::B_3);
+	IString s2(2, Note::G_3, Note::Ds_4);
+	std::vector<IString> sv{s1, s2};
 
 	NoteMapper<std::tuple<int, int, int>>* notemap = new BasicNoteMapper(sv);
 	auto map = notemap->getMap();

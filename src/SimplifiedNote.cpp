@@ -14,6 +14,10 @@ catch (ConversionException ce) {
 	throw;	
 }
 
+SimplifiedNote::SimplifiedNote(Note n, Duration d) 
+	: note(n), duration(d)
+{}
+
 Note SimplifiedNote::getNote() {
 	return this->note;
 }

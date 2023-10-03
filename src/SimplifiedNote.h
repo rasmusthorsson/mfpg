@@ -13,9 +13,9 @@ class SimplifiedNote {
 	private:
 		const Note note;
 		const Duration duration;
-
 	public:
 		SimplifiedNote(mx::api::NoteData);
+		SimplifiedNote(Note n, Duration d);
 		Note getNote();
 		Duration getDuration();
 		bool operator < (const SimplifiedNote &rhs) const {

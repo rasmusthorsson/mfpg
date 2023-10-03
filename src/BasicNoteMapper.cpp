@@ -51,7 +51,7 @@ void BasicNoteMapper::mapString(IString s) {
 	}
 }
 
-std::multimap<noteenums::Note, std::tuple<int, int, int>> BasicNoteMapper::getMap() {
+std::multimap<noteenums::Note, std::tuple<int, int, int>> BasicNoteMapper::getMap() const {
 	return this->mappedNotes;
 }
 

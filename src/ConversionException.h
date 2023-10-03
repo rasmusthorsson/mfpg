@@ -10,5 +10,5 @@ class ConversionException : public std::exception {
 	public:
 		ConversionException(std::string message, mx::api::NoteData);
 		std::string what();
-		mx::api::NoteData failedNote();
+		mx::api::NoteData failedNote() const;
 };

@@ -6,10 +6,10 @@ ConversionException::ConversionException(std::string message, mx::api::NoteData 
 
 //Error message.
 std::string ConversionException::what() {
-	return this->errorMsg;
+	return errorMsg;
 }
 
 //What note caused the failure.
-mx::api::NoteData ConversionException::failedNote() {
-	return this->note;
+mx::api::NoteData ConversionException::failedNote() const {
+	return note;
 }
