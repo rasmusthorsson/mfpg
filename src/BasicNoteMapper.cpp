@@ -1,6 +1,7 @@
 #include "BasicNoteMapper.h"
 
 using namespace noteenums;
+using iter = std::multimap<Note, std::tuple<int, int, int>>::iterator;
 
 //For each string, create a map of notes to tuples.
 BasicNoteMapper::BasicNoteMapper(std::vector<IString> strings) {
@@ -50,9 +51,3 @@ void BasicNoteMapper::mapString(IString s) {
 		}
 	}
 }
-
-std::multimap<noteenums::Note, std::tuple<int, int, int>> BasicNoteMapper::getMap() const {
-	return this->mappedNotes;
-}
-
-

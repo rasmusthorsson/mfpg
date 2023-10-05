@@ -8,7 +8,7 @@ template <class T, class C> class LayerListException : std::exception {
 		LayerList<T, C> link;
 		const bool forward;
 	public:
-		LayerListException(const std::string m, const bool b, LayerList<T, C> l) 
+		LayerListException(const std::string m, const bool b, LayerList<T, C>* l) 
 			: errorMsg(m), forward(b), link(l) {}
 		const std::string what() {
 			return errorMsg;

@@ -84,6 +84,7 @@ TEST(IString, SpecifiedNotes) {
 	}
 }
 
+//Tests that construction of IString using ranged ints results in the correct notes being added.
 TEST(IString, RangedInts) {
 	using namespace noteenums;
 	Note C(Note::C_3);
@@ -102,6 +103,7 @@ TEST(IString, RangedInts) {
 	}
 }
 
+//Tests that the construction of IString using noteenums results in the correct notes being added.
 TEST(IString, RangedNotes) {
 	using namespace noteenums;
 	Note C(Note::C_3);
@@ -244,17 +246,18 @@ class NoteMapper_Tests : public ::testing::Test {
 
 };
 
+//Tests that the basic notemapper returns the correct amount of notes and amount of combinations
+//according to the specifications.
 TEST_F(NoteMapper_Tests, ValidNotes) {
         using namespace noteenums;	
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
-	auto m = map->getMap();
 	int noteCount = 0;
-	for (auto i = m.begin(), end = m.end(); i != end; 
-			i = m.upper_bound(i->first)) {
+	for (auto i = map->begin(), end = map->end(); i != end; 
+			i = map->getUpper(i->first)) {
 		noteCount++;
 	}
-	for (auto elem : m) {
+	for (auto elem : map->getMap()) {
 		std::cout << "Note: " << elem.first << "\n";
 		std::cout 
 			<< "String: " 
@@ -265,19 +268,20 @@ TEST_F(NoteMapper_Tests, ValidNotes) {
 			<< std::get<2>(elem.second) << "\n";
 	}
 	ASSERT_EQ(noteCount, 12);
-	ASSERT_EQ(m.size(), 30);
+	ASSERT_EQ(map->size(), 30);
 }
 
+//Verify that all combinations constructed for 3 notes in the notemapper are the valid combinations
+//for those notes.
 TEST_F(NoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
 	using namespace simplifiednote;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
-	auto m = map->getMap();
-	auto C3 = m.equal_range(Note::C_3);
-	auto E3 = m.equal_range(Note::E_3);
-	auto As_3 = m.equal_range(Note::As_3);
+	auto C3 = map->getRange(Note::C_3);
+	auto E3 = map->getRange(Note::E_3);
+	auto As_3 = map->getRange(Note::As_3);
 	int combCount = 0;
 	//Check valid combinations for C_3.
 	for (auto i = C3.first; i != C3.second; i++) {
@@ -330,14 +334,12 @@ TEST_F(NoteMapper_Tests, ValidPosition) {
 	using namespace testing;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
-	auto m = map->getMap();
-	for (auto i = m.begin(); i != m.end(); i++) {
+	for (auto i = map->begin(); i != map->end(); i++) {
 		ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
 		ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(0)));
 		ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(0)));
 	}
 }
-
 //Definition of a basic action using a 3-tuple with an int return.
 TEST(Action, BasicAction) {
 	typedef int (*a_type)(std::tuple<int, int, int>, std::tuple<int, int, int>);
@@ -429,6 +431,7 @@ TEST_F(Layer_Tests, BasicLayer) {
 }
 
 //Attempting to add duplicate node to a layer results in an exception.
+//TODO Remove exception, make duplicate do nothing?
 TEST_F(Layer_Tests, AddSameNodeTwice) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
@@ -439,6 +442,9 @@ TEST_F(Layer_Tests, AddSameNodeTwice) {
 	ASSERT_THROW(l.addNode(second), NodeException<ret>);
 }
 
+//Attempt to remove a non-existant node should return an exception, also verify that the exception
+//is correct.
+//TODO Remove exception, made remove nothing?
 TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
@@ -475,12 +481,31 @@ TEST(LayerList, Basic) {
 	std::vector<IString> sv{s1, s2};
 
 	NoteMapper<std::tuple<int, int, int>>* notemap = new BasicNoteMapper(sv);
-	auto map = notemap->getMap();
-	auto range = map.equal_range(d_s.getNote());
+	auto range = notemap->getRange(d_s.getNote());
 	for (auto i = range.first; i != range.second; ++i) {
 		first.addNode(i->second);
 	}
+	typedef int (*a_type)(std::tuple<int, int, int>, 
+			std::tuple<int, int, int>);
+	a_type d_f = [] (std::tuple<int, int, int> s1, 
+			std::tuple<int, int, int> s2) {
+		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
+		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
+		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
+		return string + hand + finger;
+	};
+	Action<std::tuple<int, int, int>, int> a(d_f);
 
+	//TODO FIX ALL OF THIS
 	LayerList<std::tuple<int, int, int>, int> l_list1(first);
+	LayerList<std::tuple<int, int, int>, int> l_list2(second);
+	LayerList<std::tuple<int, int, int>, int> l_list3(third);
+	LayerList<std::tuple<int, int, int>, int> l_list4(fourth);
+	l_list1.setNext(&l_list2, a);
+	l_list2.setNext(&l_list3, a);
+	l_list3.setNext(&l_list4, a);
+	for (auto l : l_list1) {
+		std::cout << "lulw";
+	}
 	ASSERT_EQ(l_list1.getElem().getSize(), 2);
 }

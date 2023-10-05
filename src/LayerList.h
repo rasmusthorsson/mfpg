@@ -3,6 +3,8 @@
 #include <map>
 #include "Layer.h"
 #include "LayerListException.h"
+#include <iterator>
+#include <cstddef>
 
 template <class T, class C> class LayerList {
 	private:
@@ -15,23 +17,55 @@ template <class T, class C> class LayerList {
 		LayerList<T, C>* next = NULL;
 	public:
 		LayerList(Layer<T> l) : elem(l) {}
-		void setPrev(LayerList<T, C>* l, C (*dist_fun(T, T))) {
-			if (l.next != NULL) {
-				throw LayerListException("Previous node already has a next node.",
-					false, l);	
+		void setPrev(LayerList<T, C>* l, Action<T, C> a) {
+			if (l->next != NULL) {
+//				throw LayerListException
+//					("Previous node already has a next node.", false, l);	
 			}
 			prev = l;
-			l.setNext(*this);
+			//l->setNext(this, a);
 		}
-		void setNext(LayerList<T, C>* l, C (*dist_fun)(T, T)) {
-			if (next.prev != NULL) {
-				throw LayerListException("Next node already has a previous node.",
-						true, l);
+		void setNext(LayerList<T, C>* l, Action<T, C> a) {
+			if (next->prev != NULL) {
+//				throw LayerListException
+//					("Next node already has a previous node.", true, l);
 			}
 			next = l;
-			l.setPrev(*this);
+			//l->setPrev(this, a);
 		}
 		Layer<T> getElem() {
 			return elem;
+		}
+		struct Iterator {
+			using it_cat = std::forward_iterator_tag;
+			using diff_t = std::ptrdiff_t;
+			using val_t = LayerList<T, C>;
+			using pointer = LayerList<T, C>*;
+			using reference = LayerList<T, C>&;
+			private:
+				pointer m_ptr;
+			public:
+				Iterator(pointer ptr) : m_ptr(ptr) {}
+				reference operator*() const {return *m_ptr;}
+				pointer operator->() {return m_ptr;}
+
+				Iterator& operator++() {
+					m_ptr++;
+					return *this;
+				}
+
+				friend bool operator==(const Iterator& fst, const Iterator& snd) {
+					return fst.m_ptr == snd.m_ptr;
+				}
+				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
+					return fst.m_ptr != snd.m_ptr;
+				}
+		};
+
+		Iterator begin() {
+			return Iterator(this);
+		}
+		Iterator end() {
+			return Iterator(next);
 		}
 };	

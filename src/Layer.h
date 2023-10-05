@@ -31,7 +31,7 @@ template<class T> class Layer {
 		//Attempts to remove a node from a layer, throws exception if node is no present.
 		void removeNode(T n) {
 			if (nodes.size() < 1) {
-				throw NodeException(
+				throw NodeException<T>(
 					"Can not remove node from note layer, note layer is empty."
 						, n, note);
 			}
@@ -41,7 +41,7 @@ template<class T> class Layer {
 					return;
 				}
 			}
-			throw NodeException("Could not locate node in note layer.", n, note);
+			throw NodeException<T>("Could not locate node in note layer.", n, note);
 		}
 
 		std::vector<T> getNodes() {

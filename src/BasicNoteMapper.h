@@ -6,9 +6,9 @@
 //Basic implementation of NoteMapper as an example, converts notes into 3-tuples of String,
 //Hand Position, and Finger Position combinations.
 class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
+		using it = std::multimap<noteenums::Note, std::tuple<int, int, int>>::iterator;
 	private:
 		void mapString(IString s);
 	public:
 		BasicNoteMapper(std::vector<IString> strings);
-		std::multimap<noteenums::Note, std::tuple<int, int, int>> getMap() const;
 };
