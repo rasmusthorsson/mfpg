@@ -497,15 +497,12 @@ TEST(LayerList, Basic) {
 	Action<std::tuple<int, int, int>, int> a(d_f);
 
 	//TODO FIX ALL OF THIS
-	LayerList<std::tuple<int, int, int>, int> l_list1(first);
-	LayerList<std::tuple<int, int, int>, int> l_list2(second);
-	LayerList<std::tuple<int, int, int>, int> l_list3(third);
-	LayerList<std::tuple<int, int, int>, int> l_list4(fourth);
-	l_list1.setNext(&l_list2, a);
-	l_list2.setNext(&l_list3, a);
-	l_list3.setNext(&l_list4, a);
-	for (auto l : l_list1) {
-		std::cout << "lulw";
+	std::vector<Layer<std::tuple<int, int, int>>> ls{first, second, third, fourth};
+	LayerList<std::tuple<int, int, int>, int> l1(ls, a);
+	int count = 0;
+	for (auto l : l1) {
+		count++;
 	}
-	ASSERT_EQ(l_list1.getElem().getSize(), 2);
+	ASSERT_EQ(count, 4);
+	ASSERT_EQ(l1.getElem().getSize(), 2);
 }

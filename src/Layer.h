@@ -55,4 +55,7 @@ template<class T> class Layer {
 		void clear() {
 			nodes.clear();
 		}
+		simplifiednote::SimplifiedNote getNote() {
+			return note;
+		}
 };
