@@ -3,7 +3,7 @@
 #include "ConversionException.h"
 #include "NoteList.h"
 #include "BasicNoteMapper.h"
-#include "LayerListException.h"
+#include "LayerList.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -430,61 +430,52 @@ TEST_F(Layer_Tests, BasicLayer) {
 	ASSERT_EQ(l.getSize(), 2);
 }
 
-//Attempting to add duplicate node to a layer results in an exception.
-//TODO Remove exception, make duplicate do nothing?
+//Adding duplicate node results in -1.
 TEST_F(Layer_Tests, AddSameNodeTwice) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
 
 	ret first{1, 1, 1};
 	ret second{1, 1, 1};
-	EXPECT_NO_THROW(l.addNode(first));
-	ASSERT_THROW(l.addNode(second), NodeException<ret>);
+	EXPECT_EQ(l.addNode(first), 1);
+	ASSERT_EQ(l.addNode(second), -1);
 }
 
-//Attempt to remove a non-existant node should return an exception, also verify that the exception
-//is correct.
-//TODO Remove exception, made remove nothing?
+//Failure to remove non-existant node returns -1.
 TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
 	
 	ret first{1, 1, 1};	
 	ret second{2, 2, 2};
-	EXPECT_NO_THROW(l.addNode(first));
-	ASSERT_THROW({try {
-			l.removeNode(second);
-			} catch(NodeException<ret> e) {
-				EXPECT_EQ( "Could not locate node in note layer.", e.what());
-				throw;
-			}
-		}, NodeException<ret>);	
+	EXPECT_EQ(l.addNode(first), 1);
+	ASSERT_EQ(l.removeNode(second), -1);
 }
 
+//Creates a LayerList of 4 layers corresponding to a sequence of notes combined with a basic 
+//notemapper, then verifies that the layerlist does indeed contain all layers and that all
+//layers have the correct amount of nodes.
 TEST(LayerList, Basic) {
 	using namespace noteenums;
-
-	simplifiednote::SimplifiedNote d_s(Note::D_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> first(d_s);
-
-	simplifiednote::SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> second(f_s);
 	
-	simplifiednote::SimplifiedNote g_s(Note::G_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> third(g_s);
-	
-	simplifiednote::SimplifiedNote cs_s(Note::Cs_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> fourth(cs_s);
-
 	IString s1(1, Note::C_3, Note::B_3);
 	IString s2(2, Note::G_3, Note::Ds_4);
 	std::vector<IString> sv{s1, s2};
 
 	NoteMapper<std::tuple<int, int, int>>* notemap = new BasicNoteMapper(sv);
-	auto range = notemap->getRange(d_s.getNote());
-	for (auto i = range.first; i != range.second; ++i) {
-		first.addNode(i->second);
-	}
+
+	simplifiednote::SimplifiedNote d_s(Note::D_3, Duration::Whole);
+	Layer<std::tuple<int, int, int>> first(d_s, notemap);
+
+	simplifiednote::SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
+	Layer<std::tuple<int, int, int>> second(f_s, notemap);
+	
+	simplifiednote::SimplifiedNote g_s(Note::G_3, Duration::Whole);
+	Layer<std::tuple<int, int, int>> third(g_s, notemap);
+	
+	simplifiednote::SimplifiedNote cs_s(Note::Cs_4, Duration::Whole);
+	Layer<std::tuple<int, int, int>> fourth(cs_s, notemap);
+
 	typedef int (*a_type)(std::tuple<int, int, int>, 
 			std::tuple<int, int, int>);
 	a_type d_f = [] (std::tuple<int, int, int> s1, 
@@ -496,7 +487,6 @@ TEST(LayerList, Basic) {
 	};
 	Action<std::tuple<int, int, int>, int> a(d_f);
 
-	//TODO FIX ALL OF THIS
 	std::vector<Layer<std::tuple<int, int, int>>> ls{first, second, third, fourth};
 	LayerList<std::tuple<int, int, int>, int> l1(ls, a);
 	int count = 0;
@@ -504,5 +494,12 @@ TEST(LayerList, Basic) {
 		count++;
 	}
 	ASSERT_EQ(count, 4);
-	ASSERT_EQ(l1.getElem().getSize(), 2);
+	auto l_it = l1.begin();
+	ASSERT_EQ(l_it->getElem().getSize(), 2);
+	++l_it;
+	ASSERT_EQ(l_it->getElem().getSize(), 3);
+	++l_it;
+	ASSERT_EQ(l_it->getElem().getSize(), 4);
+	++l_it;
+	ASSERT_EQ(l_it->getElem().getSize(), 2);
 }

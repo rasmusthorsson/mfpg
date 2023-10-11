@@ -2,7 +2,6 @@
 #include <list>
 #include <map>
 #include "Layer.h"
-#include "LayerListException.h"
 #include <iterator>
 #include <cstddef>
 

@@ -6,45 +6,52 @@
 //Class to represent a layer of nodes, each layer corresponds to a note in the music piece,
 //a node is generally a user-defined tuple, (simple example is a 3-tuple of ints representing
 //String, Hand Position, and Finger Position).
-template<class T> class Layer {
+template<class NodeTuple> class Layer {
 	private:
 		const simplifiednote::SimplifiedNote note;
-		std::vector<T> nodes;
+		std::vector<NodeTuple> nodes;
 	public:
 		//Defined here due to wildcard compilation issues, according to isocpp.org.
 		Layer(simplifiednote::SimplifiedNote n) : note(n), nodes() {}
-		//Attempts to add a node to a layer.
-		void addNode(T n) {
+		Layer(simplifiednote::SimplifiedNote n, NoteMapper<NodeTuple>* mapper) 
+			: note(n) 
+		{
+			auto range = mapper->getRange(n.getNote());
+			for (auto i = range.first; i != range.second; ++i) {
+				addNode(i->second);
+			}
+		}
+		//Attempts to add a node to a layer, if node is already present does nothing and 
+		//returns -1.
+		int addNode(NodeTuple n) {
         		int old_size = nodes.size();
         		for (auto i = nodes.begin(); i != nodes.end(); i++) {
 				if (n == *i) {
-					throw NodeException<T>("Node already exists within layer."
-							, n, note);
+					return -1;
 				}
 			}
 			nodes.push_back(n);
         		if (!(nodes.size() == old_size + 1)) {
-                		throw NodeException<T>("Could not add node to note layer.", n, note);
-        		}
+        			return -1;
+			}
+			return 1;
 		}
 		
 		//Attempts to remove a node from a layer, throws exception if node is no present.
-		void removeNode(T n) {
+		int removeNode(NodeTuple n) {
 			if (nodes.size() < 1) {
-				throw NodeException<T>(
-					"Can not remove node from note layer, note layer is empty."
-						, n, note);
+				return -1;
 			}
 			for (auto i = nodes.begin(); i != nodes.end(); i++) {
 				if (n == *i) {
 					nodes.erase(i);
-					return;
+					return 1;
 				}
 			}
-			throw NodeException<T>("Could not locate node in note layer.", n, note);
+			return -1;
 		}
 
-		std::vector<T> getNodes() {
+		std::vector<NodeTuple> getNodes() {
 			return nodes;
 		}
 
