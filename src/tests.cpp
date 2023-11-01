@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+//#include "Action.h"
 #include "ConversionException.h"
-#include "NoteList.h"
 #include "BasicNoteMapper.h"
 #include "LayerList.h"
+#include "ActionSet.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
 	using namespace mx::api;
-	using namespace simplifiednote;
 	NoteData note = NoteData{};
 	note.durationData.durationName = DurationName::whole;
 	note.pitchData.step = Step::d;
@@ -21,7 +21,6 @@ TEST(SimplifiedNote, ValidInputs) {
 //Tests construction of a note higher than the allowed range of notes.
 TEST(SimplifiedNote, NoteTooHigh) {
 	using namespace mx::api;
-	using namespace simplifiednote;
 	NoteData note = NoteData{};
 	note.durationData.durationName = DurationName::whole;
 	note.pitchData.step = Step::b;
@@ -38,7 +37,6 @@ TEST(SimplifiedNote, NoteTooHigh) {
 //Tests construction of a note lower than the allowed range of notes.
 TEST(SimplifiedNote, NoteTooLow) {
 	using namespace mx::api;
-	using namespace simplifiednote;
 	NoteData note = NoteData{};
 	note.durationData.durationName = DurationName::whole;
 	note.pitchData.step = Step::c;
@@ -55,7 +53,6 @@ TEST(SimplifiedNote, NoteTooLow) {
 //Tests construction of an undefined note.
 TEST(SimplifiedNote, Undefined) {
 	using namespace mx::api;
-	using namespace simplifiednote;
 	NoteData note = NoteData{};
 	ASSERT_THROW(SimplifiedNote simpleNote(note), ConversionException);
 	try {
@@ -276,7 +273,6 @@ TEST_F(NoteMapper_Tests, ValidNotes) {
 TEST_F(NoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
-	using namespace simplifiednote;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
 	auto C3 = map->getRange(Note::C_3);
@@ -330,7 +326,6 @@ TEST_F(NoteMapper_Tests, SampleTests) {
 TEST_F(NoteMapper_Tests, ValidPosition) {
 	using namespace noteenums;
 	using namespace mx::api;
-	using namespace simplifiednote;
 	using namespace testing;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
@@ -349,7 +344,7 @@ TEST(Action, BasicAction) {
 		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
 		return string + hand + finger;
 	};
-	Action<std::tuple<int, int, int>, int> NOC(d_f);
+	Action<std::tuple<int, int, int>, int> NOC(d_f, "NOC");
 	std::tuple<int, int, int> t1{1, 1, 1};
 	std::tuple<int, int, int> t2{2, 2, 2};
 	ASSERT_EQ(NOC.distance(t1, t2), 3);
@@ -374,7 +369,7 @@ TEST(Action, FiveTupleAction) {
 		}
 		return static_cast<float>(res);
 	};
-	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f);
+	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f, "UD");
 	std::tuple<int, int, int, bool, float> t1(1, 2, 1, false, 3.0);
 	std::tuple<int, int, int, bool, float> t2(1, 2, 3, false, 7.0);
 	std::tuple<int, int, int, bool, float> t3(1, 2, 1, true, 3.0);
@@ -394,7 +389,7 @@ class Layer_Tests : public ::testing::Test {
 			n.pitchData.step = Step::c;
 			n.pitchData.octave = 3;
 			n.pitchData.alter = 0;
-			simplifiednote::SimplifiedNote note(n);
+			SimplifiedNote note(n);
 			return Layer<ret>(n);
 		}
 	public:
@@ -455,51 +450,169 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 //Creates a LayerList of 4 layers corresponding to a sequence of notes combined with a basic 
 //notemapper, then verifies that the layerlist does indeed contain all layers and that all
 //layers have the correct amount of nodes.
-TEST(LayerList, Basic) {
+TEST(LayerList, CountAndLayerCount) {
 	using namespace noteenums;
 	
+	using in_type = std::tuple<int, int, int>;
+
 	IString s1(1, Note::C_3, Note::B_3);
 	IString s2(2, Note::G_3, Note::Ds_4);
 	std::vector<IString> sv{s1, s2};
 
-	NoteMapper<std::tuple<int, int, int>>* notemap = new BasicNoteMapper(sv);
+	NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
 
-	simplifiednote::SimplifiedNote d_s(Note::D_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> first(d_s, notemap);
+	SimplifiedNote d_s(Note::D_3, Duration::Whole);
+	Layer<in_type> first(d_s, notemap);
 
-	simplifiednote::SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> second(f_s, notemap);
+	SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
+	Layer<in_type> second(f_s, notemap);
 	
-	simplifiednote::SimplifiedNote g_s(Note::G_3, Duration::Whole);
-	Layer<std::tuple<int, int, int>> third(g_s, notemap);
+	SimplifiedNote g_s(Note::G_3, Duration::Whole);
+	Layer<in_type> third(g_s, notemap);
 	
-	simplifiednote::SimplifiedNote cs_s(Note::Cs_4, Duration::Whole);
-	Layer<std::tuple<int, int, int>> fourth(cs_s, notemap);
+	SimplifiedNote cs_s(Note::Cs_4, Duration::Whole);
+	Layer<in_type> fourth(cs_s, notemap);
 
-	typedef int (*a_type)(std::tuple<int, int, int>, 
-			std::tuple<int, int, int>);
-	a_type d_f = [] (std::tuple<int, int, int> s1, 
-			std::tuple<int, int, int> s2) {
+	typedef int (*a_type)(in_type, 
+			in_type);
+	a_type d_f = [] (in_type s1, 
+			in_type s2) {
 		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
 		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
 		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
 		return string + hand + finger;
 	};
-	Action<std::tuple<int, int, int>, int> a(d_f);
+	LayerList<in_type, int> l1(first);
+	l1.pushBack(second);
+	l1.pushBack(third);
+	l1.pushBack(fourth);
 
-	std::vector<Layer<std::tuple<int, int, int>>> ls{first, second, third, fourth};
-	LayerList<std::tuple<int, int, int>, int> l1(ls, a);
+	Action<in_type, int> basic_action(d_f, "BA");
 	int count = 0;
 	for (auto l : l1) {
 		count++;
 	}
 	ASSERT_EQ(count, 4);
 	auto l_it = l1.begin();
-	ASSERT_EQ(l_it->getElem().getSize(), 2);
+	ASSERT_EQ(l_it->getSize(), 2);
 	++l_it;
-	ASSERT_EQ(l_it->getElem().getSize(), 3);
+	ASSERT_EQ(l_it->getSize(), 3);
 	++l_it;
-	ASSERT_EQ(l_it->getElem().getSize(), 4);
+	ASSERT_EQ(l_it->getSize(), 4);
 	++l_it;
-	ASSERT_EQ(l_it->getElem().getSize(), 2);
+	ASSERT_EQ(l_it->getSize(), 2);
+}
+
+TEST(LayerList, FromNoteList) {
+	using namespace noteenums;
+	using namespace mx::api;
+
+	//Build structs
+	ScoreData score = ScoreData{};
+	score.parts.emplace_back(PartData{});
+	PartData& part = score.parts.back();
+	part.measures.emplace_back(MeasureData{});
+	MeasureData& measure = part.measures.back();
+	measure.staves.emplace_back(StaffData{});
+	StaffData& staff = measure.staves.back();
+	staff.voices[0] = VoiceData{};
+	VoiceData& voice = staff.voices.at(0);
+	auto currentTime = 0;
+	
+	//Add notes
+	NoteData note = NoteData{};
+	note.pitchData.step = Step::a;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 4;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::b;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 4;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::c;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 5;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::d;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 5;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+	
+	note.pitchData.step = Step::e;
+	note.pitchData.alter = 0;
+	note.pitchData.octave = 5;
+	note.durationData.durationName = DurationName::whole;
+	note.tickTimePosition = currentTime;
+	voice.notes.push_back(note);
+	currentTime += 1;
+
+	NoteList notes(score);
+	
+	LayerList<std::tuple<int, int, int>, int> l1(notes);
+	
+	int count = 0;
+	
+	for (auto l : l1) {
+		count++;
+	}
+	ASSERT_EQ(count, 5);
+	auto it = l1.begin();
+	ASSERT_EQ(it->getElem().getNote().getNote(), Note::A_4);
+	it++;
+	ASSERT_EQ(it->getElem().getNote().getNote(), Note::B_4);
+	it++;
+	ASSERT_EQ(it->getElem().getNote().getNote(), Note::C_5);
+	it++;
+	ASSERT_EQ(it->getElem().getNote().getNote(), Note::D_5);
+	it++;
+	ASSERT_EQ(it->getElem().getNote().getNote(), Note::E_5);
+}
+
+//TODO more layerlist
+
+TEST(ActionSet, Basic) {
+	using in_type = std::tuple<int, int, int>;
+	typedef int (*a_type)(in_type, in_type);
+	
+	a_type fingerAction = [] (in_type s1, in_type s2) {
+		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
+		return finger;
+	};
+	
+	a_type handAction = [] (in_type s1, in_type s2) {
+		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
+		return hand;
+	};
+	
+	a_type stringAction = [] (in_type s1, in_type s2) {
+		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
+		return string;
+	};
+
+	Action<in_type, int> f_a(fingerAction, "FA");
+	Action<in_type, int> h_a(handAction, "HA");
+	Action<in_type, int> s_a(stringAction, "SA");
+
+	ActionSet<in_type, int> actions{f_a, h_a, s_a};
+	int count = 0;
+	for (auto a : actions) {
+		count++;
+	}
+	ASSERT_EQ(count, 3);
+
 }

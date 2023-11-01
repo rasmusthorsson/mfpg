@@ -1,7 +1,7 @@
-#include "Action.h"
 #include <list>
 #include <map>
 #include "Layer.h"
+#include "NoteList.h"
 #include <iterator>
 #include <cstddef>
 
@@ -15,24 +15,52 @@ template <class InputTuple, class Output> class LayerList {
 		LayerList<InputTuple, Output>* next = NULL;
 	public:
 		LayerList(Layer<InputTuple> l) : elem(l) {}
-		LayerList(std::vector<Layer<InputTuple>> ls, Action<InputTuple, Output> a) 
+		LayerList(NoteList list) : elem(list.front()) {
+			auto simp_list = list.getNotes();
+			auto it = simp_list.begin();
+			it++;
+			for (it; it != simp_list.end(); it++) {
+				Layer<InputTuple>* temp = new Layer<InputTuple>(*it);
+				this->pushBack(*temp);
+			}	
+		}
+		LayerList(std::vector<Layer<InputTuple>> ls) 
 			: elem(ls[0]) {
 			LayerList<InputTuple, Output>* base = this;
 			for (int i = 1; i < ls.size(); i++) {
 				LayerList<InputTuple, Output>* temp = 
 					new LayerList<InputTuple, Output>(ls[i]);
-				base->setNext(temp, a);
+				base->setNext(temp);
 				base = temp;
 			}
 		}
 		//TODO Set up action to calculate transitions.
-		void setNext(LayerList<InputTuple, Output>* l, Action<InputTuple, Output> a) {
+		void setNext(LayerList<InputTuple, Output>* l) {
 			next = l;
+		}
+		void setNext(Layer<InputTuple> layer) {
+			LayerList<InputTuple, Output>* temp = 
+				new LayerList<InputTuple, Output>(layer);
+			next = temp;
+		}
+		void pushBack(Layer<InputTuple> layer) {
+			auto current = this;
+			while (current->getNext() != NULL) {
+				current = current->getNext();
+			}
+			current->setNext(layer);
 		}
 		Layer<InputTuple> getElem() {
 			return elem;
 		}
-		LayerList<InputTuple, Output>* getNext() {return next;}
+		LayerList<InputTuple, Output>* getNext() {
+			return next;
+		}
+		int getSize() {
+			return elem.getSize();
+		}
+
+		//Iterator
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
@@ -49,6 +77,11 @@ template <class InputTuple, class Output> class LayerList {
 				Iterator& operator++() {
 					m_ptr = m_ptr->next;
 					return *this;
+				}
+				Iterator operator++(int) {
+					pointer prev = m_ptr;
+					m_ptr = m_ptr->next;
+					return Iterator(prev);
 				}
 
 				friend bool operator==(const Iterator& fst, const Iterator& snd) {

@@ -6,9 +6,9 @@
 
 using namespace noteenums;
 
-namespace simplifiednote {
 
-//Simpler way to represent notes compared to mx.
+//Simpler way to represent notes compared to mx. Used to make it easier to make additions
+//in the future.
 class SimplifiedNote {
 	private:
 		const Note note;
@@ -30,4 +30,3 @@ class SimplifiedNote {
 		};
 };
 
-}

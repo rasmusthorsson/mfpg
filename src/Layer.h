@@ -2,18 +2,19 @@
 #include "NodeException.h"
 #include <vector>
 #include <cassert>
+#include "NoteEnums.h"
 
 //Class to represent a layer of nodes, each layer corresponds to a note in the music piece,
 //a node is generally a user-defined tuple, (simple example is a 3-tuple of ints representing
 //String, Hand Position, and Finger Position).
 template<class NodeTuple> class Layer {
 	private:
-		const simplifiednote::SimplifiedNote note;
+		const SimplifiedNote note;
 		std::vector<NodeTuple> nodes;
 	public:
 		//Defined here due to wildcard compilation issues, according to isocpp.org.
-		Layer(simplifiednote::SimplifiedNote n) : note(n), nodes() {}
-		Layer(simplifiednote::SimplifiedNote n, NoteMapper<NodeTuple>* mapper) 
+		Layer(SimplifiedNote n) : note(n), nodes() {}
+		Layer(SimplifiedNote n, NoteMapper<NodeTuple>* mapper) 
 			: note(n) 
 		{
 			auto range = mapper->getRange(n.getNote());
@@ -62,7 +63,7 @@ template<class NodeTuple> class Layer {
 		void clear() {
 			nodes.clear();
 		}
-		simplifiednote::SimplifiedNote getNote() {
+		SimplifiedNote getNote() {
 			return note;
 		}
 };

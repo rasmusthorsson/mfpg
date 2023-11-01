@@ -13,10 +13,25 @@ void NoteList::loadNotes(ScoreData score) {
 		for (MeasureData m: p.measures) {
 			for (StaffData s: m.staves) {
 				for (NoteData n: s.voices.at(0).notes) {
-					list::push_back(n);
+					notes.push_back(n);
 				}
 			}
 		}
 	}	
 }
 
+int NoteList::size() {
+	return notes.size();
+}
+
+SimplifiedNote NoteList::front() {
+	return notes.front();
+}
+
+void NoteList::pop_front() {
+	notes.pop_front();
+}
+
+list<SimplifiedNote> NoteList::getNotes() {
+	return notes;
+}
