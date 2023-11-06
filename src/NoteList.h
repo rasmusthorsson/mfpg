@@ -5,7 +5,6 @@
 #include "mx/api/ScoreData.h"
 
 //Class for representing a score as a list of notes, simpler than mx implementation.
-//TODO Composition over inheritance?
 class NoteList {
 	private:
 		std::list<SimplifiedNote> notes;

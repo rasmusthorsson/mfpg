@@ -1,37 +1,57 @@
 #include "Action.h"
 #include <iterator>
 #include <cstddef>
+#include <map>
+
+//Probably move this to Action.h?
+template<typename T>
+concept Measurable = requires(T a, T b) {
+	a + b; //Placeholder
+	//TODO define concept for measurablility for output
+};
 
 template <class InputTuple, class OutputValue> 
 class ActionSet {
 	private:
-		std::vector<Action<InputTuple, OutputValue>> actions;
-		//Perform each action in order, for each effective action, add that action to a
-		//FIFO queue, for each new action check through entire queue and decide upon
-		//whether action is modified/executed at all. This allows for combining actions
-		//freely by user (if x action is taken, then skip y action for example). Actions
-		//should be ordered in priority by user? do this here or elsewhere?
+		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> actions;
+		std::multimap<std::string, std::tuple<std::string, bool>> eventmap;
 	public:
-		ActionSet(std::vector<Action<InputTuple, OutputValue>> as) : actions(as) {}
-		ActionSet(Action<InputTuple, OutputValue> a) {
-			addAction(a);
+		ActionSet() {};
+		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, 
+				bool>> as) : actions(as) {}
+		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
+			addAction(a, b);
 		}
-		ActionSet(std::initializer_list<Action<InputTuple, OutputValue>> as) {
+		ActionSet(std::initializer_list
+				<std::tuple<Action<InputTuple, OutputValue>, bool>> as) {
 			for (auto a : as) {
 				actions.push_back(a);
 			}
 		}	
 
-		void addAction(Action<InputTuple, OutputValue> a) {
-			actions.push_back(a);
+		void addAction(Action<InputTuple, OutputValue> a, bool b) {
+			std::tuple<Action<InputTuple, OutputValue>, bool> t(a, b);
+			actions.push_back(t);
+		}
+		
+		OutputValue apply(InputTuple n1, InputTuple n2) {
+			OutputValue output = 0; //Acceptable if Measurable is defined
+						//with convertability in mind
+			std::vector<std::string> taken = {};
+			for (auto a : actions) {
+				//output = output + a.distance(n1, n2);
+
+			}
+			return output;	
 		}
 
+		//Iterator not necessary?
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
-			using val_t = Action<InputTuple, OutputValue>;
-			using pointer = Action<InputTuple, OutputValue>*;
-			using reference = Action<InputTuple, OutputValue>&;
+			using val_t = std::tuple<Action<InputTuple, OutputValue>, bool>;
+			using pointer = val_t*;
+			using reference = val_t&;
 			private:
 				pointer m_ptr;
 			public:
@@ -42,6 +62,11 @@ class ActionSet {
 				Iterator& operator++() {
 					m_ptr++;
 					return *this;
+				}
+				Iterator operator++(int) {
+					pointer prev = m_ptr;
+					m_ptr++;
+					return Iterator(prev);
 				}
 				friend bool operator== (const Iterator& f, const Iterator& s)
 						{ return f.m_ptr == s.m_ptr; }

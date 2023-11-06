@@ -494,13 +494,10 @@ TEST(LayerList, CountAndLayerCount) {
 	}
 	ASSERT_EQ(count, 4);
 	auto l_it = l1.begin();
-	ASSERT_EQ(l_it->getSize(), 2);
-	++l_it;
-	ASSERT_EQ(l_it->getSize(), 3);
-	++l_it;
-	ASSERT_EQ(l_it->getSize(), 4);
-	++l_it;
-	ASSERT_EQ(l_it->getSize(), 2);
+	ASSERT_EQ(l_it++->getSize(), 2);
+	ASSERT_EQ(l_it++->getSize(), 3);
+	ASSERT_EQ(l_it++->getSize(), 4);
+	ASSERT_EQ(l_it++->getSize(), 2);
 }
 
 TEST(LayerList, FromNoteList) {
@@ -572,47 +569,74 @@ TEST(LayerList, FromNoteList) {
 	}
 	ASSERT_EQ(count, 5);
 	auto it = l1.begin();
-	ASSERT_EQ(it->getElem().getNote().getNote(), Note::A_4);
-	it++;
-	ASSERT_EQ(it->getElem().getNote().getNote(), Note::B_4);
-	it++;
-	ASSERT_EQ(it->getElem().getNote().getNote(), Note::C_5);
-	it++;
-	ASSERT_EQ(it->getElem().getNote().getNote(), Note::D_5);
-	it++;
-	ASSERT_EQ(it->getElem().getNote().getNote(), Note::E_5);
+	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::A_4);
+	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::B_4);
+	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::C_5);
+	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::D_5);
+	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
 //TODO more layerlist
 
-TEST(ActionSet, Basic) {
+class ActionSet_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
-	typedef int (*a_type)(in_type, in_type);
-	
-	a_type fingerAction = [] (in_type s1, in_type s2) {
-		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
-		return finger;
-	};
-	
-	a_type handAction = [] (in_type s1, in_type s2) {
-		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
-		return hand;
-	};
-	
-	a_type stringAction = [] (in_type s1, in_type s2) {
-		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
-		return string;
-	};
+	using out_type = int;
+	typedef out_type (*a_type)(in_type, in_type);
+	public:
+		ActionSet<in_type, out_type> set;	
+		ActionSet_Tests() {		
+			a_type fingerAction = [] (in_type s1, in_type s2) {
+				out_type finger = 
+					std::abs(std::get<2>(s1) - std::get<2>(s2));
+				return finger;
+			};
+			
+			a_type handAction = [] (in_type s1, in_type s2) {
+				out_type hand = 
+					std::abs(std::get<1>(s1) - std::get<1>(s2));
+				return hand;
+			};
+			
+			a_type stringAction = [] (in_type s1, in_type s2) {
+				out_type string = 
+					std::abs(std::get<0>(s1) - std::get<0>(s2));
+				return string;
+			};
 
-	Action<in_type, int> f_a(fingerAction, "FA");
-	Action<in_type, int> h_a(handAction, "HA");
-	Action<in_type, int> s_a(stringAction, "SA");
+			Action<in_type, out_type> f_a(fingerAction, "FA");
+			Action<in_type, out_type> h_a(handAction, "HA");
+			Action<in_type, out_type> s_a(stringAction, "SA");
 
-	ActionSet<in_type, int> actions{f_a, h_a, s_a};
+			ActionSet<in_type, out_type> actions{{f_a, false}, {h_a, false}, 
+				{s_a, false}};
+			set = actions;
+		}
+};
+
+//Checks that the ActionSet contains the correct actions.
+TEST_F(ActionSet_Tests, CorrectActions) {
+	using out_type = int;	
 	int count = 0;
-	for (auto a : actions) {
+	for (auto a : set) {
 		count++;
 	}
+	//TODO make choice on whether to have iterator, and if so, how.
+	/*auto a_it = set.begin();
+	ASSERT_EQ(a_it++->getID(), "FA");
+	ASSERT_EQ(a_it++->getID(), "HA");
+	ASSERT_EQ(a_it->getID(), "SA");*/
 	ASSERT_EQ(count, 3);
-
 }
+
+//Checks that the distance between different inputs corresponds with the actions in the
+//ActionSet
+TEST_F(ActionSet_Tests, CorrectDistance) {
+	using in_type = std::tuple<int, int, int>;
+	in_type f1 = {0, 0, 0};
+	in_type s1 = {1, 2, 1};
+	ASSERT_EQ(set.apply(f1, s1), 4);
+	in_type f2 = {2, 2, 2};
+	in_type s2 = {0, 3, 2};
+	ASSERT_EQ(set.apply(f2, s2), 3);
+}
+
