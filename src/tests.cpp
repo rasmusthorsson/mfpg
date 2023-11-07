@@ -579,7 +579,7 @@ TEST(LayerList, FromNoteList) {
 //TODO more layerlist
 
 class ActionSet_Tests : public ::testing::Test {
-	using in_type = std::tuple<int, int, int>;
+	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 	using out_type = int;
 	typedef out_type (*a_type)(in_type, in_type);
 	public:
@@ -587,19 +587,22 @@ class ActionSet_Tests : public ::testing::Test {
 		ActionSet_Tests() {		
 			a_type fingerAction = [] (in_type s1, in_type s2) {
 				out_type finger = 
-					std::abs(std::get<2>(s1) - std::get<2>(s2));
+					std::max(std::get<2>(s1), std::get<2>(s2))
+					- std::min(std::get<2>(s1), std::get<2>(s2));
 				return finger;
 			};
 			
 			a_type handAction = [] (in_type s1, in_type s2) {
 				out_type hand = 
-					std::abs(std::get<1>(s1) - std::get<1>(s2));
+					std::max(std::get<1>(s1), std::get<1>(s2))
+					- std::min(std::get<1>(s1), std::get<1>(s2));
 				return hand;
 			};
 			
 			a_type stringAction = [] (in_type s1, in_type s2) {
 				out_type string = 
-					std::abs(std::get<0>(s1) - std::get<0>(s2));
+					std::max(std::get<0>(s1), std::get<0>(s2))
+					- std::min(std::get<0>(s1), std::get<0>(s2));
 				return string;
 			};
 
@@ -617,21 +620,19 @@ class ActionSet_Tests : public ::testing::Test {
 TEST_F(ActionSet_Tests, CorrectActions) {
 	using out_type = int;	
 	int count = 0;
-	for (auto a : set) {
+	for (auto a : set.getActions()) {
 		count++;
 	}
-	//TODO make choice on whether to have iterator, and if so, how.
-	/*auto a_it = set.begin();
-	ASSERT_EQ(a_it++->getID(), "FA");
-	ASSERT_EQ(a_it++->getID(), "HA");
-	ASSERT_EQ(a_it->getID(), "SA");*/
+	ASSERT_EQ(std::get<0>(set.getActions()[0]).getID(), "FA");
+	ASSERT_EQ(std::get<0>(set.getActions()[1]).getID(), "HA");
+	ASSERT_EQ(std::get<0>(set.getActions()[2]).getID(), "SA");
 	ASSERT_EQ(count, 3);
 }
 
 //Checks that the distance between different inputs corresponds with the actions in the
 //ActionSet
 TEST_F(ActionSet_Tests, CorrectDistance) {
-	using in_type = std::tuple<int, int, int>;
+	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 	in_type f1 = {0, 0, 0};
 	in_type s1 = {1, 2, 1};
 	ASSERT_EQ(set.apply(f1, s1), 4);
