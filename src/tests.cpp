@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-//#include "Action.h"
 #include "ConversionException.h"
 #include "BasicNoteMapper.h"
 #include "LayerList.h"
@@ -576,8 +575,6 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
-//TODO more layerlist
-
 class ActionSet_Tests : public ::testing::Test {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 	using out_type = int;
@@ -610,8 +607,8 @@ class ActionSet_Tests : public ::testing::Test {
 			Action<in_type, out_type> h_a(handAction, "HA");
 			Action<in_type, out_type> s_a(stringAction, "SA");
 
-			ActionSet<in_type, out_type> actions{{f_a, false}, {h_a, false}, 
-				{s_a, false}};
+			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
+				{s_a, true}};
 			set = actions;
 		}
 };
@@ -639,5 +636,18 @@ TEST_F(ActionSet_Tests, CorrectDistance) {
 	in_type f2 = {2, 2, 2};
 	in_type s2 = {0, 3, 2};
 	ASSERT_EQ(set.apply(f2, s2), 3);
+}
+
+//Check that dependencies accurately disable actions and cannot re-enable them.
+TEST_F(ActionSet_Tests, Dependencies) {
+	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+	set.addDependency("HA", "FA", false);
+	in_type f1 = {0, 0, 0};
+	in_type s1 = {1, 10, 1};
+	ASSERT_EQ(set.apply(f1, s1), 2);	
+	set.addDependency("SA", "FA", false);
+	ASSERT_EQ(set.apply(f1, s1), 1);	
+	set.addDependency("SA", "FA", true);
+	ASSERT_EQ(set.apply(f1, s1), 1);	
 }
 

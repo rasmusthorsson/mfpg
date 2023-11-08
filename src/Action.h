@@ -1,7 +1,12 @@
 //Class for defining costs for actions, InputTuple defines tuple structure of input (dictated by how note
 //tuples are defined). OutputValue is for the output structure, generally int or float.
+//Output must be zero-initializable.
+template<typename T>
+concept ZeroInit = requires(T a) {
+	a = {};
+};
 
-template <class InputTuple, class OutputValue> class Action {
+template <class InputTuple, ZeroInit OutputValue> class Action {
 	typedef OutputValue (*distfun)(InputTuple, InputTuple);
 	private:
 		std::string ID;
