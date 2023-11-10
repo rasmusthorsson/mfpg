@@ -2,14 +2,16 @@
 #include <map>
 #include "Layer.h"
 #include "NoteList.h"
+#include "ActionSet.h"
 #include <iterator>
 #include <cstddef>
 
 template <class InputTuple, class Output> class LayerList {
 	private:
-		//Map each tuple in the current layer to an array of values, each value at position
-		//n in the array corresponds to the cost of transitioning from the mapped tuple
-		//to the n'th tuple in the next layer.
+		//Map each tuple in the current layer to an array of values, each 
+		//value at position n in the array corresponds to the cost of 
+		//transitioning from the mapped tuple to the n'th tuple in the next 
+		//layer.
 		std::map<InputTuple, std::vector<Output>> transitions;
 		Layer<InputTuple> elem;
 		LayerList<InputTuple, Output>* next = NULL;
@@ -58,6 +60,20 @@ template <class InputTuple, class Output> class LayerList {
 		}
 		int getSize() {
 			return elem.getSize();
+		}
+		int buildTransitions(ActionSet<InputTuple, Output> as) {
+			if (next == NULL) {
+				return 1;
+			}
+			for (InputTuple this_tuple : elem) {
+				std::vector<Output> outputs;
+				for (InputTuple next_tuple : next.getElem()) {
+					outputs.push_back(
+						as.apply(this_tuple, next_tuple));
+				}
+				transitions.insert(this_tuple, outputs);
+			} 
+			return next->buildTransitions(as);
 		}
 
 		//Iterator

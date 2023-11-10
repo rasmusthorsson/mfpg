@@ -66,4 +66,41 @@ template<class NodeTuple> class Layer {
 		SimplifiedNote getNote() {
 			return note;
 		}
+		struct Iterator {
+			using it_cat = std::forward_iterator_tag;
+			using diff_t = std::ptrdiff_t;
+			using val_t = NodeTuple;
+			using pointer = val_t*;
+			using reference = val_t&;
+			private:
+				pointer m_ptr;
+			public:
+				Iterator(pointer ptr) : m_ptr(ptr) {}
+				reference operator*() const {return *m_ptr;}
+				pointer operator->() {return m_ptr;}
+
+				Iterator& operator++() {
+					m_ptr++;
+					return *this;
+				}
+				Iterator operator++(int) {
+					pointer prev = m_ptr;
+					m_ptr++;
+					return Iterator(prev);
+				}
+
+				friend bool operator==(const Iterator& fst, const Iterator& snd) {
+					return fst.m_ptr == snd.m_ptr;
+				}
+				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
+					return fst.m_ptr != snd.m_ptr;
+				}
+		};
+
+		Iterator begin() {
+			return Iterator(nodes[0]);
+		}
+		Iterator end() {
+			return Iterator(nodes[nodes.size()]);
+		}
 };

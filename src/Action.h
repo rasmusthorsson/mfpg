@@ -1,6 +1,8 @@
 //Class for defining costs for actions, InputTuple defines tuple structure of input (dictated by how note
 //tuples are defined). OutputValue is for the output structure, generally int or float.
-//Output must be zero-initializable.
+
+//Output must be zero-initializable. Currently not very useful due to constraint
+//being checked in later stages anyway, but a place to add constraints later.
 template<typename T>
 concept ZeroInit = requires(T a) {
 	a = {};

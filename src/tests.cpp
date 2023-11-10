@@ -3,7 +3,6 @@
 #include "ConversionException.h"
 #include "BasicNoteMapper.h"
 #include "LayerList.h"
-#include "ActionSet.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -574,6 +573,8 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::D_5);
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
+
+//TODO Add layerlist actionset test for full transition check.
 
 class ActionSet_Tests : public ::testing::Test {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
