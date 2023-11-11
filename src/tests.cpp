@@ -445,57 +445,175 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	ASSERT_EQ(l.removeNode(second), -1);
 }
 
+class ActionSet_Tests : public ::testing::Test {
+	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+	using out_type = int;
+	typedef out_type (*a_type)(in_type, in_type);
+	public:
+		ActionSet<in_type, out_type> set;	
+		ActionSet_Tests() {		
+			a_type fingerAction = [] (in_type s1, in_type s2) {
+				out_type finger = 
+					std::max(std::get<2>(s1), std::get<2>(s2))
+					- std::min(std::get<2>(s1), std::get<2>(s2));
+				return finger;
+			};
+			
+			a_type handAction = [] (in_type s1, in_type s2) {
+				out_type hand = 
+					std::max(std::get<1>(s1), std::get<1>(s2))
+					- std::min(std::get<1>(s1), std::get<1>(s2));
+				return hand;
+			};
+			
+			a_type stringAction = [] (in_type s1, in_type s2) {
+				out_type string = 
+					std::max(std::get<0>(s1), std::get<0>(s2))
+					- std::min(std::get<0>(s1), std::get<0>(s2));
+				return string;
+			};
+
+			Action<in_type, out_type> f_a(fingerAction, "FA");
+			Action<in_type, out_type> h_a(handAction, "HA");
+			Action<in_type, out_type> s_a(stringAction, "SA");
+
+			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
+				{s_a, true}};
+			set = actions;
+		}
+};
+
+//Checks that the ActionSet contains the correct actions.
+TEST_F(ActionSet_Tests, CorrectActions) {
+	using out_type = int;	
+	int count = 0;
+	for (auto a : set.getActions()) {
+		count++;
+	}
+	ASSERT_EQ(std::get<0>(set.getActions()[0]).getID(), "FA");
+	ASSERT_EQ(std::get<0>(set.getActions()[1]).getID(), "HA");
+	ASSERT_EQ(std::get<0>(set.getActions()[2]).getID(), "SA");
+	ASSERT_EQ(count, 3);
+}
+
+//Checks that the distance between different inputs corresponds with the actions in the
+//ActionSet
+TEST_F(ActionSet_Tests, CorrectDistance) {
+	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+	in_type f1 = {0, 0, 0};
+	in_type s1 = {1, 2, 1};
+	ASSERT_EQ(set.apply(f1, s1), 4);
+	in_type f2 = {2, 2, 2};
+	in_type s2 = {0, 3, 2};
+	ASSERT_EQ(set.apply(f2, s2), 3);
+}
+
+//Check that dependencies accurately disable actions and cannot re-enable them.
+TEST_F(ActionSet_Tests, Dependencies) {
+	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+	set.addDependency("HA", "FA", false);
+	in_type f1 = {0, 0, 0};
+	in_type s1 = {1, 10, 1};
+	ASSERT_EQ(set.apply(f1, s1), 2);	
+	set.addDependency("SA", "FA", false);
+	ASSERT_EQ(set.apply(f1, s1), 1);	
+	set.addDependency("SA", "FA", true);
+	ASSERT_EQ(set.apply(f1, s1), 1);	
+}
+
+
 //Creates a LayerList of 4 layers corresponding to a sequence of notes combined with a basic 
 //notemapper, then verifies that the layerlist does indeed contain all layers and that all
 //layers have the correct amount of nodes.
-TEST(LayerList, CountAndLayerCount) {
-	using namespace noteenums;
-	
+
+//TODO Optimize object creations.
+
+class LayerList_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
+	private:
+		LayerList<in_type, int> BuildLayerList() {
+			using namespace noteenums;
+			
+			using in_type = std::tuple<int, int, int>;
+			using out_type = int;
+			typedef int (*a_type)(in_type, in_type);
 
-	IString s1(1, Note::C_3, Note::B_3);
-	IString s2(2, Note::G_3, Note::Ds_4);
-	std::vector<IString> sv{s1, s2};
+			IString s1(1, Note::C_3, Note::B_3);
+			IString s2(2, Note::G_3, Note::Ds_4);
+			std::vector<IString> sv{s1, s2};
 
-	NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
+			NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
 
-	SimplifiedNote d_s(Note::D_3, Duration::Whole);
-	Layer<in_type> first(d_s, notemap);
+			SimplifiedNote d_s(Note::D_3, Duration::Whole);
+			Layer<in_type> first(d_s, notemap);
 
-	SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
-	Layer<in_type> second(f_s, notemap);
-	
-	SimplifiedNote g_s(Note::G_3, Duration::Whole);
-	Layer<in_type> third(g_s, notemap);
-	
-	SimplifiedNote cs_s(Note::Cs_4, Duration::Whole);
-	Layer<in_type> fourth(cs_s, notemap);
+			SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
+			Layer<in_type> second(f_s, notemap);
+			
+			SimplifiedNote g_s(Note::G_3, Duration::Whole);
+			Layer<in_type> third(g_s, notemap);
+			
+			SimplifiedNote cs_s(Note::Cs_4, Duration::Whole);
+			Layer<in_type> fourth(cs_s, notemap);
 
-	typedef int (*a_type)(in_type, 
-			in_type);
-	a_type d_f = [] (in_type s1, 
-			in_type s2) {
-		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
-		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
-		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
-		return string + hand + finger;
-	};
-	LayerList<in_type, int> l1(first);
-	l1.pushBack(second);
-	l1.pushBack(third);
-	l1.pushBack(fourth);
+			LayerList<in_type, int> l1(first);
+			l1.pushBack(second);
+			l1.pushBack(third);
+			l1.pushBack(fourth);
 
-	Action<in_type, int> basic_action(d_f, "BA");
+			a_type fingerAction = [] (in_type s1, in_type s2) {
+				out_type finger = 
+					std::max(std::get<2>(s1), std::get<2>(s2))
+					- std::min(std::get<2>(s1), std::get<2>(s2));
+				return finger;
+			};
+			
+			a_type handAction = [] (in_type s1, in_type s2) {
+				out_type hand = 
+					std::max(std::get<1>(s1), std::get<1>(s2))
+					- std::min(std::get<1>(s1), std::get<1>(s2));
+				return hand;
+			};
+			
+			a_type stringAction = [] (in_type s1, in_type s2) {
+				out_type string = 
+					std::max(std::get<0>(s1), std::get<0>(s2))
+					- std::min(std::get<0>(s1), std::get<0>(s2));
+				return string;
+			};
+
+			Action<in_type, out_type> f_a(fingerAction, "FA");
+			Action<in_type, out_type> h_a(handAction, "HA");
+			Action<in_type, out_type> s_a(stringAction, "SA");
+
+			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
+				{s_a, true}};
+			l1.buildTransitions(actions);
+			return l1;
+		}
+	public:
+		LayerList<in_type, int> list;
+		LayerList_Tests() : list(BuildLayerList()) {}
+};
+
+TEST_F(LayerList_Tests, CountAndLayerCount) {
 	int count = 0;
-	for (auto l : l1) {
+	for (auto l : list) {
 		count++;
 	}
 	ASSERT_EQ(count, 4);
-	auto l_it = l1.begin();
+	auto l_it = list.begin();
 	ASSERT_EQ(l_it++->getSize(), 2);
 	ASSERT_EQ(l_it++->getSize(), 3);
 	ASSERT_EQ(l_it++->getSize(), 4);
 	ASSERT_EQ(l_it++->getSize(), 2);
+}
+
+TEST_F(LayerList_Tests, Transitions) {
+	//C_3 - B_3 
+	//G_3 - Ds_4
+	//D_3 - Fs_3 - G_3 - Cs_3
+	//TODO Calculate tuple combos
 }
 
 TEST(LayerList, FromNoteList) {
@@ -575,80 +693,4 @@ TEST(LayerList, FromNoteList) {
 }
 
 //TODO Add layerlist actionset test for full transition check.
-
-class ActionSet_Tests : public ::testing::Test {
-	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
-	using out_type = int;
-	typedef out_type (*a_type)(in_type, in_type);
-	public:
-		ActionSet<in_type, out_type> set;	
-		ActionSet_Tests() {		
-			a_type fingerAction = [] (in_type s1, in_type s2) {
-				out_type finger = 
-					std::max(std::get<2>(s1), std::get<2>(s2))
-					- std::min(std::get<2>(s1), std::get<2>(s2));
-				return finger;
-			};
-			
-			a_type handAction = [] (in_type s1, in_type s2) {
-				out_type hand = 
-					std::max(std::get<1>(s1), std::get<1>(s2))
-					- std::min(std::get<1>(s1), std::get<1>(s2));
-				return hand;
-			};
-			
-			a_type stringAction = [] (in_type s1, in_type s2) {
-				out_type string = 
-					std::max(std::get<0>(s1), std::get<0>(s2))
-					- std::min(std::get<0>(s1), std::get<0>(s2));
-				return string;
-			};
-
-			Action<in_type, out_type> f_a(fingerAction, "FA");
-			Action<in_type, out_type> h_a(handAction, "HA");
-			Action<in_type, out_type> s_a(stringAction, "SA");
-
-			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
-				{s_a, true}};
-			set = actions;
-		}
-};
-
-//Checks that the ActionSet contains the correct actions.
-TEST_F(ActionSet_Tests, CorrectActions) {
-	using out_type = int;	
-	int count = 0;
-	for (auto a : set.getActions()) {
-		count++;
-	}
-	ASSERT_EQ(std::get<0>(set.getActions()[0]).getID(), "FA");
-	ASSERT_EQ(std::get<0>(set.getActions()[1]).getID(), "HA");
-	ASSERT_EQ(std::get<0>(set.getActions()[2]).getID(), "SA");
-	ASSERT_EQ(count, 3);
-}
-
-//Checks that the distance between different inputs corresponds with the actions in the
-//ActionSet
-TEST_F(ActionSet_Tests, CorrectDistance) {
-	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
-	in_type f1 = {0, 0, 0};
-	in_type s1 = {1, 2, 1};
-	ASSERT_EQ(set.apply(f1, s1), 4);
-	in_type f2 = {2, 2, 2};
-	in_type s2 = {0, 3, 2};
-	ASSERT_EQ(set.apply(f2, s2), 3);
-}
-
-//Check that dependencies accurately disable actions and cannot re-enable them.
-TEST_F(ActionSet_Tests, Dependencies) {
-	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
-	set.addDependency("HA", "FA", false);
-	in_type f1 = {0, 0, 0};
-	in_type s1 = {1, 10, 1};
-	ASSERT_EQ(set.apply(f1, s1), 2);	
-	set.addDependency("SA", "FA", false);
-	ASSERT_EQ(set.apply(f1, s1), 1);	
-	set.addDependency("SA", "FA", true);
-	ASSERT_EQ(set.apply(f1, s1), 1);	
-}
 

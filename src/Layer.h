@@ -13,6 +13,7 @@ template<class NodeTuple> class Layer {
 		std::vector<NodeTuple> nodes;
 	public:
 		//Defined here due to wildcard compilation issues, according to isocpp.org.
+		Layer() {}
 		Layer(SimplifiedNote n) : note(n), nodes() {}
 		Layer(SimplifiedNote n, NoteMapper<NodeTuple>* mapper) 
 			: note(n) 
@@ -98,9 +99,9 @@ template<class NodeTuple> class Layer {
 		};
 
 		Iterator begin() {
-			return Iterator(nodes[0]);
+			return Iterator(&nodes[0]);
 		}
 		Iterator end() {
-			return Iterator(nodes[nodes.size()]);
+			return Iterator(&nodes[nodes.size()]);
 		}
 };

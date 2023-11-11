@@ -5,7 +5,6 @@
 #include "ActionSet.h"
 #include <iterator>
 #include <cstddef>
-
 template <class InputTuple, class Output> class LayerList {
 	private:
 		//Map each tuple in the current layer to an array of values, each 
@@ -16,6 +15,7 @@ template <class InputTuple, class Output> class LayerList {
 		Layer<InputTuple> elem;
 		LayerList<InputTuple, Output>* next = NULL;
 	public:
+		LayerList() {}
 		LayerList(Layer<InputTuple> l) : elem(l) {}
 		LayerList(NoteList list) : elem(list.front()) {
 			auto simp_list = list.getNotes();
@@ -67,11 +67,11 @@ template <class InputTuple, class Output> class LayerList {
 			}
 			for (InputTuple this_tuple : elem) {
 				std::vector<Output> outputs;
-				for (InputTuple next_tuple : next.getElem()) {
+				for (InputTuple next_tuple : next->getElem()) {
 					outputs.push_back(
 						as.apply(this_tuple, next_tuple));
 				}
-				transitions.insert(this_tuple, outputs);
+				transitions.insert({this_tuple, outputs});
 			} 
 			return next->buildTransitions(as);
 		}
