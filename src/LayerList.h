@@ -18,7 +18,7 @@ template <class InputTuple, class Output> class LayerList {
 		LayerList() {}
 		LayerList(Layer<InputTuple> l) : elem(l) {}
 		LayerList(NoteList list) : elem(list.front()) {
-			auto simp_list = list.getNotes();
+			std::list<SimplifiedNote> simp_list = list.getNotes();
 			auto it = simp_list.begin();
 			it++;
 			for (it; it != simp_list.end(); it++) {
@@ -75,7 +75,9 @@ template <class InputTuple, class Output> class LayerList {
 			} 
 			return next->buildTransitions(as);
 		}
-
+		std::map<InputTuple, std::vector<Output>> getTransitions() {
+			return transitions;
+		}
 		//Iterator
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;

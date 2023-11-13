@@ -4,11 +4,12 @@
 //Output must be zero-initializable. Currently not very useful due to constraint
 //being checked in later stages anyway, but a place to add constraints later.
 template<typename T>
-concept ZeroInit = requires(T a) {
+concept OutputViable = requires(T a, T b) {
 	a = {};
+	a > b;
 };
 
-template <class InputTuple, ZeroInit OutputValue> class Action {
+template <class InputTuple, OutputViable OutputValue> class Action {
 	typedef OutputValue (*distfun)(InputTuple, InputTuple);
 	private:
 		std::string ID;

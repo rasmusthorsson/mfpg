@@ -530,36 +530,28 @@ TEST_F(ActionSet_Tests, Dependencies) {
 
 class LayerList_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
 	private:
 		LayerList<in_type, int> BuildLayerList() {
 			using namespace noteenums;
 			
-			using in_type = std::tuple<int, int, int>;
-			using out_type = int;
 			typedef int (*a_type)(in_type, in_type);
 
 			IString s1(1, Note::C_3, Note::B_3);
 			IString s2(2, Note::G_3, Note::Ds_4);
+			
 			std::vector<IString> sv{s1, s2};
-
 			NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
 
-			SimplifiedNote d_s(Note::D_3, Duration::Whole);
-			Layer<in_type> first(d_s, notemap);
+			Layer<in_type> first(Note::D_3, Duration::Whole, notemap);
+			Layer<in_type> second(Note::Fs_3, Duration::Whole, notemap);
+			Layer<in_type> third(Note::G_3, Duration::Whole, notemap);
+			Layer<in_type> fourth(Note::Cs_4, Duration::Whole, notemap);
 
-			SimplifiedNote f_s(Note::Fs_3, Duration::Whole);
-			Layer<in_type> second(f_s, notemap);
-			
-			SimplifiedNote g_s(Note::G_3, Duration::Whole);
-			Layer<in_type> third(g_s, notemap);
-			
-			SimplifiedNote cs_s(Note::Cs_4, Duration::Whole);
-			Layer<in_type> fourth(cs_s, notemap);
-
-			LayerList<in_type, int> l1(first);
-			l1.pushBack(second);
-			l1.pushBack(third);
-			l1.pushBack(fourth);
+			LayerList<in_type, int> temp_list(first);
+			temp_list.pushBack(second);
+			temp_list.pushBack(third);
+			temp_list.pushBack(fourth);
 
 			a_type fingerAction = [] (in_type s1, in_type s2) {
 				out_type finger = 
@@ -588,8 +580,8 @@ class LayerList_Tests : public ::testing::Test {
 
 			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
 				{s_a, true}};
-			l1.buildTransitions(actions);
-			return l1;
+			temp_list.buildTransitions(actions);
+			return temp_list;
 		}
 	public:
 		LayerList<in_type, int> list;
@@ -610,10 +602,47 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 }
 
 TEST_F(LayerList_Tests, Transitions) {
-	//C_3 - B_3 
-	//G_3 - Ds_4
-	//D_3 - Fs_3 - G_3 - Cs_3
-	//TODO Calculate tuple combos
+	auto l_it = list.begin();
+	//D_3 = {1, 1, 2}, {1, 2, 1}
+	//Outputs 
+	std::vector<int> outputs = {2, 2, 2, 4, 2, 2, 
+					0, 2, 4, 4, 2, 0, 2, 4, 4, 2, 0, 4,
+					1, 3, 3, 1, 5, 3, 3, 3};
+	int count = 0;
+	for (auto transition : l_it->getTransitions()) {
+		std::cout << std::get<0>(transition.first) << ", ";
+		std::cout << std::get<1>(transition.first) << ", ";
+		std::cout << std::get<2>(transition.first) << "\n";
+		for (auto output : transition.second) {
+			ASSERT_EQ(output, outputs[count]);
+			std::cout << output << "\n";
+			count++;
+		}
+	}
+	l_it++;
+	//Fs_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}
+	for (auto transition : l_it->getTransitions()) {
+		std::cout << std::get<0>(transition.first) << ", ";
+		std::cout << std::get<1>(transition.first) << ", ";
+		std::cout << std::get<2>(transition.first) << "\n";
+		for (auto output : transition.second) {
+			ASSERT_EQ(output, outputs[count]);
+			std::cout << output << "\n";
+			count++;
+		}
+	}
+	l_it++;
+	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 1, 1}
+	for (auto transition : l_it->getTransitions()) {
+		std::cout << std::get<0>(transition.first) << ", ";
+		std::cout << std::get<1>(transition.first) << ", ";
+		std::cout << std::get<2>(transition.first) << "\n";
+		for (auto output : transition.second) {
+			ASSERT_EQ(output, outputs[count]);
+			std::cout << output << "\n";
+			count++;
+		}
+	}
 }
 
 TEST(LayerList, FromNoteList) {
@@ -692,5 +721,4 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
-//TODO Add layerlist actionset test for full transition check.
 

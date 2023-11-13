@@ -3,7 +3,7 @@
 #include <iterator>
 #include <cstddef>
 #include <map>
-template <class InputTuple, ZeroInit OutputValue> 
+template <class InputTuple, OutputViable OutputValue> 
 class ActionSet {
 	private:
 		//Actions with the default running configuration, false = do not run by
