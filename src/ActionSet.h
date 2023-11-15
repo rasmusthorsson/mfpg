@@ -83,8 +83,9 @@ class ActionSet {
 								std::get<1>(a),
 								taken)) {
 						output = output + 
-							std::get<0>(a).distance(n1, n2);
-						taken.push_back(std::get<0>(a).getID());
+						   std::get<0>(a).distance(n1, n2);
+						taken.push_back(
+						   std::get<0>(a).getID());
 					}	
 			}
 			return output;	

@@ -36,7 +36,6 @@ template <class InputTuple, class Output> class LayerList {
 				base = temp;
 			}
 		}
-		//TODO Set up action to calculate transitions.
 		void setNext(LayerList<InputTuple, Output>* l) {
 			next = l;
 		}
@@ -102,10 +101,12 @@ template <class InputTuple, class Output> class LayerList {
 					return Iterator(prev);
 				}
 
-				friend bool operator==(const Iterator& fst, const Iterator& snd) {
+				friend bool operator==(const Iterator& fst, 
+							const Iterator& snd) {
 					return fst.m_ptr == snd.m_ptr;
 				}
-				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
+				friend bool operator!=(const Iterator& fst, 
+							const Iterator& snd) {
 					return fst.m_ptr != snd.m_ptr;
 				}
 		};

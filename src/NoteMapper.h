@@ -3,14 +3,14 @@
 #include <map>
 #include <utility>
 
-//Virtual class for implementing a notemapper, class T refers to tuple representing the
+//Virtual class for implementing a notemapper, class InputTuple refers to tuple representing the
 //way notes are to be presented to the path algorithm.
-template <class T> class NoteMapper {
-		using it = std::multimap<noteenums::Note, T>::iterator;
+template <class InputTuple> class NoteMapper {
+		using it = std::multimap<noteenums::Note, InputTuple>::iterator;
 	protected:
 		//Define how notes are mapped in child.
 		virtual void mapString(IString) = 0;
-                std::multimap<noteenums::Note, T> mappedNotes;
+                std::multimap<noteenums::Note, InputTuple> mappedNotes;
         public:
 	       	NoteMapper() {};
 
@@ -20,7 +20,7 @@ template <class T> class NoteMapper {
 		it getLower(noteenums::Note n) {return mappedNotes.lower_bound(n);}
 		it begin() {return mappedNotes.begin();}
 		it end() {return mappedNotes.end();}
-		std::multimap<noteenums::Note, T> getMap() {return mappedNotes;}
+		std::multimap<noteenums::Note, InputTuple> getMap() {return mappedNotes;}
 		int size() {return mappedNotes.size();}
 		
 };

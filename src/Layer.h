@@ -14,8 +14,6 @@ template<class NodeTuple> class Layer {
 	public:
 		//Defined here due to wildcard compilation issues, according to isocpp.org.
 		Layer() {}
-		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d), nodes() 
-		{}
 		Layer(noteenums::Note n, noteenums::Duration d, 
 				NoteMapper<NodeTuple>* mapper) : note(n, d) {
 			auto range = mapper->getRange(n);

@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 #include "ConversionException.h"
 #include "BasicNoteMapper.h"
-#include "LayerList.h"
+#include "GreedySolver.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -721,4 +721,51 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
+//TODO Finish the test
+TEST(GreedySolver, Basic) {
+	using namespace noteenums;
 
+	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
+	
+	typedef out_type (*a_type)(in_type, in_type);
+	
+	GraphSolver<in_type, out_type>* solver = new GreedySolver();
+	
+	IString s1(1, Note::C_3, Note::Fs_3);
+	IString s2(2, Note::D_3, Note::Gs_3);
+	IString s3(3, Note::E_3, Note::As_3);
+	
+	std::vector<IString> sv{s1, s2, s3};
+	NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
+
+	Layer<in_type> first(Note::C_3, Duration::Whole, notemap);
+	Layer<in_type> second(Note::E_3, Duration::Whole, notemap);
+	Layer<in_type> third(Note::Gs_3, Duration::Whole, notemap);
+
+	LayerList<in_type, out_type> l_list({first, second, third});
+
+	a_type action = [] (in_type t1, in_type t2) {
+		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
+		out = out + std::abs(std::get<2>(t1) - std::get<2>(t2));
+		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {
+			out = out + 100;
+		} else {
+			out = out + 1;
+		}
+		return out;
+	};
+	
+	Action<in_type, out_type> a1(action, "A1");
+	ActionSet<in_type, out_type> set({a1, true});
+	l_list.buildTransitions(set);
+	
+	solver->solve(l_list);
+
+	for (auto sol : solver->getSolution()) {
+		std::cout << std::get<0>(std::get<0>(sol).getState());
+		std::cout << std::get<1>(std::get<0>(sol).getState());
+		std::cout << std::get<2>(std::get<0>(sol).getState()) << "\n";
+	}
+	FAIL();
+}
