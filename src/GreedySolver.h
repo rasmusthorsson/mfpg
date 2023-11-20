@@ -33,30 +33,31 @@ class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> 
 							.getElem()
 							.getNodes()
 							[old_count];
+					current_cost = -1;
 				} else {
 					count = 0;
 					current_cost = 10000000;
-					auto elem_nodes = layerlist.getElem()
-									.getNodes();
+					auto elem_node = layerlist.getElem()
+							.getNodes()[old_count];
 					auto next_tuple = layerlist
 								.getTransitions()
-								.find(elem_nodes
-								[old_count]);
-					for (auto output : next_tuple->second) { 
+								[elem_node];
+					for (int output : next_tuple) {
 						if (current_cost > output) {
 							current_cost = output;
+							old_count = count;
 							current_tuple = layerlist
 									.getElem()
 									.getNodes()
 									[old_count];
-							old_count = count;
 						}
 					count++;
 					}
 					count--;
 				}
 				HandPosition<std::tuple<int, int, int>> 
-								hp(current_tuple);
+						hp(current_tuple, layerlist.getElem()
+							.getNote());
 				std::tuple<HandPosition
 					<std::tuple<int, int, int>>, int> tuple(
 					hp, current_cost);

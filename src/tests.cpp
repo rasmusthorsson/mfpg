@@ -721,7 +721,7 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
-//TODO Finish the test
+//Simple test for greedy solver.
 TEST(GreedySolver, Basic) {
 	using namespace noteenums;
 
@@ -759,13 +759,29 @@ TEST(GreedySolver, Basic) {
 	Action<in_type, out_type> a1(action, "A1");
 	ActionSet<in_type, out_type> set({a1, true});
 	l_list.buildTransitions(set);
-	
+
 	solver->solve(l_list);
 
+	in_type sol_1({1, 1, 1});
+	in_type sol_2({2, 1, 2});
+	in_type sol_3({3, 1, 3});
+
+	int cost_1 = 2;
+	int cost_2 = 2;
+	int cost_3 = -1;
+
+	int count = 0;
 	for (auto sol : solver->getSolution()) {
-		std::cout << std::get<0>(std::get<0>(sol).getState());
-		std::cout << std::get<1>(std::get<0>(sol).getState());
-		std::cout << std::get<2>(std::get<0>(sol).getState()) << "\n";
+		if (count == 0) {
+			ASSERT_EQ(std::get<0>(sol).getState(), sol_1);
+			ASSERT_EQ(std::get<1>(sol), cost_1);
+		} else if (count == 1) {
+			ASSERT_EQ(std::get<0>(sol).getState(), sol_2);
+			ASSERT_EQ(std::get<1>(sol), cost_2);
+		} else if (count == 2) {
+			ASSERT_EQ(std::get<0>(sol).getState(), sol_3);
+			ASSERT_EQ(std::get<1>(sol), cost_3);
+		}
+		count++;
 	}
-	FAIL();
 }

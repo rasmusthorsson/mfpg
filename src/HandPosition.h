@@ -9,6 +9,7 @@ template <class InputTuple> class HandPosition {
 	public:
 		HandPosition() {}
 		HandPosition(InputTuple i) : state(i) {}
+		HandPosition(InputTuple i, SimplifiedNote n) : state(i), note(n) {}
 		InputTuple getState() {
 			return state;
 		}
