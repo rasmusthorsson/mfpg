@@ -22,7 +22,7 @@ file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter
 add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 
 
-add_subdirectory(libs/mx)
+##add_subdirectory(libs/mx)
 add_subdirectory(src)
 
 target_link_libraries(

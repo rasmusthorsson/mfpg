@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 
-target_link_libraries(tests mx)
-target_link_libraries(mfpr mx)
+target_link_libraries(tests ${CMAKE_SOURCE_DIR}/libs/a/libmx.a)
+target_link_libraries(mfpr ${CMAKE_SOURCE_DIR}/libs/a/libmx.a)
 target_include_directories(mfpr 
-	PRIVATE "${CMAKE_SOURCE_DIR}/mx/Sourcecode/include")
+	PRIVATE "${CMAKE_SOURCE_DIR}/libs/mx/Sourcecode/include/")
+target_include_directories(tests 
+	PRIVATE "${CMAKE_SOURCE_DIR}/libs/mx/Sourcecode/include/")
