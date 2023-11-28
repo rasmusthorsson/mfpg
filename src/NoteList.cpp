@@ -28,7 +28,7 @@ SimplifiedNote NoteList::front() {
 	return notes.front();
 }
 
-void NoteList::pop_front() {
+void NoteList::popFront() {
 	notes.pop_front();
 }
 

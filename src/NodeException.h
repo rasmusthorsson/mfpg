@@ -8,7 +8,6 @@ template <class T> class NodeException : public std::exception {
 		const SimplifiedNote note;
 		const std::string errorMsg;
 	public:
-		//Defined in header due to template issues with compiler.
 		NodeException(std::string msg, T nd, SimplifiedNote nt) : 
 			errorMsg(msg), node(nd), note(nt) {};
 		std::string what() {return errorMsg;};

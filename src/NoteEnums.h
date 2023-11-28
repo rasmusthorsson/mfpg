@@ -1,10 +1,12 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
-//Simple way to define notes as we do not need functionality offered by the more complex mx
-//representation.
+#define HIGHEST_NOTE 107
+
+//Simple way to define notes as we do not need functionality offered by the more 
+//complex mx representation.
 namespace noteenums {
-
 	enum class Note {
 		C_0 = 0, Cs_0 = 1, D_0 = 2, Ds_0 = 3, E_0 = 4, F_0 = 5,
 	        Fs_0 = 6, G_0 = 7, Gs_0 = 8, A_0 = 9, As_0 = 10, B_0 = 11,	
@@ -23,7 +25,7 @@ namespace noteenums {
 		C_7 = 84, Cs_7 = 85, D_7 = 86, Ds_7 = 87, E_7 = 88, F_7 = 89,
 	        Fs_7 = 90, G_7 = 91, Gs_7 = 92, A_7 = 93, As_7 = 94, B_7 = 95,	
 		C_8 = 96, Cs_8 = 97, D_8 = 98, Ds_8 = 99, E_8 = 100, F_8 = 101,
-	        Fs_8 = 102, G_8 = 103, Gs_8 = 104, A_8 = 105, As_8 = 106, B_8 = 107,	
+	        Fs_8 = 102, G_8 = 103, Gs_8 = 104, A_8 = 105, As_8 = 106, B_8 = 107
 	};
 
 	enum Duration {
@@ -38,7 +40,13 @@ namespace noteenums {
 	};
 }
 
+//Outputting note to output stream.
 inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
-	out << static_cast<int>(n);
+	std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E",
+					 "F", "Fs", "G", "Gs", "A",
+					 "As", "B"};
+	std::string base = bases[static_cast<int>(n) % 12];
+	std::string octave = std::to_string(static_cast<int>(n)/12);
+	out << base << "_" << octave;
 	return out;	
 }

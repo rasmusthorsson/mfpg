@@ -1,10 +1,8 @@
 #include <list>
-#include <iterator>
-#include <cstddef>
 #include "SimplifiedNote.h"
 #include "mx/api/ScoreData.h"
 
-//Class for representing a score as a list of notes, simpler than mx implementation.
+//Class for representing a score as a list of notes, simpler than mx representation.
 class NoteList {
 	private:
 		std::list<SimplifiedNote> notes;
@@ -14,6 +12,6 @@ class NoteList {
 		NoteList(mx::api::ScoreData score);
 		int size();
 		SimplifiedNote front();
-		void pop_front();
+		void popFront();
 		std::list<SimplifiedNote> getNotes();
 };

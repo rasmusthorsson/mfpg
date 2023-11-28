@@ -21,6 +21,10 @@ class IString {
 			{return playableNotes.end();}
 		std::vector<noteenums::Note>::const_iterator begin() const 
 			{return playableNotes.begin();}
-		std::vector<noteenums::Note>::const_iterator end() {return playableNotes.end();}
-		std::vector<noteenums::Note>::const_iterator begin() {return playableNotes.begin();}
+		std::vector<noteenums::Note>::const_iterator end() {
+			return playableNotes.end();
+		}
+		std::vector<noteenums::Note>::const_iterator begin() {
+			return playableNotes.begin();
+		}
 };

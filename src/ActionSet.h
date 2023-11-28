@@ -3,11 +3,15 @@
 #include <iterator>
 #include <cstddef>
 #include <map>
-template <class InputTuple, OutputViable OutputValue> 
-class ActionSet {
+
+//Class for a set of actions to be considered when calculating the transition between
+//two states, each action is considered individually for the state transition but 
+//is only executed if there are no dependencies preventing it from doing so (as 
+//defined by the user).
+template <class InputTuple, OutputViable OutputValue> class ActionSet {
 	private:
-		//Actions with the default running configuration, false = do not run by
-		//default, true = run by default.
+		//Actions with their respective default running configuration, 
+		//false = do not run by default, true = run by default.
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> actions;
 
 		//Multimap of dependencies, the key is the dependant action, the values
@@ -18,27 +22,30 @@ class ActionSet {
 		//dependencies in the dependencies multimap, the default action in the 
 		//action set, and with the previous actions already taken.
 		bool checkAction(std::string actionName, bool _default, 
-				std::vector<std::string> previousActions) {
+					std::vector<std::string> previousActions) {
 			std::vector<bool> bools;
-			//For lop iterates through each dependency for the action to be
-			//performed.
-			for (auto dep_itr = dependencies.find(actionName); 
-					dep_itr != dependencies.end();
-					dep_itr++) {
-				//For each dependency, check whether the depended action
-				//has occured in the previousActions list.
+			//for loop Iterates through each dependency for the action to 
+			//be performed.
+			for (auto depItr = dependencies.find(actionName); 
+					depItr != dependencies.end();
+					depItr++) {
+				//For each dependency, check whether the depended 
+				//action has occured in the previousActions list.
 				if (std::find(previousActions.begin(),
 					      previousActions.end(),
-					      std::get<0>(dep_itr->second)) !=
+					      std::get<0>(depItr->second)) !=
 					      previousActions.end()) {
+
 					//If the depended action has occured, add the 
 					//boolean adjustment to the list of bools to be
 					//checked later.
-					bools.push_back(std::get<1>(dep_itr->second));
+					bools.push_back(std::get<1>(depItr->second));
 				}
 			}
 			bool ret = _default;
 			for (bool b : bools) {
+				//if _default is true, check conjunction with 
+				//dependencies, otherwise check disjunction
 				if (_default) {
 					ret = ret && b;
 				} else {
@@ -54,8 +61,8 @@ class ActionSet {
 		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
 			addAction(a, b);
 		}
-		ActionSet(std::initializer_list
-				<std::tuple<Action<InputTuple, OutputValue>, bool>> as) {
+		ActionSet(std::initializer_list<std::tuple<Action<InputTuple, 
+							OutputValue>, bool>> as) {
 			for (auto a : as) {
 				actions.push_back(a);
 			}
@@ -70,10 +77,9 @@ class ActionSet {
 			dependencies.insert({action, depended});
 		}	
 	
-		//Applies the actionset to two tuples n1 to n2.	
+		//Applies the actionset to two tuples; n1 to n2.	
 		OutputValue apply(InputTuple n1, InputTuple n2) {
-			OutputValue output = {}; //Acceptable if Measurable is defined
-						//with convertability in mind
+			OutputValue output = {}; //output must be zero-initializable
 			std::vector<std::string> taken = {};
 			//For each action, check whether it should run, then calculate
 			//distance to cumulatively add to the output.
@@ -90,12 +96,12 @@ class ActionSet {
 			}
 			return output;	
 		}
-
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>>
-			getActions() {
+									getActions() {
 				return actions;
 		}
-		std::multimap<std::string, std::tuple<std::string, bool>> getDependencies() 			{
+		std::multimap<std::string, std::tuple<std::string, bool>> 
+								getDependencies() {
 			return dependencies;
 		}
 };

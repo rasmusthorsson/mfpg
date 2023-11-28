@@ -1,6 +1,7 @@
 #include "SimplifiedNote.h"
 
-//Output for one layer
+//Output for one layer, a sequence of HandPositions should realistically be the output
+//of the program.
 //TODO Rename, add more attributes? turn into a list?
 template <class InputTuple> class HandPosition {
 	private:

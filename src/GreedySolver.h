@@ -1,6 +1,8 @@
 #include "GraphSolver.h"
 
-//Temporary version for a greedy solver.
+//Temporary version for a greedy solver. This version is completely temporary and 
+//possibly even incorrect, exists only for testing purposes and will be removed/remade
+//eventually.
 class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> {
 	public:
 		GreedySolver() {}

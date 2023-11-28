@@ -6,9 +6,9 @@
 class ConversionException : public std::exception {
 	private:
 		mx::api::NoteData note;
-		std::string errorMsg;
+		const std::string errorMsg;
 	public:
-		ConversionException(std::string message, mx::api::NoteData);
-		std::string what();
+		ConversionException(std::string, mx::api::NoteData);
+		const std::string what();
 		mx::api::NoteData failedNote() const;
 };

@@ -188,23 +188,23 @@ TEST(NoteList, OrderPreserved) {
 
 	ASSERT_EQ(notes.size(), 5);
 	ASSERT_EQ(notes.front().getNote(), Note::A_4);
-	notes.pop_front();
+	notes.popFront();
 	
 	ASSERT_EQ(notes.size(), 4);
 	ASSERT_EQ(notes.front().getNote(), Note::B_4);
-	notes.pop_front();
+	notes.popFront();
 	
 	ASSERT_EQ(notes.size(), 3);
 	ASSERT_EQ(notes.front().getNote(), Note::C_5);
-	notes.pop_front();
+	notes.popFront();
 	
 	ASSERT_EQ(notes.size(), 2);
 	ASSERT_EQ(notes.front().getNote(), Note::D_5);
-	notes.pop_front();
+	notes.popFront();
 	
 	ASSERT_EQ(notes.size(), 1);
 	ASSERT_EQ(notes.front().getNote(), Note::E_5);
-	notes.pop_front();
+	notes.popFront();
 }
 
 class NoteMapper_Tests : public ::testing::Test {
