@@ -33,6 +33,17 @@ template <class InputTuple, class Output> class LayerList {
 				this->pushBack(*temp);
 			}	
 		}
+		LayerList(NoteList list, NoteMapper<InputTuple>* notemap) : 
+				elem(list.front(), notemap) {
+			std::list<SimplifiedNote> simpList = list.getNotes();
+			auto it = simpList.begin();
+			it++;
+			for (it; it != simpList.end(); it++) {
+				Layer<InputTuple>* temp = 
+					new Layer<InputTuple>(*it, notemap);
+				this->pushBack(*temp);
+			}	
+		}
 		LayerList(std::vector<Layer<InputTuple>> ls) 
 			: elem(ls[0]) {
 			LayerList<InputTuple, Output>* base = this;

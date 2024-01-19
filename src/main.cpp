@@ -1,10 +1,16 @@
 #include "mx/api/ScoreData.h"
 #include "mx/api/DocumentManager.h"
+
 #include "NoteEnums.h"
 #include "IString.h"
 #include "BasicNoteMapper.h"
+#include "Action.h"
 #include "ActionSet.h"
 #include "LayerList.h"
+#include "NoteList.h"
+#include "NoteMapper.h"
+#include "GraphSolver.h"
+#include "GreedySolver.h"
 
 #include <iostream>
 #include <string>
@@ -73,8 +79,24 @@ int main (int argc, char *argv[]) {
 	Action<in_type, out_type> a1(action1, "A1");
 	ActionSet<in_type, out_type> action_set({a1, true});
 
-	LayerList<in_type, out_type> list(noteList);	
-
+	LayerList<in_type, out_type> list(noteList, mapper);	
+	list.buildTransitions(action_set);
+	
+	GraphSolver<in_type, out_type>* solver = new GreedySolver();
+	solver->solve(list);
+	int count = 1;
+	
+	//TODO Fix breaks and ties, fix input in AW
+	for (auto sol : solver->getSolution()) {
+		std::cout << "Note number: " << count << "\n";
+		std::cout << "Note: " << std::get<0>(sol).getNote() << "\n";
+		std::cout << "String: " << std::get<0>(std::get<0>(sol).getState())
+		          << ", Finger: " << std::get<2>(std::get<0>(sol).getState()) 
+			  << ", Hand Position: " << 
+			  	std::get<1>(std::get<0>(sol).getState()) << "\n" 
+			  << "------------------------------------" << "\n";
+		count++;
+	}
 	//given an instrument and a notelist, construct a valid and optimal position 
 	//graph corresponding to the notelist.
 
