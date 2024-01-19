@@ -1,6 +1,10 @@
 #include "mx/api/ScoreData.h"
 #include "mx/api/DocumentManager.h"
-#include "NoteList.h"
+#include "NoteEnums.h"
+#include "IString.h"
+#include "BasicNoteMapper.h"
+#include "ActionSet.h"
+#include "LayerList.h"
 
 #include <iostream>
 #include <string>
@@ -8,6 +12,7 @@
 #include <sstream>
 #include <fstream>
 
+using namespace noteenums;
 using namespace std;
 
 int main (int argc, char *argv[]) {
@@ -39,8 +44,37 @@ int main (int argc, char *argv[]) {
 	const auto documentID = mgr.createFromStream(istr);
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
-	NoteList n(score);
+	NoteList noteList(score);
+	
+	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
+	
+	typedef out_type (*action_type) (in_type, in_type);
+
+	IString s1(1, Note::Gs_3, Note::Gs_5);
+	IString s2(2, Note::Ds_4, Note::Ds_6);
+	IString s3(3, Note::As_4, Note::As_6);
+	IString s4(4, Note::F_4, Note::F_6);
 		
+	std::vector<IString> sv{s1, s2, s3, s4};
+	NoteMapper<in_type>* mapper = new BasicNoteMapper(sv);
+
+	action_type action1 = [] (in_type t1, in_type t2) {
+		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
+		out = out + std::abs(std::get<2>(t1) - std::get<2>(t2));
+		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {
+			out = out + 100;
+		} else {
+			out = out + 1;
+		}
+		return out;
+	};
+
+	Action<in_type, out_type> a1(action1, "A1");
+	ActionSet<in_type, out_type> action_set({a1, true});
+
+	LayerList<in_type, out_type> list(noteList);	
+
 	//given an instrument and a notelist, construct a valid and optimal position 
 	//graph corresponding to the notelist.
 

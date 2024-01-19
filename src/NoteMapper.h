@@ -1,3 +1,6 @@
+#ifndef NOTE_MAPPER_H_MFPG
+#define NOTE_MAPPER_H_MFPG
+
 #include "IString.h"
 #include "NoteEnums.h"
 #include <map>
@@ -39,3 +42,4 @@ template <class InputTuple> class NoteMapper {
 			return mappedNotes.end();
 		}		
 };
+#endif

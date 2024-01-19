@@ -1,3 +1,6 @@
+#ifndef LAYER_H_MFPG
+#define LAYER_H_MFPG
+
 #include "SimplifiedNote.h"
 #include "NodeException.h"
 #include <vector>
@@ -113,3 +116,4 @@ template<class InputTuple> class Layer {
 			return Iterator(&nodes[nodes.size()]);
 		}
 };
+#endif

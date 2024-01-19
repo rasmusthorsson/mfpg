@@ -1,4 +1,6 @@
-#pragma once
+#ifndef NOTE_ENUMS_H_MFPG
+#define NOTE_ENUMS_H_MFPG
+
 #include <iostream>
 #include <vector>
 
@@ -50,3 +52,4 @@ inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
 	out << base << "_" << octave;
 	return out;	
 }
+#endif

@@ -3,6 +3,7 @@
 #include "ConversionException.h"
 #include "BasicNoteMapper.h"
 #include "GreedySolver.h"
+#include "Instrument.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -721,14 +722,15 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
-//Simple test for greedy solver.
+//Simple test for greedy solver, this can be seen as a basic outline of how the main
+//program will run.
 TEST(GreedySolver, Basic) {
 	using namespace noteenums;
 
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 	
-	typedef out_type (*a_type)(in_type, in_type);
+	typedef out_type (*action_type)(in_type, in_type);
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
 	
@@ -745,7 +747,7 @@ TEST(GreedySolver, Basic) {
 
 	LayerList<in_type, out_type> l_list({first, second, third});
 
-	a_type action = [] (in_type t1, in_type t2) {
+	action_type action = [] (in_type t1, in_type t2) {
 		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
 		out = out + std::abs(std::get<2>(t1) - std::get<2>(t2));
 		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {

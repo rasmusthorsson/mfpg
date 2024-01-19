@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SIMPLIFIED_NOTE_H_MFPG
+#define SIMPLIFIED_NOTE_H_MFPG
 
 #include <string>
 #include <iostream>
@@ -33,4 +34,4 @@ class SimplifiedNote {
 			return out;	
 		};
 };
-
+#endif

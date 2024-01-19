@@ -1,3 +1,6 @@
+#ifndef NOTE_LIST_H_MFPG
+#define NOTE_LIST_H_MFPG
+
 #include <list>
 #include "SimplifiedNote.h"
 #include "mx/api/ScoreData.h"
@@ -15,3 +18,4 @@ class NoteList {
 		void popFront();
 		std::list<SimplifiedNote> getNotes();
 };
+#endif

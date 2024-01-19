@@ -1,3 +1,6 @@
+#ifndef HAND_POSITION_H_MFPG
+#define HAND_POSITION_H_MFPG
+
 #include "SimplifiedNote.h"
 
 //Output for one layer, a sequence of HandPositions should realistically be the output
@@ -18,3 +21,4 @@ template <class InputTuple> class HandPosition {
 			return note;
 		}
 }; 
+#endif

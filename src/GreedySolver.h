@@ -1,3 +1,6 @@
+#ifndef GREEDY_SOLVER_H_MFPG
+#define GREEDY_SOLVER_H_MFPG
+
 #include "GraphSolver.h"
 
 //Temporary version for a greedy solver. This version is completely temporary and 
@@ -71,3 +74,4 @@ class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> 
 				return solution;
 			}
 };
+#endif

@@ -1,3 +1,6 @@
+#ifndef ACTION_H_MFPG
+#define ACTION_H_MFPG
+
 //Applying constraints on the output. 
 //TODO Move somewhere else and make all outputs subject to these constraints. 
 //TODO add another for inputs.
@@ -27,3 +30,4 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 			return ID;
 		}
 };
+#endif

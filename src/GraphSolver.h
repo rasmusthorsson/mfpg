@@ -1,3 +1,6 @@
+#ifndef GRAPH_SOLVER_H_MFPG
+#define GRAPH_SOLVER_H_MFPG
+
 #include "LayerList.h"
 #include "HandPosition.h"
 
@@ -16,3 +19,4 @@ template <class InputTuple, class Output> class GraphSolver {
 			getSolution() = 0;
 		GraphSolver() {};
 };
+#endif

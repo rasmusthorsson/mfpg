@@ -1,3 +1,6 @@
+#ifndef MX_CONVERTER_H_MFPG
+#define MX_CONVERTER_H_MFPG
+
 #include "mx/api/ScoreData.h"
 #include "NoteEnums.h"
 #include "ConversionException.h"
@@ -10,4 +13,4 @@ class MXConverter {
 		static Note ConvertNote(mx::api::NoteData);
 		static Duration ConvertDuration(mx::api::NoteData);
 };
-
+#endif

@@ -1,3 +1,6 @@
+#ifndef BASIC_NOTE_MAPPER_H_MFPG
+#define BASIC_NOTE_MAPPER_H_MFPG
+
 #include <map>
 #include <tuple>
 #include <vector>
@@ -13,3 +16,4 @@ class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
 		//then all playable notes are mapped.
 		BasicNoteMapper(std::vector<IString>);
 };
+#endif

@@ -1,3 +1,6 @@
+#ifndef ACTION_SET_H_MFPG
+#define ACTION_SET_H_MFPG
+
 #include "Action.h"
 #include <algorithm>
 #include <iterator>
@@ -105,3 +108,4 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			return dependencies;
 		}
 };
+#endif

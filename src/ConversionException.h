@@ -1,3 +1,6 @@
+#ifndef CONVERSION_EXCEPTION_H_MFPG
+#define CONVERSION_EXCEPTION_H_MFPG
+
 #include <exception>
 #include <string>
 #include "mx/api/ScoreData.h"
@@ -12,3 +15,4 @@ class ConversionException : public std::exception {
 		const std::string what();
 		mx::api::NoteData failedNote() const;
 };
+#endif

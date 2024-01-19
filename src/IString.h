@@ -1,4 +1,6 @@
-#pragma once
+#ifndef ISTRING_H_MFPG
+#define ISTRING_H_MFPG
+
 #include <vector>
 #include "NoteEnums.h"
 #include <iterator>
@@ -28,3 +30,4 @@ class IString {
 			return playableNotes.begin();
 		}
 };
+#endif

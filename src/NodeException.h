@@ -1,3 +1,6 @@
+#ifndef NOTE_EXCEPTION_H_MFPG
+#define NOTE_EXCEPTION_H_MFPG
+
 #include <exception>
 #include "SimplifiedNote.h"
 
@@ -14,3 +17,4 @@ template <class T> class NodeException : public std::exception {
 		T failedNode() {return node;};
 		SimplifiedNote failedNote() {return note;};
 };
+#endif

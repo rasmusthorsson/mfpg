@@ -1,3 +1,6 @@
+#ifndef LAYER_LIST_H_MFPG
+#define LAYER_LIST_H_MFPG
+
 #include <list>
 #include <map>
 #include "Layer.h"
@@ -122,3 +125,4 @@ template <class InputTuple, class Output> class LayerList {
 			return Iterator(NULL);
 		}
 };	
+#endif
