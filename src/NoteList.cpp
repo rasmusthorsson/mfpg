@@ -4,7 +4,7 @@ using namespace std;
 using namespace mx::api;
 
 NoteList::NoteList(ScoreData score) {
-	loadNotes(score);	
+	loadNotes(score);
 }
 
 //Loads notes into list, implicit conversion to simplifiednote.

@@ -14,7 +14,7 @@ concept OutputViable = requires(T a, T b) {
 //(dictated by how note tuples are defined). OutputValue is for the output structure,
 //generally int or float.
 template <class InputTuple, OutputViable OutputValue> class Action {
-	typedef OutputValue (*distfun)(InputTuple, InputTuple);
+	typedef std::tuple<bool, OutputValue> (*distfun)(InputTuple, InputTuple);
 	private:
 		std::string ID;
 		distfun distFun;
@@ -23,7 +23,8 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 		Action(distfun fun, std::string name) : ID(name) {
 			distFun = fun;
 		} 
-		OutputValue distance(InputTuple s1, InputTuple s2) const {
+		std::tuple<bool, OutputValue> distance(InputTuple s1, InputTuple s2) 
+			const {
 			return distFun(s1, s2);
 		}
 		std::string getID() {

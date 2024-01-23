@@ -7,6 +7,9 @@ using namespace noteenums;
 //the alter added on the end. The alter is used for sharps or flats, but could also 
 //be used to increase notes full steps if desired.
 Note MXConverter::ConvertNote(mx::api::NoteData n) {
+	if (n.isRest) {
+		return Note::REST;
+	} 
 	int base;
 	switch(n.pitchData.step) {
 		case mx::api::Step::a:

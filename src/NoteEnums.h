@@ -10,6 +10,7 @@
 //complex mx representation.
 namespace noteenums {
 	enum class Note {
+		REST = -1,
 		C_0 = 0, Cs_0 = 1, D_0 = 2, Ds_0 = 3, E_0 = 4, F_0 = 5,
 	        Fs_0 = 6, G_0 = 7, Gs_0 = 8, A_0 = 9, As_0 = 10, B_0 = 11,	
 		C_1 = 12, Cs_1 = 13, D_1 = 14, Ds_1 = 15, E_1 = 16, F_1 = 17,
@@ -44,6 +45,10 @@ namespace noteenums {
 
 //Outputting note to output stream.
 inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
+	if (n == noteenums::Note::REST) {
+		out << "REST";
+		return out;
+	}
 	std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E",
 					 "F", "Fs", "G", "Gs", "A",
 					 "As", "B"};

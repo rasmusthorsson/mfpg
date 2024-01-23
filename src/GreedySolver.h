@@ -44,6 +44,7 @@ class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> 
 					current_cost = 10000000;
 					auto elem_node = layerlist.getElem()
 							.getNodes()[old_count];
+					current_tuple = elem_node;
 					auto next_tuple = layerlist
 								.getTransitions()
 								[elem_node];
@@ -51,14 +52,9 @@ class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> 
 						if (current_cost > output) {
 							current_cost = output;
 							old_count = count;
-							current_tuple = layerlist
-									.getElem()
-									.getNodes()
-									[old_count];
 						}
-					count++;
+						count++;
 					}
-					count--;
 				}
 				HandPosition<std::tuple<int, int, int>> 
 						hp(current_tuple, layerlist.getElem()

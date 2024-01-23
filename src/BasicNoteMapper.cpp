@@ -3,8 +3,16 @@
 using namespace noteenums;
 using iter = std::multimap<Note, std::tuple<int, int, int>>::iterator;
 
+BasicNoteMapper::BasicNoteMapper(std::initializer_list<IString> strings) {
+	mappedNotes.insert({noteenums::Note::REST, {0, 0, 0}});
+	for (IString s : strings) {
+		mapString(s);
+	}
+
+}
 //For each string, create a map of notes to tuples.
 BasicNoteMapper::BasicNoteMapper(std::vector<IString> strings) {
+	mappedNotes.insert({noteenums::Note::REST, {0, 0, 0}});
 	for (IString s : strings) {
 		mapString(s);
 	}
@@ -17,7 +25,7 @@ void BasicNoteMapper::mapString(IString s) {
 	int stringPosition = s.getPosition();
 	std::vector<Note> playableNotes = s.getPlayable();
 	int notes = playableNotes.size() - 1;
-	
+		
 	//For each note we construct a 3-tuple of each playable combination on the 
 	//string. (String position (constant here), hand position, finger position), 
 	//hand position and finger positions are linked inversely, increase in hand 

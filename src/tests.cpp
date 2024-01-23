@@ -263,8 +263,8 @@ TEST_F(NoteMapper_Tests, ValidNotes) {
 			<< " Finger: " 
 			<< std::get<2>(elem.second) << "\n";
 	}
-	ASSERT_EQ(noteCount, 12);
-	ASSERT_EQ(map->size(), 30);
+	ASSERT_EQ(noteCount, 13);
+	ASSERT_EQ(map->size(), 31);
 }
 
 //Verify that all combinations constructed for 3 notes in the notemapper are the valid combinations
@@ -328,31 +328,38 @@ TEST_F(NoteMapper_Tests, ValidPosition) {
 	using namespace testing;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
+
 	for (auto i = map->begin(); i != map->end(); i++) {
-		ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
-		ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(0)));
-		ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(0)));
+		if (i->first != Note::REST) {
+			ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
+			ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(0)));
+			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(0)));
+		} else {
+			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(1), Gt(-1)));
+		}
 	}
 }
 //Definition of a basic action using a 3-tuple with an int return.
 TEST(Action, BasicAction) {
-	typedef int (*a_type)(std::tuple<int, int, int>, std::tuple<int, int, int>);
+	typedef std::tuple<bool, int> (*a_type)(std::tuple<int, int, int>, 
+							std::tuple<int, int, int>);
 	a_type d_f = [] (std::tuple<int, int, int> s1, std::tuple<int, int, int> s2) {
 		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
 		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
 		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
-		return string + hand + finger;
+		return std::tuple<bool, int>{true, string + hand + finger};
 	};
 	Action<std::tuple<int, int, int>, int> NOC(d_f, "NOC");
 	std::tuple<int, int, int> t1{1, 1, 1};
 	std::tuple<int, int, int> t2{2, 2, 2};
-	ASSERT_EQ(NOC.distance(t1, t2), 3);
+	std::tuple<bool, int> d1{true, 3};
+	ASSERT_EQ(NOC.distance(t1, t2), d1);
 }
 
 //More complex action, using floats and booleans.
 TEST(Action, FiveTupleAction) {
-	typedef float (*a_type)(std::tuple<int, int, int, bool, float>, 
-			std::tuple<int, int, int, bool, float>);
+	typedef std::tuple<bool, float> (*a_type)(std::tuple<int, int, int, bool, 
+		float>, std::tuple<int, int, int, bool, float>);
 	a_type d_f = [] (std::tuple<int, int, int, bool, float> s1, 
 			std::tuple<int, int, int, bool, float> s2) {
 		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
@@ -366,15 +373,17 @@ TEST(Action, FiveTupleAction) {
 		} else{
 			res = (string + hand + finger);
 		}
-		return static_cast<float>(res);
+		return std::tuple<bool, float>(true, static_cast<float>(res));
 	};
 	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f, "UD");
 	std::tuple<int, int, int, bool, float> t1(1, 2, 1, false, 3.0);
 	std::tuple<int, int, int, bool, float> t2(1, 2, 3, false, 7.0);
 	std::tuple<int, int, int, bool, float> t3(1, 2, 1, true, 3.0);
 	std::tuple<int, int, int, bool, float> t4(1, 2, 3, false, 7.0);
-	ASSERT_EQ(UpstrokeDistance.distance(t1, t2), 2.0);
-	ASSERT_EQ(UpstrokeDistance.distance(t3, t4), 8.0);
+	std::tuple<bool, float> d1{true, 2.0};
+	std::tuple<bool, float> d2{true, 8.0};
+	ASSERT_EQ(UpstrokeDistance.distance(t1, t2), d1);
+	ASSERT_EQ(UpstrokeDistance.distance(t3, t4), d2);
 }
 
 class Layer_Tests : public ::testing::Test {
@@ -449,7 +458,7 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 class ActionSet_Tests : public ::testing::Test {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 	using out_type = int;
-	typedef out_type (*a_type)(in_type, in_type);
+	typedef std::tuple<bool, out_type> (*a_type)(in_type, in_type);
 	public:
 		ActionSet<in_type, out_type> set;	
 		ActionSet_Tests() {		
@@ -457,21 +466,21 @@ class ActionSet_Tests : public ::testing::Test {
 				out_type finger = 
 					std::max(std::get<2>(s1), std::get<2>(s2))
 					- std::min(std::get<2>(s1), std::get<2>(s2));
-				return finger;
+				return std::tuple<bool, out_type>(true, finger);
 			};
 			
 			a_type handAction = [] (in_type s1, in_type s2) {
 				out_type hand = 
 					std::max(std::get<1>(s1), std::get<1>(s2))
 					- std::min(std::get<1>(s1), std::get<1>(s2));
-				return hand;
+				return std::tuple<bool, out_type>(true, hand);
 			};
 			
 			a_type stringAction = [] (in_type s1, in_type s2) {
 				out_type string = 
 					std::max(std::get<0>(s1), std::get<0>(s2))
 					- std::min(std::get<0>(s1), std::get<0>(s2));
-				return string;
+				return std::tuple<bool, out_type>(true, string);
 			};
 
 			Action<in_type, out_type> f_a(fingerAction, "FA");
@@ -536,7 +545,7 @@ class LayerList_Tests : public ::testing::Test {
 		LayerList<in_type, int> BuildLayerList() {
 			using namespace noteenums;
 			
-			typedef int (*a_type)(in_type, in_type);
+			typedef std::tuple<bool, int> (*a_type)(in_type, in_type);
 
 			IString s1(1, Note::C_3, Note::B_3);
 			IString s2(2, Note::G_3, Note::Ds_4);
@@ -558,21 +567,21 @@ class LayerList_Tests : public ::testing::Test {
 				out_type finger = 
 					std::max(std::get<2>(s1), std::get<2>(s2))
 					- std::min(std::get<2>(s1), std::get<2>(s2));
-				return finger;
+				return std::tuple<bool, int>{true, finger};
 			};
 			
 			a_type handAction = [] (in_type s1, in_type s2) {
 				out_type hand = 
 					std::max(std::get<1>(s1), std::get<1>(s2))
 					- std::min(std::get<1>(s1), std::get<1>(s2));
-				return hand;
+				return std::tuple<bool, int>{true, hand};
 			};
 			
 			a_type stringAction = [] (in_type s1, in_type s2) {
 				out_type string = 
 					std::max(std::get<0>(s1), std::get<0>(s2))
 					- std::min(std::get<0>(s1), std::get<0>(s2));
-				return string;
+				return std::tuple<bool, int>{true, string};
 			};
 
 			Action<in_type, out_type> f_a(fingerAction, "FA");
@@ -730,7 +739,7 @@ TEST(GreedySolver, Basic) {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 	
-	typedef out_type (*action_type)(in_type, in_type);
+	typedef std::tuple<bool, out_type> (*action_type)(in_type, in_type);
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
 	
@@ -755,7 +764,7 @@ TEST(GreedySolver, Basic) {
 		} else {
 			out = out + 1;
 		}
-		return out;
+		return std::tuple<bool, out_type>{true, out};
 	};
 	
 	Action<in_type, out_type> a1(action, "A1");
