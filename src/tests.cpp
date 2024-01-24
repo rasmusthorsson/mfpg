@@ -13,8 +13,8 @@ TEST(SimplifiedNote, ValidInputs) {
 	note.pitchData.step = Step::d;
 	note.pitchData.octave = 3;
 	note.pitchData.alter = 1;
-	SimplifiedNote simpleNote(note);
-	EXPECT_EQ(noteenums::Note::Ds_3, simpleNote.getNote());
+	SimplifiedNote simple_note(note);
+	EXPECT_EQ(noteenums::Note::Ds_3, simple_note.getNote());
 }
 
 //Tests construction of a note higher than the allowed range of notes.
@@ -25,9 +25,9 @@ TEST(SimplifiedNote, NoteTooHigh) {
 	note.pitchData.step = Step::b;
 	note.pitchData.octave = 8;
 	note.pitchData.alter = 5;
-	ASSERT_THROW(SimplifiedNote simpleNote(note), ConversionException);
+	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
 	try {
-		SimplifiedNote simpleNote(note);
+		SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.what(), "Note out of range.");
 	}	
@@ -41,9 +41,9 @@ TEST(SimplifiedNote, NoteTooLow) {
 	note.pitchData.step = Step::c;
 	note.pitchData.octave = 0;
 	note.pitchData.alter = -2;
-	ASSERT_THROW(SimplifiedNote simpleNote(note), ConversionException);
+	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
 	try {
-		SimplifiedNote simpleNote(note);
+		SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.what(), "Note out of range.");
 	}	
@@ -53,9 +53,9 @@ TEST(SimplifiedNote, NoteTooLow) {
 TEST(SimplifiedNote, Undefined) {
 	using namespace mx::api;
 	NoteData note = NoteData{};
-	ASSERT_THROW(SimplifiedNote simpleNote(note), ConversionException);
+	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
 	try {
-		SimplifiedNote simpleNote(note);
+		SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.what(), "Duration not found.");
 	}
@@ -122,8 +122,8 @@ TEST(IString, RangedNotes) {
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
 	ScoreData score = ScoreData{};
-	NoteList noteList(score);
-	ASSERT_EQ(noteList.size(), 0);
+	NoteList note_list(score);
+	ASSERT_EQ(note_list.size(), 0);
 }
 
 //Test to make sure notes preserve their order when placed into a notelist from a score.
@@ -249,10 +249,10 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;	
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
-	int noteCount = 0;
+	int note_count = 0;
 	for (auto i = map->begin(), end = map->end(); i != end; 
 			i = map->getUpper(i->first)) {
-		noteCount++;
+		note_count++;
 	}
 	for (auto elem : map->getMap()) {
 		std::cout << "Note: " << elem.first << "\n";
@@ -264,7 +264,7 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 			<< " Finger: " 
 			<< std::get<2>(elem.second) << "\n";
 	}
-	ASSERT_EQ(noteCount, 14);
+	ASSERT_EQ(note_count, 14);
 	ASSERT_EQ(map->size(), 33);
 }
 
@@ -279,11 +279,11 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	auto D_3 = map->getRange(Note::D_3);
 	auto E3 = map->getRange(Note::E_3);
 	auto As_3 = map->getRange(Note::As_3);
-	int combCount = 0;
+	int comb_count = 0;
 	//Check valid combinations for C_3.
 	for (auto i = C3.first; i != C3.second; i++) {
-		combCount++;
-		if (combCount == 1) {
+		comb_count++;
+		if (comb_count == 1) {
 			ASSERT_EQ(std::get<0>(i->second), 1);
 			ASSERT_EQ(std::get<1>(i->second), 0);
 			ASSERT_EQ(std::get<2>(i->second), 0);
@@ -291,8 +291,8 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	}
 	//Check valid combinations for D_3.
 	for (auto i = D_3.first; i != D_3.second; i++) {
-		combCount++;
-		if (combCount == 2) {
+		comb_count++;
+		if (comb_count == 2) {
 			ASSERT_EQ(std::get<0>(i->second), 1);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 1);
@@ -300,16 +300,16 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	}
 	//Check valid combinations for E_3.
 	for (auto i = E3.first; i != E3.second; i++) {
-		combCount++;
-		if (combCount == 3) {
+		comb_count++;
+		if (comb_count == 3) {
 			ASSERT_EQ(std::get<0>(i->second), 1);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 2);
-		} else if (combCount == 4) {
+		} else if (comb_count == 4) {
 			ASSERT_EQ(std::get<0>(i->second), 1);
 			ASSERT_EQ(std::get<1>(i->second), 2);
 			ASSERT_EQ(std::get<2>(i->second), 1);
-		} else if (combCount == 5) {
+		} else if (comb_count == 5) {
 			ASSERT_EQ(std::get<0>(i->second), 2);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 1);
@@ -317,19 +317,19 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	}
 	//Check valid combinations for As_3.
 	for (auto i = As_3.first; i != As_3.second; i++) {
-		combCount++;
-		if (combCount == 6) {
+		comb_count++;
+		if (comb_count == 6) {
 			ASSERT_EQ(std::get<0>(i->second), 2);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 4);
-		} else if (combCount == 7) {
+		} else if (comb_count == 7) {
 			ASSERT_EQ(std::get<0>(i->second), 2);
 			ASSERT_EQ(std::get<1>(i->second), 2);
 			ASSERT_EQ(std::get<2>(i->second), 3);
 		} 
 	}
 	//Ensure there are no more unchecked combinations.
-	ASSERT_EQ(combCount, 7);
+	ASSERT_EQ(comb_count, 7);
 }
 
 //Check that only allowed strings, hand positions, and finger numbers are used.
@@ -376,17 +376,17 @@ TEST(Action, FiveTupleAction) {
 		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
 		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
 		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
-		int upStroke = std::get<3>(s1) || std::get<3>(s2);
-		float noteDistance = std::abs(std::get<4>(s1) - std::get<4>(s2));
+		int up_stroke = std::get<3>(s1) || std::get<3>(s2);
+		float note_distance = std::abs(std::get<4>(s1) - std::get<4>(s2));
 		float res;
-	       	if (upStroke) {
-			res = (string + hand + finger) * noteDistance;
+	       	if (up_stroke) {
+			res = (string + hand + finger) * note_distance;
 		} else{
 			res = (string + hand + finger);
 		}
 		return std::tuple<bool, float>(true, static_cast<float>(res));
 	};
-	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f, 
+	Action<std::tuple<int, int, int, bool, float>, float> upstroke_distance(d_f, 
 										"UD");
 	std::tuple<int, int, int, bool, float> t1(1, 2, 1, false, 3.0);
 	std::tuple<int, int, int, bool, float> t2(1, 2, 3, false, 7.0);
@@ -394,8 +394,8 @@ TEST(Action, FiveTupleAction) {
 	std::tuple<int, int, int, bool, float> t4(1, 2, 3, false, 7.0);
 	std::tuple<bool, float> d1{true, 2.0};
 	std::tuple<bool, float> d2{true, 8.0};
-	ASSERT_EQ(UpstrokeDistance.distance(t1, t2), d1);
-	ASSERT_EQ(UpstrokeDistance.distance(t3, t4), d2);
+	ASSERT_EQ(upstroke_distance.distance(t1, t2), d1);
+	ASSERT_EQ(upstroke_distance.distance(t3, t4), d2);
 }
 
 class Layer_Tests : public ::testing::Test {
@@ -474,30 +474,30 @@ class ActionSet_Tests : public ::testing::Test {
 	public:
 		ActionSet<in_type, out_type> set;	
 		ActionSet_Tests() {		
-			a_type fingerAction = [] (in_type s1, in_type s2) {
+			a_type finger_action = [] (in_type s1, in_type s2) {
 				out_type finger = 
 					std::max(std::get<2>(s1), std::get<2>(s2))
 					- std::min(std::get<2>(s1), std::get<2>(s2));
 				return std::tuple<bool, out_type>(true, finger);
 			};
 			
-			a_type handAction = [] (in_type s1, in_type s2) {
+			a_type hand_action = [] (in_type s1, in_type s2) {
 				out_type hand = 
 					std::max(std::get<1>(s1), std::get<1>(s2))
 					- std::min(std::get<1>(s1), std::get<1>(s2));
 				return std::tuple<bool, out_type>(true, hand);
 			};
 			
-			a_type stringAction = [] (in_type s1, in_type s2) {
+			a_type string_action = [] (in_type s1, in_type s2) {
 				out_type string = 
 					std::max(std::get<0>(s1), std::get<0>(s2))
 					- std::min(std::get<0>(s1), std::get<0>(s2));
 				return std::tuple<bool, out_type>(true, string);
 			};
 
-			Action<in_type, out_type> f_a(fingerAction, "FA");
-			Action<in_type, out_type> h_a(handAction, "HA");
-			Action<in_type, out_type> s_a(stringAction, "SA");
+			Action<in_type, out_type> f_a(finger_action, "FA");
+			Action<in_type, out_type> h_a(hand_action, "HA");
+			Action<in_type, out_type> s_a(string_action, "SA");
 
 			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
 				{s_a, true}};
@@ -563,42 +563,46 @@ class LayerList_Tests : public ::testing::Test {
 			IString s2(2, Note::G_3, Note::Ds_4);
 			
 			std::vector<IString> sv{s1, s2};
-			NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
+			NoteMapper<in_type>* note_mapper = new BasicNoteMapper(sv);
 
-			Layer<in_type> first(Note::D_3, Duration::Whole, notemap);
-			Layer<in_type> second(Note::Fs_3, Duration::Whole, notemap);
-			Layer<in_type> third(Note::G_3, Duration::Whole, notemap);
-			Layer<in_type> fourth(Note::Cs_4, Duration::Whole, notemap);
+			Layer<in_type> first(Note::D_3, Duration::Whole, 
+									note_mapper);
+			Layer<in_type> second(Note::Fs_3, Duration::Whole, 
+									note_mapper);
+			Layer<in_type> third(Note::G_3, Duration::Whole,
+									note_mapper);
+			Layer<in_type> fourth(Note::Cs_4, Duration::Whole, 
+									note_mapper);
 
 			LayerList<in_type, int> temp_list(first);
 			temp_list.pushBack(second);
 			temp_list.pushBack(third);
 			temp_list.pushBack(fourth);
 
-			a_type fingerAction = [] (in_type s1, in_type s2) {
+			a_type finger_action = [] (in_type s1, in_type s2) {
 				out_type finger = 
 					std::max(std::get<2>(s1), std::get<2>(s2))
 					- std::min(std::get<2>(s1), std::get<2>(s2));
 				return std::tuple<bool, int>{true, finger};
 			};
 			
-			a_type handAction = [] (in_type s1, in_type s2) {
+			a_type hand_action = [] (in_type s1, in_type s2) {
 				out_type hand = 
 					std::max(std::get<1>(s1), std::get<1>(s2))
 					- std::min(std::get<1>(s1), std::get<1>(s2));
 				return std::tuple<bool, int>{true, hand};
 			};
 			
-			a_type stringAction = [] (in_type s1, in_type s2) {
+			a_type string_action = [] (in_type s1, in_type s2) {
 				out_type string = 
 					std::max(std::get<0>(s1), std::get<0>(s2))
 					- std::min(std::get<0>(s1), std::get<0>(s2));
 				return std::tuple<bool, int>{true, string};
 			};
 
-			Action<in_type, out_type> f_a(fingerAction, "FA");
-			Action<in_type, out_type> h_a(handAction, "HA");
-			Action<in_type, out_type> s_a(stringAction, "SA");
+			Action<in_type, out_type> f_a(finger_action, "FA");
+			Action<in_type, out_type> h_a(hand_action, "HA");
+			Action<in_type, out_type> s_a(string_action, "SA");
 
 			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
 				{s_a, true}};
@@ -764,11 +768,11 @@ TEST(GreedySolver, Basic) {
 	IString s3(3, Note::E_3, Note::B_3);
 	
 	std::vector<IString> sv{s1, s2, s3};
-	NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
+	NoteMapper<in_type>* note_mapper = new BasicNoteMapper(sv);
 
-	Layer<in_type> first(Note::C_3, Duration::Whole, notemap);
-	Layer<in_type> second(Note::E_3, Duration::Whole, notemap);
-	Layer<in_type> third(Note::Gs_3, Duration::Whole, notemap);
+	Layer<in_type> first(Note::C_3, Duration::Whole, note_mapper);
+	Layer<in_type> second(Note::E_3, Duration::Whole, note_mapper);
+	Layer<in_type> third(Note::Gs_3, Duration::Whole, note_mapper);
 
 	LayerList<in_type, out_type> l_list({first, second, third});
 

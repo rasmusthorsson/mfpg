@@ -25,22 +25,22 @@ template <class InputTuple, class Output> class LayerList {
 		LayerList() {}
 		LayerList(Layer<InputTuple> l) : elem(l) {}
 		LayerList(NoteList list) : elem(list.front()) {
-			std::list<SimplifiedNote> simpList = list.getNotes();
-			auto it = simpList.begin();
+			std::list<SimplifiedNote> simp_list = list.getNotes();
+			auto it = simp_list.begin();
 			it++;
-			for (it; it != simpList.end(); it++) {
+			for (it; it != simp_list.end(); it++) {
 				Layer<InputTuple>* temp = new Layer<InputTuple>(*it);
 				this->pushBack(*temp);
 			}	
 		}
-		LayerList(NoteList list, NoteMapper<InputTuple>* notemap) : 
-				elem(list.front(), notemap) {
-			std::list<SimplifiedNote> simpList = list.getNotes();
-			auto it = simpList.begin();
+		LayerList(NoteList list, NoteMapper<InputTuple>* note_mapper) : 
+				elem(list.front(), note_mapper) {
+			std::list<SimplifiedNote> simp_list = list.getNotes();
+			auto it = simp_list.begin();
 			it++;
-			for (it; it != simpList.end(); it++) {
+			for (it; it != simp_list.end(); it++) {
 				Layer<InputTuple>* temp = 
-					new Layer<InputTuple>(*it, notemap);
+					new Layer<InputTuple>(*it, note_mapper);
 				this->pushBack(*temp);
 			}	
 		}
@@ -82,13 +82,13 @@ template <class InputTuple, class Output> class LayerList {
 			if (next == NULL) {
 				return 1;
 			}
-			for (InputTuple thisTuple : elem) {
+			for (InputTuple this_tuple : elem) {
 				std::vector<Output> outputs;
-				for (InputTuple nextTuple : next->getElem()) {
+				for (InputTuple next_tuple : next->getElem()) {
 					outputs.push_back(
-						as.apply(thisTuple, nextTuple));
+						as.apply(this_tuple, next_tuple));
 				}
-				transitions.insert({thisTuple, outputs});
+				transitions.insert({this_tuple, outputs});
 			} 
 			return next->buildTransitions(as);
 		}
@@ -99,7 +99,7 @@ template <class InputTuple, class Output> class LayerList {
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
-			using valT = LayerList<InputTuple, Output>;
+			using val_t = LayerList<InputTuple, Output>;
 			using pointer = LayerList<InputTuple, Output>*;
 			using reference = LayerList<InputTuple, Output>&;
 			private:

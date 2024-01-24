@@ -3,14 +3,14 @@
 using namespace std;
 
 //Vector init
-IString::IString(int p, vector<noteenums::Note> n) : position(p), playableNotes(n)
+IString::IString(int p, vector<noteenums::Note> n) : position(p), playable_notes(n)
 {}
 
 //Range init 0 to HIGHEST_NOTE (72)
-IString::IString(int p, int rangeStart, int rangeStop) : position(p), 
-	playableNotes([rangeStart, rangeStop]{
+IString::IString(int p, int range_start, int range_stop) : position(p), 
+	playable_notes([range_start, range_stop]{
 	vector<noteenums::Note> ret;
-	for (int i = rangeStart; i <= rangeStop; i++) {
+	for (int i = range_start; i <= range_stop; i++) {
 		ret.push_back(static_cast<noteenums::Note>(i));
 	}
 	return ret;
@@ -20,7 +20,7 @@ IString::IString(int p, int rangeStart, int rangeStop) : position(p),
 //Note init using note names
 IString::IString(int p, noteenums::Note range_start, noteenums::Note range_stop) 
 									: position(p), 
-	playableNotes([range_start, range_stop]{
+	playable_notes([range_start, range_stop]{
 	vector<noteenums::Note> ret;
 	for (int i = static_cast<int>(range_start); i <= static_cast<int>(range_stop); 
 									i++) {
@@ -35,10 +35,10 @@ int IString::getPosition() const {
 }
 
 vector<noteenums::Note> IString::getPlayable() const {
-	return this->playableNotes;
+	return this->playable_notes;
 }
 
 noteenums::Note IString::getNote(int i) const {
-	return this->playableNotes[i];	
+	return this->playable_notes[i];	
 }
 

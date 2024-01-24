@@ -3,6 +3,7 @@
 
 #include "GraphSolver.h"
 
+//TODO Rewrite completely
 //Temporary version for a greedy solver. This version is completely temporary and 
 //possibly even incorrect, exists only for testing purposes and will be removed/remade
 //eventually.

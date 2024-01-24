@@ -10,7 +10,7 @@
 class IString {
 	private:
 		const int position;
-		const std::vector<noteenums::Note> playableNotes;
+		const std::vector<noteenums::Note> playable_notes;
 	public:
 		IString(int, std::vector<noteenums::Note>);
 		IString(int, int, int);
@@ -20,14 +20,14 @@ class IString {
 		noteenums::Note getNote(int) const;
 
 		std::vector<noteenums::Note>::const_iterator end() const 
-			{return playableNotes.end();}
+			{return playable_notes.end();}
 		std::vector<noteenums::Note>::const_iterator begin() const 
-			{return playableNotes.begin();}
+			{return playable_notes.begin();}
 		std::vector<noteenums::Note>::const_iterator end() {
-			return playableNotes.end();
+			return playable_notes.end();
 		}
 		std::vector<noteenums::Note>::const_iterator begin() {
-			return playableNotes.begin();
+			return playable_notes.begin();
 		}
 };
 #endif

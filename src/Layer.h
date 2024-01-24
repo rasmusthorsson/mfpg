@@ -37,14 +37,14 @@ template<class InputTuple> class Layer {
 		//Attempts to add a node to a layer, if node is already present does 
 		//nothing and returns -1.
 		int addNode(InputTuple n) {
-        		int oldSize = nodes.size();
+        		int old_size = nodes.size();
         		for (auto i = nodes.begin(); i != nodes.end(); i++) {
 				if (n == *i) {
 					return -1;
 				}
 			}
 			nodes.push_back(n);
-        		if (!(nodes.size() == oldSize + 1)) {
+        		if (!(nodes.size() == old_size + 1)) {
         			return -1;
 			}
 			return 1;
@@ -79,9 +79,9 @@ template<class InputTuple> class Layer {
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
-			using valT = InputTuple;
-			using pointer = valT*;
-			using reference = valT&;
+			using val_t = InputTuple;
+			using pointer = val_t*;
+			using reference = val_t&;
 			private:
 				pointer ptr;
 			public:

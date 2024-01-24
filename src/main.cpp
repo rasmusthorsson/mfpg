@@ -55,7 +55,7 @@ int main (int argc, char *argv[]) {
 	const auto documentID = mgr.createFromStream(istr);
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
-	NoteList noteList(score);
+	NoteList note_list(score);
 
 //---------------------- Instrument creation ----------------------------
 
@@ -121,7 +121,7 @@ int main (int argc, char *argv[]) {
 
 //-------------------------- Graph building/solving -------------------------
 
-	LayerList<Real_Rep_Tuple, Cost> list(noteList, violin.getNoteMapper());	
+	LayerList<Real_Rep_Tuple, Cost> list(note_list, violin.getNoteMapper());
 	list.buildTransitions(violin.getActionSet());
 	
 	GraphSolver<Real_Rep_Tuple, Cost>* solver = new GreedySolver();

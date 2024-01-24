@@ -17,15 +17,15 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 	typedef std::tuple<bool, OutputValue> (*distfun)(InputTuple, InputTuple);
 	private:
 		std::string ID;
-		distfun distFun;
+		distfun dist_fun;
 	public:
 		//Keep in header file for compilation reasons.
 		Action(distfun fun, std::string name) : ID(name) {
-			distFun = fun;
+			dist_fun = fun;
 		} 
 		std::tuple<bool, OutputValue> distance(InputTuple s1, InputTuple s2) 
 			const {
-			return distFun(s1, s2);
+			return dist_fun(s1, s2);
 		}
 		std::string getID() {
 			return ID;

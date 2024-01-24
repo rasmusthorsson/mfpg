@@ -36,11 +36,11 @@ Note MXConverter::ConvertNote(mx::api::NoteData n) {
 		default:
 			throw ConversionException("Note not found.", n); 
 	}
-	int simpNote = base + n.pitchData.octave * 12 + n.pitchData.alter;
-	if (simpNote > HIGHEST_NOTE || simpNote < 0) {
+	int simp_note = base + n.pitchData.octave * 12 + n.pitchData.alter;
+	if (simp_note > HIGHEST_NOTE || simp_note < 0) {
 		throw ConversionException("Note out of range.", n); 
 	}
-	return static_cast<Note>(simpNote);
+	return static_cast<Note>(simp_note);
 }
 
 //Basic conversion between mx durations to noteenum durations.

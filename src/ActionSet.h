@@ -24,25 +24,25 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		//Check whether an action is to be taken or not with respect to the
 		//dependencies in the dependencies multimap, the default action in the 
 		//action set, and with the previous actions already taken.
-		bool checkAction(std::string actionName, bool _default, 
-					std::vector<std::string> previousActions) {
+		bool checkAction(std::string action_name, bool _default, 
+					std::vector<std::string> previous_actions) {
 			std::vector<bool> bools;
 			//for loop Iterates through each dependency for the action to 
 			//be performed.
-			for (auto depItr = dependencies.find(actionName); 
-					depItr != dependencies.end();
-					depItr++) {
+			for (auto dep_itr = dependencies.find(action_name); 
+					dep_itr != dependencies.end();
+					dep_itr++) {
 				//For each dependency, check whether the depended 
 				//action has occured in the previousActions list.
-				if (find(previousActions.begin(),
-					      previousActions.end(),
-					      std::get<0>(depItr->second)) !=
-					      previousActions.end()) {
+				if (find(previous_actions.begin(),
+					      previous_actions.end(),
+					      std::get<0>(dep_itr->second)) !=
+					      previous_actions.end()) {
 
 					//If the depended action has occured, add the 
 					//boolean adjustment to the list of bools to be
 					//checked later.
-					bools.push_back(std::get<1>(depItr->second));
+					bools.push_back(std::get<1>(dep_itr->second));
 				}
 			}
 			bool ret = _default;
@@ -90,9 +90,9 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			for (std::tuple<Action<InputTuple, OutputValue>, bool> a : 
 									actions) 
 			{
-				if (checkAction(std::get<0>(a).getID(), std::get<1>(a),
-										taken) 
-				  && std::get<0>(std::get<0>(a).distance(n1, n2))) 
+				if (checkAction(std::get<0>(a).getID(), 
+				   std::get<1>(a),taken) 
+				   && std::get<0>(std::get<0>(a).distance(n1, n2))) 
 				{
 					output = output + std::get<1>(std::get<0>(a)
 								.distance(n1, n2));

@@ -9,10 +9,10 @@
 class NoteList {
 	private:
 		std::list<SimplifiedNote> notes;
-		void loadNotes(mx::api::ScoreData score);
+		void loadNotes(mx::api::ScoreData);
 	public:
 		NoteList() {};
-		NoteList(mx::api::ScoreData score);
+		NoteList(mx::api::ScoreData);
 		int size();
 		SimplifiedNote front();
 		void popFront();
