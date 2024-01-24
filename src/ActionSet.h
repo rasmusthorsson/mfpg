@@ -7,8 +7,6 @@
 #include <cstddef>
 #include <map>
 
-using namespace std;
-
 //Class for a set of actions to be considered when calculating the transition between
 //two states, each action is considered individually for the state transition but 
 //is only executed if there are no dependencies preventing it from doing so (as 
@@ -17,18 +15,18 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
-		vector<tuple<Action<InputTuple, OutputValue>, bool>> actions;
+		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> actions;
 
 		//Multimap of dependencies, the key is the dependency, the values
 		//are the dependent actions with the boolean adjustment as a tuple.
-		multimap<string, tuple<string, bool>> dependencies;
+		std::multimap<std::string, std::tuple<std::string, bool>> dependencies;
 
 		//Check whether an action is to be taken or not with respect to the
 		//dependencies in the dependencies multimap, the default action in the 
 		//action set, and with the previous actions already taken.
-		bool checkAction(string actionName, bool _default, 
-					vector<string> previousActions) {
-			vector<bool> bools;
+		bool checkAction(std::string actionName, bool _default, 
+					std::vector<std::string> previousActions) {
+			std::vector<bool> bools;
 			//for loop Iterates through each dependency for the action to 
 			//be performed.
 			for (auto depItr = dependencies.find(actionName); 
@@ -38,13 +36,13 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 				//action has occured in the previousActions list.
 				if (find(previousActions.begin(),
 					      previousActions.end(),
-					      get<0>(depItr->second)) !=
+					      std::get<0>(depItr->second)) !=
 					      previousActions.end()) {
 
 					//If the depended action has occured, add the 
 					//boolean adjustment to the list of bools to be
 					//checked later.
-					bools.push_back(get<1>(depItr->second));
+					bools.push_back(std::get<1>(depItr->second));
 				}
 			}
 			bool ret = _default;
@@ -61,12 +59,12 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}	
 	public:
 		ActionSet() {};
-		ActionSet(vector<tuple<Action<InputTuple, OutputValue>, 
+		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, 
 				bool>> as) : actions(as) {}
 		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
 			addAction(a, b);
 		}
-		ActionSet(initializer_list<tuple<Action<InputTuple, 
+		ActionSet(std::initializer_list<std::tuple<Action<InputTuple, 
 							OutputValue>, bool>> as) {
 			for (auto a : as) {
 				actions.push_back(a);
@@ -74,38 +72,40 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}	
 
 		void addAction(Action<InputTuple, OutputValue> a, bool b) {
-			tuple<Action<InputTuple, OutputValue>, bool> t(a, b);
+			std::tuple<Action<InputTuple, OutputValue>, bool> t(a, b);
 			actions.push_back(t);
 		}
-		void addDependency(string dependent, string dependency, 
+		void addDependency(std::string dependent, std::string dependency, 
 								bool adjustment) {
-			tuple<string, bool> dep = {dependency, adjustment};
+			std::tuple<std::string, bool> dep = {dependency, adjustment};
 			dependencies.insert({dependent, dep});
 		}	
 	
 		//Applies the actionset to two tuples; n1 to n2.	
 		OutputValue apply(InputTuple n1, InputTuple n2) {
 			OutputValue output = {}; //output must be zero-initializable
-			vector<string> taken = {};
+			std::vector<std::string> taken = {};
 			//For each action, check whether it should run, then calculate
 			//distance to cumulatively add to the output.
-			for (tuple<Action<InputTuple, OutputValue>, bool> a : actions) 
+			for (std::tuple<Action<InputTuple, OutputValue>, bool> a : 
+									actions) 
 			{
-				if (checkAction(get<0>(a).getID(), get<1>(a), taken) 
-				  && get<0>(get<0>(a).distance(n1, n2))) 
+				if (checkAction(std::get<0>(a).getID(), std::get<1>(a),
+										taken) 
+				  && std::get<0>(std::get<0>(a).distance(n1, n2))) 
 				{
-					output = output + get<1>(get<0>(a)
+					output = output + std::get<1>(std::get<0>(a)
 								.distance(n1, n2));
-					taken.push_back(get<0>(a).getID());
+					taken.push_back(std::get<0>(a).getID());
 				}	
 			}
 			return output;	
 		}
-		vector<tuple<Action<InputTuple, OutputValue>, bool>>
+		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>>
 								getActions() {
 				return actions;
 		}
-		multimap<string, tuple<string, bool>> 
+		std::multimap<std::string, std::tuple<std::string, bool>> 
 								getDependencies() {
 			return dependencies;
 		}
