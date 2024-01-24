@@ -23,6 +23,8 @@ using namespace noteenums;
 using namespace std;
 
 int main (int argc, char *argv[]) {
+
+//-------------------------------- Input/Arguments -------------------------
 	if (argc < 2) {
 		cout << "Please specify an input MusicXML file.\n";
 		return -1;
@@ -43,6 +45,8 @@ int main (int argc, char *argv[]) {
 		sheet_music = sheet_music + "\n" + buffer;
 	}
 
+//------------------------- MX conversion --------------------------------
+
 	using namespace mx::api;
 
 	auto& mgr = DocumentManager::getInstance();
@@ -53,55 +57,57 @@ int main (int argc, char *argv[]) {
 	mgr.destroyDocument(documentID);
 	NoteList noteList(score);
 
-	using in_type = std::tuple<int, int, int>;
-	using out_type = int;
-	
-	typedef std::tuple<bool, out_type> (*action_type) (in_type, in_type);
+//---------------------- Instrument creation ----------------------------
 
-	IString G_s(1, Note::Gs_3, Note::Gs_5);
-	IString D_s(2, Note::Ds_4, Note::Ds_6);
-	IString A_s(3, Note::As_4, Note::As_6);
-	IString E_s(4, Note::F_4, Note::F_6);
+	using Real_Rep_Tuple = std::tuple<int, int, int>;
+	using Cost = int;
+	
+	typedef std::tuple<bool, Cost> (*action_type) (Real_Rep_Tuple, Real_Rep_Tuple);
+
+	IString G_s(1, Note::G_3, Note::Gs_5);
+	IString D_s(2, Note::D_4, Note::Ds_6);
+	IString A_s(3, Note::A_4, Note::As_6);
+	IString E_s(4, Note::E_4, Note::F_6);
 	
 	std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
-	NoteMapper<in_type>* note_mapper = new BasicNoteMapper{G_s, D_s, A_s, E_s};
+	NoteMapper<Real_Rep_Tuple>* note_mapper = new BasicNoteMapper(strings);
 
-	action_type HP_action = [] (in_type t1, in_type t2) {
+	action_type HP_action = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
 		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
-		return std::tuple<bool, out_type>{true, out};
+		return std::tuple<bool, Cost>{true, out};
 	};
-	action_type finger_action = [] (in_type t1, in_type t2) {
+	action_type finger_action = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
 		int out = std::abs(std::get<2>(t1) - std::get<2>(t2));
-		return std::tuple<bool, out_type>{true, out};
+		return std::tuple<bool, Cost>{true, out};
 	};
-	action_type string_action_no_rest = [] (in_type t1, in_type t2) {
+	action_type string_action_no_rest = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
 		int out = 0;
 		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {
 			out = out + 100;
 		} else {
 			out = out + std::abs(std::get<0>(t1) - std::get<0>(t2));
 		}
-		return std::tuple<bool, out_type>{true, out};
+		return std::tuple<bool, Cost>{true, out};
 	};
-	action_type string_action_rest = [] (in_type t1, in_type t2) {
+	action_type string_action_rest = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
 		int out = std::abs(std::get<0>(t1) - std::get<0>(t2));
-		return std::tuple<bool, out_type>{true, out};
+		return std::tuple<bool, Cost>{true, out};
 	};
-	action_type rest = [] (in_type t1, in_type t2) {
-		if (t1 == in_type{0, 0, 0} || t2 == in_type{0, 0, 0}) {
-			return std::tuple<bool, out_type>{true, 0};
+	action_type rest = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
+		if (t1 == Real_Rep_Tuple{0, 0, 0} || t2 == Real_Rep_Tuple{0, 0, 0}) {
+			return std::tuple<bool, Cost>{true, 0};
 		}
-		return std::tuple<bool, out_type>{false, 0};
+		return std::tuple<bool, Cost>{false, 0};
 	};
 
-	Action<in_type, out_type> r(rest, "rest"); 
-	Action<in_type, out_type> s_a_NR(string_action_no_rest, 
+	Action<Real_Rep_Tuple, Cost> r(rest, "rest"); 
+	Action<Real_Rep_Tuple, Cost> s_a_NR(string_action_no_rest, 
 							"string_action_no_rest");
-	Action<in_type, out_type> s_a_R(string_action_rest, "string_action_rest");
-	Action<in_type, out_type> f_a(finger_action, "finger_action");
-	Action<in_type, out_type> hp_a(HP_action, "hand_position_action");
-	ActionSet<in_type, out_type> action_set({
+	Action<Real_Rep_Tuple, Cost> s_a_R(string_action_rest, "string_action_rest");
+	Action<Real_Rep_Tuple, Cost> f_a(finger_action, "finger_action");
+	Action<Real_Rep_Tuple, Cost> hp_a(HP_action, "hand_position_action");
+	ActionSet<Real_Rep_Tuple, Cost> action_set({
 						{r, true},
 						{s_a_NR, true},
 						{s_a_R, false}, 
@@ -111,15 +117,19 @@ int main (int argc, char *argv[]) {
 	action_set.addDependency("string_action_no_rest", "rest", false);
 	action_set.addDependency("string_action_rest", "rest", true);
 	
-	Instrument<in_type, out_type> violin(strings, note_mapper, action_set);
+	Instrument<Real_Rep_Tuple, Cost> violin(strings, note_mapper, action_set);
 
-	LayerList<in_type, out_type> list(noteList, violin.getNoteMapper());	
+//-------------------------- Graph building/solving -------------------------
+
+	LayerList<Real_Rep_Tuple, Cost> list(noteList, violin.getNoteMapper());	
 	list.buildTransitions(violin.getActionSet());
 	
-	GraphSolver<in_type, out_type>* solver = new GreedySolver();
+	GraphSolver<Real_Rep_Tuple, Cost>* solver = new GreedySolver();
 	solver->solve(list);
+
+//------------------------------ Output ----------------------------------
+
 	int count = 1;
-	
 	//TODO Fix ties
 	for (auto sol : solver->getSolution()) {
 		std::cout << "Note number: " << count << "\n";
@@ -132,10 +142,6 @@ int main (int argc, char *argv[]) {
 			  << "------------------------------------" << "\n";
 		count++;
 	}
-	//TODO Complete instrument
-	//given an instrument and a notelist, construct a valid and optimal position 
-	//graph corresponding to the notelist.
-
 	return 1;
 
 }

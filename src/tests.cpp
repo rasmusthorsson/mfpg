@@ -208,10 +208,10 @@ TEST(NoteList, OrderPreserved) {
 	notes.popFront();
 }
 
-class NoteMapper_Tests : public ::testing::Test {
+class BasicNoteMapper_Tests : public ::testing::Test {
 	private:
-		//Creates two strings with 9 playable notes each, the strings overlap on 
-		//three notes.
+		//Creates two strings with 9 playable notes each, the strings overlap 
+		//on three notes.
 		std::pair<IString, IString> createStrings() {
 			using namespace std;
 			using namespace noteenums;
@@ -227,16 +227,17 @@ class NoteMapper_Tests : public ::testing::Test {
 			Note A(Note::A_3);
 			Note A_s(Note::As_3);
 			Note B(Note::B_3);
+			Note C2(Note::C_4);
 			std::vector<Note> 
-				notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s};
+				notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s, D_s};
 			std::vector<Note> 
-				notes_2{D_s, E, F, F_s, G, G_s, A, A_s, B};
+				notes_2{D_s, E, F, F_s, G, G_s, A, A_s, B, C2};
 			IString s1(1, notes_1);
 			IString s2(2, notes_2);
 			return make_pair(s1, s2);
 		}
 	public:
-	       	NoteMapper_Tests() : s1(createStrings().first), s2(createStrings().second) {}
+	       	BasicNoteMapper_Tests() : s1(createStrings().first), s2(createStrings().second) {}
 		const IString s1;
 		const IString s2;
 
@@ -244,7 +245,7 @@ class NoteMapper_Tests : public ::testing::Test {
 
 //Tests that the basic notemapper returns the correct amount of notes and amount of combinations
 //according to the specifications.
-TEST_F(NoteMapper_Tests, ValidNotes) {
+TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;	
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
@@ -263,18 +264,19 @@ TEST_F(NoteMapper_Tests, ValidNotes) {
 			<< " Finger: " 
 			<< std::get<2>(elem.second) << "\n";
 	}
-	ASSERT_EQ(noteCount, 13);
-	ASSERT_EQ(map->size(), 31);
+	ASSERT_EQ(noteCount, 14);
+	ASSERT_EQ(map->size(), 33);
 }
 
-//Verify that all combinations constructed for 3 notes in the notemapper are the valid combinations
-//for those notes.
-TEST_F(NoteMapper_Tests, SampleTests) {
+//Verify that all combinations constructed for 4 notes in the notemapper are the 
+//valid combinations for those notes.
+TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
 	auto C3 = map->getRange(Note::C_3);
+	auto D_3 = map->getRange(Note::D_3);
 	auto E3 = map->getRange(Note::E_3);
 	auto As_3 = map->getRange(Note::As_3);
 	int combCount = 0;
@@ -283,6 +285,15 @@ TEST_F(NoteMapper_Tests, SampleTests) {
 		combCount++;
 		if (combCount == 1) {
 			ASSERT_EQ(std::get<0>(i->second), 1);
+			ASSERT_EQ(std::get<1>(i->second), 0);
+			ASSERT_EQ(std::get<2>(i->second), 0);
+		}
+	}
+	//Check valid combinations for D_3.
+	for (auto i = D_3.first; i != D_3.second; i++) {
+		combCount++;
+		if (combCount == 2) {
+			ASSERT_EQ(std::get<0>(i->second), 1);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 1);
 		}
@@ -290,15 +301,15 @@ TEST_F(NoteMapper_Tests, SampleTests) {
 	//Check valid combinations for E_3.
 	for (auto i = E3.first; i != E3.second; i++) {
 		combCount++;
-		if (combCount == 2) {
+		if (combCount == 3) {
 			ASSERT_EQ(std::get<0>(i->second), 1);
 			ASSERT_EQ(std::get<1>(i->second), 1);
-			ASSERT_EQ(std::get<2>(i->second), 3);
-		} else if (combCount == 3) {
-			ASSERT_EQ(std::get<0>(i->second), 1);
-			ASSERT_EQ(std::get<1>(i->second), 2);
 			ASSERT_EQ(std::get<2>(i->second), 2);
 		} else if (combCount == 4) {
+			ASSERT_EQ(std::get<0>(i->second), 1);
+			ASSERT_EQ(std::get<1>(i->second), 2);
+			ASSERT_EQ(std::get<2>(i->second), 1);
+		} else if (combCount == 5) {
 			ASSERT_EQ(std::get<0>(i->second), 2);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 1);
@@ -307,22 +318,22 @@ TEST_F(NoteMapper_Tests, SampleTests) {
 	//Check valid combinations for As_3.
 	for (auto i = As_3.first; i != As_3.second; i++) {
 		combCount++;
-		if (combCount == 5) {
+		if (combCount == 6) {
 			ASSERT_EQ(std::get<0>(i->second), 2);
 			ASSERT_EQ(std::get<1>(i->second), 1);
 			ASSERT_EQ(std::get<2>(i->second), 4);
-		} else if (combCount == 6) {
+		} else if (combCount == 7) {
 			ASSERT_EQ(std::get<0>(i->second), 2);
 			ASSERT_EQ(std::get<1>(i->second), 2);
 			ASSERT_EQ(std::get<2>(i->second), 3);
 		} 
 	}
 	//Ensure there are no more unchecked combinations.
-	ASSERT_EQ(combCount, 6);
+	ASSERT_EQ(combCount, 7);
 }
 
 //Check that only allowed strings, hand positions, and finger numbers are used.
-TEST_F(NoteMapper_Tests, ValidPosition) {
+TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	using namespace noteenums;
 	using namespace mx::api;
 	using namespace testing;
@@ -332,8 +343,8 @@ TEST_F(NoteMapper_Tests, ValidPosition) {
 	for (auto i = map->begin(); i != map->end(); i++) {
 		if (i->first != Note::REST) {
 			ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
-			ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(0)));
-			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(0)));
+			ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(-1)));
+			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(-1)));
 		} else {
 			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(1), Gt(-1)));
 		}
@@ -375,7 +386,8 @@ TEST(Action, FiveTupleAction) {
 		}
 		return std::tuple<bool, float>(true, static_cast<float>(res));
 	};
-	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f, "UD");
+	Action<std::tuple<int, int, int, bool, float>, float> UpstrokeDistance(d_f, 
+										"UD");
 	std::tuple<int, int, int, bool, float> t1(1, 2, 1, false, 3.0);
 	std::tuple<int, int, int, bool, float> t2(1, 2, 3, false, 7.0);
 	std::tuple<int, int, int, bool, float> t3(1, 2, 1, true, 3.0);
@@ -605,54 +617,58 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 	}
 	ASSERT_EQ(count, 4);
 	auto l_it = list.begin();
-	ASSERT_EQ(l_it++->getSize(), 2);
+	ASSERT_EQ(l_it++->getSize(), 1);
 	ASSERT_EQ(l_it++->getSize(), 3);
 	ASSERT_EQ(l_it++->getSize(), 4);
-	ASSERT_EQ(l_it++->getSize(), 2);
+	ASSERT_EQ(l_it++->getSize(), 1);
 }
 
 TEST_F(LayerList_Tests, Transitions) {
 	auto l_it = list.begin();
-	//D_3 = {1, 1, 2}, {1, 2, 1}
 	//Outputs 
-	std::vector<int> outputs = {2, 2, 2, 4, 2, 2, 
-					0, 2, 4, 4, 2, 0, 2, 4, 4, 2, 0, 4,
-					1, 3, 3, 1, 5, 3, 3, 3};
+	std::vector<int> outputs = {2, 2, 2, 
+				    1, 1, 3, 5, 3, 1, 1, 5, 5, 3, 1, 5,
+				    2, 2, 4, 4};
 	int count = 0;
+	//D_3 = {1, 1, 1}
 	for (auto transition : l_it->getTransitions()) {
 		std::cout << std::get<0>(transition.first) << ", ";
 		std::cout << std::get<1>(transition.first) << ", ";
 		std::cout << std::get<2>(transition.first) << "\n";
 		for (auto output : transition.second) {
+			std::cout << "Count: " << count << "\nOutput D -> Fs: " << 
+								output << "\n";
 			ASSERT_EQ(output, outputs[count]);
-			std::cout << output << "\n";
 			count++;
 		}
 	}
 	l_it++;
-	//Fs_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}
+	//Fs_3 = {1, 1, 3}, {1, 2, 2}, {1, 3, 1}
 	for (auto transition : l_it->getTransitions()) {
 		std::cout << std::get<0>(transition.first) << ", ";
 		std::cout << std::get<1>(transition.first) << ", ";
 		std::cout << std::get<2>(transition.first) << "\n";
 		for (auto output : transition.second) {
+			std::cout << "Count: " << count << "\nOutput Fs -> G: " << 
+								output << "\n";
 			ASSERT_EQ(output, outputs[count]);
-			std::cout << output << "\n";
 			count++;
 		}
 	}
 	l_it++;
-	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 1, 1}
+	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 0, 0}
 	for (auto transition : l_it->getTransitions()) {
 		std::cout << std::get<0>(transition.first) << ", ";
 		std::cout << std::get<1>(transition.first) << ", ";
 		std::cout << std::get<2>(transition.first) << "\n";
 		for (auto output : transition.second) {
+			std::cout << "Count: " << count << "\nOutput G -> Cs: " << 
+								output << "\n";
 			ASSERT_EQ(output, outputs[count]);
-			std::cout << output << "\n";
 			count++;
 		}
 	}
+	//Cs_4 = {2, 1, 3}
 }
 
 TEST(LayerList, FromNoteList) {
@@ -743,9 +759,9 @@ TEST(GreedySolver, Basic) {
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
 	
-	IString s1(1, Note::C_3, Note::Fs_3);
-	IString s2(2, Note::D_3, Note::Gs_3);
-	IString s3(3, Note::E_3, Note::As_3);
+	IString s1(1, Note::C_3, Note::G_3);
+	IString s2(2, Note::D_3, Note::A_3);
+	IString s3(3, Note::E_3, Note::B_3);
 	
 	std::vector<IString> sv{s1, s2, s3};
 	NoteMapper<in_type>* notemap = new BasicNoteMapper(sv);
@@ -771,13 +787,17 @@ TEST(GreedySolver, Basic) {
 	ActionSet<in_type, out_type> set({a1, true});
 	l_list.buildTransitions(set);
 
-	solver->solve(l_list);
+	solver->solve(l_list); //TODO Add exception for unsolvable graph?
 
-	in_type sol_1({1, 1, 1});
-	in_type sol_2({2, 1, 2});
-	in_type sol_3({3, 1, 3});
+	//C_3 = {1, 0, 0}
+	//E_3 = {2, 1, 1}, {3, 0, 0}
+	//Gs_3 = {3, 1, 3}, {3, 1, 2}
 
-	int cost_1 = 2;
+	in_type sol_1({1, 0, 0});
+	in_type sol_2({2, 1, 1});
+	in_type sol_3({3, 1, 2});
+
+	int cost_1 = 3;
 	int cost_2 = 2;
 	int cost_3 = -1;
 
