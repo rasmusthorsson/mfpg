@@ -3,15 +3,25 @@
 
 #include "ActionSet.h"
 
-template <class StateTuple, OutputViable Weight> class Instrument {
+template <class StateTuple, OutputViable Cost> class Instrument {
 	private:
-		ActionSet<StateTuple, Weight> actions;
-		NoteMapper<StateTuple>* notemapper;
 		std::vector<IString> strings;
+		NoteMapper<StateTuple>* note_mapper;
+		ActionSet<StateTuple, Cost> action_set;
 	public:
 		Instrument() {}
-		Instrument(ActionSet<StateTuple, Weight> as, 
-				NoteMapper<StateTuple>* nm, std::vector<IString> sv) : 
-			actions(as), notemapper(nm), strings(sv) {}
+		Instrument(std::vector<IString> sv, NoteMapper<StateTuple>* nm, 
+					ActionSet<StateTuple, Cost> as) : 
+			action_set(as), note_mapper(nm), strings(sv) {}
+
+		ActionSet<StateTuple, Cost> getActionSet(){
+			return action_set;
+		};
+		NoteMapper<StateTuple>* getNoteMapper() {
+			return note_mapper;
+		};
+		std::vector<IString> getStrings() {
+			return strings;
+		};
 };
 #endif

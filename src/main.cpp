@@ -11,6 +11,7 @@
 #include "NoteMapper.h"
 #include "GraphSolver.h"
 #include "GreedySolver.h"
+#include "Instrument.h"
 
 #include <iostream>
 #include <string>
@@ -57,12 +58,14 @@ int main (int argc, char *argv[]) {
 	
 	typedef std::tuple<bool, out_type> (*action_type) (in_type, in_type);
 
-	IString s1(1, Note::Gs_3, Note::Gs_5);
-	IString s2(2, Note::Ds_4, Note::Ds_6);
-	IString s3(3, Note::As_4, Note::As_6);
-	IString s4(4, Note::F_4, Note::F_6);
-		
-	NoteMapper<in_type>* mapper = new BasicNoteMapper{s1, s2, s3, s4};
+	IString G_s(1, Note::Gs_3, Note::Gs_5);
+	IString D_s(2, Note::Ds_4, Note::Ds_6);
+	IString A_s(3, Note::As_4, Note::As_6);
+	IString E_s(4, Note::F_4, Note::F_6);
+	
+	std::vector<IString> strings{G_s, D_s, A_s, E_s};
+
+	NoteMapper<in_type>* note_mapper = new BasicNoteMapper{G_s, D_s, A_s, E_s};
 
 	action_type HP_action = [] (in_type t1, in_type t2) {
 		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
@@ -107,9 +110,11 @@ int main (int argc, char *argv[]) {
 						});
 	action_set.addDependency("string_action_no_rest", "rest", false);
 	action_set.addDependency("string_action_rest", "rest", true);
+	
+	Instrument<in_type, out_type> violin(strings, note_mapper, action_set);
 
-	LayerList<in_type, out_type> list(noteList, mapper);	
-	list.buildTransitions(action_set);
+	LayerList<in_type, out_type> list(noteList, violin.getNoteMapper());	
+	list.buildTransitions(violin.getActionSet());
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
 	solver->solve(list);
