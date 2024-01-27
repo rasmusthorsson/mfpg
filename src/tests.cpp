@@ -8,13 +8,18 @@
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
 	using namespace mx::api;
-	NoteData note = NoteData{};
-	note.durationData.durationName = DurationName::whole;
-	note.pitchData.step = Step::d;
-	note.pitchData.octave = 3;
-	note.pitchData.alter = 1;
-	SimplifiedNote simple_note(note);
-	EXPECT_EQ(noteenums::Note::Ds_3, simple_note.getNote());
+	using namespace noteenums;
+	NoteData note_ds_3 = NoteData{};
+	note_ds_3.durationData.durationName = DurationName::whole;
+	note_ds_3.pitchData.step = Step::d;
+	note_ds_3.pitchData.octave = 3;
+	note_ds_3.pitchData.alter = 1;
+	SimplifiedNote simple_note_ds_3(note_ds_3);
+	SimplifiedNote simple_note_c_4;
+	SimplifiedNote simple_note_f_3(Note::F_3, Duration::Whole);
+	EXPECT_EQ(Note::Ds_3, simple_note_ds_3.getNote());
+	EXPECT_EQ(Note::C_4, simple_note_c_4.getNote());
+	EXPECT_EQ(Note::F_3, simple_note_f_3.getNote());
 }
 
 //Tests construction of a note higher than the allowed range of notes.
@@ -61,7 +66,8 @@ TEST(SimplifiedNote, Undefined) {
 	}
 }
 
-//Assert that all notes added to a string are in the same order as the vector used to add them.
+//Assert that all notes added to a string are in the same order as the vector used to 
+//add them and that the notes on the string are the same.
 TEST(IString, SpecifiedNotes) {
 	using namespace noteenums;
 	Note C(Note::C_3);
@@ -118,7 +124,7 @@ TEST(IString, RangedNotes) {
 	}
 }
 
-//Tests an empty NoteList is the result of an empty score.
+//Tests that an empty NoteList is the result of an empty score.
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
 	ScoreData score = ScoreData{};
@@ -126,7 +132,8 @@ TEST(NoteList, Undefined) {
 	ASSERT_EQ(note_list.size(), 0);
 }
 
-//Test to make sure notes preserve their order when placed into a notelist from a score.
+//Test to make sure notes preserve their order when placed into a notelist from a 
+//score.
 TEST(NoteList, OrderPreserved) {
 	using namespace noteenums;
 	using namespace mx::api;
@@ -210,7 +217,7 @@ TEST(NoteList, OrderPreserved) {
 
 class BasicNoteMapper_Tests : public ::testing::Test {
 	private:
-		//Creates two strings with 9 playable notes each, the strings overlap 
+		//Creates two strings with 10 playable notes each, the strings overlap 
 		//on three notes.
 		std::pair<IString, IString> createStrings() {
 			using namespace std;
@@ -237,32 +244,29 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 			return make_pair(s1, s2);
 		}
 	public:
-	       	BasicNoteMapper_Tests() : s1(createStrings().first), s2(createStrings().second) {}
+	       	BasicNoteMapper_Tests() : s1(createStrings().first), 
+					  s2(createStrings().second) {}
 		const IString s1;
 		const IString s2;
 
 };
 
-//Tests that the basic notemapper returns the correct amount of notes and amount of combinations
-//according to the specifications.
+//Tests that the basic notemapper returns the correct amount of notes and amount of 
+//combinations according to the specifications.
 TEST_F(BasicNoteMapper_Tests, ValidNotes) {
-        using namespace noteenums;	
+        using namespace noteenums;
 	std::vector<IString> strings = {s1, s2};
 	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
 	int note_count = 0;
-	for (auto i = map->begin(), end = map->end(); i != end; 
-			i = map->getUpper(i->first)) {
+	for (auto i = map->begin(), end = map->end(); i != end;
+		  i = map->getUpper(i->first)) {
 		note_count++;
 	}
 	for (auto elem : map->getMap()) {
 		std::cout << "Note: " << elem.first << "\n";
-		std::cout 
-			<< "String: " 
-			<< std::get<0>(elem.second) 
-			<< " HP: " 
-			<< std::get<1>(elem.second) 
-			<< " Finger: " 
-			<< std::get<2>(elem.second) << "\n";
+		std::cout << "String: " << std::get<0>(elem.second)
+			<< " HP: " << std::get<1>(elem.second)
+			<< " Finger: " << std::get<2>(elem.second) << "\n";
 	}
 	ASSERT_EQ(note_count, 14);
 	ASSERT_EQ(map->size(), 33);
@@ -273,8 +277,7 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
-	std::vector<IString> strings = {s1, s2};
-	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
+	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper({s1, s2});
 	auto C3 = map->getRange(Note::C_3);
 	auto D_3 = map->getRange(Note::D_3);
 	auto E3 = map->getRange(Note::E_3);
@@ -445,7 +448,8 @@ TEST_F(Layer_Tests, BasicLayer) {
 	ASSERT_EQ(l.getSize(), 2);
 }
 
-//Adding duplicate node results in -1.
+//Adding duplicate node results in -1 and fails to add the second node while retaining
+//first node.
 TEST_F(Layer_Tests, AddSameNodeTwice) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
@@ -454,9 +458,11 @@ TEST_F(Layer_Tests, AddSameNodeTwice) {
 	ret second{1, 1, 1};
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.addNode(second), -1);
+	ASSERT_EQ(l.getSize(), 1);
+	ASSERT_EQ(l.getNodes()[0], first);
 }
 
-//Failure to remove non-existant node returns -1.
+//Failure to remove non-existant node returns -1 and retains first node.
 TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
@@ -465,6 +471,8 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	ret second{2, 2, 2};
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.removeNode(second), -1);
+	ASSERT_EQ(l.getSize(), 1);
+	ASSERT_EQ(l.getNodes()[0], first);
 }
 
 class ActionSet_Tests : public ::testing::Test {
@@ -530,7 +538,7 @@ TEST_F(ActionSet_Tests, CorrectDistance) {
 	ASSERT_EQ(set.apply(f2, s2), 3);
 }
 
-//Check that dependencies accurately disable actions and cannot re-enable them.
+//Check that dependencies correctly disable actions and cannot re-enable them.
 TEST_F(ActionSet_Tests, Dependencies) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 	set.addDependency("HA", "FA", false);
@@ -543,13 +551,9 @@ TEST_F(ActionSet_Tests, Dependencies) {
 	ASSERT_EQ(set.apply(f1, s1), 1);	
 }
 
-
-//Creates a LayerList of 4 layers corresponding to a sequence of notes combined with a basic 
-//notemapper, then verifies that the layerlist does indeed contain all layers and that all
-//layers have the correct amount of nodes.
-
-//TODO Optimize object creations.
-
+//Creates a LayerList of 4 layers corresponding to a sequence of notes combined with 
+//a basic notemapper, then verifies that the layerlist does indeed contain all layers 
+//and that all layers have the correct amount of nodes.
 class LayerList_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
@@ -562,8 +566,8 @@ class LayerList_Tests : public ::testing::Test {
 			IString s1(1, Note::C_3, Note::B_3);
 			IString s2(2, Note::G_3, Note::Ds_4);
 			
-			std::vector<IString> sv{s1, s2};
-			NoteMapper<in_type>* note_mapper = new BasicNoteMapper(sv);
+			NoteMapper<in_type>* note_mapper = 
+						new BasicNoteMapper({s1, s2});
 
 			Layer<in_type> first(Note::D_3, Duration::Whole, 
 									note_mapper);
@@ -614,6 +618,8 @@ class LayerList_Tests : public ::testing::Test {
 		LayerList_Tests() : list(BuildLayerList()) {}
 };
 
+//Verifies that the list contains all layers and the layers have the correct amount
+//of nodes.
 TEST_F(LayerList_Tests, CountAndLayerCount) {
 	int count = 0;
 	for (auto l : list) {
@@ -627,6 +633,7 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 	ASSERT_EQ(l_it++->getSize(), 1);
 }
 
+//Verifies that the transitions are calculated correctly.
 TEST_F(LayerList_Tests, Transitions) {
 	auto l_it = list.begin();
 	//Outputs 
@@ -672,9 +679,18 @@ TEST_F(LayerList_Tests, Transitions) {
 			count++;
 		}
 	}
-	//Cs_4 = {2, 1, 3}
+	//Cs_4 = {2, 1, 3} -- Does not transition out
+	l_it++;
+	for (auto transition : l_it->getTransitions()) {
+		for (auto output : transition.second) {
+			ASSERT_EQ(output, -1);
+			count++;
+		}
+	}
 }
 
+//Non-fixture layerlist test to verify data coming directly from a notelist can be
+//processed properly into a layerlist.
 TEST(LayerList, FromNoteList) {
 	using namespace noteenums;
 	using namespace mx::api;
@@ -751,45 +767,62 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
-//Simple test for greedy solver, this can be seen as a basic outline of how the main
-//program will run.
-TEST(GreedySolver, Basic) {
+class GreedySolver_Tests : public ::testing::Test {
+	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
+	private:
+		Instrument<in_type, out_type> buildInstrument() {
+			typedef std::tuple<bool, out_type> (*action_type)(in_type, 
+									  in_type);
+			IString s1(1, Note::C_3, Note::G_3);
+			IString s2(2, Note::D_3, Note::A_3);
+			IString s3(3, Note::E_3, Note::B_3);
+			
+			NoteMapper<in_type>* note_mapper =
+						new BasicNoteMapper({s1, s2, s3});
+
+			action_type action = [] (in_type t1, in_type t2) {
+				int out = std::abs(std::get<1>(t1) - 
+								std::get<1>(t2));
+				out = out + std::abs(std::get<2>(t1) - 
+								std::get<2>(t2));
+				if (std::abs(std::get<0>(t1) - 
+							std::get<0>(t2)) >= 2) {
+					out = out + 100;
+				} else {
+					out = out + 1;
+				}
+				return std::tuple<bool, out_type>{true, out};
+			};
+			
+			Action<in_type, out_type> a1(action, "A1");
+			ActionSet<in_type, out_type> set({a1, true});
+
+			std::vector<IString> sv{s1, s2, s3};
+			Instrument<in_type, out_type> i(sv, note_mapper, set);
+			return i;
+		}
+	public:
+		GreedySolver_Tests() : instrument(buildInstrument()) {}
+		Instrument<in_type, out_type> instrument;
+};
+
+//Simple test for greedy solver, verifies that the solver selects the correct path and
+//outputs the correct costs.
+TEST_F(GreedySolver_Tests, Basic) {
 	using namespace noteenums;
 
 	using in_type = std::tuple<int, int, int>;
-	using out_type = int;
-	
-	typedef std::tuple<bool, out_type> (*action_type)(in_type, in_type);
+	using out_type = int;	
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
 	
-	IString s1(1, Note::C_3, Note::G_3);
-	IString s2(2, Note::D_3, Note::A_3);
-	IString s3(3, Note::E_3, Note::B_3);
-	
-	std::vector<IString> sv{s1, s2, s3};
-	NoteMapper<in_type>* note_mapper = new BasicNoteMapper(sv);
-
-	Layer<in_type> first(Note::C_3, Duration::Whole, note_mapper);
-	Layer<in_type> second(Note::E_3, Duration::Whole, note_mapper);
-	Layer<in_type> third(Note::Gs_3, Duration::Whole, note_mapper);
+	Layer<in_type> first(Note::C_3, Duration::Whole, instrument.getNoteMapper());
+	Layer<in_type> second(Note::E_3, Duration::Whole, instrument.getNoteMapper());
+	Layer<in_type> third(Note::Gs_3, Duration::Whole, instrument.getNoteMapper());
 
 	LayerList<in_type, out_type> l_list({first, second, third});
-
-	action_type action = [] (in_type t1, in_type t2) {
-		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
-		out = out + std::abs(std::get<2>(t1) - std::get<2>(t2));
-		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {
-			out = out + 100;
-		} else {
-			out = out + 1;
-		}
-		return std::tuple<bool, out_type>{true, out};
-	};
-	
-	Action<in_type, out_type> a1(action, "A1");
-	ActionSet<in_type, out_type> set({a1, true});
-	l_list.buildTransitions(set);
+	l_list.buildTransitions(instrument.getActionSet());			
 
 	solver->solve(l_list); //TODO Add exception for unsolvable graph?
 
