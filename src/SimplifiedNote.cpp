@@ -1,5 +1,4 @@
 #include "SimplifiedNote.h"
-#include "mx/api/ScoreData.h"
 #include "MXConverter.h"
 #include <iostream>
 

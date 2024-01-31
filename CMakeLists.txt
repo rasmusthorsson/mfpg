@@ -12,7 +12,6 @@ FetchContent_Declare(
 	GIT_REPOSITORY https://github.com/google/googletest.git
 	GIT_TAG f8d7d77c06936315286eb55f8de22cd23c188571
 )
-
 FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
@@ -28,7 +27,14 @@ add_executable(tests ${TEST_BASE})
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 
 if(REBUILD_MX)
-  add_subdirectory(libs/mx)
+ FetchContent_Declare(
+       	 mx
+	 GIT_REPOSITORY https://github.com/webern/mx.git
+	 GIT_TAG c6144d229d9c976833b80de0d25e2636acf7f323
+ )
+ FetchContent_MakeAvailable(mx)
+ 
+ #add_subdirectory(deps/mx) 
 endif()
 
 add_subdirectory(src)
