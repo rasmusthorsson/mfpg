@@ -2,6 +2,7 @@
 #define GREEDY_SOLVER_H_MFPG
 
 #include "GraphSolver.h"
+#include "SolverException.h"
 
 //TODO Rewrite completely
 //Temporary version for a greedy solver. This version is completely temporary and 

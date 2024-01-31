@@ -4,6 +4,7 @@
 #include "BasicNoteMapper.h"
 #include "GreedySolver.h"
 #include "Instrument.h"
+#include "SolverException.h"
 
 //Tests valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
