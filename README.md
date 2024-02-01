@@ -6,3 +6,4 @@ instrument). By using user defined preferences and instrument definitions the
 software should be able to give a good base of fingering positions when fed a sheet 
 music MusicXML file. Uses the mx library (found at https://github.com/webern/mx) for 
 MusicXML parsing.
+
