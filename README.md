@@ -7,5 +7,5 @@ software should be able to give a good base of fingering positions when fed a sh
 music MusicXML file. Uses the mx library (found at https://github.com/webern/mx) for 
 MusicXML parsing.
 
-![Alt Graph of how the program works](https://github.com/rasmusthorsson/mfpg/tree/feature-7-desc-documents/resources/docs/Layers.png)
+![Graph of how the program works](https://github.com/rasmusthorsson/mfpg/tree/feature-7-desc-documents/resources/docs/Layers.png)
 
