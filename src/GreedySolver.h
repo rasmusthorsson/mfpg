@@ -3,73 +3,21 @@
 
 #include "GraphSolver.h"
 #include "SolverException.h"
+#include "LayerList.h"
 
-//TODO Rewrite completely
-//Temporary version for a greedy solver. This version is completely temporary and 
-//possibly even incorrect, exists only for testing purposes and will be removed/remade
-//eventually.
+//This does not find the shortest path of the graph, instead if finds a path through
+//the graph that results in the shortest distance between each layer. Only to be
+//used for testing purposes. Might get removed in future versions.
 class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> {
+		using in_type = std::tuple<int, int, int>;
+		using out_type = int;
+	private:
+		std::tuple<int, int> findCheapest(LayerList<in_type, out_type>, 
+									in_type);
 	public:
 		GreedySolver() {}
-		void solve(LayerList<std::tuple<int, int, int>, int> ls) {
-			std::tuple<int, int, int> current_tuple;
-			bool first = true;
-			int old_count = 0;
-			int count = 0;
-			int current_cost = 10000000;
-			for (auto layerlist : ls) {
-				if (first) {
-					first = false;
-					for (auto transitionTuple : 
-						layerlist.getTransitions()) {
-						count = 0;
-						for (int output : 
-							transitionTuple.second) {
-							if (current_cost > output) {
-								current_cost = 
-								 output;
-								current_tuple = 
-								 transitionTuple.first;
-								old_count = count;
-							}
-						count++;
-						}
-					}
-				} else if (layerlist.getNext() == NULL) {
-					current_tuple = layerlist
-							.getElem()
-							.getNodes()
-							[old_count];
-					current_cost = -1;
-				} else {
-					count = 0;
-					current_cost = 10000000;
-					auto elem_node = layerlist.getElem()
-							.getNodes()[old_count];
-					current_tuple = elem_node;
-					auto next_tuple = layerlist
-								.getTransitions()
-								[elem_node];
-					for (int output : next_tuple) {
-						if (current_cost > output) {
-							current_cost = output;
-							old_count = count;
-						}
-						count++;
-					}
-				}
-				HandPosition<std::tuple<int, int, int>> 
-						hp(current_tuple, layerlist.getElem()
-							.getNote());
-				std::tuple<HandPosition
-					<std::tuple<int, int, int>>, int> tuple(
-					hp, current_cost);
-				solution.push_back(tuple);
-			}
-		}
-		std::vector<std::tuple<HandPosition<std::tuple<int, int, int>>, int>>
-			getSolution() {
-				return solution;
-			}
+		void solve(LayerList<in_type, out_type>);
+		std::vector<std::tuple<HandPosition<std::tuple<int, int, int>, int>, 
+								int>> getSolution();
 };
 #endif

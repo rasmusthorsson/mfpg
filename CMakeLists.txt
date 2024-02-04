@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 3.17)
 
 project(mfpr)
 
-set(CMAKE_CXX_STANDARD 20)
+#MX library is not compatible with g++-13.
+set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "")
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -16,10 +19,12 @@ FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp 
-	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp)
+	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
+	src/GreedySolver.cpp)
 file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp 
-	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp)
+	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
+	src/GreedySolver.cpp)
 
 add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 
@@ -27,14 +32,15 @@ add_executable(tests ${TEST_BASE})
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 
 if(REBUILD_MX)
+
  FetchContent_Declare(
-       	 mx
+        mx
 	 GIT_REPOSITORY https://github.com/webern/mx.git
 	 GIT_TAG c6144d229d9c976833b80de0d25e2636acf7f323
  )
  FetchContent_MakeAvailable(mx)
  
- #add_subdirectory(deps/mx) 
+# add_subdirectory(deps/mx)
 endif()
 
 add_subdirectory(src)

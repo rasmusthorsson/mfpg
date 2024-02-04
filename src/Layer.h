@@ -3,9 +3,10 @@
 
 #include "SimplifiedNote.h"
 #include "NodeException.h"
+#include "NoteEnums.h"
+#include "NoteMapper.h"
 #include <vector>
 #include <cassert>
-#include "NoteEnums.h"
 
 //Class to represent a layer of nodes, each layer corresponds to a note in the music 
 //piece, a node is generally a user-defined tuple, (simple example is a 3-tuple of 

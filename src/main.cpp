@@ -125,7 +125,12 @@ int main (int argc, char *argv[]) {
 	list.buildTransitions(violin.getActionSet());
 	
 	GraphSolver<Real_Rep_Tuple, Cost>* solver = new GreedySolver();
-	solver->solve(list);
+	try {
+		solver->solve(list);
+	} catch (SolverException e) {
+		std::cout << e.what() << "\n";
+		return -1;
+	}
 
 //------------------------------ Output ----------------------------------
 
@@ -139,6 +144,9 @@ int main (int argc, char *argv[]) {
 			  << ", Hand Position: " 
 			  << std::get<1>(std::get<0>(sol).getState()) << "\n"
 			  << "Cost of transition: " << std::get<1>(sol) << "\n"
+			  << "Amount of possible fingerings: " 
+			  << std::get<0>(sol).getLayerList().getSize() 
+			  << "\n"
 			  << "------------------------------------" << "\n";
 		count++;
 	}

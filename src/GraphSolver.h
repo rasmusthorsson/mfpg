@@ -12,10 +12,12 @@ template <class InputTuple, class Output> class GraphSolver {
 		//solution vector represents the transitions for the solution and the
 		//costs of each transition. TODO move this somewhere else? move output
 		//to HandPosition so that the vector is only a series of HandPositions?
-		std::vector<std::tuple<HandPosition<InputTuple>, Output>> solution;
+		std::vector<std::tuple<HandPosition<InputTuple, Output>, 
+								Output>> solution;
 	public:
 		virtual void solve(LayerList<InputTuple, Output>) = 0;
-		virtual std::vector<std::tuple<HandPosition<InputTuple>, Output>>
+		virtual std::vector<std::tuple<HandPosition<InputTuple, Output>, 
+									Output>>
 			getSolution()  = 0;
 		GraphSolver() {};
 };

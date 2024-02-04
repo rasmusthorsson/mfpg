@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include "NoteMapper.h"
 #include "Layer.h"
 #include "NoteList.h"
 #include "ActionSet.h"

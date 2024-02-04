@@ -825,7 +825,7 @@ TEST_F(GreedySolver_Tests, Basic) {
 	LayerList<in_type, out_type> l_list({first, second, third});
 	l_list.buildTransitions(instrument.getActionSet());			
 
-	solver->solve(l_list); //TODO Add exception for unsolvable graph?
+	solver->solve(l_list);
 
 	//C_3 = {1, 0, 0}
 	//E_3 = {2, 1, 1}, {3, 0, 0}
