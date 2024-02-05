@@ -26,24 +26,43 @@
 using namespace noteenums;
 using namespace std;
 
-int main (int argc, char *argv[]) {
-	if (argc < 2) {
-		cout << "Please specify an input MusicXML file.\n";
-		return -1;
+using Real_Rep_Tuple = std::tuple<int, int, int>;
+using Cost = int;
+
+void writeOutput(ostream& out, GraphSolver<Real_Rep_Tuple, Cost>* solver) {
+	int count = 1;
+	for (auto sol : solver->getSolution()) {
+		out << "Note number: " << count << "\n";
+		out << "Note: " << std::get<0>(sol).getNote() << "\n";
+		out << "String: " << std::get<0>(std::get<0>(sol).getState())
+		    << ", Finger: " << std::get<2>(std::get<0>(sol).getState()) 
+		    << ", Hand Position: " 
+		    << std::get<1>(std::get<0>(sol).getState()) << "\n"
+		    << "Cost of transition: " << std::get<1>(sol) << "\n"
+		    << "Amount of possible fingerings: " 
+		    << std::get<0>(sol).getLayerList().getSize() 
+		    << "\n"
+		    << "------------------------------------" << "\n";
+		count++;
 	}
-	cxxopts::Options options("test");
+}
 
+int main (int argc, char *argv[]) {
+
+//-------------------------------- Input/Arguments -------------------------
+	cxxopts::Options options("mfpr");
 	options.positional_help("[optional args]").show_positional_help();
-
 	options.add_options()
-		("score", "musicXML file", cxxopts::value<std::string>())
-		("version", "show version")
-		("h,help", "help menu")
-		("c,csv", "csv output")
-		("v,verbose", "verbose output")
-		("o,output", "direct output")
+		("score", "Input file in musicXML format.", 
+						cxxopts::value<std::string>())
+		("version", "Shows program version.")
+		("greedy", "Use GreedySolver instead of standard solver, for testing.")
+		("h,help", "Show this message.")
+		("c,csv", "Structure output as CSV.") //TODO
+		("v,verbose", "Make output more verbose.") //TODO
+		("o,output", "Specify where the output should be written.",
+						cxxopts::value<std::string>())
 		;
-	
 	options.parse_positional({"score"});
 
 	auto result = options.parse(argc, argv);
@@ -65,17 +84,18 @@ int main (int argc, char *argv[]) {
 			return -1;
 		}
 	} else {
-		std::cout << "No musicXML file found, please supply a musicXML file"
-			     "to process.";
+		std::cout << "No musicXML file found, please supply a musicXML file "
+			     "to process.\n";
 		return -1;
 	}
-//-------------------------------- Input/Arguments -------------------------
+
 	string buffer;
 	string sheet_music;
 	while (input_file) {
 		getline(input_file, buffer);
 		sheet_music = sheet_music + "\n" + buffer;
 	}
+	input_file.close();
 
 //------------------------- MX conversion --------------------------------
 
@@ -90,9 +110,6 @@ int main (int argc, char *argv[]) {
 	NoteList note_list(score);
 
 //---------------------- Instrument creation ----------------------------
-
-	using Real_Rep_Tuple = std::tuple<int, int, int>;
-	using Cost = int;
 	
 	typedef std::tuple<bool, Cost> (*action_type) (Real_Rep_Tuple, Real_Rep_Tuple);
 
@@ -154,9 +171,17 @@ int main (int argc, char *argv[]) {
 //-------------------------- Graph building/solving -------------------------
 
 	LayerList<Real_Rep_Tuple, Cost> list(note_list, violin.getNoteMapper());
+	delete note_mapper;
 	list.buildTransitions(violin.getActionSet());
 	
-	GraphSolver<Real_Rep_Tuple, Cost>* solver = new GreedySolver();
+	GraphSolver<Real_Rep_Tuple, Cost>* solver;
+	if (result.count("greedy")) {
+		solver = new GreedySolver();
+	} else {
+		std::cout << "Defaulting to greedysolver as no other solver is "
+			     "available." << std::endl;
+		solver = new GreedySolver();
+	}
 	try {
 		solver->solve(list);
 	} catch (SolverException e) {
@@ -165,23 +190,20 @@ int main (int argc, char *argv[]) {
 	}
 
 //------------------------------ Output ----------------------------------
-
-	int count = 1;
-	//TODO Fix ties
-	for (auto sol : solver->getSolution()) {
-		std::cout << "Note number: " << count << "\n";
-		std::cout << "Note: " << std::get<0>(sol).getNote() << "\n";
-		std::cout << "String: " << std::get<0>(std::get<0>(sol).getState())
-		          << ", Finger: " << std::get<2>(std::get<0>(sol).getState()) 
-			  << ", Hand Position: " 
-			  << std::get<1>(std::get<0>(sol).getState()) << "\n"
-			  << "Cost of transition: " << std::get<1>(sol) << "\n"
-			  << "Amount of possible fingerings: " 
-			  << std::get<0>(sol).getLayerList().getSize() 
-			  << "\n"
-			  << "------------------------------------" << "\n";
-		count++;
+	if (result.count("output")) {
+		auto out_file = result["output"].as<std::string>();
+		ofstream out(out_file);
+		if (!out.is_open()) {
+			std::cout << "Failed to open file: " << out_file << 
+				     ", Aborting...\n";
+			return -1;
+		}
+		writeOutput(out, solver);
+	} else {
+		ostream out(std::cout.rdbuf());
+		writeOutput(out, solver);
 	}
+	delete solver;
 	return 1;
-
 }
+

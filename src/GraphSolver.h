@@ -10,8 +10,7 @@
 template <class InputTuple, class Output> class GraphSolver {
 	protected:
 		//solution vector represents the transitions for the solution and the
-		//costs of each transition. TODO move this somewhere else? move output
-		//to HandPosition so that the vector is only a series of HandPositions?
+		//costs of each transition.
 		std::vector<std::tuple<HandPosition<InputTuple, Output>, 
 								Output>> solution;
 	public:
@@ -20,5 +19,6 @@ template <class InputTuple, class Output> class GraphSolver {
 									Output>>
 			getSolution()  = 0;
 		GraphSolver() {};
+		virtual ~GraphSolver() {};
 };
 #endif

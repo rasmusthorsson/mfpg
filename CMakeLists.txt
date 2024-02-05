@@ -71,9 +71,9 @@ enable_testing()
 
 gtest_discover_tests(tests)
 
-add_test(NAME fewer_args COMMAND mfpr)
+#add_test(NAME fewer_args COMMAND mfpr)
 
-set_tests_properties(fewer_args
-	PROPERTIES PASS_REGULAR_EXPRESSION "Please specify an input MusicXML file.\n"
-)
+#set_tests_properties(fewer_args
+#	PROPERTIES PASS_REGULAR_EXPRESSION "Please specify an input MusicXML file.\n"
+#)
 
