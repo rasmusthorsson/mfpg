@@ -1,6 +1,8 @@
 #include "mx/api/ScoreData.h"
 #include "mx/api/DocumentManager.h"
 
+#include "cxxopts.hpp"
+
 #include "NoteEnums.h"
 #include "IString.h"
 #include "BasicNoteMapper.h"
@@ -12,6 +14,7 @@
 #include "GraphSolver.h"
 #include "GreedySolver.h"
 #include "Instrument.h"
+#include "conf_cmake.h"
 
 #include <iostream>
 #include <string>
@@ -19,25 +22,54 @@
 #include <sstream>
 #include <fstream>
 
+
 using namespace noteenums;
 using namespace std;
 
 int main (int argc, char *argv[]) {
-
-//-------------------------------- Input/Arguments -------------------------
 	if (argc < 2) {
 		cout << "Please specify an input MusicXML file.\n";
 		return -1;
-	} else if (argc > 2) {
-		cout << "Too many arguments.\n";
+	}
+	cxxopts::Options options("test");
+
+	options.positional_help("[optional args]").show_positional_help();
+
+	options.add_options()
+		("score", "musicXML file", cxxopts::value<std::string>())
+		("version", "show version")
+		("h,help", "help menu")
+		("c,csv", "csv output")
+		("v,verbose", "verbose output")
+		("o,output", "direct output")
+		;
+	
+	options.parse_positional({"score"});
+
+	auto result = options.parse(argc, argv);
+
+	if (result.count("help")) {
+		std::cout << options.help() << "\n";
+		return -1;
+	}
+	if (result.count("version")) {
+		std::cout << "mfpr version: " << VERSION_MFPG << "\n";
 		return -1;
 	}
 	ifstream input_file;
-	input_file.open(argv[1]);
-	if (!input_file.is_open()) {
-		cout << "Could not open file: " << argv[1] << "\n";
+	if (result.count("score")) {
+		auto file_path = result["score"].as<std::string>();
+		input_file.open(file_path);
+		if (!input_file.is_open()) {
+			cout << "Could not open file: " << argv[1] << "\n";
+			return -1;
+		}
+	} else {
+		std::cout << "No musicXML file found, please supply a musicXML file"
+			     "to process.";
 		return -1;
 	}
+//-------------------------------- Input/Arguments -------------------------
 	string buffer;
 	string sheet_music;
 	while (input_file) {
