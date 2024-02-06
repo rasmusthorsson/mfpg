@@ -22,28 +22,41 @@
 #include <sstream>
 #include <fstream>
 
-
 using namespace noteenums;
 using namespace std;
 
-using Real_Rep_Tuple = std::tuple<int, int, int>;
-using Cost = int;
+using Node_Tuple = std::tuple<int, int, int>;
+using Distance = int;
 
-void writeOutput(ostream& out, GraphSolver<Real_Rep_Tuple, Cost>* solver) {
+//TODO Rewrite this to not depend on tuple choice
+void writeOutput(ostream& out, GraphSolver<Node_Tuple, Distance>* solver, bool csv) {
 	int count = 1;
-	for (auto sol : solver->getSolution()) {
-		out << "Note number: " << count << "\n";
-		out << "Note: " << std::get<0>(sol).getNote() << "\n";
-		out << "String: " << std::get<0>(std::get<0>(sol).getState())
-		    << ", Finger: " << std::get<2>(std::get<0>(sol).getState()) 
-		    << ", Hand Position: " 
-		    << std::get<1>(std::get<0>(sol).getState()) << "\n"
-		    << "Cost of transition: " << std::get<1>(sol) << "\n"
-		    << "Amount of possible fingerings: " 
-		    << std::get<0>(sol).getLayerList().getSize() 
-		    << "\n"
-		    << "------------------------------------" << "\n";
-		count++;
+	out << "note number, note, string, finger, hp, cost\r\n";
+	if (csv) {
+		for (auto sol : solver->getSolution()) {
+			out << count << ","
+			    << get<0>(sol).getNote() << ","
+			    << get<0>(get<0>(sol).getState()) << ","
+			    << get<2>(get<0>(sol).getState()) << ","
+			    << get<1>(get<0>(sol).getState()) << ","
+			    << get<1>(sol) << ","
+			    << get<0>(sol).getLayerList().getSize() << "\r\n";
+			count++;
+		}
+	} else {
+		for (auto sol : solver->getSolution()) {
+			out << "Note number: " << count << "\n";
+			out << "Note: " << get<0>(sol).getNote() << "\n";
+			out << "String: " << get<0>(get<0>(sol).getState())
+			    << ", Finger: " << get<2>(get<0>(sol).getState())
+			    << ", Hand Position: " 
+			    << get<1>(get<0>(sol).getState()) << "\n"
+			    << "Distance of transition: " << get<1>(sol) << "\n"
+			    << "Amount of possible fingerings: " 
+			    << get<0>(sol).getLayerList().getSize() << "\n"
+			    << "------------------------------------" << "\n";
+			count++;
+		}
 	}
 }
 
@@ -58,7 +71,7 @@ int main (int argc, char *argv[]) {
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
 		("h,help", "Show this message.")
-		("c,csv", "Structure output as CSV.") //TODO
+		("c,csv", "Structure output as CSV.") 
 		("v,verbose", "Make output more verbose.") //TODO
 		("o,output", "Specify where the output should be written.",
 						cxxopts::value<std::string>())
@@ -93,7 +106,7 @@ int main (int argc, char *argv[]) {
 	string sheet_music;
 	while (input_file) {
 		getline(input_file, buffer);
-		sheet_music = sheet_music + "\n" + buffer;
+		sheet_music = sheet_music + "\r\n" + buffer;
 	}
 	input_file.close();
 
@@ -111,7 +124,7 @@ int main (int argc, char *argv[]) {
 
 //---------------------- Instrument creation ----------------------------
 	
-	typedef std::tuple<bool, Cost> (*action_type) (Real_Rep_Tuple, Real_Rep_Tuple);
+	typedef std::tuple<bool, Distance> (*action_type) (Node_Tuple, Node_Tuple);
 
 	IString G_s(1, Note::G_3, Note::Gs_5);
 	IString D_s(2, Note::D_4, Note::Ds_6);
@@ -120,43 +133,43 @@ int main (int argc, char *argv[]) {
 	
 	std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
-	NoteMapper<Real_Rep_Tuple>* note_mapper = new BasicNoteMapper(strings);
+	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
 
-	action_type HP_action = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
+	action_type HP_action = [] (Node_Tuple t1, Node_Tuple t2) {
 		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
-		return std::tuple<bool, Cost>{true, out};
+		return std::tuple<bool, Distance>{true, out};
 	};
-	action_type finger_action = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
+	action_type finger_action = [] (Node_Tuple t1, Node_Tuple t2) {
 		int out = std::abs(std::get<2>(t1) - std::get<2>(t2));
-		return std::tuple<bool, Cost>{true, out};
+		return std::tuple<bool, Distance>{true, out};
 	};
-	action_type string_action_no_rest = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
+	action_type string_action_no_rest = [] (Node_Tuple t1, Node_Tuple t2) {
 		int out = 0;
 		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {
 			out = out + 100;
 		} else {
 			out = out + std::abs(std::get<0>(t1) - std::get<0>(t2));
 		}
-		return std::tuple<bool, Cost>{true, out};
+		return std::tuple<bool, Distance>{true, out};
 	};
-	action_type string_action_rest = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
+	action_type string_action_rest = [] (Node_Tuple t1, Node_Tuple t2) {
 		int out = std::abs(std::get<0>(t1) - std::get<0>(t2));
-		return std::tuple<bool, Cost>{true, out};
+		return std::tuple<bool, Distance>{true, out};
 	};
-	action_type rest = [] (Real_Rep_Tuple t1, Real_Rep_Tuple t2) {
-		if (t1 == Real_Rep_Tuple{0, 0, 0} || t2 == Real_Rep_Tuple{0, 0, 0}) {
-			return std::tuple<bool, Cost>{true, 0};
+	action_type rest = [] (Node_Tuple t1, Node_Tuple t2) {
+		if (t1 == Node_Tuple{0, 0, 0} || t2 == Node_Tuple{0, 0, 0}) {
+			return std::tuple<bool, Distance>{true, 0};
 		}
-		return std::tuple<bool, Cost>{false, 0};
+		return std::tuple<bool, Distance>{false, 0};
 	};
 
-	Action<Real_Rep_Tuple, Cost> r(rest, "rest"); 
-	Action<Real_Rep_Tuple, Cost> s_a_NR(string_action_no_rest, 
+	Action<Node_Tuple, Distance> r(rest, "rest"); 
+	Action<Node_Tuple, Distance> s_a_NR(string_action_no_rest, 
 							"string_action_no_rest");
-	Action<Real_Rep_Tuple, Cost> s_a_R(string_action_rest, "string_action_rest");
-	Action<Real_Rep_Tuple, Cost> f_a(finger_action, "finger_action");
-	Action<Real_Rep_Tuple, Cost> hp_a(HP_action, "hand_position_action");
-	ActionSet<Real_Rep_Tuple, Cost> action_set({
+	Action<Node_Tuple, Distance> s_a_R(string_action_rest, "string_action_rest");
+	Action<Node_Tuple, Distance> f_a(finger_action, "finger_action");
+	Action<Node_Tuple, Distance> hp_a(HP_action, "hand_position_action");
+	ActionSet<Node_Tuple, Distance> action_set({
 						{r, true},
 						{s_a_NR, true},
 						{s_a_R, false}, 
@@ -166,20 +179,20 @@ int main (int argc, char *argv[]) {
 	action_set.addDependency("string_action_no_rest", "rest", false);
 	action_set.addDependency("string_action_rest", "rest", true);
 	
-	Instrument<Real_Rep_Tuple, Cost> violin(strings, note_mapper, action_set);
+	Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
 
 //-------------------------- Graph building/solving -------------------------
 
-	LayerList<Real_Rep_Tuple, Cost> list(note_list, violin.getNoteMapper());
+	LayerList<Node_Tuple, Distance> list(note_list, violin.getNoteMapper());
 	delete note_mapper;
 	list.buildTransitions(violin.getActionSet());
 	
-	GraphSolver<Real_Rep_Tuple, Cost>* solver;
+	GraphSolver<Node_Tuple, Distance>* solver;
 	if (result.count("greedy")) {
 		solver = new GreedySolver();
 	} else {
 		std::cout << "Defaulting to greedysolver as no other solver is "
-			     "available." << std::endl;
+			     "available." << "\n";
 		solver = new GreedySolver();
 	}
 	try {
@@ -192,16 +205,18 @@ int main (int argc, char *argv[]) {
 //------------------------------ Output ----------------------------------
 	if (result.count("output")) {
 		auto out_file = result["output"].as<std::string>();
-		ofstream out(out_file);
+		ofstream out;
+		out.open(out_file, std::ofstream::binary);
 		if (!out.is_open()) {
 			std::cout << "Failed to open file: " << out_file << 
-				     ", Aborting...\n";
+				     ", Aborting..." << "\n";
 			return -1;
 		}
-		writeOutput(out, solver);
+		writeOutput(out, solver, result["csv"].as<bool>());
+		out.close();
 	} else {
 		ostream out(std::cout.rdbuf());
-		writeOutput(out, solver);
+		writeOutput(out, solver, result["csv"].as<bool>());
 	}
 	delete solver;
 	return 1;
