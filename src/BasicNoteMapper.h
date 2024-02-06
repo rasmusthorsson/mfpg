@@ -16,5 +16,6 @@ class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
 		//then all playable notes are mapped.
 		BasicNoteMapper(std::vector<IString>);
 		BasicNoteMapper(std::initializer_list<IString> strings);
+		~BasicNoteMapper() {};
 };
 #endif

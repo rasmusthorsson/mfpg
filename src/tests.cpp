@@ -257,7 +257,8 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
 	std::vector<IString> strings = {s1, s2};
-	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
+	std::unique_ptr<NoteMapper<std::tuple<int, int, int>>> 
+		map(new BasicNoteMapper({s1, s2}));
 	int note_count = 0;
 	for (auto i = map->begin(), end = map->end(); i != end;
 		  i = map->getUpper(i->first)) {
@@ -278,7 +279,8 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
-	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper({s1, s2});
+	std::unique_ptr<NoteMapper<std::tuple<int, int, int>>> 
+		map(new BasicNoteMapper({s1, s2}));
 	auto C3 = map->getRange(Note::C_3);
 	auto D_3 = map->getRange(Note::D_3);
 	auto E3 = map->getRange(Note::E_3);
@@ -332,6 +334,7 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 			ASSERT_EQ(std::get<2>(i->second), 3);
 		} 
 	}
+	//delete map;
 	//Ensure there are no more unchecked combinations.
 	ASSERT_EQ(comb_count, 7);
 }
@@ -342,8 +345,8 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	using namespace mx::api;
 	using namespace testing;
 	std::vector<IString> strings = {s1, s2};
-	NoteMapper<std::tuple<int, int, int>>* map = new BasicNoteMapper(strings);
-
+	std::unique_ptr<NoteMapper<std::tuple<int, int, int>>> 
+		map(new BasicNoteMapper({s1, s2}));
 	for (auto i = map->begin(); i != map->end(); i++) {
 		if (i->first != Note::REST) {
 			ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
@@ -612,6 +615,7 @@ class LayerList_Tests : public ::testing::Test {
 			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
 				{s_a, true}};
 			temp_list.buildTransitions(actions);
+			delete note_mapper;
 			return temp_list;
 		}
 	public:
@@ -806,6 +810,9 @@ class GreedySolver_Tests : public ::testing::Test {
 	public:
 		GreedySolver_Tests() : instrument(buildInstrument()) {}
 		Instrument<in_type, out_type> instrument;
+		void TearDown() override {
+			delete instrument.getNoteMapper();
+		}
 };
 
 //Simple test for greedy solver, verifies that the solver selects the correct path and
@@ -853,4 +860,5 @@ TEST_F(GreedySolver_Tests, Basic) {
 		}
 		count++;
 	}
+	delete solver;
 }

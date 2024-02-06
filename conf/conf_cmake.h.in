@@ -1,0 +1,8 @@
+#ifndef MFPG_CONF_H
+#define MFPG_CONF_H
+
+#define VERSION_MAJOR "@VERSION_MAJOR@"
+#define VERSION_MINOR "@VERSION_MINOR@"
+#define VERSION_MFPG "@VERSION_MFPG@"
+
+#endif

@@ -6,7 +6,9 @@ instrument currently). By using user defined preferences and instrument definiti
 the 
 software should be able to give a good base of fingering positions when fed a sheet 
 music MusicXML file. Uses the mx library (found at https://github.com/webern/mx) for 
-MusicXML parsing.
+MusicXML parsing. Also uses the cxxopts library for parsing inputs and managing
+options (https://github.com/jarro2783/cxxopts). gtest is used for unit and integration
+tests.
 
 # Program Explanation
 

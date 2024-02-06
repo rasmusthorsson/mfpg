@@ -1,14 +1,15 @@
 #ifndef LAYER_LIST_H_MFPG
 #define LAYER_LIST_H_MFPG
 
-#include <list>
-#include <map>
 #include "NoteMapper.h"
 #include "Layer.h"
 #include "NoteList.h"
 #include "ActionSet.h"
+
 #include <iterator>
 #include <cstddef>
+#include <list>
+#include <map>
 
 //A linked list of layers, each link contains a layer, a pointer to the nect link, and
 //a vector of transition costs between the nodes in the current layer and the nodes in
@@ -30,8 +31,8 @@ template <class InputTuple, class Output> class LayerList {
 			auto it = simp_list.begin();
 			it++;
 			for (it; it != simp_list.end(); it++) {
-				Layer<InputTuple>* temp = new Layer<InputTuple>(*it);
-				this->pushBack(*temp);
+				Layer<InputTuple> temp(*it);
+				this->pushBack(temp);
 			}	
 		}
 		LayerList(NoteList list, NoteMapper<InputTuple>* note_mapper) : 
@@ -40,9 +41,8 @@ template <class InputTuple, class Output> class LayerList {
 			auto it = simp_list.begin();
 			it++;
 			for (it; it != simp_list.end(); it++) {
-				Layer<InputTuple>* temp = 
-					new Layer<InputTuple>(*it, note_mapper);
-				this->pushBack(*temp);
+				Layer<InputTuple> temp(*it, note_mapper);
+				this->pushBack(temp);
 			}	
 		}
 		LayerList(std::vector<Layer<InputTuple>> ls) 
@@ -55,13 +55,22 @@ template <class InputTuple, class Output> class LayerList {
 				base = temp;
 			}
 		}
-		void setNext(LayerList<InputTuple, Output>* l) {
+		~LayerList() {}
+		int setNext(LayerList<InputTuple, Output>* l) {
+			if (next != NULL) {
+				return -1;
+			}
 			next = l;
+			return 1;
 		}
-		void setNext(Layer<InputTuple> layer) {
+		int setNext(Layer<InputTuple> layer) {
+			if (next != NULL) {
+				return -1;
+			}
 			LayerList<InputTuple, Output>* temp = 
 				new LayerList<InputTuple, Output>(layer);
 			next = temp;
+			return 1;
 		}
 		LayerList<InputTuple, Output>* getNext() {
 			return next;

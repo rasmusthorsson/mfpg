@@ -35,6 +35,7 @@ template<class InputTuple> class Layer {
 				addNode(i->second);
 			}
 		}
+		~Layer() {}
 		//Attempts to add a node to a layer, if node is already present does 
 		//nothing and returns -1.
 		int addNode(InputTuple n) {
