@@ -31,8 +31,8 @@ using Distance = int;
 //TODO Rewrite this to not depend on tuple choice
 void writeOutput(ostream& out, GraphSolver<Node_Tuple, Distance>* solver, bool csv) {
 	int count = 1;
-	out << "note number, note, string, finger, hp, cost\r\n";
 	if (csv) {
+		out << "note number, note, string, finger, hp, cost, combinations\r\n";
 		for (auto sol : solver->getSolution()) {
 			out << count << ","
 			    << get<0>(sol).getNote() << ","
@@ -129,7 +129,7 @@ int main (int argc, char *argv[]) {
 	IString G_s(1, Note::G_3, Note::Gs_5);
 	IString D_s(2, Note::D_4, Note::Ds_6);
 	IString A_s(3, Note::A_4, Note::As_6);
-	IString E_s(4, Note::E_4, Note::F_6);
+	IString E_s(4, Note::E_5, Note::F_7);
 	
 	std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
