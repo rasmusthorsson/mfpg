@@ -135,6 +135,12 @@ int main (int argc, char *argv[]) {
 
 	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
 
+	action_type to_rest = [] (Node_Tuple t1, Node_Tuple t2) {
+		if (t2 == Node_Tuple{0, 0, 0}) {
+			return std::tuple<bool, Distance>{true, 0};
+		}
+		return std::tuple<bool, Distance>{false, 0};
+	};
 	action_type HP_action = [] (Node_Tuple t1, Node_Tuple t2) {
 		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
 		return std::tuple<bool, Distance>{true, out};
@@ -162,23 +168,31 @@ int main (int argc, char *argv[]) {
 		}
 		return std::tuple<bool, Distance>{false, 0};
 	};
-
+	
+	Action<Node_Tuple, Distance> to_r(to_rest, "to_rest");
 	Action<Node_Tuple, Distance> r(rest, "rest"); 
 	Action<Node_Tuple, Distance> s_a_NR(string_action_no_rest, 
 							"string_action_no_rest");
 	Action<Node_Tuple, Distance> s_a_R(string_action_rest, "string_action_rest");
 	Action<Node_Tuple, Distance> f_a(finger_action, "finger_action");
 	Action<Node_Tuple, Distance> hp_a(HP_action, "hand_position_action");
+
 	ActionSet<Node_Tuple, Distance> action_set({
+						{to_r, true},
 						{r, true},
 						{s_a_NR, true},
-						{s_a_R, false}, 
+						{s_a_R, false},
 						{f_a, true}, 
 						{hp_a, true}
 						});
+
 	action_set.addDependency("string_action_no_rest", "rest", false);
 	action_set.addDependency("string_action_rest", "rest", true);
-	
+	action_set.addDependency("rest", "to_rest", false);
+	action_set.addDependency("string_action_no_rest", "to_rest", false);
+	action_set.addDependency("finger_action", "to_rest", false);
+	action_set.addDependency("hand_position_action", "to_rest", false);
+
 	Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
 
 //-------------------------- Graph building/solving -------------------------

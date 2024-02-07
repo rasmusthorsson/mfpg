@@ -17,8 +17,10 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		//false = do not run by default, true = run by default.
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> actions;
 
-		//Multimap of dependencies, the key is the dependency, the values
-		//are the dependent actions with the boolean adjustment as a tuple.
+		//Multimap of dependencies, the key is the dependent, the values
+		//are the dependency actions with the boolean adjustment as a tuple.
+		//For Example: "action1", {"action2", true} says that if action2 
+		//occurred then action1 should occur.
 		std::multimap<std::string, std::tuple<std::string, bool>> dependencies;
 
 		//Check whether an action is to be taken or not with respect to the
