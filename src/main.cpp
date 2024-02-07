@@ -124,7 +124,8 @@ int main (int argc, char *argv[]) {
 
 //---------------------- Instrument creation ----------------------------
 	
-	typedef std::tuple<bool, Distance> (*action_type) (Node_Tuple, Node_Tuple);
+	typedef Distance (*action_type_dist) (Node_Tuple, Node_Tuple);
+	typedef bool (*action_type_cond) (Node_Tuple, Node_Tuple);
 
 	IString G_s(1, Note::G_3, Note::Gs_5);
 	IString D_s(2, Note::D_4, Note::Ds_6);
@@ -135,64 +136,70 @@ int main (int argc, char *argv[]) {
 
 	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
 
-	action_type to_rest = [] (Node_Tuple t1, Node_Tuple t2) {
-		if (t2 == Node_Tuple{0, 0, 0}) {
-			return std::tuple<bool, Distance>{true, 0};
-		}
-		return std::tuple<bool, Distance>{false, 0};
+	action_type_cond hp_action_cond = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (0 != (get<1>(t1) - get<1>(t2)));
 	};
-	action_type HP_action = [] (Node_Tuple t1, Node_Tuple t2) {
-		int out = std::abs(std::get<1>(t1) - std::get<1>(t2));
-		return std::tuple<bool, Distance>{true, out};
+	action_type_dist hp_action_dist = [] (Node_Tuple t1, Node_Tuple t2) {
+		return abs(get<1>(t1) - get<1>(t2));
 	};
-	action_type finger_action = [] (Node_Tuple t1, Node_Tuple t2) {
-		int out = std::abs(std::get<2>(t1) - std::get<2>(t2));
-		return std::tuple<bool, Distance>{true, out};
-	};
-	action_type string_action_no_rest = [] (Node_Tuple t1, Node_Tuple t2) {
-		int out = 0;
-		if (std::abs(std::get<0>(t1) - std::get<0>(t2)) >= 2) {
-			out = out + 100;
-		} else {
-			out = out + std::abs(std::get<0>(t1) - std::get<0>(t2));
-		}
-		return std::tuple<bool, Distance>{true, out};
-	};
-	action_type string_action_rest = [] (Node_Tuple t1, Node_Tuple t2) {
-		int out = std::abs(std::get<0>(t1) - std::get<0>(t2));
-		return std::tuple<bool, Distance>{true, out};
-	};
-	action_type rest = [] (Node_Tuple t1, Node_Tuple t2) {
-		if (t1 == Node_Tuple{0, 0, 0} || t2 == Node_Tuple{0, 0, 0}) {
-			return std::tuple<bool, Distance>{true, 0};
-		}
-		return std::tuple<bool, Distance>{false, 0};
-	};
-	
-	Action<Node_Tuple, Distance> to_r(to_rest, "to_rest");
-	Action<Node_Tuple, Distance> r(rest, "rest"); 
-	Action<Node_Tuple, Distance> s_a_NR(string_action_no_rest, 
-							"string_action_no_rest");
-	Action<Node_Tuple, Distance> s_a_R(string_action_rest, "string_action_rest");
-	Action<Node_Tuple, Distance> f_a(finger_action, "finger_action");
-	Action<Node_Tuple, Distance> hp_a(HP_action, "hand_position_action");
+	Action<Node_Tuple, Distance> hp_action(hp_action_cond, 
+					     hp_action_dist, 
+					     "hp_action");
 
+	action_type_cond finger_action_cond = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (0 != (get<2>(t1) - get<2>(t2)));
+	};
+	action_type_dist finger_action_dist = [] (Node_Tuple t1, Node_Tuple t2) {
+		return abs(get<2>(t1) - get<2>(t2));
+	};
+	Action<Node_Tuple, Distance> finger_action(finger_action_cond, 
+					     finger_action_dist, 
+					     "finger_action");
+
+	action_type_cond string_action_NR_cond = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (2 <= (abs(get<0>(t1) - get<0>(t2))));
+	};
+	action_type_dist string_action_NR_dist = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (abs(get<0>(t1) - get<0>(t2)) + 100);
+	};
+	Action<Node_Tuple, Distance> string_action_NR(string_action_NR_cond, 
+					     string_action_NR_dist, 
+					     "string_action_NR");
+
+	action_type_cond string_action_cond = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (0 < (abs(get<0>(t1) - get<0>(t2))));
+	};
+	action_type_dist string_action_dist = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (abs(get<0>(t1) - get<0>(t2)));
+	};
+	Action<Node_Tuple, Distance> string_action(string_action_cond, 
+					     string_action_dist, 
+					     "string_action");
+	
+	action_type_cond rest_cond = [] (Node_Tuple t1, Node_Tuple t2) {
+		return (t1 == Node_Tuple{0, 0, 0} || t2 == Node_Tuple{0, 0, 0});
+	};
+	action_type_dist rest_dist = [] (Node_Tuple t1, Node_Tuple t2) {
+		return 0;
+	};
+	Action<Node_Tuple, Distance> rest(rest_cond, 
+					  rest_dist, 
+					  "rest");
+	
 	ActionSet<Node_Tuple, Distance> action_set({
-						{to_r, true},
-						{r, true},
-						{s_a_NR, true},
-						{s_a_R, false},
-						{f_a, true}, 
-						{hp_a, true}
+						{rest, true},
+						{hp_action, true},
+						{finger_action, true},
+						{string_action_NR, true},
+						{string_action, true}
 						});
 
-	action_set.addDependency("string_action_no_rest", "rest", false);
-	action_set.addDependency("string_action_rest", "rest", true);
-	action_set.addDependency("rest", "to_rest", false);
-	action_set.addDependency("string_action_no_rest", "to_rest", false);
-	action_set.addDependency("finger_action", "to_rest", false);
-	action_set.addDependency("hand_position_action", "to_rest", false);
-
+	action_set.addDependency("hp_action", "rest", false);
+	action_set.addDependency("finger_action", "rest", false);
+	action_set.addDependency("string_action_NR", "rest", false);
+	action_set.addDependency("string_action", "rest", false);
+	action_set.addDependency("string_action", "string_action_NR", false);
+	
 	Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
 
 //-------------------------- Graph building/solving -------------------------
