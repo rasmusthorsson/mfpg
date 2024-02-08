@@ -4,7 +4,8 @@ set(VERSION_MAJOR 0)
 set(VERSION_MINOR 01)
 set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
 
-configure_file(conf/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
+configure_file(cmake_files/conf_cmake.h.in 
+				${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
 project(mfpr VERSION ${VERSION_MFPG})
 
@@ -76,6 +77,6 @@ add_custom_command(
 		${CMAKE_SOURCE_DIR}/resources/A_W.xml
 )
 add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
-			${CMAKE_SOURCE_DIR}/conf/system_tests_A_W_one.cmake)
+			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_one.cmake)
 
 set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
