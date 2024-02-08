@@ -17,8 +17,10 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		//false = do not run by default, true = run by default.
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> actions;
 
-		//Multimap of dependencies, the key is the dependency, the values
-		//are the dependent actions with the boolean adjustment as a tuple.
+		//Multimap of dependencies, the key is the dependent, the values
+		//are the dependency actions with the boolean adjustment as a tuple.
+		//For Example: "action1", {"action2", true} says that if action2 
+		//occurred then action1 should occur.
 		std::multimap<std::string, std::tuple<std::string, bool>> dependencies;
 
 		//Check whether an action is to be taken or not with respect to the
@@ -92,10 +94,10 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			{
 				if (checkAction(std::get<0>(a).getID(), 
 				   std::get<1>(a),taken) 
-				   && std::get<0>(std::get<0>(a).distance(n1, n2))) 
+				   && std::get<0>(a).condition(n1, n2))
 				{
-					output = output + std::get<1>(std::get<0>(a)
-								.distance(n1, n2));
+					output = output + 
+						    std::get<0>(a).distance(n1, n2);
 					taken.push_back(std::get<0>(a).getID());
 				}	
 			}

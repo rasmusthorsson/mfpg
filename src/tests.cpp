@@ -359,50 +359,56 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 }
 //Definition of a basic action using a 3-tuple with an int return.
 TEST(Action, BasicAction) {
-	typedef std::tuple<bool, int> (*a_type)(std::tuple<int, int, int>, 
-							std::tuple<int, int, int>);
-	a_type d_f = [] (std::tuple<int, int, int> s1, std::tuple<int, int, int> s2) {
-		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
-		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
-		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
-		return std::tuple<bool, int>{true, string + hand + finger};
+	using namespace std;
+	using Input_Tuple = tuple<int, int, int>;
+	typedef bool (*a_type_cond)(Input_Tuple, Input_Tuple);
+	typedef int (*a_type_dist)(Input_Tuple, Input_Tuple);
+	a_type_cond d_f_cond = [] (Input_Tuple t1, Input_Tuple t2) {
+		return true;
 	};
-	Action<std::tuple<int, int, int>, int> NOC(d_f, "NOC");
-	std::tuple<int, int, int> t1{1, 1, 1};
-	std::tuple<int, int, int> t2{2, 2, 2};
-	std::tuple<bool, int> d1{true, 3};
-	ASSERT_EQ(NOC.distance(t1, t2), d1);
+	a_type_dist d_f_dist = [] (Input_Tuple t1, Input_Tuple t2) {
+		int string = abs(get<0>(t1) - get<0>(t2));
+		int hand = abs(get<1>(t1) - get<1>(t2));
+		int finger = abs(get<2>(t1) - get<2>(t2));
+		return string + hand + finger;	
+	};
+	Action<Input_Tuple, int> NOC(d_f_cond, d_f_dist, "NOC");
+	Input_Tuple t1{1, 1, 1};
+	Input_Tuple t2{2, 2, 2};
+	ASSERT_EQ(NOC.distance(t1, t2), 3);
+	ASSERT_EQ(NOC.condition(t1, t2), true);
 }
 
 //More complex action, using floats and booleans.
 TEST(Action, FiveTupleAction) {
-	typedef std::tuple<bool, float> (*a_type)(std::tuple<int, int, int, bool, 
-		float>, std::tuple<int, int, int, bool, float>);
-	a_type d_f = [] (std::tuple<int, int, int, bool, float> s1, 
-			std::tuple<int, int, int, bool, float> s2) {
-		int string = std::abs(std::get<0>(s1) - std::get<0>(s2));
-		int hand = std::abs(std::get<1>(s1) - std::get<1>(s2));
-		int finger = std::abs(std::get<2>(s1) - std::get<2>(s2));
-		int up_stroke = std::get<3>(s1) || std::get<3>(s2);
-		float note_distance = std::abs(std::get<4>(s1) - std::get<4>(s2));
+	using namespace std;
+	using Input_Tuple = tuple<int, int, int, bool, float>;
+	typedef bool (*a_type_cond)(Input_Tuple, Input_Tuple);
+	typedef float (*a_type_dist)(Input_Tuple, Input_Tuple);
+	a_type_dist d_f_dist = [] (Input_Tuple s1, Input_Tuple s2) {
+		int string = abs(get<0>(s1) - get<0>(s2));
+		int hand = abs(get<1>(s1) - get<1>(s2));
+		int finger = abs(get<2>(s1) - get<2>(s2));
+		int up_stroke = get<3>(s1) || get<3>(s2);
+		float note_distance = abs(get<4>(s1) - get<4>(s2));
 		float res;
 	       	if (up_stroke) {
 			res = (string + hand + finger) * note_distance;
 		} else{
 			res = (string + hand + finger);
 		}
-		return std::tuple<bool, float>(true, static_cast<float>(res));
+		return static_cast<float>(res);
 	};
-	Action<std::tuple<int, int, int, bool, float>, float> upstroke_distance(d_f, 
-										"UD");
-	std::tuple<int, int, int, bool, float> t1(1, 2, 1, false, 3.0);
-	std::tuple<int, int, int, bool, float> t2(1, 2, 3, false, 7.0);
-	std::tuple<int, int, int, bool, float> t3(1, 2, 1, true, 3.0);
-	std::tuple<int, int, int, bool, float> t4(1, 2, 3, false, 7.0);
-	std::tuple<bool, float> d1{true, 2.0};
-	std::tuple<bool, float> d2{true, 8.0};
-	ASSERT_EQ(upstroke_distance.distance(t1, t2), d1);
-	ASSERT_EQ(upstroke_distance.distance(t3, t4), d2);
+	a_type_cond d_f_cond = [] (Input_Tuple s1, Input_Tuple s2) {
+		return true;
+	};
+	Action<Input_Tuple, float> upstroke_distance(d_f_cond, d_f_dist, "UD");
+	Input_Tuple t1(1, 2, 1, false, 3.0);
+	Input_Tuple t2(1, 2, 3, false, 7.0);
+	Input_Tuple t3(1, 2, 1, true, 3.0);
+	Input_Tuple t4(1, 2, 3, false, 7.0);
+	ASSERT_EQ(upstroke_distance.distance(t1, t2), 2.0);
+	ASSERT_EQ(upstroke_distance.distance(t3, t4), 8.0);
 }
 
 class Layer_Tests : public ::testing::Test {
@@ -480,36 +486,41 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 }
 
 class ActionSet_Tests : public ::testing::Test {
-	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
-	typedef std::tuple<bool, out_type> (*a_type)(in_type, in_type);
+	typedef out_type (*a_type_dist)(in_type, in_type);
+	typedef bool (*a_type_cond)(in_type, in_type);
 	public:
 		ActionSet<in_type, out_type> set;	
 		ActionSet_Tests() {		
-			a_type finger_action = [] (in_type s1, in_type s2) {
-				out_type finger = 
-					std::max(std::get<2>(s1), std::get<2>(s2))
-					- std::min(std::get<2>(s1), std::get<2>(s2));
-				return std::tuple<bool, out_type>(true, finger);
+			using namespace std;
+			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
+				return true;
+			};
+			a_type_dist fa_dist = [] (in_type s1, in_type s2) {
+				return max(get<2>(s1), get<2>(s2))
+				       - min(get<2>(s1), get<2>(s2));
 			};
 			
-			a_type hand_action = [] (in_type s1, in_type s2) {
-				out_type hand = 
-					std::max(std::get<1>(s1), std::get<1>(s2))
-					- std::min(std::get<1>(s1), std::get<1>(s2));
-				return std::tuple<bool, out_type>(true, hand);
+			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
+				return true;
+			};
+			a_type_dist ha_dist = [] (in_type s1, in_type s2) {
+				return max(get<1>(s1), get<1>(s2))
+					 - min(get<1>(s1), get<1>(s2));
 			};
 			
-			a_type string_action = [] (in_type s1, in_type s2) {
-				out_type string = 
-					std::max(std::get<0>(s1), std::get<0>(s2))
-					- std::min(std::get<0>(s1), std::get<0>(s2));
-				return std::tuple<bool, out_type>(true, string);
+			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
+				return true;
+			};
+			a_type_dist sa_dist = [] (in_type s1, in_type s2) {
+				return max(get<0>(s1), get<0>(s2))
+					- min(get<0>(s1), get<0>(s2));
 			};
 
-			Action<in_type, out_type> f_a(finger_action, "FA");
-			Action<in_type, out_type> h_a(hand_action, "HA");
-			Action<in_type, out_type> s_a(string_action, "SA");
+			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
+			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
+			Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
 			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
 				{s_a, true}};
@@ -564,8 +575,10 @@ class LayerList_Tests : public ::testing::Test {
 	private:
 		LayerList<in_type, int> BuildLayerList() {
 			using namespace noteenums;
-			
-			typedef std::tuple<bool, int> (*a_type)(in_type, in_type);
+			using namespace std;
+	
+			typedef out_type (*a_type_dist) (in_type, in_type);
+			typedef bool (*a_type_cond) (in_type, in_type);
 
 			IString s1(1, Note::C_3, Note::B_3);
 			IString s2(2, Note::G_3, Note::Ds_4);
@@ -582,35 +595,38 @@ class LayerList_Tests : public ::testing::Test {
 			Layer<in_type> fourth(Note::Cs_4, Duration::Whole, 
 									note_mapper);
 
-			LayerList<in_type, int> temp_list(first);
+			LayerList<in_type, out_type> temp_list(first);
 			temp_list.pushBack(second);
 			temp_list.pushBack(third);
 			temp_list.pushBack(fourth);
 
-			a_type finger_action = [] (in_type s1, in_type s2) {
-				out_type finger = 
-					std::max(std::get<2>(s1), std::get<2>(s2))
-					- std::min(std::get<2>(s1), std::get<2>(s2));
-				return std::tuple<bool, int>{true, finger};
+			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
+				return true;
+			};
+			a_type_dist fa_dist = [] (in_type s1, in_type s2) {
+				return max(get<2>(s1), get<2>(s2))
+					- min(get<2>(s1), get<2>(s2));
 			};
 			
-			a_type hand_action = [] (in_type s1, in_type s2) {
-				out_type hand = 
-					std::max(std::get<1>(s1), std::get<1>(s2))
-					- std::min(std::get<1>(s1), std::get<1>(s2));
-				return std::tuple<bool, int>{true, hand};
+			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
+				return true;
+			};
+			a_type_dist ha_dist = [] (in_type s1, in_type s2) {
+				return max(get<1>(s1), get<1>(s2))
+					- min(get<1>(s1), get<1>(s2));
 			};
 			
-			a_type string_action = [] (in_type s1, in_type s2) {
-				out_type string = 
-					std::max(std::get<0>(s1), std::get<0>(s2))
-					- std::min(std::get<0>(s1), std::get<0>(s2));
-				return std::tuple<bool, int>{true, string};
+			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
+				return true;
+			};
+			a_type_dist sa_dist = [] (in_type s1, in_type s2) {
+				return max(get<0>(s1), get<0>(s2))
+					- min(get<0>(s1), get<0>(s2));
 			};
 
-			Action<in_type, out_type> f_a(finger_action, "FA");
-			Action<in_type, out_type> h_a(hand_action, "HA");
-			Action<in_type, out_type> s_a(string_action, "SA");
+			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
+			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
+			Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
 			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
 				{s_a, true}};
@@ -777,8 +793,9 @@ class GreedySolver_Tests : public ::testing::Test {
 	using out_type = int;
 	private:
 		Instrument<in_type, out_type> buildInstrument() {
-			typedef std::tuple<bool, out_type> (*action_type)(in_type, 
-									  in_type);
+			typedef out_type (*action_type_dist)(in_type, in_type);
+			typedef bool (*action_type_cond)(in_type, in_type);
+
 			IString s1(1, Note::C_3, Note::G_3);
 			IString s2(2, Note::D_3, Note::A_3);
 			IString s3(3, Note::E_3, Note::B_3);
@@ -786,21 +803,21 @@ class GreedySolver_Tests : public ::testing::Test {
 			NoteMapper<in_type>* note_mapper =
 						new BasicNoteMapper({s1, s2, s3});
 
-			action_type action = [] (in_type t1, in_type t2) {
-				int out = std::abs(std::get<1>(t1) - 
-								std::get<1>(t2));
-				out = out + std::abs(std::get<2>(t1) - 
-								std::get<2>(t2));
-				if (std::abs(std::get<0>(t1) - 
-							std::get<0>(t2)) >= 2) {
+			action_type_cond action_cond = [] (in_type t1, in_type t2) {
+				return true;
+			};
+			action_type_dist action_dist = [] (in_type t1, in_type t2) {
+				int out = abs(get<1>(t1) - get<1>(t2));
+				out = out + abs(get<2>(t1) - get<2>(t2));
+				if (abs(get<0>(t1) - get<0>(t2)) >= 2) {
 					out = out + 100;
 				} else {
 					out = out + 1;
 				}
-				return std::tuple<bool, out_type>{true, out};
+				return out;
 			};
 			
-			Action<in_type, out_type> a1(action, "A1");
+			Action<in_type, out_type> a1(action_cond, action_dist, "A1");
 			ActionSet<in_type, out_type> set({a1, true});
 
 			std::vector<IString> sv{s1, s2, s3};
