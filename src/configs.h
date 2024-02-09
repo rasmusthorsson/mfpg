@@ -43,7 +43,85 @@ namespace configs {
 			}
 		}
 	}
+	ActionSet<Node_Tuple, Distance> test_configuration_2() {
+		typedef Distance (*a_t_d) (Node_Tuple, Node_Tuple);
+		typedef bool (*a_t_c) (Node_Tuple, Node_Tuple);
 
+		a_t_c rest_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (t1 == Node_Tuple{0, 0, 0} || t2 == Node_Tuple{0, 0, 0});
+		};
+		a_t_d rest_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return 0;
+		};
+		Action<Node_Tuple, Distance> rest(rest_c, rest_d, "rest");
+
+		a_t_c f_a_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (0 != (get<2>(t1) - get<2>(t2)));
+		};
+		a_t_d f_a_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return 1;
+		};
+		Action<Node_Tuple, Distance> f_a(f_a_c, f_a_d, "f_a");
+
+		a_t_c s_a_cross_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (2 <= (abs(get<0>(t1) - get<0>(t2))));
+		};
+		a_t_d s_a_cross_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return 10;
+		};
+		Action<Node_Tuple, Distance> s_a_cross(s_a_cross_c, s_a_cross_d, "s_a_cross");
+
+		a_t_c s_a_no_cross_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (0 != (get<0>(t1) - get<0>(t2)));
+		};
+		a_t_d s_a_no_cross_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return (abs(get<0>(t1) - get<0>(t2)));
+		};
+		Action<Node_Tuple, Distance> s_a_no_cross(s_a_no_cross_c, s_a_no_cross_d, "s_a_no_cross");
+
+		a_t_c hp_a_short_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (3 >= (abs(get<1>(t1) - get<1>(t2))));
+		};
+		a_t_d hp_a_short_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return (abs(get<1>(t1) - get<1>(t2)));
+		};
+		Action<Node_Tuple, Distance> hp_a_short(hp_a_short_c, hp_a_short_d, "hp_a_short");
+		
+		a_t_c hp_a_long_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (3 < (abs(get<1>(t1) - get<1>(t2))));
+		};
+		a_t_d hp_a_long_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return (3 * (abs(get<1>(t1) - get<1>(t2))));
+		};
+		Action<Node_Tuple, Distance> hp_a_long(hp_a_long_c, hp_a_long_d, "hp_a_long");
+
+		a_t_c hp_a_high_c = [](Node_Tuple t1, Node_Tuple t2) {
+			return (5 < get<1>(t2));
+		};
+		a_t_d hp_a_high_d = [](Node_Tuple t1, Node_Tuple t2) {
+			return 5;
+		};
+		Action<Node_Tuple, Distance> hp_a_high(hp_a_high_c, hp_a_high_d, "hp_a_high");
+
+		ActionSet<Node_Tuple, Distance> action_set({
+							  {rest, true},
+							  {f_a, true},
+							  {s_a_cross, true},
+							  {s_a_no_cross, true},
+							  {hp_a_short, true},
+							  {hp_a_long, true},
+							  {hp_a_high, true}
+							  });
+		
+		action_set.addDependency("f_a", "rest", false);
+		action_set.addDependency("s_a_cross", "rest", false);
+		action_set.addDependency("s_a_no_cross", "rest", false);
+		action_set.addDependency("hp_a_short", "rest", false);
+		action_set.addDependency("hp_a_long", "rest", false);
+		action_set.addDependency("s_a_no_cross", "s_a_cross", false);
+
+		return action_set;
+	}
 	ActionSet<Node_Tuple, Distance> test_configuration_1() {
 		typedef Distance (*action_type_dist) (Node_Tuple, Node_Tuple);
 		typedef bool (*action_type_cond) (Node_Tuple, Node_Tuple);
