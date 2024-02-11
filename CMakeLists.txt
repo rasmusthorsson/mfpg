@@ -77,6 +77,11 @@ add_custom_command(
 		${CMAKE_SOURCE_DIR}/resources/A_W.xml
 )
 add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
+	COMMAND mfpr --csv --greedy -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+		${CMAKE_SOURCE_DIR}/resources/A_W.xml
+)
+add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
 	COMMAND mfpr --csv --greedy -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
 		${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml
@@ -84,9 +89,13 @@ add_custom_command(
 
 add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_one.cmake)
+add_test(NAME A_W_two COMMAND ${CMAKE_COMMAND} -P 
+			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_two.cmake)
 add_test(NAME A_D_o_F_one COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_D_o_F_one.cmake)
 
 set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+
+set_tests_properties(A_W_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
 set_tests_properties(A_D_o_F_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
