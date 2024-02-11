@@ -40,7 +40,8 @@ int main (int argc, char *argv[]) {
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
 		("h,help", "Show this message.")
-		("c,csv", "Structure output as CSV.") 
+		("c,csv", "Structure output as CSV.")
+		("t,test", "Select test parameters.", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose.") //TODO
 		("o,output", "Specify where the output should be written.",
 						cxxopts::value<std::string>())
@@ -102,9 +103,18 @@ int main (int argc, char *argv[]) {
 	std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
 	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
+	ActionSet<Node_Tuple, Distance> action_set;
+	if (result.count("test")) {
+		if (result["test"].as<int>() == 1) {
+			action_set = configs::test_configuration_1();
 
-	ActionSet<Node_Tuple, Distance> action_set(configs::test_configuration_2());
-	
+		} else if (result["test"].as<int>() == 2) { 
+			action_set = configs::test_configuration_2();
+		}
+	} else {
+		action_set = configs::test_configuration_1();
+	}
+
 	Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
 
 //-------------------------- Graph building/solving -------------------------

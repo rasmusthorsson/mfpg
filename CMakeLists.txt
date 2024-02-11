@@ -73,17 +73,17 @@ gtest_discover_tests(tests)
 
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
-	COMMAND mfpr --csv --greedy -o ${CMAKE_BINARY_DIR}/A_W.csv 
+	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
 		${CMAKE_SOURCE_DIR}/resources/A_W.xml
 )
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
-	COMMAND mfpr --csv --greedy -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
 		${CMAKE_SOURCE_DIR}/resources/A_W.xml
 )
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
-	COMMAND mfpr --csv --greedy -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
+	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
 		${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml
 )
 

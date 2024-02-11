@@ -1,5 +1,5 @@
 execute_process(
-		COMMAND ${CMAKE_BINARY_DIR}/mfpr -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+		COMMAND ${CMAKE_BINARY_DIR}/mfpr -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
 		--csv --greedy ../resources/A_W.xml
 	       )
 execute_process(
