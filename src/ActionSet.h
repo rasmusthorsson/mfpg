@@ -81,8 +81,6 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 								bool adjustment) {
 			std::tuple<std::string, bool> dep = {dependency, adjustment};
 			dependencies.insert({dependent, dep});
-			std::cout << "added: " << dependency << " to " << dependent 
-			 << "\n";
 		}	
 	
 		//Applies the actionset to two tuples; n1 to n2.	

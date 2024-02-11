@@ -103,7 +103,7 @@ int main (int argc, char *argv[]) {
 
 	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
 
-	ActionSet<Node_Tuple, Distance> action_set(configs::test_configuration_1());
+	ActionSet<Node_Tuple, Distance> action_set(configs::test_configuration_2());
 	
 	Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
 

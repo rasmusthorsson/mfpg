@@ -8,7 +8,7 @@ execute_process(
 		../resources/tests/A_D_o_F.csv RESULT_VARIABLE res
 )
 
-#file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F.csv)
+file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F.csv)
 
 if (res)
 	message("csv non-match")
