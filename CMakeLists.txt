@@ -4,7 +4,8 @@ set(VERSION_MAJOR 0)
 set(VERSION_MINOR 01)
 set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
 
-configure_file(conf/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
+configure_file(cmake_files/conf_cmake.h.in 
+				${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
 project(mfpr VERSION ${VERSION_MFPG})
 
@@ -31,14 +32,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(cxxopts)
 
-file(GLOB_RECURSE SRC_BASE src/main.cpp src/SimplifiedNote.cpp src/MXConverter.cpp
+
+file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp 
 	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
 	src/GreedySolver.cpp)
-file(GLOB_RECURSE TEST_BASE src/tests.cpp src/SimplifiedNote.cpp src/MXConverter.cpp 
-	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp 
-	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
-	src/GreedySolver.cpp)
+file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
+file(GLOB_RECURSE TEST_BASE src/tests.cpp ${BASE})
 
 add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 
@@ -49,8 +49,8 @@ if(REBUILD_MX)
 
  FetchContent_Declare(
         mx
-	 GIT_REPOSITORY https://github.com/webern/mx.git
-	 GIT_TAG c6144d229d9c976833b80de0d25e2636acf7f323
+	GIT_REPOSITORY https://github.com/webern/mx.git
+	GIT_TAG c6144d229d9c976833b80de0d25e2636acf7f323
  )
  FetchContent_MakeAvailable(mx)
  
@@ -71,9 +71,40 @@ enable_testing()
 
 gtest_discover_tests(tests)
 
-#add_test(NAME fewer_args COMMAND mfpr)
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
+	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
+		${CMAKE_SOURCE_DIR}/resources/A_W.xml
+)
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
+	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+		${CMAKE_SOURCE_DIR}/resources/A_W.xml
+)
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
+	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
+		${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml
+)
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
+	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
+		${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml
+)
 
-#set_tests_properties(fewer_args
-#	PROPERTIES PASS_REGULAR_EXPRESSION "Please specify an input MusicXML file.\n"
-#)
+add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
+			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_one.cmake)
+add_test(NAME A_W_two COMMAND ${CMAKE_COMMAND} -P 
+			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_two.cmake)
+add_test(NAME A_D_o_F_one COMMAND ${CMAKE_COMMAND} -P 
+			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_D_o_F_one.cmake)
+add_test(NAME A_D_o_F_two COMMAND ${CMAKE_COMMAND} -P 
+			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_D_o_F_two.cmake)
 
+set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+
+set_tests_properties(A_W_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+
+set_tests_properties(A_D_o_F_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+
+set_tests_properties(A_D_o_F_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")

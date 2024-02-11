@@ -31,9 +31,9 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			std::vector<bool> bools;
 			//for loop Iterates through each dependency for the action to 
 			//be performed.
-			for (auto dep_itr = dependencies.find(action_name); 
-					dep_itr != dependencies.end();
-					dep_itr++) {
+			for (auto [dep_itr, range_end] = 
+				   dependencies.equal_range(action_name); 
+				   dep_itr != range_end; dep_itr++) {
 				//For each dependency, check whether the depended 
 				//action has occured in the previousActions list.
 				if (find(previous_actions.begin(),
