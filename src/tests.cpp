@@ -576,15 +576,17 @@ class LayerList_Tests : public ::testing::Test {
 		LayerList<in_type, int> BuildLayerList() {
 			using namespace noteenums;
 			using namespace std;
-	
+			std::cout << "HALLOHALLOHALLO\n";
 			typedef out_type (*a_type_dist) (in_type, in_type);
 			typedef bool (*a_type_cond) (in_type, in_type);
 
 			IString s1(1, Note::C_3, Note::B_3);
 			IString s2(2, Note::G_3, Note::Ds_4);
 			
+			std::vector<IString> s{s1, s2};
+
 			NoteMapper<in_type>* note_mapper = 
-						new BasicNoteMapper({s1, s2});
+						new BasicNoteMapper(s);
 
 			Layer<in_type> first(Note::D_3, Duration::Whole, 
 									note_mapper);
@@ -642,6 +644,7 @@ class LayerList_Tests : public ::testing::Test {
 //Verifies that the list contains all layers and the layers have the correct amount
 //of nodes.
 TEST_F(LayerList_Tests, CountAndLayerCount) {
+
 	int count = 0;
 	for (auto l : list) {
 		count++;
