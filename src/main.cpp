@@ -52,11 +52,11 @@ int main (int argc, char *argv[]) {
 
 	if (result.count("help")) {
 		std::cout << options.help() << "\n";
-		return -1;
+		return 0;
 	}
 	if (result.count("version")) {
 		std::cout << "mfpr version: " << VERSION_MFPG << "\n";
-		return -1;
+		return 0;
 	}
 	ifstream input_file;
 	if (result.count("score")) {
@@ -107,7 +107,6 @@ int main (int argc, char *argv[]) {
 	if (result.count("test")) {
 		if (result["test"].as<int>() == 1) {
 			action_set = configs::test_configuration_1();
-
 		} else if (result["test"].as<int>() == 2) { 
 			action_set = configs::test_configuration_2();
 		}
@@ -135,6 +134,7 @@ int main (int argc, char *argv[]) {
 		solver->solve(list);
 	} catch (SolverException e) {
 		std::cout << e.what() << "\n";
+		delete(solver);
 		return -1;
 	}
 
@@ -146,6 +146,7 @@ int main (int argc, char *argv[]) {
 		if (!out.is_open()) {
 			std::cout << "Failed to open file: " << out_file << 
 				     ", Aborting..." << "\n";
+			delete(solver);
 			return -1;
 		}
 		configs::writeOutput(out, solver, result["csv"].as<bool>());
@@ -155,5 +156,5 @@ int main (int argc, char *argv[]) {
 		configs::writeOutput(out, solver, result["csv"].as<bool>());
 	}
 	delete solver;
-	return 1;
+	return 0;
 }
