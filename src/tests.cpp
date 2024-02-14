@@ -6,7 +6,7 @@
 #include "Instrument.h"
 #include "SolverException.h"
 
-//Tests valid construction of a simplified note.
+//Tests a valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
 	using namespace mx::api;
 	using namespace noteenums;
@@ -80,7 +80,7 @@ TEST(SimplifiedNote, Undefined) {
 }
 
 //Assert that all notes added to a string are in the same order as the vector used to 
-//add them and that the notes on the string are the same.
+//add them and that the notes on a string created using those notes are the same.
 TEST(IString, SpecifiedNotes) {
 	using namespace noteenums;
 
@@ -103,7 +103,8 @@ TEST(IString, SpecifiedNotes) {
 	}
 }
 
-//Tests that construction of IString using ranged ints results in the correct notes being added.
+//Tests that construction of IString using ranged ints results in the correct notes 
+//being added in the correct order.
 TEST(IString, RangedInts) {
 	using namespace noteenums;
 
@@ -126,7 +127,8 @@ TEST(IString, RangedInts) {
 	}
 }
 
-//Tests that the construction of IString using noteenums results in the correct notes being added.
+//Tests that the construction of IString using noteenums results in the correct notes 
+//being added in the correct order.
 TEST(IString, RangedNotes) {
 	using namespace noteenums;
 
@@ -245,8 +247,8 @@ TEST(NoteList, OrderPreserved) {
 
 class BasicNoteMapper_Tests : public ::testing::Test {
 	private:
-		//Creates two strings with 10 playable notes each, the strings overlap 
-		//on three notes.
+		//Creates two strings with 10 playable notes each, the strings 
+		//overlap on three notes.
 		std::pair<IString, IString> createStrings() {
 			using namespace std;
 			using namespace noteenums;
@@ -282,7 +284,7 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 };
 
 //Tests that the basic notemapper returns the correct amount of notes and amount of 
-//combinations according to the specifications.
+//combinations.
 TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
 	using namespace std;
@@ -307,7 +309,7 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 	ASSERT_EQ(map->size(), 33);
 }
 
-//Verify that all combinations constructed for 4 notes in the notemapper are the 
+//Tests that all combinations constructed for 4 notes in the notemapper are the 
 //valid combinations for those notes.
 TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
@@ -376,7 +378,7 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	ASSERT_EQ(comb_count, 7);
 }
 
-//Check that only allowed strings, hand positions, and finger numbers are used.
+//Tests that only allowed strings, hand positions, and finger numbers are used.
 TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	using namespace noteenums;
 	using namespace mx::api;
@@ -397,7 +399,8 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 		}
 	}
 }
-//Definition of a basic action using a 3-tuple with an int return.
+//Tests that a basic action using a 3-tuple with an int return returns the proper
+//distance and condition.
 TEST(Action, BasicAction) {
 	using namespace std;
 
@@ -424,7 +427,8 @@ TEST(Action, BasicAction) {
 	ASSERT_EQ(NOC.condition(t1, t2), true);
 }
 
-//More complex action, using floats and booleans.
+//Tests that a more complex action using floats and booleans returns the correct
+//distance and condition.
 TEST(Action, FiveTupleAction) {
 	using namespace std;
 	using Input_Tuple = tuple<int, int, int, bool, float>;
@@ -439,6 +443,7 @@ TEST(Action, FiveTupleAction) {
 		int up_stroke = get<3>(s1) || get<3>(s2);
 		float note_distance = abs(get<4>(s1) - get<4>(s2));
 		float res;
+
 	       	if (up_stroke) {
 			res = (string + hand + finger) * note_distance;
 		} else{
@@ -488,7 +493,9 @@ class Layer_Tests : public ::testing::Test {
 		}
 		Layer<ret> l;
 };
-//Simple test for creating a basic layer using add and remove.
+
+//Tests that creating a basic layer using add and remove results in the correct
+//tuples are being added and removed.
 TEST_F(Layer_Tests, BasicLayer) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
@@ -518,8 +525,8 @@ TEST_F(Layer_Tests, BasicLayer) {
 	ASSERT_EQ(l.getSize(), 2);
 }
 
-//Adding duplicate node results in -1 and fails to add the second node while retaining
-//first node.
+//Tests that adding a duplicate node results in -1 and fails to add the second 
+//node while retaining first node.
 TEST_F(Layer_Tests, AddSameNodeTwice) {
 	using namespace mx::api;
 
@@ -534,7 +541,7 @@ TEST_F(Layer_Tests, AddSameNodeTwice) {
 	ASSERT_EQ(l.getNodes()[0], first);
 }
 
-//Failure to remove non-existant node returns -1 and retains first node.
+//Tests that failure to remove a non-existant node returns -1 and retains first node.
 TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
@@ -598,7 +605,7 @@ class ActionSet_Tests : public ::testing::Test {
 		}
 };
 
-//Checks that the ActionSet contains the correct actions.
+//Tests that the ActionSet contains the correct actions.
 TEST_F(ActionSet_Tests, CorrectActions) {
 	using out_type = int;	
 
@@ -613,8 +620,8 @@ TEST_F(ActionSet_Tests, CorrectActions) {
 	ASSERT_EQ(count, 3);
 }
 
-//Checks that the distance between different inputs corresponds with the actions in the
-//ActionSet
+//Tests that the distance between different inputs corresponds with the actions in 
+//the ActionSet
 TEST_F(ActionSet_Tests, CorrectDistance) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 
@@ -629,7 +636,7 @@ TEST_F(ActionSet_Tests, CorrectDistance) {
 	ASSERT_EQ(set.apply(f2, s2), 3);
 }
 
-//Check that dependencies correctly disable actions and cannot re-enable them.
+//Tests that dependencies correctly disable actions and cannot re-enable them.
 TEST_F(ActionSet_Tests, Dependencies) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 
@@ -649,9 +656,6 @@ TEST_F(ActionSet_Tests, Dependencies) {
 	ASSERT_EQ(set.apply(f1, s1), 1);	
 }
 
-//Creates a LayerList of 4 layers corresponding to a sequence of notes combined with 
-//a basic notemapper, then verifies that the layerlist does indeed contain all layers 
-//and that all layers have the correct amount of nodes.
 class LayerList_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
@@ -727,8 +731,8 @@ class LayerList_Tests : public ::testing::Test {
 		LayerList_Tests() : list(BuildLayerList()) {}
 };
 
-//Verifies that the list contains all layers and the layers have the correct amount
-//of nodes.
+//Tests that the list contains all constructed layers and the layers have the 
+//correct amount of nodes.
 TEST_F(LayerList_Tests, CountAndLayerCount) {
 	int count = 0;
 	for (auto l : list) {
@@ -745,7 +749,7 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 	ASSERT_EQ(l_it++->getSize(), 1);
 }
 
-//Verifies that the transitions are calculated correctly.
+//Tests that the transitions between layers are calculated correctly.
 TEST_F(LayerList_Tests, Transitions) {
 	using namespace std;
 
@@ -821,7 +825,7 @@ TEST_F(LayerList_Tests, Transitions) {
 }
 
 //Non-fixture layerlist test to verify data coming directly from a notelist can be
-//processed properly into a layerlist.
+//processed properly into a layerlist and results in the correct layers being added.
 TEST(LayerList, FromNoteList) {
 	using namespace noteenums;
 	using namespace mx::api;
@@ -948,8 +952,7 @@ class GreedySolver_Tests : public ::testing::Test {
 		}
 };
 
-//Simple test for greedy solver, verifies that the solver selects the correct path and
-//outputs the correct costs.
+//Tests that the greedysolver selects the correct path and outputs the correct costs.
 TEST_F(GreedySolver_Tests, Basic) {
 	using namespace noteenums;
 	using namespace std;
