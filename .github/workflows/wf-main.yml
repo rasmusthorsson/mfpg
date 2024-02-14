@@ -34,20 +34,20 @@ jobs:
             - name: Configure CMake
               run: >
                 cmake -B ${{ steps.strings.outputs.build-output-dir }}
-                -DCMAKE_CXX_COMPILER=${{ inputs.cxx_compiler }}
-                -DCMAKE_C_COMPILER=${{ inputs.c_compiler }}
-                -DCMAKE_BUILD_TYPE=${{ inputs.build_type }}
-                -DREBUILD_MX=${{ inputs.mx_rebuild }}
+                -DCMAKE_CXX_COMPILER=${{ inputs.cxx-compiler }}
+                -DCMAKE_C_COMPILER=${{ inputs.c-compiler }}
+                -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
+                -DREBUILD_MX=${{ inputs.mx-rebuild }}
                 -S ${{ github.workspace }}
                 
             - name: Build
               run: > 
                 cmake 
                 --build ${{ steps.strings.outputs.build-output-dir }} 
-                --config ${{ inputs.build_type }}
+                --config ${{ inputs.build-type }}
             - name: Test
               working-directory: ${{ steps.strings.outputs.build-output-dir }}
               run: >
                 ctest 
                 --output-on-failure
-                --build-config ${{ inputs.build_type }}
+                --build-config ${{ inputs.build-type }}
