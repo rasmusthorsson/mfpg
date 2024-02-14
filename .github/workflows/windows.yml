@@ -5,7 +5,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  ubuntu-build-test:
+  windows-build-test:
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: windows-latest
