@@ -20,7 +20,7 @@ on:
                 default: Release
 
 jobs:
-    test:
+    build:
         runs-on: ${{ inputs.os }}
         steps:
             - uses: actions/checkout@v3
@@ -39,6 +39,12 @@ jobs:
                 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
                 -DREBUILD_MX=${{ inputs.mx-rebuild }}
                 -S ${{ github.workspace }}
+                
+            - name: Build
+              run: > 
+                cmake 
+                --build ${{ steps.strings.outputs.build-output-dir }} 
+                --config ${{ inputs.build-type }}
             - name: Test
               working-directory: ${{ steps.strings.outputs.build-output-dir }}
               run: >
