@@ -17,18 +17,23 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
         c_compiler: [gcc, cl]
+        mx_rebuild: [true, false]
         include:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            mx_rebuild: true
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            mx_rebuild: false
         exclude:
           - os: windows-latest
             c_compiler: gcc
+            mx_rebuild: false
           - os: ubuntu-latest
             c_compiler: cl
+            mx_rebuild: true
 
     steps:
     - uses: actions/checkout@v3
@@ -46,6 +51,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DREBUILD_MX=${{ matrix.mx_rebuild }}
         -S ${{ github.workspace }}
 
     - name: Build
