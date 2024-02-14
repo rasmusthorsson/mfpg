@@ -10,14 +10,18 @@
 TEST(SimplifiedNote, ValidInputs) {
 	using namespace mx::api;
 	using namespace noteenums;
+
 	NoteData note_ds_3 = NoteData{};
+
 	note_ds_3.durationData.durationName = DurationName::whole;
 	note_ds_3.pitchData.step = Step::d;
 	note_ds_3.pitchData.octave = 3;
 	note_ds_3.pitchData.alter = 1;
+
 	SimplifiedNote simple_note_ds_3(note_ds_3);
 	SimplifiedNote simple_note_c_4;
 	SimplifiedNote simple_note_f_3(Note::F_3, Duration::Whole);
+
 	EXPECT_EQ(Note::Ds_3, simple_note_ds_3.getNote());
 	EXPECT_EQ(Note::C_4, simple_note_c_4.getNote());
 	EXPECT_EQ(Note::F_3, simple_note_f_3.getNote());
@@ -26,12 +30,16 @@ TEST(SimplifiedNote, ValidInputs) {
 //Tests construction of a note higher than the allowed range of notes.
 TEST(SimplifiedNote, NoteTooHigh) {
 	using namespace mx::api;
+
 	NoteData note = NoteData{};
+
 	note.durationData.durationName = DurationName::whole;
 	note.pitchData.step = Step::b;
 	note.pitchData.octave = 8;
 	note.pitchData.alter = 5;
+
 	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
+
 	try {
 		SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
@@ -42,12 +50,16 @@ TEST(SimplifiedNote, NoteTooHigh) {
 //Tests construction of a note lower than the allowed range of notes.
 TEST(SimplifiedNote, NoteTooLow) {
 	using namespace mx::api;
+
 	NoteData note = NoteData{};
+
 	note.durationData.durationName = DurationName::whole;
 	note.pitchData.step = Step::c;
 	note.pitchData.octave = 0;
 	note.pitchData.alter = -2;
+
 	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
+
 	try {
 		SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
@@ -71,6 +83,7 @@ TEST(SimplifiedNote, Undefined) {
 //add them and that the notes on the string are the same.
 TEST(IString, SpecifiedNotes) {
 	using namespace noteenums;
+
 	Note C(Note::C_3);
 	Note C_s(Note::Cs_3);
 	Note D(Note::D_3);
@@ -80,8 +93,11 @@ TEST(IString, SpecifiedNotes) {
 	Note F_s(Note::Fs_3);
 	Note G(Note::G_3);
 	Note G_s(Note::Gs_3);
+
 	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+
 	IString s(1, notes);
+
 	for (int i = 0; i < s.getPlayable().size(); i++) {
 		ASSERT_EQ(s.getPlayable()[i], notes[i]);
 	}
@@ -90,6 +106,7 @@ TEST(IString, SpecifiedNotes) {
 //Tests that construction of IString using ranged ints results in the correct notes being added.
 TEST(IString, RangedInts) {
 	using namespace noteenums;
+
 	Note C(Note::C_3);
 	Note C_s(Note::Cs_3);
 	Note D(Note::D_3);
@@ -99,8 +116,11 @@ TEST(IString, RangedInts) {
 	Note F_s(Note::Fs_3);
 	Note G(Note::G_3);
 	Note G_s(Note::Gs_3);
+
 	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+
 	IString s(1, 36, 44);
+
 	for (int i = 0; i < s.getPlayable().size(); i++) {
 		ASSERT_EQ(s.getPlayable()[i], notes[i]);
 	}
@@ -109,6 +129,7 @@ TEST(IString, RangedInts) {
 //Tests that the construction of IString using noteenums results in the correct notes being added.
 TEST(IString, RangedNotes) {
 	using namespace noteenums;
+
 	Note C(Note::C_3);
 	Note C_s(Note::Cs_3);
 	Note D(Note::D_3);
@@ -118,8 +139,11 @@ TEST(IString, RangedNotes) {
 	Note F_s(Note::Fs_3);
 	Note G(Note::G_3);
 	Note G_s(Note::Gs_3);
+
 	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+
 	IString s(1, Note::C_3, Note::Gs_3);
+
 	for (int i = 0; i < s.getPlayable().size(); i++) {
 		ASSERT_EQ(s.getPlayable()[i], notes[i]);
 	}
@@ -128,8 +152,11 @@ TEST(IString, RangedNotes) {
 //Tests that an empty NoteList is the result of an empty score.
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
+
 	ScoreData score = ScoreData{};
+
 	NoteList note_list(score);
+
 	ASSERT_EQ(note_list.size(), 0);
 }
 
@@ -223,6 +250,7 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 		std::pair<IString, IString> createStrings() {
 			using namespace std;
 			using namespace noteenums;
+
 			Note C(Note::C_3);
 			Note C_s(Note::Cs_3);
 			Note D(Note::D_3);
@@ -236,12 +264,13 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 			Note A_s(Note::As_3);
 			Note B(Note::B_3);
 			Note C2(Note::C_4);
-			std::vector<Note> 
-				notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s, D_s};
-			std::vector<Note> 
-				notes_2{D_s, E, F, F_s, G, G_s, A, A_s, B, C2};
+
+			vector<Note> notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s, D_s};
+			vector<Note> notes_2{D_s, E, F, F_s, G, G_s, A, A_s, B, C2};
+
 			IString s1(1, notes_1);
 			IString s2(2, notes_2);
+
 			return make_pair(s1, s2);
 		}
 	public:
@@ -256,19 +285,23 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 //combinations according to the specifications.
 TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
-	std::vector<IString> strings = {s1, s2};
-	std::unique_ptr<NoteMapper<std::tuple<int, int, int>>> 
-		map(new BasicNoteMapper({s1, s2}));
+	using namespace std;
+
+	vector<IString> strings = {s1, s2};
+	unique_ptr<NoteMapper<tuple<int, int, int>>> 
+					map(new BasicNoteMapper({s1, s2}));
+
 	int note_count = 0;
 	for (auto i = map->begin(), end = map->end(); i != end;
 		  i = map->getUpper(i->first)) {
 		note_count++;
 	}
+
 	for (auto elem : map->getMap()) {
-		std::cout << "Note: " << elem.first << "\n";
-		std::cout << "String: " << std::get<0>(elem.second)
-			<< " HP: " << std::get<1>(elem.second)
-			<< " Finger: " << std::get<2>(elem.second) << "\n";
+		cout << "Note: " << elem.first << "\n";
+		cout << "String: " << get<0>(elem.second)
+			<< " HP: " << get<1>(elem.second)
+			<< " Finger: " << get<2>(elem.second) << "\n";
 	}
 	ASSERT_EQ(note_count, 14);
 	ASSERT_EQ(map->size(), 33);
@@ -279,59 +312,63 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
-	std::unique_ptr<NoteMapper<std::tuple<int, int, int>>> 
-		map(new BasicNoteMapper({s1, s2}));
+	using namespace std;
+
+	unique_ptr<NoteMapper<tuple<int, int, int>>> 
+					map(new BasicNoteMapper({s1, s2}));
+
 	auto C3 = map->getRange(Note::C_3);
 	auto D_3 = map->getRange(Note::D_3);
 	auto E3 = map->getRange(Note::E_3);
 	auto As_3 = map->getRange(Note::As_3);
+
 	int comb_count = 0;
 	//Check valid combinations for C_3.
 	for (auto i = C3.first; i != C3.second; i++) {
 		comb_count++;
 		if (comb_count == 1) {
-			ASSERT_EQ(std::get<0>(i->second), 1);
-			ASSERT_EQ(std::get<1>(i->second), 0);
-			ASSERT_EQ(std::get<2>(i->second), 0);
+			ASSERT_EQ(get<0>(i->second), 1);
+			ASSERT_EQ(get<1>(i->second), 0);
+			ASSERT_EQ(get<2>(i->second), 0);
 		}
 	}
 	//Check valid combinations for D_3.
 	for (auto i = D_3.first; i != D_3.second; i++) {
 		comb_count++;
 		if (comb_count == 2) {
-			ASSERT_EQ(std::get<0>(i->second), 1);
-			ASSERT_EQ(std::get<1>(i->second), 1);
-			ASSERT_EQ(std::get<2>(i->second), 1);
+			ASSERT_EQ(get<0>(i->second), 1);
+			ASSERT_EQ(get<1>(i->second), 1);
+			ASSERT_EQ(get<2>(i->second), 1);
 		}
 	}
 	//Check valid combinations for E_3.
 	for (auto i = E3.first; i != E3.second; i++) {
 		comb_count++;
 		if (comb_count == 3) {
-			ASSERT_EQ(std::get<0>(i->second), 1);
-			ASSERT_EQ(std::get<1>(i->second), 1);
-			ASSERT_EQ(std::get<2>(i->second), 2);
+			ASSERT_EQ(get<0>(i->second), 1);
+			ASSERT_EQ(get<1>(i->second), 1);
+			ASSERT_EQ(get<2>(i->second), 2);
 		} else if (comb_count == 4) {
-			ASSERT_EQ(std::get<0>(i->second), 1);
-			ASSERT_EQ(std::get<1>(i->second), 2);
-			ASSERT_EQ(std::get<2>(i->second), 1);
+			ASSERT_EQ(get<0>(i->second), 1);
+			ASSERT_EQ(get<1>(i->second), 2);
+			ASSERT_EQ(get<2>(i->second), 1);
 		} else if (comb_count == 5) {
-			ASSERT_EQ(std::get<0>(i->second), 2);
-			ASSERT_EQ(std::get<1>(i->second), 1);
-			ASSERT_EQ(std::get<2>(i->second), 1);
+			ASSERT_EQ(get<0>(i->second), 2);
+			ASSERT_EQ(get<1>(i->second), 1);
+			ASSERT_EQ(get<2>(i->second), 1);
 		}
 	}
 	//Check valid combinations for As_3.
 	for (auto i = As_3.first; i != As_3.second; i++) {
 		comb_count++;
 		if (comb_count == 6) {
-			ASSERT_EQ(std::get<0>(i->second), 2);
-			ASSERT_EQ(std::get<1>(i->second), 1);
-			ASSERT_EQ(std::get<2>(i->second), 4);
+			ASSERT_EQ(get<0>(i->second), 2);
+			ASSERT_EQ(get<1>(i->second), 1);
+			ASSERT_EQ(get<2>(i->second), 4);
 		} else if (comb_count == 7) {
-			ASSERT_EQ(std::get<0>(i->second), 2);
-			ASSERT_EQ(std::get<1>(i->second), 2);
-			ASSERT_EQ(std::get<2>(i->second), 3);
+			ASSERT_EQ(get<0>(i->second), 2);
+			ASSERT_EQ(get<1>(i->second), 2);
+			ASSERT_EQ(get<2>(i->second), 3);
 		} 
 	}
 	//delete map;
@@ -344,25 +381,31 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	using namespace noteenums;
 	using namespace mx::api;
 	using namespace testing;
-	std::vector<IString> strings = {s1, s2};
-	std::unique_ptr<NoteMapper<std::tuple<int, int, int>>> 
+	using namespace std;
+
+	vector<IString> strings = {s1, s2};
+	unique_ptr<NoteMapper<tuple<int, int, int>>> 
 		map(new BasicNoteMapper({s1, s2}));
+
 	for (auto i = map->begin(); i != map->end(); i++) {
 		if (i->first != Note::REST) {
-			ASSERT_THAT(std::get<0>(i->second), AllOf(Lt(3), Gt(0)));
-			ASSERT_THAT(std::get<1>(i->second), AllOf(Lt(3), Gt(-1)));
-			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(5), Gt(-1)));
+			ASSERT_THAT(get<0>(i->second), AllOf(Lt(3), Gt(0)));
+			ASSERT_THAT(get<1>(i->second), AllOf(Lt(3), Gt(-1)));
+			ASSERT_THAT(get<2>(i->second), AllOf(Lt(5), Gt(-1)));
 		} else {
-			ASSERT_THAT(std::get<2>(i->second), AllOf(Lt(1), Gt(-1)));
+			ASSERT_THAT(get<2>(i->second), AllOf(Lt(1), Gt(-1)));
 		}
 	}
 }
 //Definition of a basic action using a 3-tuple with an int return.
 TEST(Action, BasicAction) {
 	using namespace std;
+
 	using Input_Tuple = tuple<int, int, int>;
+
 	typedef bool (*a_type_cond)(Input_Tuple, Input_Tuple);
 	typedef int (*a_type_dist)(Input_Tuple, Input_Tuple);
+
 	a_type_cond d_f_cond = [] (Input_Tuple t1, Input_Tuple t2) {
 		return true;
 	};
@@ -373,8 +416,10 @@ TEST(Action, BasicAction) {
 		return string + hand + finger;	
 	};
 	Action<Input_Tuple, int> NOC(d_f_cond, d_f_dist, "NOC");
+
 	Input_Tuple t1{1, 1, 1};
 	Input_Tuple t2{2, 2, 2};
+
 	ASSERT_EQ(NOC.distance(t1, t2), 3);
 	ASSERT_EQ(NOC.condition(t1, t2), true);
 }
@@ -383,8 +428,10 @@ TEST(Action, BasicAction) {
 TEST(Action, FiveTupleAction) {
 	using namespace std;
 	using Input_Tuple = tuple<int, int, int, bool, float>;
+
 	typedef bool (*a_type_cond)(Input_Tuple, Input_Tuple);
 	typedef float (*a_type_dist)(Input_Tuple, Input_Tuple);
+
 	a_type_dist d_f_dist = [] (Input_Tuple s1, Input_Tuple s2) {
 		int string = abs(get<0>(s1) - get<0>(s2));
 		int hand = abs(get<1>(s1) - get<1>(s2));
@@ -403,10 +450,12 @@ TEST(Action, FiveTupleAction) {
 		return true;
 	};
 	Action<Input_Tuple, float> upstroke_distance(d_f_cond, d_f_dist, "UD");
+
 	Input_Tuple t1(1, 2, 1, false, 3.0);
 	Input_Tuple t2(1, 2, 3, false, 7.0);
 	Input_Tuple t3(1, 2, 1, true, 3.0);
 	Input_Tuple t4(1, 2, 3, false, 7.0);
+
 	ASSERT_EQ(upstroke_distance.distance(t1, t2), 2.0);
 	ASSERT_EQ(upstroke_distance.distance(t3, t4), 8.0);
 }
@@ -417,12 +466,16 @@ class Layer_Tests : public ::testing::Test {
 	private:
 		Layer<ret> createLayer() {
 			using namespace mx::api;
+
 			NoteData n = NoteData{};
+
 			n.durationData.durationName = DurationName::whole;
 			n.pitchData.step = Step::c;
 			n.pitchData.octave = 3;
 			n.pitchData.alter = 0;
+
 			SimplifiedNote note(n);
+
 			return Layer<ret>(n);
 		}
 	public:
@@ -441,17 +494,24 @@ TEST_F(Layer_Tests, BasicLayer) {
 	typedef std::tuple<int, int, int> ret;
 	
 	ret first{1, 1, 1};
+
 	EXPECT_NO_THROW(l.addNode(first));
 	ASSERT_EQ(l.getSize(), 1);
+
 	ret second{2, 1, 1};
+
 	EXPECT_NO_THROW(l.addNode(second));
 	ASSERT_EQ(l.getSize(), 2);
 	EXPECT_NO_THROW(l.removeNode(first));
 	ASSERT_EQ(l.getSize(), 1);
+
 	ret third{1, 2, 1};
+
 	EXPECT_NO_THROW(l.addNode(third));
 	ASSERT_EQ(l.getSize(), 2);
+
 	ret fourth{1, 1, 2};
+
 	EXPECT_NO_THROW(l.addNode(fourth));
 	ASSERT_EQ(l.getSize(), 3);
 	EXPECT_NO_THROW(l.removeNode(fourth));
@@ -462,10 +522,12 @@ TEST_F(Layer_Tests, BasicLayer) {
 //first node.
 TEST_F(Layer_Tests, AddSameNodeTwice) {
 	using namespace mx::api;
+
 	typedef std::tuple<int, int, int> ret;
 
 	ret first{1, 1, 1};
 	ret second{1, 1, 1};
+
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.addNode(second), -1);
 	ASSERT_EQ(l.getSize(), 1);
@@ -479,6 +541,7 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	
 	ret first{1, 1, 1};	
 	ret second{2, 2, 2};
+
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.removeNode(second), -1);
 	ASSERT_EQ(l.getSize(), 1);
@@ -488,12 +551,15 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 class ActionSet_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
+
 	typedef out_type (*a_type_dist)(in_type, in_type);
 	typedef bool (*a_type_cond)(in_type, in_type);
+
 	public:
 		ActionSet<in_type, out_type> set;	
 		ActionSet_Tests() {		
 			using namespace std;
+
 			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
 				return true;
 			};
@@ -501,6 +567,7 @@ class ActionSet_Tests : public ::testing::Test {
 				return max(get<2>(s1), get<2>(s2))
 				       - min(get<2>(s1), get<2>(s2));
 			};
+			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
 			
 			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -509,6 +576,7 @@ class ActionSet_Tests : public ::testing::Test {
 				return max(get<1>(s1), get<1>(s2))
 					 - min(get<1>(s1), get<1>(s2));
 			};
+			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			
 			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -517,13 +585,15 @@ class ActionSet_Tests : public ::testing::Test {
 				return max(get<0>(s1), get<0>(s2))
 					- min(get<0>(s1), get<0>(s2));
 			};
-
-			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
-			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
-				{s_a, true}};
+
+			ActionSet<in_type, out_type> actions{
+							{f_a, true}, 
+							{h_a, true}, 
+							{s_a, true}
+							};
+
 			set = actions;
 		}
 };
@@ -531,10 +601,12 @@ class ActionSet_Tests : public ::testing::Test {
 //Checks that the ActionSet contains the correct actions.
 TEST_F(ActionSet_Tests, CorrectActions) {
 	using out_type = int;	
+
 	int count = 0;
 	for (auto a : set.getActions()) {
 		count++;
 	}
+
 	ASSERT_EQ(std::get<0>(set.getActions()[0]).getID(), "FA");
 	ASSERT_EQ(std::get<0>(set.getActions()[1]).getID(), "HA");
 	ASSERT_EQ(std::get<0>(set.getActions()[2]).getID(), "SA");
@@ -545,24 +617,35 @@ TEST_F(ActionSet_Tests, CorrectActions) {
 //ActionSet
 TEST_F(ActionSet_Tests, CorrectDistance) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+
 	in_type f1 = {0, 0, 0};
 	in_type s1 = {1, 2, 1};
+
 	ASSERT_EQ(set.apply(f1, s1), 4);
+
 	in_type f2 = {2, 2, 2};
 	in_type s2 = {0, 3, 2};
+
 	ASSERT_EQ(set.apply(f2, s2), 3);
 }
 
 //Check that dependencies correctly disable actions and cannot re-enable them.
 TEST_F(ActionSet_Tests, Dependencies) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
+
 	set.addDependency("HA", "FA", false);
+
 	in_type f1 = {0, 0, 0};
 	in_type s1 = {1, 10, 1};
+
 	ASSERT_EQ(set.apply(f1, s1), 2);	
+
 	set.addDependency("SA", "FA", false);
+
 	ASSERT_EQ(set.apply(f1, s1), 1);	
+
 	set.addDependency("SA", "FA", true);
+
 	ASSERT_EQ(set.apply(f1, s1), 1);	
 }
 
@@ -572,21 +655,20 @@ TEST_F(ActionSet_Tests, Dependencies) {
 class LayerList_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
+
 	private:
 		LayerList<in_type, int> BuildLayerList() {
 			using namespace noteenums;
 			using namespace std;
-			std::cout << "HALLOHALLOHALLO\n";
+
 			typedef out_type (*a_type_dist) (in_type, in_type);
 			typedef bool (*a_type_cond) (in_type, in_type);
 
 			IString s1(1, Note::C_3, Note::B_3);
 			IString s2(2, Note::G_3, Note::Ds_4);
-			
-			std::vector<IString> s{s1, s2};
 
 			NoteMapper<in_type>* note_mapper = 
-						new BasicNoteMapper(s);
+						new BasicNoteMapper({s1, s2});
 
 			Layer<in_type> first(Note::D_3, Duration::Whole, 
 									note_mapper);
@@ -609,6 +691,7 @@ class LayerList_Tests : public ::testing::Test {
 				return max(get<2>(s1), get<2>(s2))
 					- min(get<2>(s1), get<2>(s2));
 			};
+			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
 			
 			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -617,6 +700,7 @@ class LayerList_Tests : public ::testing::Test {
 				return max(get<1>(s1), get<1>(s2))
 					- min(get<1>(s1), get<1>(s2));
 			};
+			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			
 			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -625,14 +709,16 @@ class LayerList_Tests : public ::testing::Test {
 				return max(get<0>(s1), get<0>(s2))
 					- min(get<0>(s1), get<0>(s2));
 			};
-
-			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
-			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			ActionSet<in_type, out_type> actions{{f_a, true}, {h_a, true}, 
-				{s_a, true}};
+			ActionSet<in_type, out_type> actions{
+							    {f_a, true}, 
+							    {h_a, true}, 
+							    {s_a, true}
+							    };
+
 			temp_list.buildTransitions(actions);
+
 			delete note_mapper;
 			return temp_list;
 		}
@@ -644,13 +730,15 @@ class LayerList_Tests : public ::testing::Test {
 //Verifies that the list contains all layers and the layers have the correct amount
 //of nodes.
 TEST_F(LayerList_Tests, CountAndLayerCount) {
-
 	int count = 0;
 	for (auto l : list) {
 		count++;
 	}
+
 	ASSERT_EQ(count, 4);
+
 	auto l_it = list.begin();
+
 	ASSERT_EQ(l_it++->getSize(), 1);
 	ASSERT_EQ(l_it++->getSize(), 3);
 	ASSERT_EQ(l_it++->getSize(), 4);
@@ -659,50 +747,69 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 
 //Verifies that the transitions are calculated correctly.
 TEST_F(LayerList_Tests, Transitions) {
+	using namespace std;
+
 	auto l_it = list.begin();
+
 	//Outputs 
-	std::vector<int> outputs = {2, 2, 2, 
-				    1, 1, 3, 5, 3, 1, 1, 5, 5, 3, 1, 5,
-				    2, 2, 4, 4};
+	vector<int> outputs = {2, 2, 2, 
+			       1, 1, 3, 5, 3, 1, 1, 5, 5, 3, 1, 5,
+			       2, 2, 4, 4
+			       };
 	int count = 0;
 	//D_3 = {1, 1, 1}
 	for (auto transition : l_it->getTransitions()) {
-		std::cout << std::get<0>(transition.first) << ", ";
-		std::cout << std::get<1>(transition.first) << ", ";
-		std::cout << std::get<2>(transition.first) << "\n";
+		cout << get<0>(transition.first) << ", ";
+		cout << get<1>(transition.first) << ", ";
+		cout << get<2>(transition.first) << "\n";
 		for (auto output : transition.second) {
-			std::cout << "Count: " << count << "\nOutput D -> Fs: " << 
-								output << "\n";
+			cout << "Count: " 
+			     << count 
+			     << "\nOutput D -> Fs: " 
+			     << output 
+			     << "\n";
+
 			ASSERT_EQ(output, outputs[count]);
 			count++;
 		}
 	}
+
 	l_it++;
 	//Fs_3 = {1, 1, 3}, {1, 2, 2}, {1, 3, 1}
 	for (auto transition : l_it->getTransitions()) {
-		std::cout << std::get<0>(transition.first) << ", ";
-		std::cout << std::get<1>(transition.first) << ", ";
-		std::cout << std::get<2>(transition.first) << "\n";
+		cout << get<0>(transition.first) << ", ";
+		cout << get<1>(transition.first) << ", ";
+		cout << get<2>(transition.first) << "\n";
 		for (auto output : transition.second) {
-			std::cout << "Count: " << count << "\nOutput Fs -> G: " << 
-								output << "\n";
+			cout << "Count: " 
+			     << count 
+			     << "\nOutput Fs -> G: " 
+			     << output 
+			     << "\n";
+
 			ASSERT_EQ(output, outputs[count]);
 			count++;
 		}
 	}
+
 	l_it++;
 	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 0, 0}
 	for (auto transition : l_it->getTransitions()) {
-		std::cout << std::get<0>(transition.first) << ", ";
-		std::cout << std::get<1>(transition.first) << ", ";
-		std::cout << std::get<2>(transition.first) << "\n";
+		cout << get<0>(transition.first) << ", ";
+		cout << get<1>(transition.first) << ", ";
+		cout << get<2>(transition.first) << "\n";
 		for (auto output : transition.second) {
-			std::cout << "Count: " << count << "\nOutput G -> Cs: " << 
-								output << "\n";
+			cout << "Count: " 
+			     << count 
+			     << "\nOutput G -> Cs: " 
+			     << output 
+			     << "\n";
+
 			ASSERT_EQ(output, outputs[count]);
 			count++;
 		}
 	}
+
 	//Cs_4 = {2, 1, 3} -- Does not transition out
 	l_it++;
 	for (auto transition : l_it->getTransitions()) {
@@ -778,12 +885,14 @@ TEST(LayerList, FromNoteList) {
 	LayerList<std::tuple<int, int, int>, int> l1(notes);
 	
 	int count = 0;
-	
 	for (auto l : l1) {
 		count++;
 	}
+
 	ASSERT_EQ(count, 5);
+
 	auto it = l1.begin();
+
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::A_4);
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::B_4);
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::C_5);
@@ -794,8 +903,11 @@ TEST(LayerList, FromNoteList) {
 class GreedySolver_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
+
 	private:
 		Instrument<in_type, out_type> buildInstrument() {
+			using namespace std;
+
 			typedef out_type (*action_type_dist)(in_type, in_type);
 			typedef bool (*action_type_cond)(in_type, in_type);
 
@@ -819,17 +931,18 @@ class GreedySolver_Tests : public ::testing::Test {
 				}
 				return out;
 			};
-			
 			Action<in_type, out_type> a1(action_cond, action_dist, "A1");
+			
 			ActionSet<in_type, out_type> set({a1, true});
 
-			std::vector<IString> sv{s1, s2, s3};
+			vector<IString> sv{s1, s2, s3};
 			Instrument<in_type, out_type> i(sv, note_mapper, set);
+
 			return i;
 		}
 	public:
-		GreedySolver_Tests() : instrument(buildInstrument()) {}
 		Instrument<in_type, out_type> instrument;
+		GreedySolver_Tests() : instrument(buildInstrument()) {}
 		void TearDown() override {
 			delete instrument.getNoteMapper();
 		}
@@ -839,8 +952,9 @@ class GreedySolver_Tests : public ::testing::Test {
 //outputs the correct costs.
 TEST_F(GreedySolver_Tests, Basic) {
 	using namespace noteenums;
+	using namespace std;
 
-	using in_type = std::tuple<int, int, int>;
+	using in_type = tuple<int, int, int>;
 	using out_type = int;	
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
@@ -869,14 +983,14 @@ TEST_F(GreedySolver_Tests, Basic) {
 	int count = 0;
 	for (auto sol : solver->getSolution()) {
 		if (count == 0) {
-			ASSERT_EQ(std::get<0>(sol).getState(), sol_1);
-			ASSERT_EQ(std::get<1>(sol), cost_1);
+			ASSERT_EQ(get<0>(sol).getState(), sol_1);
+			ASSERT_EQ(get<1>(sol), cost_1);
 		} else if (count == 1) {
-			ASSERT_EQ(std::get<0>(sol).getState(), sol_2);
-			ASSERT_EQ(std::get<1>(sol), cost_2);
+			ASSERT_EQ(get<0>(sol).getState(), sol_2);
+			ASSERT_EQ(get<1>(sol), cost_2);
 		} else if (count == 2) {
-			ASSERT_EQ(std::get<0>(sol).getState(), sol_3);
-			ASSERT_EQ(std::get<1>(sol), cost_3);
+			ASSERT_EQ(get<0>(sol).getState(), sol_3);
+			ASSERT_EQ(get<1>(sol), cost_3);
 		}
 		count++;
 	}
