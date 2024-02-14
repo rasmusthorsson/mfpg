@@ -1,5 +1,5 @@
-![workflow](https://github.com/rasmusthorsson/mfpg/actions/workflows/ubuntu.yml/badge.svg)
-![workflow](https://github.com/rasmusthorsson/mfpg/actions/workflows/windows.yml/badge.svg)
+![ubuntu](https://github.com/rasmusthorsson/mfpg/actions/workflows/ubuntu.yml/badge.svg)
+![windows](https://github.com/rasmusthorsson/mfpg/actions/workflows/windows.yml/badge.svg)
 
 # Music Fingering Position Generator
 
