@@ -2,13 +2,11 @@ name: Tests-Ubuntu
 
 on:
   workflow_run:
-    workflows: 
-        - Build-Ubuntu
-    types:
-        - completed
+    workflows: ["Build-Ubuntu"]
+    types: [completed]
 
 jobs:
-  ubuntu-build:
+  ubuntu-tests:
     uses: ./.github/workflows/wf-tests.yml
     with: 
       os: ubuntu-latest
