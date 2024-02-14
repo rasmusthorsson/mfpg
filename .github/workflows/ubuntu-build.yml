@@ -7,11 +7,11 @@ on:
     branches: [ "master" ]
 
 jobs:
-  windows-build:
+  ubuntu-build:
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
-      c-compiler: cl
-      cxx-compiler: cl
+      c-compiler: gcc
+      cxx-compiler: g++
       mx-rebuild: false
       build-type: Release
