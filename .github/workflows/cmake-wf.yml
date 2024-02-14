@@ -1,6 +1,8 @@
 name: CMake on multiple platforms
 
 on:
+  push:
+    branches: [ "feature-9-cicdwindows-setup" ]
   pull_request:
     branches: [ "master" ]
 
