@@ -1,4 +1,4 @@
-name: Ubuntu
+name: Windows
 
 on:
   pull_request:
@@ -8,8 +8,8 @@ jobs:
   ubuntu-build-test:
     uses: ./.github/workflows/wf-main.yml
     with: 
-      os: ubuntu-latest
-      c-compiler: gcc
-      cxx-compiler: g++
-      mx-rebuild: false
+      os: windows-latest
+      c-compiler: cl
+      cxx-compiler: cl
+      mx-rebuild: true
       build-type: Release
