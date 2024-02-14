@@ -1,0 +1,15 @@
+name: Tests Ubuntu.
+
+on:
+  workflow_run:
+    workflows: [Build Ubuntu] 
+
+jobs:
+  ubuntu-build:
+    uses: ./.github/workflows/wf-tests.yml
+    with: 
+      os: ubuntu-latest
+      c-compiler: gcc
+      cxx-compiler: g++
+      mx-rebuild: false
+      build-type: Release

@@ -1,4 +1,4 @@
-name: CMake on multiple platforms
+name: Build Ubuntu.
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   ubuntu-build:
-    uses: ./.github/workflows/wf-main.yml
+    uses: ./.github/workflows/wf-build.yml
     with: 
       os: ubuntu-latest
       c-compiler: gcc
