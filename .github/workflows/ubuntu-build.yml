@@ -8,7 +8,7 @@ on:
 
 jobs:
   windows-build:
-    uses: rasmusthorsson/mfpg/.github/workflows/wf-main.yml
+    uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
       c-compiler: cl
