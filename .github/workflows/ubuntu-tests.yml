@@ -1,9 +1,11 @@
-name: Tests Ubuntu
+name: Tests-Ubuntu
 
 on:
   workflow_run:
-    workflows: [Build Ubuntu] 
-    types: [completed]
+    workflows: 
+        - Build-Ubuntu
+    types:
+        - completed
 
 jobs:
   ubuntu-build:
