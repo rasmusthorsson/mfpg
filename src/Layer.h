@@ -115,7 +115,7 @@ template<class InputTuple> class Layer {
 			return Iterator(&nodes[0]);
 		}
 		Iterator end() {
-			return Iterator(&nodes[nodes.size()]);
+			return Iterator(&nodes[0] + nodes.size());
 		}
 };
 #endif

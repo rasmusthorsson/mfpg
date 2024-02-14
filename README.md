@@ -1,3 +1,6 @@
+![ubuntu](https://github.com/rasmusthorsson/mfpg/actions/workflows/ubuntu.yml/badge.svg)
+![windows](https://github.com/rasmusthorsson/mfpg/actions/workflows/windows.yml/badge.svg)
+
 # Music Fingering Position Generator
 
 A personal project with the goal of creating software to automically construct a 

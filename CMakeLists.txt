@@ -10,7 +10,10 @@ configure_file(cmake_files/conf_cmake.h.in
 project(mfpr VERSION ${VERSION_MFPG})
 
 #MX library is not compatible with g++-13.
-set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "")
+if (UNIX)
+  set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "")
+endif(UNIX)
+
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)

@@ -1,5 +1,11 @@
+if (UNIX)
+	set(MFPR_PATH ${CMAKE_BINARY_DIR}/mfpr)
+else(MSVC)
+	set(MFPR_PATH ${CMAKE_BINARY_DIR}/Release/mfpr)
+endif()
+
 execute_process(
-		COMMAND ${CMAKE_BINARY_DIR}/mfpr -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+		COMMAND ${MFPR_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
 		--csv --greedy ../resources/A_W.xml
 	       )
 execute_process(

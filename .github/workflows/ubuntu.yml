@@ -1,0 +1,15 @@
+name: Ubuntu
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  ubuntu-build-test:
+    uses: ./.github/workflows/wf-main.yml
+    with: 
+      os: ubuntu-latest
+      c-compiler: gcc
+      cxx-compiler: g++
+      mx-rebuild: false
+      build-type: Release

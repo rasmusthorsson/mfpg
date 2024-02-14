@@ -1,0 +1,15 @@
+name: Windows
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  ubuntu-build-test:
+    uses: ./.github/workflows/wf-main.yml
+    with: 
+      os: windows-latest
+      c-compiler: cl
+      cxx-compiler: cl
+      mx-rebuild: true
+      build-type: Release
