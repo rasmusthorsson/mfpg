@@ -1,0 +1,53 @@
+on:
+    workflow_call:
+        inputs:
+            os:
+                required: true
+                type: string
+            c-compiler:
+                required: true
+                type: string
+            cxx-compiler:
+                required: true
+                type: string
+            mx-rebuild:
+                required: false
+                type: boolean
+                default: false
+            build-type:
+                required: false
+                type: string
+                default: Release
+
+jobs:
+    build:
+        runs-on: ${{ inputs.os }}
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set reusable strings
+              id: strings
+              shell: bash
+              run: |
+                echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+            
+            - name: Configure CMake
+              run: >
+                cmake -B ${{ steps.strings.outputs.build-output-dir }}
+                -DCMAKE_CXX_COMPILER=${{ inputs.cxx_compiler }}
+                -DCMAKE_C_COMPILER=${{ inputs.c_compiler }}
+                -DCMAKE_BUILD_TYPE=${{ inputs.build_type }}
+                -DREBUILD_MX=${{ inputs.mx_rebuild }}
+                -S ${{ github.workspace }}
+                
+            - name: Build
+              run: > 
+                cmake 
+                --build ${{ steps.strings.outputs.build-output-dir }} 
+                --config ${{ inputs.build_type }}
+            - name: Test
+              working-directory: ${{ steps.strings.outputs.build-output-dir }}
+              run: >
+                ctest 
+                --output-on-failure
+                --build-config ${{ inputs.build_type }}
