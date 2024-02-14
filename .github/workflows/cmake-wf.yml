@@ -35,10 +35,6 @@ jobs:
             mx_rebuild: false
           - os: ubuntu-latest
             c_compiler: cl
-            mx_rebuild: false
-          - os: ubuntu-latest
-            c_compiler: cl
-            mx_rebuild: true
           - os: ubuntu-latest
             c_compiler: gcc
             mx_rebuild: true
