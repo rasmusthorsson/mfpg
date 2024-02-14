@@ -1,3 +1,5 @@
+![workflow](https://github.com/rasmusthorsson/mfpg/actions/workflows/cmake-wf.yml/badge.svg)
+
 # Music Fingering Position Generator
 
 A personal project with the goal of creating software to automically construct a 

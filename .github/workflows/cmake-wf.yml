@@ -1,8 +1,6 @@
 name: CMake on multiple platforms
 
 on:
-  push:
-    branches: [ "feature-9-cicdwindows-setup" ]
   pull_request:
     branches: [ "master" ]
 
@@ -22,6 +20,8 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            #Since GitHub Actions does not support x86 for windows the entire mx library has to be
+            #rebuilt for now.
             mx_rebuild: true
           - os: ubuntu-latest
             c_compiler: gcc
