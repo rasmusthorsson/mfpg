@@ -90,17 +90,17 @@ int main (int argc, char *argv[]) {
 	const auto documentID = mgr.createFromStream(istr);
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
-	NoteList note_list(score);
+	const NoteList note_list(score);
 
 //---------------------- Instrument creation ----------------------------
 	
 
-	IString G_s(1, Note::G_3, Note::Gs_5);
-	IString D_s(2, Note::D_4, Note::Ds_6);
-	IString A_s(3, Note::A_4, Note::As_6);
-	IString E_s(4, Note::E_5, Note::F_7);
+	const IString G_s(1, Note::G_3, Note::Gs_5);
+	const IString D_s(2, Note::D_4, Note::Ds_6);
+	const IString A_s(3, Note::A_4, Note::As_6);
+	const IString E_s(4, Note::E_5, Note::F_7);
 	
-	std::vector<IString> strings{G_s, D_s, A_s, E_s};
+	const std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
 	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
 	ActionSet<Node_Tuple, Distance> action_set;
@@ -114,7 +114,9 @@ int main (int argc, char *argv[]) {
 		action_set = configs::test_configuration_1();
 	}
 
-	Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
+	const Instrument<Node_Tuple, Distance> violin(strings, 
+						      note_mapper, 
+						      action_set);
 
 //-------------------------- Graph building/solving -------------------------
 

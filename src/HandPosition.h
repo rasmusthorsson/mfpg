@@ -6,10 +6,10 @@
 //A linked list 
 template <class InputTuple, class Output> class HandPosition {
 	private:
-		InputTuple state;
-		SimplifiedNote note;
+		const InputTuple state;
+		const SimplifiedNote note;
 		//Points to the layerlist corresponding to this HandPosition
-		LayerList<InputTuple, Output> layer_list; 
+		const LayerList<InputTuple, Output> layer_list; 
 	public:
 		HandPosition() {}
 		HandPosition(InputTuple i, LayerList<InputTuple, Output> ls) 
@@ -17,13 +17,13 @@ template <class InputTuple, class Output> class HandPosition {
 		HandPosition(InputTuple i, SimplifiedNote n, 
 				LayerList<InputTuple, Output> ls) 
 				: state(i), note(n), layer_list(ls) {}
-		InputTuple getState() {
+		const InputTuple getState() const {
 			return state;
 		}
-		SimplifiedNote getNote() {
+		const SimplifiedNote getNote() const {
 			return note;
 		}
-		LayerList<InputTuple, Output> getLayerList() {
+		const LayerList<InputTuple, Output> getLayerList() const {
 			return layer_list;
 		}
 }; 

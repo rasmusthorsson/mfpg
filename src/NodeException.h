@@ -13,8 +13,14 @@ template <class T> class NodeException : public std::exception {
 	public:
 		NodeException(std::string msg, T nd, SimplifiedNote nt) : 
 			errorMsg(msg), node(nd), note(nt) {};
-		std::string what() {return errorMsg;};
-		T failedNode() {return node;};
-		SimplifiedNote failedNote() {return note;};
+		const std::string what() {
+			return errorMsg;
+		};
+		const T failedNode() const {
+			return node;
+		};
+		const SimplifiedNote failedNote() const {
+			return note;
+		};
 };
 #endif
