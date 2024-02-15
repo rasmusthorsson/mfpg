@@ -27,7 +27,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		//dependencies in the dependencies multimap, the default action in the 
 		//action set, and with the previous actions already taken.
 		bool checkAction(std::string action_name, bool _default, 
-					std::vector<std::string> previous_actions) {
+				 std::vector<std::string> previous_actions) const {
 			std::vector<bool> bools;
 			//for loop Iterates through each dependency for the action to 
 			//be performed.
@@ -84,7 +84,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}	
 	
 		//Applies the actionset to two tuples; n1 to n2.	
-		OutputValue apply(InputTuple n1, InputTuple n2) {
+		OutputValue apply(InputTuple n1, InputTuple n2) const {
 			OutputValue output = {}; //output must be zero-initializable
 			std::vector<std::string> taken = {};
 			//For each action, check whether it should run, then calculate
@@ -104,11 +104,11 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			return output;	
 		}
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>>
-								getActions() {
+							getActions() const {
 				return actions;
 		}
 		std::multimap<std::string, std::tuple<std::string, bool>> 
-								getDependencies() {
+							getDependencies() const {
 			return dependencies;
 		}
 };

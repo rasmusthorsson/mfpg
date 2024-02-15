@@ -1,10 +1,13 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+
 #include "ConversionException.h"
 #include "BasicNoteMapper.h"
 #include "GreedySolver.h"
 #include "Instrument.h"
 #include "SolverException.h"
+
+//TODO Make sure variable names all make sense.
 
 //Tests a valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -18,9 +21,9 @@ TEST(SimplifiedNote, ValidInputs) {
 	note_ds_3.pitchData.octave = 3;
 	note_ds_3.pitchData.alter = 1;
 
-	SimplifiedNote simple_note_ds_3(note_ds_3);
-	SimplifiedNote simple_note_c_4;
-	SimplifiedNote simple_note_f_3(Note::F_3, Duration::Whole);
+        const SimplifiedNote simple_note_ds_3(note_ds_3);
+	const SimplifiedNote simple_note_c_4;
+	const SimplifiedNote simple_note_f_3(Note::F_3, Duration::Whole);
 
 	EXPECT_EQ(Note::Ds_3, simple_note_ds_3.getNote());
 	EXPECT_EQ(Note::C_4, simple_note_c_4.getNote());
@@ -38,10 +41,10 @@ TEST(SimplifiedNote, NoteTooHigh) {
 	note.pitchData.octave = 8;
 	note.pitchData.alter = 5;
 
-	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
+	ASSERT_THROW(const SimplifiedNote simple_note(note), ConversionException);
 
 	try {
-		SimplifiedNote simple_note(note);
+		const SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.what(), "Note out of range.");
 	}	
@@ -58,10 +61,10 @@ TEST(SimplifiedNote, NoteTooLow) {
 	note.pitchData.octave = 0;
 	note.pitchData.alter = -2;
 
-	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
+	ASSERT_THROW(const SimplifiedNote simple_note(note), ConversionException);
 
 	try {
-		SimplifiedNote simple_note(note);
+		const SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.what(), "Note out of range.");
 	}	
@@ -70,10 +73,12 @@ TEST(SimplifiedNote, NoteTooLow) {
 //Tests construction of an undefined note.
 TEST(SimplifiedNote, Undefined) {
 	using namespace mx::api;
+
 	NoteData note = NoteData{};
-	ASSERT_THROW(SimplifiedNote simple_note(note), ConversionException);
+
+	ASSERT_THROW(const SimplifiedNote simple_note(note), ConversionException);
 	try {
-		SimplifiedNote simple_note(note);
+		const SimplifiedNote simple_note(note);
 	} catch (ConversionException ce) {
 		EXPECT_EQ(ce.what(), "Duration not found.");
 	}
@@ -84,19 +89,19 @@ TEST(SimplifiedNote, Undefined) {
 TEST(IString, SpecifiedNotes) {
 	using namespace noteenums;
 
-	Note C(Note::C_3);
-	Note C_s(Note::Cs_3);
-	Note D(Note::D_3);
-	Note D_s(Note::Ds_3);
-	Note E(Note::E_3);
-	Note F(Note::F_3);
-	Note F_s(Note::Fs_3);
-	Note G(Note::G_3);
-	Note G_s(Note::Gs_3);
+	const Note C(Note::C_3);
+	const Note C_s(Note::Cs_3);
+	const Note D(Note::D_3);
+	const Note D_s(Note::Ds_3);
+	const Note E(Note::E_3);
+	const Note F(Note::F_3);
+	const Note F_s(Note::Fs_3);
+	const Note G(Note::G_3);
+	const Note G_s(Note::Gs_3);
 
-	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	const std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
 
-	IString s(1, notes);
+	const IString s(1, notes);
 
 	for (int i = 0; i < s.getPlayable().size(); i++) {
 		ASSERT_EQ(s.getPlayable()[i], notes[i]);
@@ -108,19 +113,19 @@ TEST(IString, SpecifiedNotes) {
 TEST(IString, RangedInts) {
 	using namespace noteenums;
 
-	Note C(Note::C_3);
-	Note C_s(Note::Cs_3);
-	Note D(Note::D_3);
-	Note D_s(Note::Ds_3);
-	Note E(Note::E_3);
-	Note F(Note::F_3);
-	Note F_s(Note::Fs_3);
-	Note G(Note::G_3);
-	Note G_s(Note::Gs_3);
+	const Note C(Note::C_3);
+	const Note C_s(Note::Cs_3);
+	const Note D(Note::D_3);
+	const Note D_s(Note::Ds_3);
+	const Note E(Note::E_3);
+	const Note F(Note::F_3);
+	const Note F_s(Note::Fs_3);
+	const Note G(Note::G_3);
+	const Note G_s(Note::Gs_3);
 
-	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	const std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
 
-	IString s(1, 36, 44);
+	const IString s(1, 36, 44);
 
 	for (int i = 0; i < s.getPlayable().size(); i++) {
 		ASSERT_EQ(s.getPlayable()[i], notes[i]);
@@ -132,19 +137,19 @@ TEST(IString, RangedInts) {
 TEST(IString, RangedNotes) {
 	using namespace noteenums;
 
-	Note C(Note::C_3);
-	Note C_s(Note::Cs_3);
-	Note D(Note::D_3);
-	Note D_s(Note::Ds_3);
-	Note E(Note::E_3);
-	Note F(Note::F_3);
-	Note F_s(Note::Fs_3);
-	Note G(Note::G_3);
-	Note G_s(Note::Gs_3);
+	const Note C(Note::C_3);
+	const Note C_s(Note::Cs_3);
+	const Note D(Note::D_3);
+	const Note D_s(Note::Ds_3);
+	const Note E(Note::E_3);
+	const Note F(Note::F_3);
+	const Note F_s(Note::Fs_3);
+	const Note G(Note::G_3);
+	const Note G_s(Note::Gs_3);
 
-	std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
+	const std::vector<Note> notes{C, C_s, D, D_s, E, F, F_s, G, G_s};
 
-	IString s(1, Note::C_3, Note::Gs_3);
+	const IString s(1, Note::C_3, Note::Gs_3);
 
 	for (int i = 0; i < s.getPlayable().size(); i++) {
 		ASSERT_EQ(s.getPlayable()[i], notes[i]);
@@ -157,7 +162,7 @@ TEST(NoteList, Undefined) {
 
 	ScoreData score = ScoreData{};
 
-	NoteList note_list(score);
+	const NoteList note_list(score);
 
 	ASSERT_EQ(note_list.size(), 0);
 }
@@ -222,27 +227,21 @@ TEST(NoteList, OrderPreserved) {
 	voice.notes.push_back(note);
 	currentTime += 1;
 
-	NoteList notes(score);
+	const NoteList notes(score);
 
+	auto note_itr = notes.begin();
+	
 	ASSERT_EQ(notes.size(), 5);
-	ASSERT_EQ(notes.front().getNote(), Note::A_4);
-	notes.popFront();
+
+	ASSERT_EQ(note_itr++->getNote(), Note::A_4);
+
+	ASSERT_EQ(note_itr++->getNote(), Note::B_4);
 	
-	ASSERT_EQ(notes.size(), 4);
-	ASSERT_EQ(notes.front().getNote(), Note::B_4);
-	notes.popFront();
+	ASSERT_EQ(note_itr++->getNote(), Note::C_5);
 	
-	ASSERT_EQ(notes.size(), 3);
-	ASSERT_EQ(notes.front().getNote(), Note::C_5);
-	notes.popFront();
+	ASSERT_EQ(note_itr++->getNote(), Note::D_5);
 	
-	ASSERT_EQ(notes.size(), 2);
-	ASSERT_EQ(notes.front().getNote(), Note::D_5);
-	notes.popFront();
-	
-	ASSERT_EQ(notes.size(), 1);
-	ASSERT_EQ(notes.front().getNote(), Note::E_5);
-	notes.popFront();
+	ASSERT_EQ(note_itr->getNote(), Note::E_5);
 }
 
 class BasicNoteMapper_Tests : public ::testing::Test {
@@ -253,25 +252,27 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 			using namespace std;
 			using namespace noteenums;
 
-			Note C(Note::C_3);
-			Note C_s(Note::Cs_3);
-			Note D(Note::D_3);
-			Note D_s(Note::Ds_3);
-			Note E(Note::E_3);
-			Note F(Note::F_3);
-			Note F_s(Note::Fs_3);
-			Note G(Note::G_3);
-			Note G_s(Note::Gs_3);
-			Note A(Note::A_3);
-			Note A_s(Note::As_3);
-			Note B(Note::B_3);
-			Note C2(Note::C_4);
+			const Note C(Note::C_3);
+			const Note C_s(Note::Cs_3);
+			const Note D(Note::D_3);
+			const Note D_s(Note::Ds_3);
+			const Note E(Note::E_3);
+			const Note F(Note::F_3);
+			const Note F_s(Note::Fs_3);
+			const Note G(Note::G_3);
+			const Note G_s(Note::Gs_3);
+			const Note A(Note::A_3);
+			const Note A_s(Note::As_3);
+			const Note B(Note::B_3);
+			const Note C2(Note::C_4);
 
-			vector<Note> notes_1{C, C_s, D, D_s, E, F, F_s, G, G_s, D_s};
-			vector<Note> notes_2{D_s, E, F, F_s, G, G_s, A, A_s, B, C2};
+			const vector<Note> notes_1{C, C_s, D, D_s, E, 
+						   F, F_s, G, G_s, D_s};
+			const vector<Note> notes_2{D_s, E, F, F_s, G, 
+						   G_s, A, A_s, B, C2};
 
-			IString s1(1, notes_1);
-			IString s2(2, notes_2);
+			const IString s1(1, notes_1);
+			const IString s2(2, notes_2);
 
 			return make_pair(s1, s2);
 		}
@@ -289,7 +290,6 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
 	using namespace std;
 
-	vector<IString> strings = {s1, s2};
 	unique_ptr<NoteMapper<tuple<int, int, int>>> 
 					map(new BasicNoteMapper({s1, s2}));
 
@@ -385,7 +385,6 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	using namespace testing;
 	using namespace std;
 
-	vector<IString> strings = {s1, s2};
 	unique_ptr<NoteMapper<tuple<int, int, int>>> 
 		map(new BasicNoteMapper({s1, s2}));
 
@@ -418,10 +417,10 @@ TEST(Action, BasicAction) {
 		int finger = abs(get<2>(t1) - get<2>(t2));
 		return string + hand + finger;	
 	};
-	Action<Input_Tuple, int> NOC(d_f_cond, d_f_dist, "NOC");
+	const Action<Input_Tuple, int> NOC(d_f_cond, d_f_dist, "NOC");
 
-	Input_Tuple t1{1, 1, 1};
-	Input_Tuple t2{2, 2, 2};
+	const Input_Tuple t1{1, 1, 1};
+	const Input_Tuple t2{2, 2, 2};
 
 	ASSERT_EQ(NOC.distance(t1, t2), 3);
 	ASSERT_EQ(NOC.condition(t1, t2), true);
@@ -454,12 +453,12 @@ TEST(Action, FiveTupleAction) {
 	a_type_cond d_f_cond = [] (Input_Tuple s1, Input_Tuple s2) {
 		return true;
 	};
-	Action<Input_Tuple, float> upstroke_distance(d_f_cond, d_f_dist, "UD");
+	const Action<Input_Tuple, float> upstroke_distance(d_f_cond, d_f_dist, "UD");
 
-	Input_Tuple t1(1, 2, 1, false, 3.0);
-	Input_Tuple t2(1, 2, 3, false, 7.0);
-	Input_Tuple t3(1, 2, 1, true, 3.0);
-	Input_Tuple t4(1, 2, 3, false, 7.0);
+	const Input_Tuple t1(1, 2, 1, false, 3.0);
+	const Input_Tuple t2(1, 2, 3, false, 7.0);
+	const Input_Tuple t3(1, 2, 1, true, 3.0);
+	const Input_Tuple t4(1, 2, 3, false, 7.0);
 
 	ASSERT_EQ(upstroke_distance.distance(t1, t2), 2.0);
 	ASSERT_EQ(upstroke_distance.distance(t3, t4), 8.0);
@@ -479,7 +478,7 @@ class Layer_Tests : public ::testing::Test {
 			n.pitchData.octave = 3;
 			n.pitchData.alter = 0;
 
-			SimplifiedNote note(n);
+			const SimplifiedNote note(n);
 
 			return Layer<ret>(n);
 		}
@@ -500,24 +499,24 @@ TEST_F(Layer_Tests, BasicLayer) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
 	
-	ret first{1, 1, 1};
+	const ret first{1, 1, 1};
 
 	EXPECT_NO_THROW(l.addNode(first));
 	ASSERT_EQ(l.getSize(), 1);
 
-	ret second{2, 1, 1};
+	const ret second{2, 1, 1};
 
 	EXPECT_NO_THROW(l.addNode(second));
 	ASSERT_EQ(l.getSize(), 2);
 	EXPECT_NO_THROW(l.removeNode(first));
 	ASSERT_EQ(l.getSize(), 1);
 
-	ret third{1, 2, 1};
+	const ret third{1, 2, 1};
 
 	EXPECT_NO_THROW(l.addNode(third));
 	ASSERT_EQ(l.getSize(), 2);
 
-	ret fourth{1, 1, 2};
+	const ret fourth{1, 1, 2};
 
 	EXPECT_NO_THROW(l.addNode(fourth));
 	ASSERT_EQ(l.getSize(), 3);
@@ -532,8 +531,8 @@ TEST_F(Layer_Tests, AddSameNodeTwice) {
 
 	typedef std::tuple<int, int, int> ret;
 
-	ret first{1, 1, 1};
-	ret second{1, 1, 1};
+	const ret first{1, 1, 1};
+	const ret second{1, 1, 1};
 
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.addNode(second), -1);
@@ -546,8 +545,8 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	using namespace mx::api;
 	typedef std::tuple<int, int, int> ret;
 	
-	ret first{1, 1, 1};	
-	ret second{2, 2, 2};
+	const ret first{1, 1, 1};	
+	const ret second{2, 2, 2};
 
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.removeNode(second), -1);
@@ -574,7 +573,7 @@ class ActionSet_Tests : public ::testing::Test {
 				return max(get<2>(s1), get<2>(s2))
 				       - min(get<2>(s1), get<2>(s2));
 			};
-			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
+			const Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
 			
 			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -583,7 +582,7 @@ class ActionSet_Tests : public ::testing::Test {
 				return max(get<1>(s1), get<1>(s2))
 					 - min(get<1>(s1), get<1>(s2));
 			};
-			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
+			const Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			
 			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -592,8 +591,7 @@ class ActionSet_Tests : public ::testing::Test {
 				return max(get<0>(s1), get<0>(s2))
 					- min(get<0>(s1), get<0>(s2));
 			};
-			Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
-
+			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
 			ActionSet<in_type, out_type> actions{
 							{f_a, true}, 
@@ -625,13 +623,13 @@ TEST_F(ActionSet_Tests, CorrectActions) {
 TEST_F(ActionSet_Tests, CorrectDistance) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 
-	in_type f1 = {0, 0, 0};
-	in_type s1 = {1, 2, 1};
+	const in_type f1 = {0, 0, 0};
+	const in_type s1 = {1, 2, 1};
 
 	ASSERT_EQ(set.apply(f1, s1), 4);
 
-	in_type f2 = {2, 2, 2};
-	in_type s2 = {0, 3, 2};
+	const in_type f2 = {2, 2, 2};
+	const in_type s2 = {0, 3, 2};
 
 	ASSERT_EQ(set.apply(f2, s2), 3);
 }
@@ -642,8 +640,8 @@ TEST_F(ActionSet_Tests, Dependencies) {
 
 	set.addDependency("HA", "FA", false);
 
-	in_type f1 = {0, 0, 0};
-	in_type s1 = {1, 10, 1};
+	const in_type f1 = {0, 0, 0};
+	const in_type s1 = {1, 10, 1};
 
 	ASSERT_EQ(set.apply(f1, s1), 2);	
 
@@ -668,19 +666,19 @@ class LayerList_Tests : public ::testing::Test {
 			typedef out_type (*a_type_dist) (in_type, in_type);
 			typedef bool (*a_type_cond) (in_type, in_type);
 
-			IString s1(1, Note::C_3, Note::B_3);
-			IString s2(2, Note::G_3, Note::Ds_4);
+			const IString s1(1, Note::C_3, Note::B_3);
+			const IString s2(2, Note::G_3, Note::Ds_4);
 
 			NoteMapper<in_type>* note_mapper = 
 						new BasicNoteMapper({s1, s2});
 
-			Layer<in_type> first(Note::D_3, Duration::Whole, 
+			const Layer<in_type> first(Note::D_3, Duration::Whole, 
 									note_mapper);
-			Layer<in_type> second(Note::Fs_3, Duration::Whole, 
+			const Layer<in_type> second(Note::Fs_3, Duration::Whole, 
 									note_mapper);
-			Layer<in_type> third(Note::G_3, Duration::Whole,
+			const Layer<in_type> third(Note::G_3, Duration::Whole,
 									note_mapper);
-			Layer<in_type> fourth(Note::Cs_4, Duration::Whole, 
+			const Layer<in_type> fourth(Note::Cs_4, Duration::Whole, 
 									note_mapper);
 
 			LayerList<in_type, out_type> temp_list(first);
@@ -695,7 +693,7 @@ class LayerList_Tests : public ::testing::Test {
 				return max(get<2>(s1), get<2>(s2))
 					- min(get<2>(s1), get<2>(s2));
 			};
-			Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
+			const Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
 			
 			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -704,7 +702,7 @@ class LayerList_Tests : public ::testing::Test {
 				return max(get<1>(s1), get<1>(s2))
 					- min(get<1>(s1), get<1>(s2));
 			};
-			Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
+			const Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			
 			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -713,7 +711,7 @@ class LayerList_Tests : public ::testing::Test {
 				return max(get<0>(s1), get<0>(s2))
 					- min(get<0>(s1), get<0>(s2));
 			};
-			Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
+			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
 			ActionSet<in_type, out_type> actions{
 							    {f_a, true}, 
@@ -756,7 +754,7 @@ TEST_F(LayerList_Tests, Transitions) {
 	auto l_it = list.begin();
 
 	//Outputs 
-	vector<int> outputs = {2, 2, 2, 
+	const vector<int> outputs = {2, 2, 2, 
 			       1, 1, 3, 5, 3, 1, 1, 5, 5, 3, 1, 5,
 			       2, 2, 4, 4
 			       };
@@ -884,7 +882,7 @@ TEST(LayerList, FromNoteList) {
 	voice.notes.push_back(note);
 	currentTime += 1;
 
-	NoteList notes(score);
+	const NoteList notes(score);
 	
 	LayerList<std::tuple<int, int, int>, int> l1(notes);
 	
@@ -915,9 +913,9 @@ class GreedySolver_Tests : public ::testing::Test {
 			typedef out_type (*action_type_dist)(in_type, in_type);
 			typedef bool (*action_type_cond)(in_type, in_type);
 
-			IString s1(1, Note::C_3, Note::G_3);
-			IString s2(2, Note::D_3, Note::A_3);
-			IString s3(3, Note::E_3, Note::B_3);
+			const IString s1(1, Note::C_3, Note::G_3);
+			const IString s2(2, Note::D_3, Note::A_3);
+			const IString s3(3, Note::E_3, Note::B_3);
 			
 			NoteMapper<in_type>* note_mapper =
 						new BasicNoteMapper({s1, s2, s3});
@@ -935,17 +933,19 @@ class GreedySolver_Tests : public ::testing::Test {
 				}
 				return out;
 			};
-			Action<in_type, out_type> a1(action_cond, action_dist, "A1");
+			const Action<in_type, out_type> a1(action_cond, 
+							   action_dist, 
+							   "A1");
 			
-			ActionSet<in_type, out_type> set({a1, true});
+			const ActionSet<in_type, out_type> set({a1, true});
 
-			vector<IString> sv{s1, s2, s3};
-			Instrument<in_type, out_type> i(sv, note_mapper, set);
+			const vector<IString> sv{s1, s2, s3};
+			const Instrument<in_type, out_type> i(sv, note_mapper, set);
 
 			return i;
 		}
 	public:
-		Instrument<in_type, out_type> instrument;
+		const Instrument<in_type, out_type> instrument;
 		GreedySolver_Tests() : instrument(buildInstrument()) {}
 		void TearDown() override {
 			delete instrument.getNoteMapper();
@@ -962,9 +962,12 @@ TEST_F(GreedySolver_Tests, Basic) {
 	
 	GraphSolver<in_type, out_type>* solver = new GreedySolver();
 	
-	Layer<in_type> first(Note::C_3, Duration::Whole, instrument.getNoteMapper());
-	Layer<in_type> second(Note::E_3, Duration::Whole, instrument.getNoteMapper());
-	Layer<in_type> third(Note::Gs_3, Duration::Whole, instrument.getNoteMapper());
+	const Layer<in_type> first(Note::C_3, Duration::Whole, 
+							instrument.getNoteMapper());
+	const Layer<in_type> second(Note::E_3, Duration::Whole, 
+							instrument.getNoteMapper());
+	const Layer<in_type> third(Note::Gs_3, Duration::Whole, 
+							instrument.getNoteMapper());
 
 	LayerList<in_type, out_type> l_list({first, second, third});
 	l_list.buildTransitions(instrument.getActionSet());			
@@ -975,13 +978,13 @@ TEST_F(GreedySolver_Tests, Basic) {
 	//E_3 = {2, 1, 1}, {3, 0, 0}
 	//Gs_3 = {3, 1, 3}, {3, 1, 2}
 
-	in_type sol_1({1, 0, 0});
-	in_type sol_2({2, 1, 1});
-	in_type sol_3({3, 1, 2});
+	const in_type sol_1({1, 0, 0});
+	const in_type sol_2({2, 1, 1});
+	const in_type sol_3({3, 1, 2});
 
-	int cost_1 = 3;
-	int cost_2 = 2;
-	int cost_3 = -1;
+	const int cost_1 = 3;
+	const int cost_2 = 2;
+	const int cost_3 = -1;
 
 	int count = 0;
 	for (auto sol : solver->getSolution()) {

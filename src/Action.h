@@ -27,14 +27,13 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 			distance_fun = dist;
 			condition_fun = cond;
 		} 
-		OutputValue distance(InputTuple s1, InputTuple s2) 
-			const {
+		const OutputValue distance(InputTuple s1, InputTuple s2) const {
 			return distance_fun(s1, s2);
 		}
-		bool condition(InputTuple s1, InputTuple s2) {
+		const bool condition(InputTuple s1, InputTuple s2) const {
 			return condition_fun(s1, s2);
 		}
-		std::string getID() {
+		const std::string getID() const {
 			return ID;
 		}
 };

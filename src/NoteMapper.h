@@ -18,10 +18,10 @@ template <class InputTuple> class NoteMapper {
         public:
 	       	NoteMapper() {};
 		virtual ~NoteMapper() {}	
-		std::multimap<noteenums::Note, InputTuple> getMap() {
+		std::multimap<noteenums::Note, InputTuple> getMap() const {
 			return mapped_notes;
 		}
-		int size() {
+		int size() const {
 			return mapped_notes.size();
 		}
 

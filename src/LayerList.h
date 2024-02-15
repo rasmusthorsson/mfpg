@@ -72,7 +72,7 @@ template <class InputTuple, class Output> class LayerList {
 			next = temp;
 			return 1;
 		}
-		LayerList<InputTuple, Output>* getNext() {
+		LayerList<InputTuple, Output>* getNext() const {
 			return next;
 		}
 		void pushBack(Layer<InputTuple> layer) {
@@ -82,10 +82,10 @@ template <class InputTuple, class Output> class LayerList {
 			}
 			current->setNext(layer);
 		}
-		Layer<InputTuple> getElem() {
+		Layer<InputTuple> getElem() const {
 			return elem;
 		}
-		int getSize() {
+		int getSize() const {
 			return elem.getSize();
 		}
 		int buildTransitions(ActionSet<InputTuple, Output> as) {
@@ -102,7 +102,7 @@ template <class InputTuple, class Output> class LayerList {
 			} 
 			return next->buildTransitions(as);
 		}
-		std::map<InputTuple, std::vector<Output>> getTransitions() {
+		std::map<InputTuple, std::vector<Output>> getTransitions() const {
 			return transitions;
 		}
 		//Iterator

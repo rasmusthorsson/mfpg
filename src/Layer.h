@@ -66,18 +66,19 @@ template<class InputTuple> class Layer {
 			}
 			return -1;
 		}
-		std::vector<InputTuple> getNodes() {
+		std::vector<InputTuple> getNodes() const {
 			return nodes;
 		}
-		int getSize() {
+		int getSize() const {
 			return nodes.size();
 		}
 		void clear() {
 			nodes.clear();
 		}
-		SimplifiedNote getNote() {
+		const SimplifiedNote getNote() const {
 			return note;
 		}
+		//TODO: Const iterator
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;

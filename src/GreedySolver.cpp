@@ -62,8 +62,8 @@ void GreedySolver::solve(LayerList<in_type, out_type> ls) {
 	}
 }
 
-std::tuple<int, int> GreedySolver::findCheapest(LayerList<in_type, out_type> ls, 
-									in_type prev) {
+const std::tuple<int, int> GreedySolver::findCheapest(LayerList<in_type, out_type> ls, 
+							in_type prev) const {
 	std::vector<int> transitions = ls.getTransitions()[prev];
 	int output = -1;
 	int next = -1;
@@ -77,9 +77,4 @@ std::tuple<int, int> GreedySolver::findCheapest(LayerList<in_type, out_type> ls,
 		}
 	}
 	return std::tuple<int, int>{output, next};
-}
-
-std::vector<std::tuple<HandPosition<std::tuple<int, int, int>, int>, int>> 
-						GreedySolver::getSolution() {
-	return solution;
 }

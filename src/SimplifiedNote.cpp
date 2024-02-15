@@ -1,6 +1,7 @@
+#include <iostream>
+
 #include "SimplifiedNote.h"
 #include "MXConverter.h"
-#include <iostream>
 
 using namespace noteenums;
 
@@ -15,11 +16,11 @@ SimplifiedNote::SimplifiedNote(mx::api::NoteData n)
 
 SimplifiedNote::SimplifiedNote(Note n, Duration d): note(n), duration(d) {}
 
-Note SimplifiedNote::getNote() {
+const Note SimplifiedNote::getNote() const {
 	return this->note;
 }
 
-Duration SimplifiedNote::getDuration() {
+const Duration SimplifiedNote::getDuration() const {
 	return this->duration;
 }
 

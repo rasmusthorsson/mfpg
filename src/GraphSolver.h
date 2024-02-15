@@ -15,9 +15,10 @@ template <class InputTuple, class Output> class GraphSolver {
 								Output>> solution;
 	public:
 		virtual void solve(LayerList<InputTuple, Output>) = 0;
-		virtual std::vector<std::tuple<HandPosition<InputTuple, Output>, 
-									Output>>
-			getSolution()  = 0;
+		std::vector<std::tuple<HandPosition<InputTuple, Output>, 
+						Output>> getSolution() const {
+			return solution;
+		};
 		GraphSolver() {};
 		virtual ~GraphSolver() {};
 };
