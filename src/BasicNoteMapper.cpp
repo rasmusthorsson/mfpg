@@ -23,9 +23,9 @@ BasicNoteMapper::BasicNoteMapper(vector<IString> strings) {
 void BasicNoteMapper::mapString(IString s) {
 	using namespace noteenums;
 	
-	int string_position = s.getPosition();
-	vector<Note> playable_notes = s.getPlayable();
-	int notes = playable_notes.size() - 2;
+	const int string_position = s.getPosition();
+	const vector<Note> playable_notes = s.getPlayable();
+	const int notes = playable_notes.size() - 2;
 	
 	//First note is always played on an empty string
 	mapped_notes.insert(make_pair(s.getNote(0), make_tuple(string_position, 
@@ -40,11 +40,12 @@ void BasicNoteMapper::mapString(IString s) {
 		//Note half_up_note = s.getNote(note + 2);
 
 		//Lowest hand position is either position 1 or note position - 3.
-		int lowest_hand_position = max(1, ((note / 2) + 1) - 3);
+		const int lowest_hand_position = max(1, ((note / 2) + 1) - 3);
 		
 		//Highest hand position is either highest allowed note on the 
 		//string - 3, or note position.
-		int highest_hand_position = min((note / 2) + 1, ((notes / 2) + 1) - 3);
+		const int highest_hand_position = min((note / 2) + 1, 
+						      ((notes / 2) + 1) - 3);
 		
 		//Which fingers can be used are calculated using note position - lowest
 		//hand position. This also gives us the highest finger which can play 
@@ -53,7 +54,7 @@ void BasicNoteMapper::mapString(IString s) {
 		int fingers = (note / 2) + 1 - lowest_hand_position + 1;
 		for (int hand_position = lowest_hand_position; hand_position <= 
 					highest_hand_position; hand_position++){
-				tuple<int, int, int> t_first = make_tuple(
+				const tuple<int, int, int> t_first = make_tuple(
 								string_position, 
 								hand_position, 
 								fingers);
@@ -61,7 +62,7 @@ void BasicNoteMapper::mapString(IString s) {
 									t_first));
 			if (note != notes) { //Check for uneven amount of notes
 						  //on a string to avoid out of bounds.
-				tuple<int, int, int> t_second = make_tuple(
+				const tuple<int, int, int> t_second = make_tuple(
 							string_position, 
 							hand_position, 
 							fingers);

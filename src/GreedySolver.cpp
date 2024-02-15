@@ -54,17 +54,20 @@ void GreedySolver::solve(LayerList<in_type, out_type> ls) {
 				  ));
 			}
 		}
-		HandPosition<in_type, out_type> hp(res_tuple, 
+		const HandPosition<in_type, out_type> hp(res_tuple, 
 					   layerlist.getElem().getNote(), 
 					   layerlist);
-		std::tuple<HandPosition<in_type, out_type>, out_type> t(hp, output);
+
+		const std::tuple<HandPosition<in_type, out_type>, out_type> 
+								t(hp, output);
+
 		solution.push_back(t);
 	}
 }
 
 const std::tuple<int, int> GreedySolver::findCheapest(LayerList<in_type, out_type> ls, 
 							in_type prev) const {
-	std::vector<int> transitions = ls.getTransitions()[prev];
+	const std::vector<int> transitions = ls.getTransitions()[prev];
 	int output = -1;
 	int next = -1;
 	for (int i = 0; i < transitions.size(); i++) {

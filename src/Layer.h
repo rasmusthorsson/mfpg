@@ -39,7 +39,7 @@ template<class InputTuple> class Layer {
 		//Attempts to add a node to a layer, if node is already present does 
 		//nothing and returns -1.
 		int addNode(InputTuple n) {
-        		int old_size = nodes.size();
+        		const int old_size = nodes.size();
         		for (auto i = nodes.begin(); i != nodes.end(); i++) {
 				if (n == *i) {
 					return -1;

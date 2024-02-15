@@ -117,7 +117,7 @@ template <class InputTuple, class Output> class LayerList {
 			public:
 				Iterator(pointer ptr) : ptr(ptr) {}
 				reference operator*() const {return *ptr;}
-				pointer operator->() {return ptr;}
+				pointer operator->() const {return ptr;}
 
 				Iterator& operator++() {
 					ptr = ptr->next;

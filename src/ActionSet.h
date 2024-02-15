@@ -105,7 +105,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>>
 							getActions() const {
-				return actions;
+			return actions;
 		}
 		std::multimap<std::string, std::tuple<std::string, bool>> 
 							getDependencies() const {
