@@ -19,7 +19,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 
 		//Multimap of dependencies, the key is the dependent, the values
 		//are the dependency actions with the boolean adjustment as a tuple.
-		//For Example: "action1", {"action2", true} says that if action2 
+		//For Example: "action1", {"action2", true} means that if action2 
 		//occurred then action1 should occur.
 		std::multimap<std::string, std::tuple<std::string, bool>> dependencies;
 
@@ -29,21 +29,17 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		bool checkAction(std::string action_name, bool _default, 
 				 std::vector<std::string> previous_actions) const {
 			std::vector<bool> bools;
-			//for loop Iterates through each dependency for the action to 
-			//be performed.
+
+			//Check all deps for this actions.
 			for (auto [dep_itr, range_end] = 
 				   dependencies.equal_range(action_name); 
 				   dep_itr != range_end; dep_itr++) {
-				//For each dependency, check whether the depended 
-				//action has occured in the previousActions list.
+
+				//Check whether dep is in previous actions.
 				if (find(previous_actions.begin(),
 					      previous_actions.end(),
 					      std::get<0>(dep_itr->second)) !=
 					      previous_actions.end()) {
-
-					//If the depended action has occured, add the 
-					//boolean adjustment to the list of bools to be
-					//checked later.
 					bools.push_back(std::get<1>(dep_itr->second));
 				}
 			}
@@ -104,7 +100,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			return output;	
 		}
 		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>>
-							getActions() const {
+							getActions() const {	
 			return actions;
 		}
 		std::multimap<std::string, std::tuple<std::string, bool>> 

@@ -21,7 +21,6 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 		distfun distance_fun;
 		condfun condition_fun;
 	public:
-		//Keep in header file for compilation reasons.
 		Action(condfun cond, distfun dist, std::string name) : 
 			ID(name) {
 			distance_fun = dist;

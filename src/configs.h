@@ -33,7 +33,8 @@ namespace configs {
 				out << "Note number: " << count << "\n";
 				out << "Note: " << get<0>(sol).getNote() << "\n";
 				out << "String: " << get<0>(get<0>(sol).getState())
-					<< ", Finger: " << get<2>(get<0>(sol).getState())
+					<< ", Finger: " 
+					<< get<2>(get<0>(sol).getState())
 					<< ", Hand Position: " 
 					<< get<1>(get<0>(sol).getState()) << "\n"
 					<< "Distance of transition: " << get<1>(sol) 
@@ -126,7 +127,7 @@ namespace configs {
 		const Action<Node_Tuple, Distance> hp_a_high(hp_a_high_c, 
 							     hp_a_high_d, 
 							     "hp_a_high");
-
+		
 		ActionSet<Node_Tuple, Distance> action_set({
 				{rest, true},
 				{f_a, true},

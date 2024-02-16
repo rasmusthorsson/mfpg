@@ -608,6 +608,7 @@ TEST_F(ActionSet_Tests, CorrectActions) {
 	using out_type = int;	
 
 	int count = 0;
+	
 	for (auto a : set.getActions()) {
 		count++;
 	}
