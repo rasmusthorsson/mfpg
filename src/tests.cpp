@@ -337,7 +337,6 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 			ASSERT_EQ(get<2>(i->second), 3);
 		} 
 	}
-	//delete map;
 	//Ensure there are no more unchecked combinations.
 	ASSERT_EQ(comb_count, 7);
 }
@@ -511,7 +510,6 @@ class ActionSet_Tests : public ::testing::Test {
 
 	public:
 		std::unique_ptr<ActionSet<in_type, out_type>> set;
-		//ActionSet<in_type, out_type> set;	
 		ActionSet_Tests() {		
 			using namespace std;
 
@@ -602,8 +600,7 @@ class LayerList_Tests : public ::testing::Test {
 			const IString s1(1, Note::C_3, Note::B_3);
 			const IString s2(2, Note::G_3, Note::Ds_4);
 
-			NoteMapper<in_type>* note_mapper = 
-						new BasicNoteMapper({s1, s2});
+			std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper({s1, s2}));
 
 			const Layer<in_type> first(Note::D_3, Duration::Whole, note_mapper);
 			const Layer<in_type> second(Note::Fs_3, Duration::Whole, note_mapper);
@@ -641,15 +638,14 @@ class LayerList_Tests : public ::testing::Test {
 			};
 			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			ActionSet<in_type, out_type>* actions = new ActionSet<in_type, out_type>{
+			std::shared_ptr<ActionSet<in_type, out_type>> actions(
+							new ActionSet<in_type, out_type>{
 							    {f_a, true}, 
 							    {h_a, true}, 
 							    {s_a, true}
-							    };
+							    });
 
 			list->buildTransitions(actions);
-
-			delete note_mapper;
 		}
 };
 
@@ -809,7 +805,6 @@ TEST(LayerList, FromNoteList) {
 	const NoteList notes(score);
 
 	std::shared_ptr<NoteMapper<std::tuple<int, int, int>>>note_mapper(new BasicNoteMapper());
-	//NoteMapper<std::tuple<int, int, int>>* note_mapper = new BasicNoteMapper();
 	
 	LayerList<std::tuple<int, int, int>, int> l1(notes, note_mapper);
 	
@@ -844,8 +839,7 @@ class GreedySolver_Tests : public ::testing::Test {
 			const IString s2(2, Note::D_3, Note::A_3);
 			const IString s3(3, Note::E_3, Note::B_3);
 			
-			NoteMapper<in_type>* note_mapper =
-						new BasicNoteMapper({s1, s2, s3});
+			std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper({s1, s2, s3}));
 
 			action_type_cond action_cond = [] (in_type t1, in_type t2) {
 				return true;
@@ -864,8 +858,8 @@ class GreedySolver_Tests : public ::testing::Test {
 							   action_dist, 
 							   "A1");
 			
-			ActionSet<in_type, out_type>* set = 
-					new ActionSet<in_type, out_type>({a1, true});
+			std::shared_ptr<ActionSet<in_type, out_type>> set(
+						new ActionSet<in_type, out_type>({a1, true}));
 
 			const vector<IString> sv{s1, s2, s3};
 			const Instrument<in_type, out_type> i(sv, note_mapper, set);
@@ -875,9 +869,6 @@ class GreedySolver_Tests : public ::testing::Test {
 	public:
 		GreedySolver_Tests() : instrument(buildInstrument()) {}
 		const Instrument<in_type, out_type> instrument;
-		void TearDown() override {
-			delete instrument.getNoteMapper();
-		}
 };
 
 //Tests that the greedysolver selects the correct path and outputs the correct costs.
@@ -888,14 +879,11 @@ TEST_F(GreedySolver_Tests, Basic) {
 	using in_type = tuple<int, int, int>;
 	using out_type = int;	
 	
-	GraphSolver<in_type, out_type>* solver = new GreedySolver();
+	std::unique_ptr<GraphSolver<in_type, out_type>> solver(new GreedySolver());
 	
-	const Layer<in_type> first(Note::C_3, Duration::Whole, 
-							instrument.getNoteMapper());
-	const Layer<in_type> second(Note::E_3, Duration::Whole, 
-							instrument.getNoteMapper());
-	const Layer<in_type> third(Note::Gs_3, Duration::Whole, 
-							instrument.getNoteMapper());
+	const Layer<in_type> first(Note::C_3, Duration::Whole, instrument.getNoteMapper());
+	const Layer<in_type> second(Note::E_3, Duration::Whole, instrument.getNoteMapper());
+	const Layer<in_type> third(Note::Gs_3, Duration::Whole, instrument.getNoteMapper());
 
 	LayerList<in_type, out_type> l_list({first, second, third});
 	l_list.buildTransitions(instrument.getActionSet());			
@@ -928,5 +916,4 @@ TEST_F(GreedySolver_Tests, Basic) {
 		}
 		count++;
 	}
-	delete solver;
 }

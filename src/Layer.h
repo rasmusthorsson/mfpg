@@ -22,8 +22,9 @@ template<class InputTuple> class Layer {
 		std::vector<InputTuple> nodes;
 	public:
 		Layer() {}
-		Layer(noteenums::Note n, noteenums::Duration d, 
-					NoteMapper<InputTuple>* mapper) : note(n, d) {
+		Layer(noteenums::Note n, 
+		      noteenums::Duration d, 
+		      std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n, d) {
 			auto range = mapper->getRange(n);
 			for (auto i = range.first; i != range.second; ++i) {
 				addNode(i->second);
@@ -31,13 +32,6 @@ template<class InputTuple> class Layer {
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
 		Layer(const SimplifiedNote& n) : note(n) {}
-		Layer(const SimplifiedNote& n, NoteMapper<InputTuple>* mapper) 
-							: note(n) {
-			auto range = mapper->getRange(note.getNote());
-			for (auto i = range.first; i != range.second; ++i) {
-				addNode(i->second);
-			}
-		}
 		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) 
 							: note(n) {
 			auto range = mapper->getRange(note.getNote());

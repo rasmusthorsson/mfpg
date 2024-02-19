@@ -100,8 +100,8 @@ int main (int argc, char *argv[]) {
 	
 	std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
-	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
-	ActionSet<Node_Tuple, Distance>* action_set;
+	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(strings));
+	std::shared_ptr<ActionSet<Node_Tuple, Distance>> action_set;
 	if (result.count("test")) {
 		if (result["test"].as<int>() == 1) {
 			action_set = configs::test_configuration_1();
@@ -119,22 +119,21 @@ int main (int argc, char *argv[]) {
 //-------------------------- Graph building/solving -------------------------
 
 	LayerList<Node_Tuple, Distance> list(note_list, violin.getNoteMapper());
-	delete note_mapper;
+	
 	list.buildTransitions(violin.getActionSet());
 	
-	GraphSolver<Node_Tuple, Distance>* solver;
+	std::shared_ptr<GraphSolver<Node_Tuple, Distance>> solver;
 	if (result.count("greedy")) {
-		solver = new GreedySolver();
+		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
 	} else {
 		std::cout << "Defaulting to greedysolver as no other solver is "
 			     "available." << "\n";
-		solver = new GreedySolver();
+		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
 	}
 	try {
 		solver->solve(list);
 	} catch (SolverException e) {
 		std::cout << e.what() << "\n";
-		delete(solver);
 		return -1;
 	}
 
@@ -146,7 +145,6 @@ int main (int argc, char *argv[]) {
 		if (!out.is_open()) {
 			std::cout << "Failed to open file: " << out_file << 
 				     ", Aborting..." << "\n";
-			delete(solver);
 			return -1;
 		}
 		configs::writeOutput(out, solver, result["csv"].as<bool>());
@@ -155,6 +153,5 @@ int main (int argc, char *argv[]) {
 		ostream out(std::cout.rdbuf());
 		configs::writeOutput(out, solver, result["csv"].as<bool>());
 	}
-	delete solver;
 	return 0;
 }

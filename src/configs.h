@@ -4,15 +4,14 @@
 #include "iostream"
 #include "ostream"
 #include "fstream"
+#include <memory>
 
 using Node_Tuple = std::tuple<int, int, int>;
 using Distance = int;
 
 namespace configs {
 	using namespace std;
-	void writeOutput(ostream& out, 
-			 GraphSolver<Node_Tuple, Distance>* solver, 
-			 bool csv) {
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<Node_Tuple, Distance>> solver, bool csv) {
 		int count = 1;
 		if (csv) {
 			out << "note number, note, string, finger, hp, cost, "
@@ -48,7 +47,7 @@ namespace configs {
 			}
 		}
 	}
-	ActionSet<Node_Tuple, Distance>* test_configuration_2() {
+	shared_ptr<ActionSet<Node_Tuple, Distance>> test_configuration_2() {
 		typedef Distance (*a_t_d) (Node_Tuple, Node_Tuple);
 		typedef bool (*a_t_c) (Node_Tuple, Node_Tuple);
 
@@ -129,8 +128,8 @@ namespace configs {
 							     hp_a_high_d, 
 							     "hp_a_high");
 		
-		ActionSet<Node_Tuple, Distance>* action_set = 
-					new ActionSet<Node_Tuple, Distance> ({
+		shared_ptr<ActionSet<Node_Tuple, Distance>> action_set(
+						new ActionSet<Node_Tuple, Distance> ({
 				{rest, true},
 				{f_a, true},
 				{s_a_cross, true},
@@ -139,7 +138,7 @@ namespace configs {
 				{hp_a_short, true},
 				{hp_a_long, true},
 				{hp_a_high, true}
-				});
+				}));
 
 		action_set->addDependency("f_a", "rest", false);
 		action_set->addDependency("s_a_cross", "rest", false);
@@ -151,7 +150,7 @@ namespace configs {
 
 		return action_set;
 	}
-	ActionSet<Node_Tuple, Distance>* test_configuration_1() {
+	shared_ptr<ActionSet<Node_Tuple, Distance>> test_configuration_1() {
 		typedef Distance (*action_type_dist) (Node_Tuple, Node_Tuple);
 		typedef bool (*action_type_cond) (Node_Tuple, Node_Tuple);
 
@@ -213,14 +212,14 @@ namespace configs {
 							rest_dist, 
 							"rest");
 
-		ActionSet<Node_Tuple, Distance>* action_set = 
+		shared_ptr<ActionSet<Node_Tuple, Distance>> action_set(
 					new ActionSet<Node_Tuple, Distance> ({
 				{rest, true},
 				{hp_action, true},
 				{finger_action, true},
 				{string_action_NR, true},
 				{string_action, true}
-				});
+				}));
 
 		action_set->addDependency("hp_action", "rest", false);
 		action_set->addDependency("finger_action", "rest", false);
