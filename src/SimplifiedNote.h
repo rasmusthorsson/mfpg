@@ -16,7 +16,7 @@ class SimplifiedNote {
 		const Duration duration;
 	public:
 		SimplifiedNote() : note(Note::C_4), duration(Duration::Whole) {}
-		SimplifiedNote(mx::api::NoteData);
+		SimplifiedNote(mx::api::NoteData&);
 		SimplifiedNote(Note n, Duration d);
 
 		const Note& getNote() const;

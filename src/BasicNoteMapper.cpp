@@ -2,7 +2,6 @@
 
 using namespace noteenums;
 using namespace std;
-using iter = multimap<Note, tuple<int, int, int>>::iterator;
 
 BasicNoteMapper::BasicNoteMapper(initializer_list<IString> strings) {
 	mapped_notes.insert({noteenums::Note::REST, {0, 0, 0}});

@@ -35,17 +35,14 @@ int main (int argc, char *argv[]) {
 	cxxopts::Options options("mfpr");
 	options.positional_help("[optional args]").show_positional_help();
 	options.add_options()
-		("score", "Input file in musicXML format.", 
-						cxxopts::value<std::string>())
+		("score", "Input file in musicXML format.", cxxopts::value<std::string>())
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose.") //TODO
-		("o,output", "Specify where the output should be written.",
-						cxxopts::value<std::string>())
-		;
+		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>());
 	options.parse_positional({"score"});
 
 	auto result = options.parse(argc, argv);
@@ -58,6 +55,7 @@ int main (int argc, char *argv[]) {
 		std::cout << "mfpr version: " << VERSION_MFPG << "\n";
 		return 0;
 	}
+
 	ifstream input_file;
 	if (result.count("score")) {
 		auto file_path = result["score"].as<std::string>();

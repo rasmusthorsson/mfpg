@@ -5,6 +5,8 @@
 #include "NodeException.h"
 #include "NoteEnums.h"
 #include "NoteMapper.h"
+
+#include <memory>
 #include <vector>
 #include <cassert>
 
@@ -30,6 +32,13 @@ template<class InputTuple> class Layer {
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
 		Layer(const SimplifiedNote& n) : note(n) {}
 		Layer(const SimplifiedNote& n, NoteMapper<InputTuple>* mapper) 
+							: note(n) {
+			auto range = mapper->getRange(note.getNote());
+			for (auto i = range.first; i != range.second; ++i) {
+				addNode(i->second);
+			}
+		}
+		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) 
 							: note(n) {
 			auto range = mapper->getRange(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {

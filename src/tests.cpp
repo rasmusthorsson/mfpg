@@ -244,10 +244,8 @@ TEST(NoteList, OrderPreserved) {
 
 class BasicNoteMapper_Tests : public ::testing::Test {
 	public:
-	       	BasicNoteMapper_Tests() : s1(1, noteenums::Note::C_3, 
-						noteenums::Note::A_3), 
-					  s2(2, noteenums::Note::Ds_3, 
-					  	noteenums::Note::C_4) {}
+	       	BasicNoteMapper_Tests() : s1(1, noteenums::Note::C_3, noteenums::Note::A_3), 
+					  s2(2, noteenums::Note::Ds_3, noteenums::Note::C_4) {}
 		const IString s1;
 		const IString s2;
 };
@@ -258,8 +256,7 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
 	using namespace std;
 
-	unique_ptr<NoteMapper<tuple<int, int, int>>> 
-					map(new BasicNoteMapper({s1, s2}));
+	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
 
 	int note_count = 0;
 	for (auto i = map->begin(), end = map->end(); i != end;
@@ -284,8 +281,7 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace mx::api;
 	using namespace std;
 
-	unique_ptr<NoteMapper<tuple<int, int, int>>> 
-					map(new BasicNoteMapper({s1, s2}));
+	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
 
 	auto C3 = map->getRange(Note::C_3);
 	auto D_3 = map->getRange(Note::D_3);
@@ -546,8 +542,7 @@ class ActionSet_Tests : public ::testing::Test {
 			};
 			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			set = unique_ptr<ActionSet<in_type, out_type>>(
-						new ActionSet<in_type, out_type>{
+			set = unique_ptr<ActionSet<in_type, out_type>>(new ActionSet<in_type, out_type>{
 							{f_a, true}, 
 							{h_a, true}, 
 							{s_a, true}
@@ -610,18 +605,14 @@ class LayerList_Tests : public ::testing::Test {
 			NoteMapper<in_type>* note_mapper = 
 						new BasicNoteMapper({s1, s2});
 
-			const Layer<in_type> first(Note::D_3, Duration::Whole, 
-									note_mapper);
-			const Layer<in_type> second(Note::Fs_3, Duration::Whole, 
-									note_mapper);
-			const Layer<in_type> third(Note::G_3, Duration::Whole,
-									note_mapper);
-			const Layer<in_type> fourth(Note::Cs_4, Duration::Whole, 
-									note_mapper);
+			const Layer<in_type> first(Note::D_3, Duration::Whole, note_mapper);
+			const Layer<in_type> second(Note::Fs_3, Duration::Whole, note_mapper);
+			const Layer<in_type> third(Note::G_3, Duration::Whole, note_mapper);
+			const Layer<in_type> fourth(Note::Cs_4, Duration::Whole, note_mapper);
 
 			vector<Layer<in_type>> l_vec({first, second, third, fourth});
-			list = unique_ptr<LayerList<in_type, int>>(
-					new LayerList<in_type, out_type>(l_vec));
+
+			list = unique_ptr<LayerList<in_type, int>>(new LayerList<in_type, out_type>(l_vec));
 
 			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -650,8 +641,7 @@ class LayerList_Tests : public ::testing::Test {
 			};
 			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			ActionSet<in_type, out_type>* actions = 
-						new ActionSet<in_type, out_type>{
+			ActionSet<in_type, out_type>* actions = new ActionSet<in_type, out_type>{
 							    {f_a, true}, 
 							    {h_a, true}, 
 							    {s_a, true}
@@ -689,9 +679,9 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	//Outputs 
 	const vector<int> outputs = {2, 2, 2, 
-			       1, 1, 3, 5, 3, 1, 1, 5, 5, 3, 1, 5,
-			       2, 2, 4, 4
-			       };
+			       	     1, 1, 3, 5, 3, 1, 1, 5, 5, 3, 1, 5,
+			       	     2, 2, 4, 4
+			       	     };
 	int count = 0;
 	//D_3 = {1, 1, 1}
 	for (auto& transition : l_it->getTransitions()) {
@@ -818,7 +808,8 @@ TEST(LayerList, FromNoteList) {
 
 	const NoteList notes(score);
 
-	NoteMapper<std::tuple<int, int, int>>* note_mapper = new BasicNoteMapper();
+	std::shared_ptr<NoteMapper<std::tuple<int, int, int>>>note_mapper(new BasicNoteMapper());
+	//NoteMapper<std::tuple<int, int, int>>* note_mapper = new BasicNoteMapper();
 	
 	LayerList<std::tuple<int, int, int>, int> l1(notes, note_mapper);
 	

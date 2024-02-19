@@ -1,6 +1,6 @@
 #include "ConversionException.h"
 
-ConversionException::ConversionException(std::string message, mx::api::NoteData n) :
+ConversionException::ConversionException(std::string message, mx::api::NoteData& n) :
        	errorMsg(message),  
 	note(n) {}
 
@@ -11,6 +11,6 @@ std::string  ConversionException::what() {
 }
 
 //What note caused the failure.
-mx::api::NoteData ConversionException::failedNote() const {
+const mx::api::NoteData& ConversionException::failedNote() const {
 	return note;
 }

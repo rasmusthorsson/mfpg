@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <list>
 #include <map>
+#include <memory>
 
 //A linked list of layers, each link contains a layer, a pointer to the nect link, and
 //a vector of transition costs between the nodes in the current layer and the nodes in
@@ -54,7 +55,16 @@ template <class InputTuple, class Output> class LayerList {
 
 		LayerList(const SimplifiedNote& s, NoteMapper<InputTuple>* note_mapper)
 			: elem(s, note_mapper) {}
+		LayerList(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper)
+			: elem(s, note_mapper) {}
 		LayerList(const NoteList& list, NoteMapper<InputTuple>* note_mapper) : 
+				elem(list.front(), note_mapper) {
+			auto it = list.begin();
+			for (++it; it != list.end(); it++) {
+				pushBack(*it, note_mapper);
+			}	
+		}
+		LayerList(const NoteList& list, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) : 
 				elem(list.front(), note_mapper) {
 			auto it = list.begin();
 			for (++it; it != list.end(); it++) {
@@ -73,8 +83,14 @@ template <class InputTuple, class Output> class LayerList {
 			next = l;
 			return 1;
 		}
-		int setNext(const SimplifiedNote& s, NoteMapper<InputTuple>* 
-									note_mapper) {
+		int setNext(const SimplifiedNote& s, NoteMapper<InputTuple>* note_mapper) {
+			if (next != NULL) {
+				return -1;
+			}
+			next = new LayerList<InputTuple, Output>(s, note_mapper);
+			return 1;
+		}
+		int setNext(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
 			if (next != NULL) {
 				return -1;
 			}
@@ -84,8 +100,14 @@ template <class InputTuple, class Output> class LayerList {
 		const LayerList<InputTuple, Output>* getNext() const {
 			return next;
 		}
-		void pushBack(const SimplifiedNote& s, NoteMapper<InputTuple>* 
-									note_mapper) {
+		void pushBack(const SimplifiedNote& s, NoteMapper<InputTuple>* note_mapper) {
+			if (next == NULL) {
+				setNext(s, note_mapper);
+			} else {
+				next->pushBack(s, note_mapper);
+			}
+		}
+		void pushBack(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
 			if (next == NULL) {
 				setNext(s, note_mapper);
 			} else {
