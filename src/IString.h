@@ -17,10 +17,9 @@ class IString {
 		IString(int, noteenums::Note, noteenums::Note);
 
 		const int getPosition() const;
-		const std::vector<noteenums::Note> getPlayable() const;
+		const std::vector<noteenums::Note>& getPlayable() const;
 		const noteenums::Note getNote(int) const;
 
-		//TODO make own iterator
 		std::vector<noteenums::Note>::const_iterator end() const {
 			return playable_notes.end();
 		}

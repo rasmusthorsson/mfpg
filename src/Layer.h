@@ -28,14 +28,16 @@ template<class InputTuple> class Layer {
 			}		
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
-		Layer(SimplifiedNote n) : note(n), nodes() {}
-		Layer(SimplifiedNote n, NoteMapper<InputTuple>* mapper) : note(n) {
-			auto range = mapper->getRange(n.getNote());
+		Layer(const SimplifiedNote& n) : note(n) {}
+		Layer(const SimplifiedNote& n, NoteMapper<InputTuple>* mapper) 
+							: note(n) {
+			auto range = mapper->getRange(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
 				addNode(i->second);
 			}
 		}
 		~Layer() {}
+
 		//Attempts to add a node to a layer, if node is already present does 
 		//nothing and returns -1.
 		int addNode(InputTuple n) {
@@ -66,8 +68,8 @@ template<class InputTuple> class Layer {
 			}
 			return -1;
 		}
-		std::vector<InputTuple> getNodes() const {
-			return nodes;
+		const InputTuple& operator[](int index) const {
+			return nodes[index];
 		}
 		int getSize() const {
 			return nodes.size();
@@ -75,10 +77,10 @@ template<class InputTuple> class Layer {
 		void clear() {
 			nodes.clear();
 		}
-		const SimplifiedNote getNote() const {
+		const SimplifiedNote& getNote() const {
 			return note;
 		}
-		//TODO: Const iterator
+		
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
@@ -101,7 +103,6 @@ template<class InputTuple> class Layer {
 					ptr++;
 					return Iterator(prev);
 				}
-
 				friend bool operator==(const Iterator& fst, 
 								const Iterator& snd) {
 					return fst.ptr == snd.ptr;
@@ -111,7 +112,6 @@ template<class InputTuple> class Layer {
 					return fst.ptr != snd.ptr;
 				}
 		};
-
 		Iterator begin() {
 			return Iterator(&nodes[0]);
 		}

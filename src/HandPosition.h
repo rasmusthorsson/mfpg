@@ -9,13 +9,13 @@ template <class InputTuple, class Output> class HandPosition {
 		const InputTuple state;
 		const SimplifiedNote note;
 		//Points to the layerlist corresponding to this HandPosition
-		const LayerList<InputTuple, Output> layer_list; 
+		const LayerList<InputTuple, Output>& layer_list; 
 	public:
 		HandPosition() {}
-		HandPosition(InputTuple i, LayerList<InputTuple, Output> ls) 
+		HandPosition(InputTuple i, LayerList<InputTuple, Output>& ls) 
 			: state(i), layer_list(ls) {}
 		HandPosition(InputTuple i, SimplifiedNote n, 
-				LayerList<InputTuple, Output> ls) 
+				LayerList<InputTuple, Output>& ls) 
 				: state(i), note(n), layer_list(ls) {}
 		const InputTuple getState() const {
 			return state;
@@ -23,7 +23,7 @@ template <class InputTuple, class Output> class HandPosition {
 		const SimplifiedNote getNote() const {
 			return note;
 		}
-		const LayerList<InputTuple, Output> getLayerList() const {
+		const LayerList<InputTuple, Output>& getLayerList() const {
 			return layer_list;
 		}
 }; 

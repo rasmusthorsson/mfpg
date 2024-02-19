@@ -10,7 +10,7 @@ using namespace noteenums;
 //Used to convert mx notes to noteenums notes.
 class MXConverter {
 	public:
-		static const Note ConvertNote(mx::api::NoteData);
-		static const Duration ConvertDuration(mx::api::NoteData);
+		static const Note ConvertNote(mx::api::NoteData&);
+		static const Duration ConvertDuration(mx::api::NoteData&);
 };
 #endif

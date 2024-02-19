@@ -537,7 +537,7 @@ TEST_F(Layer_Tests, AddSameNodeTwice) {
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.addNode(second), -1);
 	ASSERT_EQ(l.getSize(), 1);
-	ASSERT_EQ(l.getNodes()[0], first);
+	ASSERT_EQ(l[0], first);
 }
 
 //Tests that failure to remove a non-existant node returns -1 and retains first node.
@@ -551,7 +551,7 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.removeNode(second), -1);
 	ASSERT_EQ(l.getSize(), 1);
-	ASSERT_EQ(l.getNodes()[0], first);
+	ASSERT_EQ(l[0], first);
 }
 
 class ActionSet_Tests : public ::testing::Test {
@@ -603,22 +603,6 @@ class ActionSet_Tests : public ::testing::Test {
 		}
 };
 
-//Tests that the ActionSet contains the correct actions.
-TEST_F(ActionSet_Tests, CorrectActions) {
-	using out_type = int;	
-
-	int count = 0;
-	
-	for (auto a : set.getActions()) {
-		count++;
-	}
-
-	ASSERT_EQ(std::get<0>(set.getActions()[0]).getID(), "FA");
-	ASSERT_EQ(std::get<0>(set.getActions()[1]).getID(), "HA");
-	ASSERT_EQ(std::get<0>(set.getActions()[2]).getID(), "SA");
-	ASSERT_EQ(count, 3);
-}
-
 //Tests that the distance between different inputs corresponds with the actions in 
 //the ActionSet
 TEST_F(ActionSet_Tests, CorrectDistance) {
@@ -659,8 +643,9 @@ class LayerList_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 
-	private:
-		LayerList<in_type, int> BuildLayerList() {
+	public:
+		LayerList<in_type, int>* list;
+		LayerList_Tests() {
 			using namespace noteenums;
 			using namespace std;
 
@@ -682,10 +667,8 @@ class LayerList_Tests : public ::testing::Test {
 			const Layer<in_type> fourth(Note::Cs_4, Duration::Whole, 
 									note_mapper);
 
-			LayerList<in_type, out_type> temp_list(first);
-			temp_list.pushBack(second);
-			temp_list.pushBack(third);
-			temp_list.pushBack(fourth);
+			vector<Layer<in_type>> l_vec({first, second, third, fourth});
+			list = new LayerList<in_type, out_type>(l_vec);
 
 			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -714,33 +697,33 @@ class LayerList_Tests : public ::testing::Test {
 			};
 			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			ActionSet<in_type, out_type> actions{
+			ActionSet<in_type, out_type>* actions = 
+						new ActionSet<in_type, out_type>{
 							    {f_a, true}, 
 							    {h_a, true}, 
 							    {s_a, true}
 							    };
 
-			temp_list.buildTransitions(actions);
+			list->buildTransitions(actions);
 
 			delete note_mapper;
-			return temp_list;
 		}
-	public:
-		LayerList<in_type, int> list;
-		LayerList_Tests() : list(BuildLayerList()) {}
+		~LayerList_Tests() {
+			delete list;
+		}
 };
 
 //Tests that the list contains all constructed layers and the layers have the 
 //correct amount of nodes.
 TEST_F(LayerList_Tests, CountAndLayerCount) {
 	int count = 0;
-	for (auto l : list) {
+	for (auto& l : *list) {
 		count++;
 	}
 
 	ASSERT_EQ(count, 4);
 
-	auto l_it = list.begin();
+	auto l_it = list->begin();
 
 	ASSERT_EQ(l_it++->getSize(), 1);
 	ASSERT_EQ(l_it++->getSize(), 3);
@@ -752,7 +735,7 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 TEST_F(LayerList_Tests, Transitions) {
 	using namespace std;
 
-	auto l_it = list.begin();
+	auto l_it = list->begin();
 
 	//Outputs 
 	const vector<int> outputs = {2, 2, 2, 
@@ -884,11 +867,13 @@ TEST(LayerList, FromNoteList) {
 	currentTime += 1;
 
 	const NoteList notes(score);
+
+	NoteMapper<std::tuple<int, int, int>>* note_mapper = new BasicNoteMapper();
 	
-	LayerList<std::tuple<int, int, int>, int> l1(notes);
+	LayerList<std::tuple<int, int, int>, int> l1(notes, note_mapper);
 	
 	int count = 0;
-	for (auto l : l1) {
+	for (auto& l : l1) {
 		count++;
 	}
 
@@ -938,7 +923,8 @@ class GreedySolver_Tests : public ::testing::Test {
 							   action_dist, 
 							   "A1");
 			
-			const ActionSet<in_type, out_type> set({a1, true});
+			ActionSet<in_type, out_type>* set = 
+					new ActionSet<in_type, out_type>({a1, true});
 
 			const vector<IString> sv{s1, s2, s3};
 			const Instrument<in_type, out_type> i(sv, note_mapper, set);

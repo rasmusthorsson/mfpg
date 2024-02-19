@@ -12,27 +12,25 @@
 template <class InputTuple> class NoteMapper {
 		using it = std::multimap<noteenums::Note, InputTuple>::iterator;
 	protected:
-		//Define how notes are mapped in child.
-		virtual void mapString(IString) = 0;
+		virtual void mapString(IString&) = 0;
                 std::multimap<noteenums::Note, InputTuple> mapped_notes;
         public:
 	       	NoteMapper() {};
 		virtual ~NoteMapper() {}	
-		std::multimap<noteenums::Note, InputTuple> getMap() const {
+		const std::multimap<noteenums::Note, InputTuple>& getMap() const {
 			return mapped_notes;
 		}
 		int size() const {
 			return mapped_notes.size();
 		}
 
-		//TODO define iterator instead?
-		std::pair<it, it> getRange(noteenums::Note n) {
+		std::pair<it, it> getRange(const noteenums::Note& n) {
 			return mapped_notes.equal_range(n);
 		}
-		it getUpper(noteenums::Note n) {
+		it getUpper(const noteenums::Note& n) {
 			return mapped_notes.upper_bound(n);
 		}
-		it getLower(noteenums::Note n) {
+		it getLower(const noteenums::Note& n) {
 			return mapped_notes.lower_bound(n);
 		}
 		it begin() {

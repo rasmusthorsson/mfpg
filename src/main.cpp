@@ -100,10 +100,10 @@ int main (int argc, char *argv[]) {
 	const IString A_s(3, Note::A_4, Note::As_6);
 	const IString E_s(4, Note::E_5, Note::F_7);
 	
-	const std::vector<IString> strings{G_s, D_s, A_s, E_s};
+	std::vector<IString> strings{G_s, D_s, A_s, E_s};
 
 	NoteMapper<Node_Tuple>* note_mapper = new BasicNoteMapper(strings);
-	ActionSet<Node_Tuple, Distance> action_set;
+	ActionSet<Node_Tuple, Distance>* action_set;
 	if (result.count("test")) {
 		if (result["test"].as<int>() == 1) {
 			action_set = configs::test_configuration_1();

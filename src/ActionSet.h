@@ -27,7 +27,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		//dependencies in the dependencies multimap, the default action in the 
 		//action set, and with the previous actions already taken.
 		bool checkAction(std::string action_name, bool _default, 
-				 std::vector<std::string> previous_actions) const {
+				 std::vector<std::string>& previous_actions) const {
 			std::vector<bool> bools;
 
 			//Check all deps for this actions.
@@ -58,9 +58,10 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 	public:
 		ActionSet() {};
 		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, 
-				bool>> as) : actions(as) {}
+							     bool>> as) : actions(as) 
+		{}
 		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
-			addAction(a, b);
+			actions.push_back({a, b});
 		}
 		ActionSet(std::initializer_list<std::tuple<Action<InputTuple, 
 							OutputValue>, bool>> as) {
@@ -68,11 +69,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 				actions.push_back(a);
 			}
 		}	
-
-		void addAction(Action<InputTuple, OutputValue> a, bool b) {
-			std::tuple<Action<InputTuple, OutputValue>, bool> t(a, b);
-			actions.push_back(t);
-		}
+		~ActionSet() {};
 		void addDependency(std::string dependent, std::string dependency, 
 								bool adjustment) {
 			std::tuple<std::string, bool> dep = {dependency, adjustment};
@@ -80,13 +77,13 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}	
 	
 		//Applies the actionset to two tuples; n1 to n2.	
-		OutputValue apply(InputTuple n1, InputTuple n2) const {
+		OutputValue apply(const InputTuple& n1, const InputTuple& n2) const {
 			OutputValue output = {}; //output must be zero-initializable
 			std::vector<std::string> taken = {};
 			//For each action, check whether it should run, then calculate
 			//distance to cumulatively add to the output.
-			for (std::tuple<Action<InputTuple, OutputValue>, bool> a : 
-									actions) 
+			for (const std::tuple<Action<InputTuple, OutputValue>, bool>& 
+								a : actions) 
 			{
 				if (checkAction(std::get<0>(a).getID(), 
 				   std::get<1>(a),taken) 
@@ -98,14 +95,6 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 				}	
 			}
 			return output;	
-		}
-		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>>
-							getActions() const {	
-			return actions;
-		}
-		std::multimap<std::string, std::tuple<std::string, bool>> 
-							getDependencies() const {
-			return dependencies;
 		}
 };
 #endif

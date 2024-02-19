@@ -16,11 +16,11 @@ SimplifiedNote::SimplifiedNote(mx::api::NoteData n)
 
 SimplifiedNote::SimplifiedNote(Note n, Duration d): note(n), duration(d) {}
 
-const Note SimplifiedNote::getNote() const {
-	return this->note;
+const Note& SimplifiedNote::getNote() const {
+	return note;
 }
 
-const Duration SimplifiedNote::getDuration() const {
-	return this->duration;
+const Duration& SimplifiedNote::getDuration() const {
+	return duration;
 }
 

@@ -6,7 +6,7 @@ ConversionException::ConversionException(std::string message, mx::api::NoteData 
 
 
 //Error message.
-const std::string  ConversionException::what() {
+std::string  ConversionException::what() {
 	return errorMsg;
 }
 

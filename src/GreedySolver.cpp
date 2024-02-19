@@ -1,6 +1,6 @@
 #include "GreedySolver.h"
 
-void GreedySolver::solve(LayerList<in_type, out_type> ls) {
+void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
 	in_type res_tuple;
 	out_type new_output;
 	out_type output;
@@ -9,7 +9,7 @@ void GreedySolver::solve(LayerList<in_type, out_type> ls) {
 	bool first_layerlist = true;
 
 	//Iterate through all layerlists.
-	for (auto layerlist : ls) {
+	for (auto& layerlist : ls) {
 
 		//First layer must check all nodes for the best starting point.
 		if (first_layerlist) {
@@ -43,7 +43,7 @@ void GreedySolver::solve(LayerList<in_type, out_type> ls) {
 				}
 			}
 		} else {
-			res_tuple = layerlist.getElem().getNodes()[edge_index];
+			res_tuple = layerlist.getElem()[edge_index];
 			temp_tuple = findCheapest(layerlist, res_tuple);
 			output = std::get<0>(temp_tuple);
 			edge_index = std::get<1>(temp_tuple);
@@ -65,9 +65,10 @@ void GreedySolver::solve(LayerList<in_type, out_type> ls) {
 	}
 }
 
-const std::tuple<int, int> GreedySolver::findCheapest(LayerList<in_type, out_type> ls, 
-							in_type prev) const {
-	const std::vector<int> transitions = ls.getTransitions()[prev];
+const std::tuple<int, int> GreedySolver::findCheapest(
+						LayerList<in_type, out_type>& ls, 
+						const in_type& prev) const {
+	const std::vector<int>& transitions = ls.getTransitions()[prev];
 	int output = -1;
 	int next = -1;
 	for (int i = 0; i < transitions.size(); i++) {

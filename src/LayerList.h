@@ -21,41 +21,51 @@ template <class InputTuple, class Output> class LayerList {
 		//transitioning from the mapped tuple to the n'th tuple in the next 
 		//layer.
 		std::map<InputTuple, std::vector<Output>> transitions;
+		//Layers are to be owned by the respective LayerList node.
 		Layer<InputTuple> elem;
 		LayerList<InputTuple, Output>* next = NULL;
-	public:
-		LayerList() {}
-		LayerList(Layer<InputTuple> l) : elem(l) {}
-		LayerList(NoteList list) : elem(list.front()) {
-			std::list<SimplifiedNote> simp_list = list.getNotes();
-			auto it = simp_list.begin();
-			it++;
-			for (it; it != simp_list.end(); it++) {
-				Layer<InputTuple> temp(*it);
-				this->pushBack(temp);
-			}	
-		}
-		LayerList(NoteList list, NoteMapper<InputTuple>* note_mapper) : 
-				elem(list.front(), note_mapper) {
-			std::list<SimplifiedNote> simp_list = list.getNotes();
-			auto it = simp_list.begin();
-			it++;
-			for (it; it != simp_list.end(); it++) {
-				Layer<InputTuple> temp(*it, note_mapper);
-				this->pushBack(temp);
-			}	
-		}
-		LayerList(std::vector<Layer<InputTuple>> ls) 
-			: elem(ls[0]) {
-			LayerList<InputTuple, Output>* base = this;
-			for (int i = 1; i < ls.size(); i++) {
-				LayerList<InputTuple, Output>* temp = 
-					new LayerList<InputTuple, Output>(ls[i]);
-				base->setNext(temp);
-				base = temp;
+
+		//Functions used for testing only
+		void pushBack(Layer<InputTuple> layer) {
+			if (next == NULL) {
+				setNext(layer);
+			} else {
+				next->pushBack(layer);
 			}
 		}
-		~LayerList() {}
+		int setNext(Layer<InputTuple> layer) {
+			if (next != NULL) {
+				return -1;
+			}
+			next = new LayerList<InputTuple, Output>(layer);
+			return 1;
+		}
+	public:
+		LayerList() {}
+
+		//Constructors for tests only -----------
+		LayerList(Layer<InputTuple> l) : elem(l) {}
+		LayerList(std::vector<Layer<InputTuple>> ls) : elem(ls[0]) {
+			for (int i = 1; i < ls.size(); i++) {
+				pushBack(ls[i]);
+			}
+		}
+		//---------------------------------------
+
+		LayerList(const SimplifiedNote& s, NoteMapper<InputTuple>* note_mapper)
+			: elem(s, note_mapper) {}
+		LayerList(const NoteList& list, NoteMapper<InputTuple>* note_mapper) : 
+				elem(list.front(), note_mapper) {
+			auto it = list.begin();
+			for (++it; it != list.end(); it++) {
+				pushBack(*it, note_mapper);
+			}	
+		}
+		~LayerList() {
+			if (next != NULL) {
+				delete next;
+			}
+		}
 		int setNext(LayerList<InputTuple, Output>* l) {
 			if (next != NULL) {
 				return -1;
@@ -63,49 +73,51 @@ template <class InputTuple, class Output> class LayerList {
 			next = l;
 			return 1;
 		}
-		int setNext(Layer<InputTuple> layer) {
+		int setNext(const SimplifiedNote& s, NoteMapper<InputTuple>* 
+									note_mapper) {
 			if (next != NULL) {
 				return -1;
 			}
-			LayerList<InputTuple, Output>* temp = 
-				new LayerList<InputTuple, Output>(layer);
-			next = temp;
+			next = new LayerList<InputTuple, Output>(s, note_mapper);
 			return 1;
 		}
-		LayerList<InputTuple, Output>* getNext() const {
+		const LayerList<InputTuple, Output>* getNext() const {
 			return next;
 		}
-		void pushBack(Layer<InputTuple> layer) {
-			auto current = this;
-			while (current->getNext() != NULL) {
-				current = current->getNext();
+		void pushBack(const SimplifiedNote& s, NoteMapper<InputTuple>* 
+									note_mapper) {
+			if (next == NULL) {
+				setNext(s, note_mapper);
+			} else {
+				next->pushBack(s, note_mapper);
 			}
-			current->setNext(layer);
 		}
-		Layer<InputTuple> getElem() const {
+		const Layer<InputTuple>& getElem() const {
 			return elem;
 		}
 		int getSize() const {
 			return elem.getSize();
 		}
-		int buildTransitions(ActionSet<InputTuple, Output> as) {
+		int buildTransitions(const ActionSet<InputTuple, Output>* as) {
 			if (next == NULL) {
 				return 1;
 			}
-			for (InputTuple this_tuple : elem) {
+			auto next_layer = next->getElem();
+			for (const InputTuple& this_tuple : elem) {
 				std::vector<Output> outputs;
-				for (InputTuple next_tuple : next->getElem()) {
+				for (const InputTuple& next_tuple : next_layer) {
 					outputs.push_back(
-						as.apply(this_tuple, next_tuple));
+						as->apply(this_tuple, next_tuple));
 				}
 				transitions.insert({this_tuple, outputs});
 			} 
 			return next->buildTransitions(as);
 		}
-		std::map<InputTuple, std::vector<Output>> getTransitions() const {
+		std::map<InputTuple, std::vector<Output>>& getTransitions() {
 			return transitions;
 		}
 		//Iterator
+		//TODO const iterator
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;

@@ -19,8 +19,8 @@ class SimplifiedNote {
 		SimplifiedNote(mx::api::NoteData);
 		SimplifiedNote(Note n, Duration d);
 
-		const Note getNote() const;
-		const Duration getDuration() const;
+		const Note& getNote() const;
+		const Duration& getDuration() const;
 
 		bool operator < (const SimplifiedNote &rhs) const {
 			return (static_cast<int>(note) < static_cast<int>(rhs.note));

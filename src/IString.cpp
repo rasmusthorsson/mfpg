@@ -34,7 +34,7 @@ const int IString::getPosition() const {
 	return this->position;
 }
 
-const vector<noteenums::Note> IString::getPlayable() const {
+const vector<noteenums::Note>& IString::getPlayable() const {
 	return this->playable_notes;
 }
 

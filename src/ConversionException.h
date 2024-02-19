@@ -12,7 +12,7 @@ class ConversionException : public std::exception {
 		const std::string errorMsg;
 	public:
 		ConversionException(std::string, mx::api::NoteData);
-		const std::string what();
+		std::string what();
 		mx::api::NoteData failedNote() const;
 };
 #endif

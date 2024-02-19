@@ -48,12 +48,13 @@ namespace configs {
 			}
 		}
 	}
-	ActionSet<Node_Tuple, Distance> test_configuration_2() {
+	ActionSet<Node_Tuple, Distance>* test_configuration_2() {
 		typedef Distance (*a_t_d) (Node_Tuple, Node_Tuple);
 		typedef bool (*a_t_c) (Node_Tuple, Node_Tuple);
 
 		a_t_c rest_c = [](Node_Tuple t1, Node_Tuple t2) {
-			return (t1 == Node_Tuple{0, 0, 0} || t2 == Node_Tuple{0, 0, 0});
+			return (t1 == Node_Tuple{0, 0, 0} || 
+				t2 == Node_Tuple{0, 0, 0});
 		};
 		a_t_d rest_d = [](Node_Tuple t1, Node_Tuple t2) {
 			return 0;
@@ -128,7 +129,8 @@ namespace configs {
 							     hp_a_high_d, 
 							     "hp_a_high");
 		
-		ActionSet<Node_Tuple, Distance> action_set({
+		ActionSet<Node_Tuple, Distance>* action_set = 
+					new ActionSet<Node_Tuple, Distance> ({
 				{rest, true},
 				{f_a, true},
 				{s_a_cross, true},
@@ -139,17 +141,17 @@ namespace configs {
 				{hp_a_high, true}
 				});
 
-		action_set.addDependency("f_a", "rest", false);
-		action_set.addDependency("s_a_cross", "rest", false);
-		action_set.addDependency("s_a_no_cross", "rest", false);
-		action_set.addDependency("hp_a_short", "rest", false);
-		action_set.addDependency("hp_a_long", "rest", false);
-		action_set.addDependency("s_a_no_cross", "s_a_cross", false);
-		action_set.addDependency("hp_a_short", "hp_a_no_change", false);
+		action_set->addDependency("f_a", "rest", false);
+		action_set->addDependency("s_a_cross", "rest", false);
+		action_set->addDependency("s_a_no_cross", "rest", false);
+		action_set->addDependency("hp_a_short", "rest", false);
+		action_set->addDependency("hp_a_long", "rest", false);
+		action_set->addDependency("s_a_no_cross", "s_a_cross", false);
+		action_set->addDependency("hp_a_short", "hp_a_no_change", false);
 
 		return action_set;
 	}
-	ActionSet<Node_Tuple, Distance> test_configuration_1() {
+	ActionSet<Node_Tuple, Distance>* test_configuration_1() {
 		typedef Distance (*action_type_dist) (Node_Tuple, Node_Tuple);
 		typedef bool (*action_type_cond) (Node_Tuple, Node_Tuple);
 
@@ -211,7 +213,8 @@ namespace configs {
 							rest_dist, 
 							"rest");
 
-		ActionSet<Node_Tuple, Distance> action_set({
+		ActionSet<Node_Tuple, Distance>* action_set = 
+					new ActionSet<Node_Tuple, Distance> ({
 				{rest, true},
 				{hp_action, true},
 				{finger_action, true},
@@ -219,11 +222,11 @@ namespace configs {
 				{string_action, true}
 				});
 
-		action_set.addDependency("hp_action", "rest", false);
-		action_set.addDependency("finger_action", "rest", false);
-		action_set.addDependency("string_action_NR", "rest", false);
-		action_set.addDependency("string_action", "rest", false);
-		action_set.addDependency("string_action", "string_action_NR", false);
+		action_set->addDependency("hp_action", "rest", false);
+		action_set->addDependency("finger_action", "rest", false);
+		action_set->addDependency("string_action_NR", "rest", false);
+		action_set->addDependency("string_action", "rest", false);
+		action_set->addDependency("string_action", "string_action_NR", false);
 
 		return action_set;
 	}
