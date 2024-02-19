@@ -7,8 +7,6 @@
 #include "Instrument.h"
 #include "SolverException.h"
 
-//TODO Make sure variable names all make sense.
-
 //Tests a valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
 	using namespace mx::api;
@@ -245,43 +243,13 @@ TEST(NoteList, OrderPreserved) {
 }
 
 class BasicNoteMapper_Tests : public ::testing::Test {
-	private:
-		//Creates two strings with 10 playable notes each, the strings 
-		//overlap on three notes.
-		std::pair<IString, IString> createStrings() {
-			using namespace std;
-			using namespace noteenums;
-
-			const Note C(Note::C_3);
-			const Note C_s(Note::Cs_3);
-			const Note D(Note::D_3);
-			const Note D_s(Note::Ds_3);
-			const Note E(Note::E_3);
-			const Note F(Note::F_3);
-			const Note F_s(Note::Fs_3);
-			const Note G(Note::G_3);
-			const Note G_s(Note::Gs_3);
-			const Note A(Note::A_3);
-			const Note A_s(Note::As_3);
-			const Note B(Note::B_3);
-			const Note C2(Note::C_4);
-
-			const vector<Note> notes_1{C, C_s, D, D_s, E, 
-						   F, F_s, G, G_s, D_s};
-			const vector<Note> notes_2{D_s, E, F, F_s, G, 
-						   G_s, A, A_s, B, C2};
-
-			const IString s1(1, notes_1);
-			const IString s2(2, notes_2);
-
-			return make_pair(s1, s2);
-		}
 	public:
-	       	BasicNoteMapper_Tests() : s1(createStrings().first), 
-					  s2(createStrings().second) {}
+	       	BasicNoteMapper_Tests() : s1(1, noteenums::Note::C_3, 
+						noteenums::Note::A_3), 
+					  s2(2, noteenums::Note::Ds_3, 
+					  	noteenums::Note::C_4) {}
 		const IString s1;
 		const IString s2;
-
 };
 
 //Tests that the basic notemapper returns the correct amount of notes and amount of 
@@ -299,7 +267,7 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 		note_count++;
 	}
 
-	for (auto elem : map->getMap()) {
+	for (auto& elem : map->getMap()) {
 		cout << "Note: " << elem.first << "\n";
 		cout << "String: " << get<0>(elem.second)
 			<< " HP: " << get<1>(elem.second)
@@ -466,24 +434,8 @@ TEST(Action, FiveTupleAction) {
 
 class Layer_Tests : public ::testing::Test {
 	typedef std::tuple<int, int, int> ret;
-	
-	private:
-		Layer<ret> createLayer() {
-			using namespace mx::api;
-
-			NoteData n = NoteData{};
-
-			n.durationData.durationName = DurationName::whole;
-			n.pitchData.step = Step::c;
-			n.pitchData.octave = 3;
-			n.pitchData.alter = 0;
-
-			const SimplifiedNote note(n);
-
-			return Layer<ret>(n);
-		}
 	public:
-		Layer_Tests() : l(createLayer()) {}
+		Layer_Tests() : l(noteenums::Note::C_3, noteenums::Duration::Whole) {}
 		void SetUp() override {
 			l.clear();
 		}
@@ -562,7 +514,8 @@ class ActionSet_Tests : public ::testing::Test {
 	typedef bool (*a_type_cond)(in_type, in_type);
 
 	public:
-		ActionSet<in_type, out_type> set;	
+		std::unique_ptr<ActionSet<in_type, out_type>> set;
+		//ActionSet<in_type, out_type> set;	
 		ActionSet_Tests() {		
 			using namespace std;
 
@@ -593,13 +546,12 @@ class ActionSet_Tests : public ::testing::Test {
 			};
 			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
 
-			ActionSet<in_type, out_type> actions{
+			set = unique_ptr<ActionSet<in_type, out_type>>(
+						new ActionSet<in_type, out_type>{
 							{f_a, true}, 
 							{h_a, true}, 
 							{s_a, true}
-							};
-
-			set = actions;
+							});
 		}
 };
 
@@ -611,32 +563,32 @@ TEST_F(ActionSet_Tests, CorrectDistance) {
 	const in_type f1 = {0, 0, 0};
 	const in_type s1 = {1, 2, 1};
 
-	ASSERT_EQ(set.apply(f1, s1), 4);
+	ASSERT_EQ(set->apply(f1, s1), 4);
 
 	const in_type f2 = {2, 2, 2};
 	const in_type s2 = {0, 3, 2};
 
-	ASSERT_EQ(set.apply(f2, s2), 3);
+	ASSERT_EQ(set->apply(f2, s2), 3);
 }
 
 //Tests that dependencies correctly disable actions and cannot re-enable them.
 TEST_F(ActionSet_Tests, Dependencies) {
 	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
 
-	set.addDependency("HA", "FA", false);
+	set->addDependency("HA", "FA", false);
 
 	const in_type f1 = {0, 0, 0};
 	const in_type s1 = {1, 10, 1};
 
-	ASSERT_EQ(set.apply(f1, s1), 2);	
+	ASSERT_EQ(set->apply(f1, s1), 2);	
 
-	set.addDependency("SA", "FA", false);
+	set->addDependency("SA", "FA", false);
 
-	ASSERT_EQ(set.apply(f1, s1), 1);	
+	ASSERT_EQ(set->apply(f1, s1), 1);	
 
-	set.addDependency("SA", "FA", true);
+	set->addDependency("SA", "FA", true);
 
-	ASSERT_EQ(set.apply(f1, s1), 1);	
+	ASSERT_EQ(set->apply(f1, s1), 1);	
 }
 
 class LayerList_Tests : public ::testing::Test {
@@ -644,7 +596,7 @@ class LayerList_Tests : public ::testing::Test {
 	using out_type = int;
 
 	public:
-		LayerList<in_type, int>* list;
+		std::unique_ptr<LayerList<in_type, int>> list;
 		LayerList_Tests() {
 			using namespace noteenums;
 			using namespace std;
@@ -668,7 +620,8 @@ class LayerList_Tests : public ::testing::Test {
 									note_mapper);
 
 			vector<Layer<in_type>> l_vec({first, second, third, fourth});
-			list = new LayerList<in_type, out_type>(l_vec);
+			list = unique_ptr<LayerList<in_type, int>>(
+					new LayerList<in_type, out_type>(l_vec));
 
 			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
 				return true;
@@ -708,9 +661,6 @@ class LayerList_Tests : public ::testing::Test {
 
 			delete note_mapper;
 		}
-		~LayerList_Tests() {
-			delete list;
-		}
 };
 
 //Tests that the list contains all constructed layers and the layers have the 
@@ -744,11 +694,11 @@ TEST_F(LayerList_Tests, Transitions) {
 			       };
 	int count = 0;
 	//D_3 = {1, 1, 1}
-	for (auto transition : l_it->getTransitions()) {
+	for (auto& transition : l_it->getTransitions()) {
 		cout << get<0>(transition.first) << ", ";
 		cout << get<1>(transition.first) << ", ";
 		cout << get<2>(transition.first) << "\n";
-		for (auto output : transition.second) {
+		for (auto& output : transition.second) {
 			cout << "Count: " 
 			     << count 
 			     << "\nOutput D -> Fs: " 
@@ -762,11 +712,11 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	l_it++;
 	//Fs_3 = {1, 1, 3}, {1, 2, 2}, {1, 3, 1}
-	for (auto transition : l_it->getTransitions()) {
+	for (auto& transition : l_it->getTransitions()) {
 		cout << get<0>(transition.first) << ", ";
 		cout << get<1>(transition.first) << ", ";
 		cout << get<2>(transition.first) << "\n";
-		for (auto output : transition.second) {
+		for (auto& output : transition.second) {
 			cout << "Count: " 
 			     << count 
 			     << "\nOutput Fs -> G: " 
@@ -780,11 +730,11 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	l_it++;
 	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 0, 0}
-	for (auto transition : l_it->getTransitions()) {
+	for (auto& transition : l_it->getTransitions()) {
 		cout << get<0>(transition.first) << ", ";
 		cout << get<1>(transition.first) << ", ";
 		cout << get<2>(transition.first) << "\n";
-		for (auto output : transition.second) {
+		for (auto& output : transition.second) {
 			cout << "Count: " 
 			     << count 
 			     << "\nOutput G -> Cs: " 
@@ -798,8 +748,8 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	//Cs_4 = {2, 1, 3} -- Does not transition out
 	l_it++;
-	for (auto transition : l_it->getTransitions()) {
-		for (auto output : transition.second) {
+	for (auto& transition : l_it->getTransitions()) {
+		for (auto& output : transition.second) {
 			ASSERT_EQ(output, -1);
 			count++;
 		}
@@ -932,8 +882,8 @@ class GreedySolver_Tests : public ::testing::Test {
 			return i;
 		}
 	public:
-		const Instrument<in_type, out_type> instrument;
 		GreedySolver_Tests() : instrument(buildInstrument()) {}
+		const Instrument<in_type, out_type> instrument;
 		void TearDown() override {
 			delete instrument.getNoteMapper();
 		}

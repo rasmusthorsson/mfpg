@@ -16,7 +16,7 @@ template <class InputTuple> class NoteMapper {
                 std::multimap<noteenums::Note, InputTuple> mapped_notes;
         public:
 	       	NoteMapper() {};
-		virtual ~NoteMapper() {}	
+		virtual ~NoteMapper() {}
 		const std::multimap<noteenums::Note, InputTuple>& getMap() const {
 			return mapped_notes;
 		}
