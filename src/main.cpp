@@ -41,7 +41,7 @@ int main (int argc, char *argv[]) {
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
-		("v,verbose", "Make output more verbose.") //TODO
+		("v,verbose", "Make output more verbose.", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>());
 	options.parse_positional({"score"});
 
@@ -51,22 +51,33 @@ int main (int argc, char *argv[]) {
 		std::cout << options.help() << "\n";
 		return 0;
 	}
+
 	if (result.count("version")) {
 		std::cout << "mfpr version: " << VERSION_MFPG << "\n";
 		return 0;
 	}
 
+	if (result.count("verbose")) {
+		configs::MyLog::verbose_out(cout, "Verbose option set: " + 
+				(to_string(result["verbose"].as<int>())) + "\n", 
+				configs::VERBOSE_LEVEL::VERBOSE_ALL);
+		configs::VERBOSE = static_cast<configs::VERBOSE_LEVEL>(result["verbose"].as<int>());
+	}
+
 	ifstream input_file;
+
 	if (result.count("score")) {
 		auto file_path = result["score"].as<std::string>();
 		input_file.open(file_path);
 		if (!input_file.is_open()) {
-			cout << "Could not open file: " << argv[1] << "\n";
+			configs::MyLog::verbose_out(cout, ("ERROR: Could not open file: " + 
+				result["score"].as<string>() + "\n"), 
+				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
 	} else {
-		std::cout << "No musicXML file found, please supply a musicXML file "
-			     "to process.\n";
+		configs::MyLog::verbose_out(cout, ("ERROR: No musicXML file found, please supply a "
+			"musicXML file to process.\n"), configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
 
@@ -92,7 +103,6 @@ int main (int argc, char *argv[]) {
 
 //---------------------- Instrument creation ----------------------------
 	
-
 	const IString G_s(1, Note::G_3, Note::Gs_5);
 	const IString D_s(2, Note::D_4, Note::Ds_6);
 	const IString A_s(3, Note::A_4, Note::As_6);
@@ -112,9 +122,7 @@ int main (int argc, char *argv[]) {
 		action_set = configs::test_configuration_1();
 	}
 
-	const Instrument<Node_Tuple, Distance> violin(strings, 
-						      note_mapper, 
-						      action_set);
+	const Instrument<Node_Tuple, Distance> violin(strings, note_mapper, action_set);
 
 //-------------------------- Graph building/solving -------------------------
 
@@ -126,14 +134,21 @@ int main (int argc, char *argv[]) {
 	if (result.count("greedy")) {
 		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
 	} else {
-		std::cout << "Defaulting to greedysolver as no other solver is "
-			     "available." << "\n";
+		configs::MyLog::verbose_out(std::cout, 
+				"Defaulting to greedysolver as no other solver is available.\n",
+				configs::VERBOSE_LEVEL::VERBOSE_ALL);
 		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
 	}
 	try {
 		solver->solve(list);
 	} catch (SolverException e) {
-		std::cout << e.what() << "\n";
+		configs::MyLog::verbose_out(cout, e.what() + "\nFailed layer transition: " + 
+			to_string(e.getCount()) + " -> " + to_string(e.getCount() + 1) + "\n", 
+			configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	} catch (std::out_of_range e) {
+		configs::MyLog::verbose_out(cout, std::string(e.what()) + "\n", 
+				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
 
@@ -143,8 +158,8 @@ int main (int argc, char *argv[]) {
 		ofstream out;
 		out.open(out_file, std::ofstream::binary);
 		if (!out.is_open()) {
-			std::cout << "Failed to open file: " << out_file << 
-				     ", Aborting..." << "\n";
+			configs::MyLog::verbose_out(cout, "Failed to open file: " + out_file + 
+				", Aborting...\n", configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
 		configs::writeOutput(out, solver, result["csv"].as<bool>());

@@ -42,19 +42,22 @@ namespace noteenums {
 		ThirtySecond, 
 		SixtyFourth
 	};
+	inline std::string to_string(const Note& n) {
+		if (n == noteenums::Note::REST) {
+			return std::string("REST");
+		} 
+		const std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E", "F", 
+							"Fs", "G", "Gs", "A", "As", "B"};
+		const std::string base = bases[static_cast<int>(n) % 12];
+		const std::string octave = std::to_string(static_cast<int>(n)/12);
+		return (base + "_" + octave);
+	}
 }
+
 
 //Outputting note to output stream.
 inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
-	if (n == noteenums::Note::REST) {
-		out << "REST";
-		return out;
-	}
-	const std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E", "F", 
-						"Fs", "G", "Gs", "A", "As", "B"};
-	const std::string base = bases[static_cast<int>(n) % 12];
-	const std::string octave = std::to_string(static_cast<int>(n)/12);
-	out << base << "_" << octave;
+	out << to_string(n);
 	return out;	
 }
 #endif

@@ -1,16 +1,36 @@
 #include "GraphSolver.h"
 #include "ActionSet.h"
 
-#include "iostream"
-#include "ostream"
-#include "fstream"
+#include <iostream>
+#include <ostream>
+#include <fstream>
 #include <memory>
+
 
 using Node_Tuple = std::tuple<int, int, int>;
 using Distance = int;
 
 namespace configs {
 	using namespace std;
+	
+	enum class VERBOSE_LEVEL {
+		VERBOSE_NONE = 0,
+		VERBOSE_ERRORS = 1,
+		VERBOSE_ALL = 2
+	};
+	
+	static VERBOSE_LEVEL VERBOSE = configs::VERBOSE_LEVEL::VERBOSE_ERRORS;
+
+	class MyLog {
+		public:
+			MyLog() = delete;
+			static void verbose_out(ostream& out, std::string s, VERBOSE_LEVEL v) {
+				if (v <= VERBOSE) {
+					out << s;
+				}
+			}	
+	};
+
 	void writeOutput(ostream& out, shared_ptr<GraphSolver<Node_Tuple, Distance>> solver, bool csv) {
 		int count = 1;
 		if (csv) {
