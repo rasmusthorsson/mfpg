@@ -29,12 +29,17 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 			condition_fun = cond;
 		} 
 		~Action() {}
+
+		//Apply the distance function to two tuples.
 		OutputValue distance(const InputTuple& s1, const InputTuple& s2) const {
 			return distance_fun(s1, s2);
 		}
+
+		//Apply the condition function to two tuples.
 		bool condition(const InputTuple& s1, const InputTuple& s2) const {
 			return condition_fun(s1, s2);
 		}
+
 		std::string getID() const {
 			return ID;
 		}

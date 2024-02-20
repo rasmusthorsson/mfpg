@@ -10,7 +10,6 @@ BasicNoteMapper::BasicNoteMapper(initializer_list<IString> strings) {
 	}
 
 }
-//For each string, create a map of notes to tuples.
 BasicNoteMapper::BasicNoteMapper(vector<IString>& strings) {
 	mapped_notes.insert({noteenums::Note::REST, {0, 0, 0}});
 	for (IString s : strings) {
@@ -27,8 +26,7 @@ void BasicNoteMapper::mapString(IString& s) {
 	const int notes = playable_notes.size() - 2;
 	
 	//First note is always played on an empty string
-	mapped_notes.insert(make_pair(s.getNote(0), 
-				      make_tuple(string_position, 0, 0)));
+	mapped_notes.insert(make_pair(s.getNote(0), make_tuple(string_position, 0, 0)));
 
 	//For each note we construct a 3-tuple of each playable combination on the 
 	//string. (String position (constant here), hand position, finger position), 
@@ -41,8 +39,7 @@ void BasicNoteMapper::mapString(IString& s) {
 		
 		//Highest hand position is either highest allowed note on the 
 		//string - 3, or note position.
-		const int highest_hand_position = min((note / 2) + 1, 
-						     ((notes / 2) + 1) - 3);
+		const int highest_hand_position = min((note / 2) + 1, ((notes / 2) + 1) - 3);
 		
 		//Which fingers can be used are calculated using note position - lowest
 		//hand position. This also gives us the highest finger which can play 
@@ -52,20 +49,16 @@ void BasicNoteMapper::mapString(IString& s) {
 		for (int hand_position = lowest_hand_position; 
 			 hand_position <= highest_hand_position; 
 			 hand_position++) {
-				const tuple<int, int, int> t_first = make_tuple(
-								string_position, 
-								hand_position, 
-								fingers);
-				mapped_notes.insert(make_pair(s.getNote(note + 1), 
-							      t_first));
-			if (note != notes) { //Check for uneven amount of notes
+				const tuple<int, int, int> t_first = make_tuple(string_position, 
+										hand_position, 
+										fingers);
+				mapped_notes.insert(make_pair(s.getNote(note + 1), t_first));
+			if (note != notes) { //Check for uneven amount of notes 
 					     //on a string to avoid out of bounds.
-				const tuple<int, int, int> t_second = make_tuple(
-							string_position, 
-							hand_position, 
-							fingers);
-				mapped_notes.insert(make_pair(s.getNote(note + 2), 
-							      t_second));
+				const tuple<int, int, int> t_second = make_tuple(string_position, 
+										 hand_position, 
+										 fingers);
+				mapped_notes.insert(make_pair(s.getNote(note + 2), t_second));
 			}
 			fingers--;
 		}

@@ -22,8 +22,11 @@ template <class InputTuple, class Output> class LayerList {
 		//transitioning from the mapped tuple to the n'th tuple in the next 
 		//layer.
 		std::map<InputTuple, std::vector<Output>> transitions;
+
 		//Layers are to be owned by the respective LayerList node.
 		Layer<InputTuple> elem;
+
+		//Next link in list.
 		LayerList<InputTuple, Output>* next = NULL;
 
 		//Functions used for testing only
@@ -67,6 +70,8 @@ template <class InputTuple, class Output> class LayerList {
 				delete next;
 			}
 		}
+
+		//Set next, fails if next is already set.
 		int setNext(LayerList<InputTuple, Output>* l) {
 			if (next != NULL) {
 				return -1;
@@ -74,6 +79,7 @@ template <class InputTuple, class Output> class LayerList {
 			next = l;
 			return 1;
 		}
+		//Set next, fails if next is already set.
 		int setNext(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
 			if (next != NULL) {
 				return -1;
@@ -81,9 +87,12 @@ template <class InputTuple, class Output> class LayerList {
 			next = new LayerList<InputTuple, Output>(s, note_mapper);
 			return 1;
 		}
+
 		const LayerList<InputTuple, Output>* getNext() const {
 			return next;
 		}
+
+		//Push new layerlist to the end of the list.
 		void pushBack(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
 			if (next == NULL) {
 				setNext(s, note_mapper);
@@ -91,12 +100,16 @@ template <class InputTuple, class Output> class LayerList {
 				next->pushBack(s, note_mapper);
 			}
 		}
+
 		const Layer<InputTuple>& getElem() const {
 			return elem;
 		}
+
 		int getSize() const {
 			return elem.getSize();
 		}
+
+		//Builds transitions through the entire layerlist using an actionset.
 		int buildTransitions(const std::shared_ptr<ActionSet<InputTuple, Output>> as) {
 			if (next == NULL) {
 				return 1;
@@ -112,11 +125,12 @@ template <class InputTuple, class Output> class LayerList {
 			} 
 			return next->buildTransitions(as);
 		}
+
 		std::map<InputTuple, std::vector<Output>>& getTransitions() {
 			return transitions;
 		}
+
 		//Iterator
-		//TODO const iterator
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;

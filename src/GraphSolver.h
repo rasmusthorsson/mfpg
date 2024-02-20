@@ -13,11 +13,15 @@ template <class InputTuple, class Output> class GraphSolver {
 		//costs of each transition.
 		std::vector<std::tuple<HandPosition<InputTuple, Output>, Output>> solution;
 	public:
+		GraphSolver() {};
+		virtual ~GraphSolver() {};
+		
+		//Solves the graph represented by a layerlist and fills the solution vector with the
+		//solution.
 		virtual void solve(LayerList<InputTuple, Output>&) = 0;
+		
 		std::vector<std::tuple<HandPosition<InputTuple, Output>, Output>> getSolution() const {
 			return solution;
 		};
-		GraphSolver() {};
-		virtual ~GraphSolver() {};
 };
 #endif

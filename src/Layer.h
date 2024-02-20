@@ -71,6 +71,8 @@ template<class InputTuple> class Layer {
 			}
 			return -1;
 		}
+
+		//Index the nodes
 		const InputTuple& operator[](int index) const {
 			return nodes[index];
 		}

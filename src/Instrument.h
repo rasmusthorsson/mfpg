@@ -16,6 +16,7 @@ template <class StateTuple, OutputViable Cost> class Instrument {
 			   std::shared_ptr<ActionSet<StateTuple, Cost>> as) : 
 			action_set(as), note_mapper(nm), strings(sv) {}
 		~Instrument() {}
+
 		const std::shared_ptr<ActionSet<StateTuple, Cost>> getActionSet() const {
 			return action_set;
 		};

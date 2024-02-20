@@ -29,17 +29,16 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		bool checkAction(std::string action_name, 
 				 bool _default, 
 				 std::vector<std::string>& previous_actions) const {
+
 			std::vector<bool> bools;
 
-			for (auto [dep_itr, range_end] = 
-					dependencies.equal_range(action_name); 
-					dep_itr != range_end; 
-					dep_itr++) {
+			for (auto [dep_itr, range_end] = dependencies.equal_range(action_name); 
+			     dep_itr != range_end; 
+			     dep_itr++) {
 
 				if (find(previous_actions.begin(),
-							previous_actions.end(),
-							std::get<0>(dep_itr->second)) !=
-							previous_actions.end()) {
+				    previous_actions.end(),
+				    std::get<0>(dep_itr->second)) != previous_actions.end()) {
 					bools.push_back(std::get<1>(dep_itr->second));
 				}
 			}
@@ -54,7 +53,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			return ret;
 		}	
 	public:
-		ActionSet() {};
+		ActionSet() = delete;
 		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> as) : actions(as) {}
 		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
 			actions.push_back({a, b});
@@ -82,11 +81,9 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 			OutputValue output = {}; //output must be zero-initializable
 			std::vector<std::string> taken = {};
 
-			//For each action, check whether it should run, then calculate
-			//distance to cumulatively add to the output.
 			for (const std::tuple<Action<InputTuple, OutputValue>, bool>& a : actions) 
 			{
-				if (checkAction(std::get<0>(a).getID(), std::get<1>(a),taken) 
+				if (checkAction(std::get<0>(a).getID(), std::get<1>(a), taken) 
 						&& std::get<0>(a).condition(n1, n2))
 				{
 					output = output + std::get<0>(a).distance(n1, n2);

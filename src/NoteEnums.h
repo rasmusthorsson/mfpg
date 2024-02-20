@@ -50,9 +50,8 @@ inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
 		out << "REST";
 		return out;
 	}
-	const std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E",
-					 "F", "Fs", "G", "Gs", "A",
-					 "As", "B"};
+	const std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E", "F", 
+						"Fs", "G", "Gs", "A", "As", "B"};
 	const std::string base = bases[static_cast<int>(n) % 12];
 	const std::string octave = std::to_string(static_cast<int>(n)/12);
 	out << base << "_" << octave;

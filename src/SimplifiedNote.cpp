@@ -8,8 +8,7 @@ using namespace noteenums;
 //Throws exception if the convertion between mx and noteenums failed during 
 //construction.
 SimplifiedNote::SimplifiedNote(mx::api::NoteData& n) 
-	try : note(MXConverter::ConvertNote(n)), 
-	      duration(MXConverter::ConvertDuration(n)) {}
+	try : note(MXConverter::ConvertNote(n)), duration(MXConverter::ConvertDuration(n)) {}
 	catch (ConversionException ce) {
 		throw;	
 }

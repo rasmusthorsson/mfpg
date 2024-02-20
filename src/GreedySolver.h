@@ -12,8 +12,7 @@ class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> 
 		using in_type = std::tuple<int, int, int>;
 		using out_type = int;
 	private:
-		const std::tuple<int, int> findCheapest(LayerList<in_type, out_type>&, 
-							const in_type&) const;
+		const std::tuple<int, int> findCheapest(LayerList<in_type, out_type>&, const in_type&) const;
 	public:
 		GreedySolver() {}
 		void solve(LayerList<in_type, out_type>&);

@@ -9,12 +9,17 @@
 class NoteList {
 		using it = std::list<SimplifiedNote>::const_iterator;
 	private:
+		//List of notes in simplified form in the score.
 		const std::list<SimplifiedNote> notes;
+
+		//Load notes into the list from the score.
 		const std::list<SimplifiedNote> loadNotes(const mx::api::ScoreData&);
 	public:
-		NoteList() {};
+		NoteList() = delete;
 		NoteList(const mx::api::ScoreData&);
+		
 		int size() const;
+		
 		const SimplifiedNote& front() const;
 		const std::list<SimplifiedNote>& getNotes() const;
 		const it begin() const;
