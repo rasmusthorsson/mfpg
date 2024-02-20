@@ -5,6 +5,8 @@
 #include "NodeException.h"
 #include "NoteEnums.h"
 #include "NoteMapper.h"
+
+#include <memory>
 #include <vector>
 #include <cassert>
 
@@ -20,26 +22,28 @@ template<class InputTuple> class Layer {
 		std::vector<InputTuple> nodes;
 	public:
 		Layer() {}
-		Layer(noteenums::Note n, noteenums::Duration d, 
-					NoteMapper<InputTuple>* mapper) : note(n, d) {
+		Layer(noteenums::Note n, 
+		      noteenums::Duration d, 
+		      std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n, d) {
 			auto range = mapper->getRange(n);
 			for (auto i = range.first; i != range.second; ++i) {
 				addNode(i->second);
 			}		
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
-		Layer(SimplifiedNote n) : note(n), nodes() {}
-		Layer(SimplifiedNote n, NoteMapper<InputTuple>* mapper) : note(n) {
-			auto range = mapper->getRange(n.getNote());
+		Layer(const SimplifiedNote& n) : note(n) {}
+		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n) {
+			auto range = mapper->getRange(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
 				addNode(i->second);
 			}
 		}
 		~Layer() {}
+
 		//Attempts to add a node to a layer, if node is already present does 
 		//nothing and returns -1.
 		int addNode(InputTuple n) {
-        		int old_size = nodes.size();
+        		const int old_size = nodes.size();
         		for (auto i = nodes.begin(); i != nodes.end(); i++) {
 				if (n == *i) {
 					return -1;
@@ -52,8 +56,7 @@ template<class InputTuple> class Layer {
 			return 1;
 		}
 		
-		//Attempts to remove a node from a layer, throws exception if node is 
-		//no present.
+		//Attempts to remove a node from a layer, returns -1 if failure.
 		int removeNode(InputTuple n) {
 			if (nodes.size() < 1) {
 				return -1;
@@ -66,18 +69,21 @@ template<class InputTuple> class Layer {
 			}
 			return -1;
 		}
-		std::vector<InputTuple> getNodes() {
-			return nodes;
+
+		//Index the nodes
+		const InputTuple& operator[](int index) const {
+			return nodes[index];
 		}
-		int getSize() {
+		int getSize() const {
 			return nodes.size();
 		}
 		void clear() {
 			nodes.clear();
 		}
-		SimplifiedNote getNote() {
+		const SimplifiedNote& getNote() const {
 			return note;
 		}
+		
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
@@ -100,17 +106,13 @@ template<class InputTuple> class Layer {
 					ptr++;
 					return Iterator(prev);
 				}
-
-				friend bool operator==(const Iterator& fst, 
-								const Iterator& snd) {
+				friend bool operator==(const Iterator& fst, const Iterator& snd) {
 					return fst.ptr == snd.ptr;
 				}
-				friend bool operator!=(const Iterator& fst, 
-								const Iterator& snd) {
+				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
 					return fst.ptr != snd.ptr;
 				}
 		};
-
 		Iterator begin() {
 			return Iterator(&nodes[0]);
 		}

@@ -4,8 +4,7 @@ set(VERSION_MAJOR 0)
 set(VERSION_MINOR 01)
 set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
 
-configure_file(cmake_files/conf_cmake.h.in 
-				${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
+configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
 project(mfpr VERSION ${VERSION_MFPG})
 
@@ -43,13 +42,14 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
 file(GLOB_RECURSE TEST_BASE src/tests.cpp ${BASE})
 
+##add_subdirectory(${CMAKE_SOURCE_DIR}/src)
+
 add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 
 if(REBUILD_MX)
-
  FetchContent_Declare(
         mx
 	GIT_REPOSITORY https://github.com/webern/mx.git
@@ -77,32 +77,32 @@ gtest_discover_tests(tests)
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
 	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
-		${CMAKE_SOURCE_DIR}/resources/A_W.xml
+		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
 )
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
 	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
-		${CMAKE_SOURCE_DIR}/resources/A_W.xml
+		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
 )
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
 	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
-		${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml
+		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
 )
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
 	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
-		${CMAKE_SOURCE_DIR}/resources/A_D_o_F.xml
+		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
 )
 
 add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
-			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_one.cmake)
+			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_one.cmake)
 add_test(NAME A_W_two COMMAND ${CMAKE_COMMAND} -P 
-			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_W_two.cmake)
+			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_two.cmake)
 add_test(NAME A_D_o_F_one COMMAND ${CMAKE_COMMAND} -P 
-			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_D_o_F_one.cmake)
+			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_D_o_F_one.cmake)
 add_test(NAME A_D_o_F_two COMMAND ${CMAKE_COMMAND} -P 
-			${CMAKE_SOURCE_DIR}/cmake_files/system_tests_A_D_o_F_two.cmake)
+			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_D_o_F_two.cmake)
 
 set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 

@@ -30,15 +30,15 @@ IString::IString(int p, noteenums::Note range_start, noteenums::Note range_stop)
 	}())
 	{}
 
-int IString::getPosition() const {
+const int IString::getPosition() const {
 	return this->position;
 }
 
-vector<noteenums::Note> IString::getPlayable() const {
+const vector<noteenums::Note>& IString::getPlayable() const {
 	return this->playable_notes;
 }
 
-noteenums::Note IString::getNote(int i) const {
+const noteenums::Note IString::getNote(int i) const {
 	return this->playable_notes[i];	
 }
 
