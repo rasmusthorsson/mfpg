@@ -154,12 +154,10 @@ template <class InputTuple, class Output> class LayerList {
 					return Iterator(prev);
 				}
 
-				friend bool operator==(const Iterator& fst, 
-							const Iterator& snd) {
+				friend bool operator==(const Iterator& fst, const Iterator& snd) {
 					return fst.ptr == snd.ptr;
 				}
-				friend bool operator!=(const Iterator& fst, 
-							const Iterator& snd) {
+				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
 					return fst.ptr != snd.ptr;
 				}
 		};

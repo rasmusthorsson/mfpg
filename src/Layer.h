@@ -32,8 +32,7 @@ template<class InputTuple> class Layer {
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
 		Layer(const SimplifiedNote& n) : note(n) {}
-		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) 
-							: note(n) {
+		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n) {
 			auto range = mapper->getRange(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
 				addNode(i->second);
@@ -57,8 +56,7 @@ template<class InputTuple> class Layer {
 			return 1;
 		}
 		
-		//Attempts to remove a node from a layer, throws exception if node is 
-		//no present.
+		//Attempts to remove a node from a layer, returns -1 if failure.
 		int removeNode(InputTuple n) {
 			if (nodes.size() < 1) {
 				return -1;
@@ -108,12 +106,10 @@ template<class InputTuple> class Layer {
 					ptr++;
 					return Iterator(prev);
 				}
-				friend bool operator==(const Iterator& fst, 
-								const Iterator& snd) {
+				friend bool operator==(const Iterator& fst, const Iterator& snd) {
 					return fst.ptr == snd.ptr;
 				}
-				friend bool operator!=(const Iterator& fst, 
-								const Iterator& snd) {
+				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
 					return fst.ptr != snd.ptr;
 				}
 		};
