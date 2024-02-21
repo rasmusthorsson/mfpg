@@ -13,5 +13,5 @@ jobs:
       os: windows-latest
       c-compiler: cl
       cxx-compiler: cl
-      mx-rebuild: true
+      mx-rebuild: false
       build-type: Release
