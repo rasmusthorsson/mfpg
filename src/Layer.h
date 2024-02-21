@@ -21,21 +21,26 @@ template<class InputTuple> class Layer {
 		//calculated by the notemapper.)
 		std::vector<InputTuple> nodes;
 	public:
-		Layer() {}
+		Layer() = delete;
 		Layer(noteenums::Note n, 
 		      noteenums::Duration d, 
 		      std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n, d) {
 			auto range = mapper->getRange(n);
 			for (auto i = range.first; i != range.second; ++i) {
-				addNode(i->second);
+				if (addNode(i->second) == -1) {
+					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
+									i->second, note));
+				}
 			}		
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
-		Layer(const SimplifiedNote& n) : note(n) {}
 		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n) {
 			auto range = mapper->getRange(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
-				addNode(i->second);
+				if (addNode(i->second) == -1) {
+					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
+									i->second, note));
+				}
 			}
 		}
 		~Layer() {}
@@ -72,6 +77,9 @@ template<class InputTuple> class Layer {
 
 		//Index the nodes
 		const InputTuple& operator[](int index) const {
+			if (index >= getSize()) {
+				throw std::out_of_range("Layer index out of range.");
+			}
 			return nodes[index];
 		}
 		int getSize() const {

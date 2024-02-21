@@ -9,9 +9,10 @@ void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
 	std::tuple<int, int> next_tuple;
 	bool first_layerlist = true;
 
+	int count = 0;
 	//Iterate through all layerlists.
 	for (auto& layerlist : ls) {
-
+		count++;
 		//First layer must check all nodes for the best starting point.
 		if (first_layerlist) {
 			first_layerlist = false;
@@ -34,11 +35,10 @@ void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
 					output = new_output;
 					edge_index = std::get<1>(next_tuple);
 				}
-				//If no transition out and not last note, throw 
-				//exception.
+		
 				if (layerlist.getNext() != NULL && edge_index < 0) {
 					throw SolverException(std::string("Solver could not find a "
-					  "solution, no transitions between two layers."));
+					  "solution, no transitions between two layers."), count); 
 				}
 			}
 		} else {
@@ -48,14 +48,12 @@ void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
 			edge_index = std::get<1>(next_tuple);
 			
 			if (layerlist.getNext() != NULL && edge_index < 0) {
-				throw SolverException(std::string("Solver could not" 
-				  "find a solution, no transitions between two layers."
-				  ));
+				throw SolverException(std::string("Solver could not " 
+				  "find a solution, no transitions between two layers."), count);
 			}
 		}
-		const HandPosition<in_type, out_type> hp(res_node, 
-					   		 layerlist.getElem().getNote(), 
-					   		 layerlist);
+
+		const HandPosition<in_type, out_type> hp(res_node, layerlist.getElem().getNote(), layerlist);
 
 		const std::tuple<HandPosition<in_type, out_type>, out_type> t(hp, output);
 

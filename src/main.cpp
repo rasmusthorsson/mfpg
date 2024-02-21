@@ -41,9 +41,11 @@ int main (int argc, char *argv[]) {
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
-		("v,verbose", "Make output more verbose.") //TODO
+		("v,verbose", "Make output more verbose.", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>());
 	options.parse_positional({"score"});
+
+	ostream& log = std::cout;
 
 	auto result = options.parse(argc, argv);
 
@@ -51,22 +53,33 @@ int main (int argc, char *argv[]) {
 		std::cout << options.help() << "\n";
 		return 0;
 	}
+
 	if (result.count("version")) {
 		std::cout << "mfpr version: " << VERSION_MFPG << "\n";
 		return 0;
 	}
 
+	if (result.count("verbose")) {
+		configs::MyLog::verbose_out(log, "Verbose option set: " + 
+				(to_string(result["verbose"].as<int>())) + "\n", 
+				configs::VERBOSE_LEVEL::VERBOSE_ALL);
+		configs::VERBOSE = static_cast<configs::VERBOSE_LEVEL>(result["verbose"].as<int>());
+	}
+
 	ifstream input_file;
+
 	if (result.count("score")) {
 		auto file_path = result["score"].as<std::string>();
 		input_file.open(file_path);
 		if (!input_file.is_open()) {
-			cout << "Could not open file: " << argv[1] << "\n";
+			configs::MyLog::verbose_out(log, ("ERROR: Could not open file: " + 
+				result["score"].as<string>() + "\n"), 
+				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
 	} else {
-		std::cout << "No musicXML file found, please supply a musicXML file "
-			     "to process.\n";
+		configs::MyLog::verbose_out(log, ("ERROR: No musicXML file found, please supply a "
+			"musicXML file to process.\n"), configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
 
@@ -92,15 +105,6 @@ int main (int argc, char *argv[]) {
 
 //---------------------- Instrument creation ----------------------------
 	
-
-	const IString G_s(1, Note::G_3, Note::Gs_5);
-	const IString D_s(2, Note::D_4, Note::Ds_6);
-	const IString A_s(3, Note::A_4, Note::As_6);
-	const IString E_s(4, Note::E_5, Note::F_7);
-	
-	std::vector<IString> strings{G_s, D_s, A_s, E_s};
-
-	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(strings));
 	std::shared_ptr<ActionSet<Node_Tuple, Distance>> action_set;
 	if (result.count("test")) {
 		if (result["test"].as<int>() == 1) {
@@ -112,46 +116,68 @@ int main (int argc, char *argv[]) {
 		action_set = configs::test_configuration_1();
 	}
 
-	const Instrument<Node_Tuple, Distance> violin(strings, 
-						      note_mapper, 
-						      action_set);
+	Instrument<Node_Tuple, Distance> violin(action_set);
+	violin.makeIString(1, Note::G_3, Note::Gs_5);
+	violin.makeIString(2, Note::D_4, Note::Ds_6);
+	violin.makeIString(3, Note::A_4, Note::As_6);
+	violin.makeIString(4, Note::E_5, Note::F_7);
+
+	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(violin.getStrings()));
 
 //-------------------------- Graph building/solving -------------------------
-
-	LayerList<Node_Tuple, Distance> list(note_list, violin.getNoteMapper());
-	
-	list.buildTransitions(violin.getActionSet());
-	
 	std::shared_ptr<GraphSolver<Node_Tuple, Distance>> solver;
-	if (result.count("greedy")) {
-		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
-	} else {
-		std::cout << "Defaulting to greedysolver as no other solver is "
-			     "available." << "\n";
-		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
-	}
+	
 	try {
-		solver->solve(list);
-	} catch (SolverException e) {
-		std::cout << e.what() << "\n";
-		return -1;
-	}
-
-//------------------------------ Output ----------------------------------
-	if (result.count("output")) {
-		auto out_file = result["output"].as<std::string>();
-		ofstream out;
-		out.open(out_file, std::ofstream::binary);
-		if (!out.is_open()) {
-			std::cout << "Failed to open file: " << out_file << 
-				     ", Aborting..." << "\n";
+		LayerList<Node_Tuple, Distance> list(note_list, note_mapper);
+	 	list.buildTransitions(violin.getActionSet());
+		
+		if (result.count("greedy")) {
+			solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
+		} else {
+			configs::MyLog::verbose_out(log, 
+					"Defaulting to greedysolver as no other solver is available.\n",
+					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+			solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
+		}
+		try {
+			solver->solve(list);
+		} catch (SolverException e) {
+			configs::MyLog::verbose_out(log, e.what() + "\nFailed layer transition: " + 
+				to_string(e.getCount()) + " -> " + to_string(e.getCount() + 1) + "\n", 
+				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		} catch (std::out_of_range e) {
+			configs::MyLog::verbose_out(log, std::string(e.what()) + "\n", 
+					configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
-		configs::writeOutput(out, solver, result["csv"].as<bool>());
-		out.close();
-	} else {
-		ostream out(std::cout.rdbuf());
-		configs::writeOutput(out, solver, result["csv"].as<bool>());
+		//------------------------------ Output ----------------------------------
+		if (result.count("output")) {
+			auto out_file = result["output"].as<std::string>();
+			ofstream out;
+			out.open(out_file, std::ofstream::binary);
+			if (!out.is_open()) {
+				configs::MyLog::verbose_out(log, "Failed to open file: " + out_file + 
+					", Aborting...\n", configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+				return -1;
+			}
+			configs::writeOutput(out, solver, result["csv"].as<bool>());
+			out.close();
+		} else {
+			ostream out(std::cout.rdbuf());
+			configs::writeOutput(out, solver, result["csv"].as<bool>());
+		}
+		return 0;
 	}
-	return 0;
+	catch (NodeException<Node_Tuple> e) {
+		configs::MyLog::verbose_out(log,
+					    e.what() + "Failed note: " + e.failedNote().to_string() + "\n",
+					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	} catch (LinkException<Node_Tuple, Distance> e) {
+		configs::MyLog::verbose_out(log,
+					    e.what(),
+					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	}
 }

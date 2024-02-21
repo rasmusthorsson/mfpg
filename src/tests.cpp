@@ -834,12 +834,7 @@ class GreedySolver_Tests : public ::testing::Test {
 
 			typedef out_type (*action_type_dist)(in_type, in_type);
 			typedef bool (*action_type_cond)(in_type, in_type);
-
-			const IString s1(1, Note::C_3, Note::G_3);
-			const IString s2(2, Note::D_3, Note::A_3);
-			const IString s3(3, Note::E_3, Note::B_3);
 			
-			std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper({s1, s2, s3}));
 
 			action_type_cond action_cond = [] (in_type t1, in_type t2) {
 				return true;
@@ -861,14 +856,15 @@ class GreedySolver_Tests : public ::testing::Test {
 			std::shared_ptr<ActionSet<in_type, out_type>> set(
 						new ActionSet<in_type, out_type>({a1, true}));
 
-			const vector<IString> sv{s1, s2, s3};
-			const Instrument<in_type, out_type> i(sv, note_mapper, set);
-
+			Instrument<in_type, out_type> i(set);
+			i.makeIString(1, Note::C_3, Note::G_3);
+			i.makeIString(2, Note::D_3, Note::A_3);
+			i.makeIString(3, Note::E_3, Note::B_3);
 			return i;
 		}
 	public:
 		GreedySolver_Tests() : instrument(buildInstrument()) {}
-		const Instrument<in_type, out_type> instrument;
+		Instrument<in_type, out_type> instrument;
 };
 
 //Tests that the greedysolver selects the correct path and outputs the correct costs.
@@ -878,12 +874,14 @@ TEST_F(GreedySolver_Tests, Basic) {
 
 	using in_type = tuple<int, int, int>;
 	using out_type = int;	
+		
+	std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper(instrument.getStrings()));
 	
 	std::unique_ptr<GraphSolver<in_type, out_type>> solver(new GreedySolver());
 	
-	const Layer<in_type> first(Note::C_3, Duration::Whole, instrument.getNoteMapper());
-	const Layer<in_type> second(Note::E_3, Duration::Whole, instrument.getNoteMapper());
-	const Layer<in_type> third(Note::Gs_3, Duration::Whole, instrument.getNoteMapper());
+	const Layer<in_type> first(Note::C_3, Duration::Whole, note_mapper);
+	const Layer<in_type> second(Note::E_3, Duration::Whole, note_mapper);
+	const Layer<in_type> third(Note::Gs_3, Duration::Whole, note_mapper);
 
 	LayerList<in_type, out_type> l_list({first, second, third});
 	l_list.buildTransitions(instrument.getActionSet());			

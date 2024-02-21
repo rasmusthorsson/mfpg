@@ -18,7 +18,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
 
-
 include(FetchContent)
 FetchContent_Declare(
 	googletest
@@ -41,8 +40,6 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
 	src/GreedySolver.cpp)
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
 file(GLOB_RECURSE TEST_BASE src/tests.cpp ${BASE})
-
-##add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 
 add_executable(mfpr ${SRC_BASE})
 add_executable(tests ${TEST_BASE}) 

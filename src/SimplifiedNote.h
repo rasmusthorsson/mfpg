@@ -32,5 +32,8 @@ class SimplifiedNote {
 			out << n.note;
 			return out;	
 		};
+		std::string to_string() const {
+			return noteenums::to_string(note);
+		}
 };
 #endif
