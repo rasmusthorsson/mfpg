@@ -52,6 +52,7 @@ void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
 				  "find a solution, no transitions between two layers."), count);
 			}
 		}
+
 		const HandPosition<in_type, out_type> hp(res_node, layerlist.getElem().getNote(), layerlist);
 
 		const std::tuple<HandPosition<in_type, out_type>, out_type> t(hp, output);

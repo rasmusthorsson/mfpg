@@ -151,6 +151,23 @@ int main (int argc, char *argv[]) {
 					configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
+		//------------------------------ Output ----------------------------------
+		if (result.count("output")) {
+			auto out_file = result["output"].as<std::string>();
+			ofstream out;
+			out.open(out_file, std::ofstream::binary);
+			if (!out.is_open()) {
+				configs::MyLog::verbose_out(log, "Failed to open file: " + out_file + 
+					", Aborting...\n", configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+				return -1;
+			}
+			configs::writeOutput(out, solver, result["csv"].as<bool>());
+			out.close();
+		} else {
+			ostream out(std::cout.rdbuf());
+			configs::writeOutput(out, solver, result["csv"].as<bool>());
+		}
+		return 0;
 	}
 	catch (NodeException<Node_Tuple> e) {
 		configs::MyLog::verbose_out(log,
@@ -163,24 +180,4 @@ int main (int argc, char *argv[]) {
 					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
-
-
-
-//------------------------------ Output ----------------------------------
-	if (result.count("output")) {
-		auto out_file = result["output"].as<std::string>();
-		ofstream out;
-		out.open(out_file, std::ofstream::binary);
-		if (!out.is_open()) {
-			configs::MyLog::verbose_out(log, "Failed to open file: " + out_file + 
-				", Aborting...\n", configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
-			return -1;
-		}
-		configs::writeOutput(out, solver, result["csv"].as<bool>());
-		out.close();
-	} else {
-		ostream out(std::cout.rdbuf());
-		configs::writeOutput(out, solver, result["csv"].as<bool>());
-	}
-	return 0;
 }
