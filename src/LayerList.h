@@ -5,6 +5,7 @@
 #include "Layer.h"
 #include "NoteList.h"
 #include "ActionSet.h"
+#include "LinkException.h"
 
 #include <iterator>
 #include <cstddef>
@@ -32,7 +33,10 @@ template <class InputTuple, class Output> class LayerList {
 		//Functions used for testing only
 		void pushBack(Layer<InputTuple> layer) {
 			if (next == NULL) {
-				setNext(layer);
+				if (setNext(layer) == -1) {
+					throw (LinkException<InputTuple, Output> 
+									("Failed to set next link"));
+				}
 			} else {
 				next->pushBack(layer);
 			}
@@ -57,7 +61,7 @@ template <class InputTuple, class Output> class LayerList {
 		//---------------------------------------
 
 		LayerList(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper)
-			: elem(s, note_mapper) {}
+			: elem(s, note_mapper) {} 
 		LayerList(const NoteList& list, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) : 
 				elem(list.front(), note_mapper) {
 			auto it = list.begin();
@@ -95,7 +99,10 @@ template <class InputTuple, class Output> class LayerList {
 		//Push new layerlist to the end of the list.
 		void pushBack(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
 			if (next == NULL) {
-				setNext(s, note_mapper);
+				if (setNext(s, note_mapper) == -1) {
+					throw (LinkException<InputTuple, Output> 
+									("Failed to set next link"));
+				}
 			} else {
 				next->pushBack(s, note_mapper);
 			}

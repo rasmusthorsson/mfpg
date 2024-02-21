@@ -125,32 +125,46 @@ int main (int argc, char *argv[]) {
 	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(violin.getStrings()));
 
 //-------------------------- Graph building/solving -------------------------
-
-	LayerList<Node_Tuple, Distance> list(note_list, note_mapper);
-	
-	list.buildTransitions(violin.getActionSet());
-	
 	std::shared_ptr<GraphSolver<Node_Tuple, Distance>> solver;
-	if (result.count("greedy")) {
-		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
-	} else {
-		configs::MyLog::verbose_out(log, 
-				"Defaulting to greedysolver as no other solver is available.\n",
-				configs::VERBOSE_LEVEL::VERBOSE_ALL);
-		solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
-	}
+	
 	try {
-		solver->solve(list);
-	} catch (SolverException e) {
-		configs::MyLog::verbose_out(log, e.what() + "\nFailed layer transition: " + 
-			to_string(e.getCount()) + " -> " + to_string(e.getCount() + 1) + "\n", 
-			configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
-		return -1;
-	} catch (std::out_of_range e) {
-		configs::MyLog::verbose_out(log, std::string(e.what()) + "\n", 
+		LayerList<Node_Tuple, Distance> list(note_list, note_mapper);
+	 	list.buildTransitions(violin.getActionSet());
+		
+		if (result.count("greedy")) {
+			solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
+		} else {
+			configs::MyLog::verbose_out(log, 
+					"Defaulting to greedysolver as no other solver is available.\n",
+					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+			solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
+		}
+		try {
+			solver->solve(list);
+		} catch (SolverException e) {
+			configs::MyLog::verbose_out(log, e.what() + "\nFailed layer transition: " + 
+				to_string(e.getCount()) + " -> " + to_string(e.getCount() + 1) + "\n", 
 				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		} catch (std::out_of_range e) {
+			configs::MyLog::verbose_out(log, std::string(e.what()) + "\n", 
+					configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		}
+	}
+	catch (NodeException<Node_Tuple> e) {
+		configs::MyLog::verbose_out(log,
+					    e.what() + "Failed note: " + e.failedNote().to_string() + "\n",
+					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	} catch (LinkException<Node_Tuple, Distance> e) {
+		configs::MyLog::verbose_out(log,
+					    e.what(),
+					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
+
+
 
 //------------------------------ Output ----------------------------------
 	if (result.count("output")) {

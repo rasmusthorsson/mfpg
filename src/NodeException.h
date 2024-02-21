@@ -1,5 +1,5 @@
-#ifndef NOTE_EXCEPTION_H_MFPG
-#define NOTE_EXCEPTION_H_MFPG
+#ifndef NODE_EXCEPTION_H_MFPG
+#define NODE_EXCEPTION_H_MFPG
 
 #include <exception>
 #include "SimplifiedNote.h"
@@ -21,10 +21,10 @@ template <class T> class NodeException : public std::exception {
 		const std::string what() {
 			return errorMsg;
 		};
-		const T failedNode() const {
+		const T& failedNode() const {
 			return node;
 		};
-		const SimplifiedNote failedNote() const {
+		const SimplifiedNote& failedNote() const {
 			return note;
 		};
 };

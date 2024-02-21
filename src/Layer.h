@@ -28,7 +28,8 @@ template<class InputTuple> class Layer {
 			auto range = mapper->getRange(n);
 			for (auto i = range.first; i != range.second; ++i) {
 				if (addNode(i->second) == -1) {
-					throw(NodeException<InputTuple>("", i->second, note));
+					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
+									i->second, note));
 				}
 			}		
 		}
@@ -37,7 +38,8 @@ template<class InputTuple> class Layer {
 			auto range = mapper->getRange(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
 				if (addNode(i->second) == -1) {
-					throw(NodeException<InputTuple>("", i->second, note));
+					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
+									i->second, note));
 				}
 			}
 		}
