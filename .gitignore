@@ -1,3 +1,4 @@
+build64/*
 build/*
 cmake-build-*
 Sourcecode/private/mxtest/file/PathRoot.h
