@@ -12,7 +12,7 @@
 template <class InputTuple> class NoteMapper {
 		using it = std::multimap<noteenums::Note, InputTuple>::iterator;
 	protected:
-		virtual void mapString(IString&) = 0;
+		virtual void mapString(const IString&) = 0;
                 std::multimap<noteenums::Note, InputTuple> mapped_notes;
         public:
 	       	NoteMapper() {};

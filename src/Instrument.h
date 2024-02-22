@@ -12,7 +12,8 @@ template <class StateTuple, OutputViable Cost> class Instrument {
 		std::vector<IString> strings;
 		const std::shared_ptr<ActionSet<StateTuple, Cost>> action_set;
 	public:
-		Instrument() {}
+		Instrument() {};
+		Instrument(std::vector<IString> sv) : strings(sv) {};
 		Instrument(std::vector<IString> sv, std::shared_ptr<ActionSet<StateTuple, Cost>> as) 
 			   	: action_set(as), strings(sv) {}
 		Instrument(std::shared_ptr<ActionSet<StateTuple, Cost>> as) : action_set(as) {}
@@ -29,6 +30,9 @@ template <class StateTuple, OutputViable Cost> class Instrument {
 			return 1;
 		}
 
+		void setActionSet(std::shared_ptr<ActionSet<StateTuple, Cost>> as) {
+			action_set = new ActionSet<StateTuple, Cost>(*as);
+		}
 		const std::shared_ptr<ActionSet<StateTuple, Cost>> getActionSet() const {
 			return action_set;
 		}

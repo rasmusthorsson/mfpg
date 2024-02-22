@@ -11,7 +11,7 @@
 class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
 	private:
 		//Map notes on an individual string,
-		void mapString(IString& s);
+		void mapString(const IString& s);
 	public:
 		BasicNoteMapper() {}
 		BasicNoteMapper(std::initializer_list<IString>);

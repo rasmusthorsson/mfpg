@@ -18,7 +18,7 @@ BasicNoteMapper::BasicNoteMapper(vector<IString>& strings) {
 }
 
 //Stringmapper for individual string.
-void BasicNoteMapper::mapString(IString& s) {
+void BasicNoteMapper::mapString(const IString& s) {
 	using namespace noteenums;
 	
 	const int string_position = s.getPosition();
