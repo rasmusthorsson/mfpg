@@ -2,7 +2,7 @@
 name: Improvement
 about: Suggest an internal improvement to the project
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
