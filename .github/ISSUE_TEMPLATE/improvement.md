@@ -7,14 +7,14 @@ assignees: ''
 
 ---
 
-**Description**
+### Description
 Describe the issue briefly
 
-**Concerned Classes**
+### Concerned Classes
 A list of classes which are relevant to the improvement
 
-**Suggested Improvement(s)**
+### Suggested Improvement(s)
 What improvements are you suggesting etc.
 
-**Other Information**
+### Other Information
 Other relevant information
