@@ -1,7 +1,4 @@
-#include <iostream>
-
 #include "SimplifiedNote.h"
-#include "MXConverter.h"
 
 using namespace noteenums;
 

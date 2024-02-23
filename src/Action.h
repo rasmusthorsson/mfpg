@@ -43,5 +43,10 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 		std::string getID() const {
 			return ID;
 		}
+
+		friend bool operator ==(const Action<InputTuple, OutputValue>& lhs, 
+					const Action<InputTuple, OutputValue>& rhs) {
+			return (lhs.ID == rhs.ID);
+		}
 };
 #endif

@@ -12,4 +12,5 @@ jobs:
       c-compiler: cl
       cxx-compiler: cl
       mx-rebuild: false
+      build-tests: true
       build-type: Release

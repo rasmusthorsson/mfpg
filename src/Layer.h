@@ -8,7 +8,6 @@
 
 #include <memory>
 #include <vector>
-#include <cassert>
 
 //Class to represent a layer of nodes, each layer corresponds to a note in the music 
 //piece, a node is generally a user-defined tuple, (simple example is a 3-tuple of 
@@ -25,7 +24,7 @@ template<class InputTuple> class Layer {
 		Layer(noteenums::Note n, 
 		      noteenums::Duration d, 
 		      std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n, d) {
-			auto range = mapper->getRange(n);
+			auto range = mapper->getMap().equal_range(n);
 			for (auto i = range.first; i != range.second; ++i) {
 				if (addNode(i->second) == -1) {
 					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
@@ -35,7 +34,7 @@ template<class InputTuple> class Layer {
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
 		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n) {
-			auto range = mapper->getRange(note.getNote());
+			auto range = mapper->getMap().equal_range(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
 				if (addNode(i->second) == -1) {
 					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
@@ -91,41 +90,9 @@ template<class InputTuple> class Layer {
 		const SimplifiedNote& getNote() const {
 			return note;
 		}
-		
-		struct Iterator {
-			using it_cat = std::forward_iterator_tag;
-			using diff_t = std::ptrdiff_t;
-			using val_t = InputTuple;
-			using pointer = val_t*;
-			using reference = val_t&;
-			private:
-				pointer ptr;
-			public:
-				Iterator(pointer ptr) : ptr(ptr) {}
-				reference operator*() const {return *ptr;}
-				pointer operator->() {return ptr;}
-
-				Iterator& operator++() {
-					ptr++;
-					return *this;
-				}
-				Iterator operator++(int) {
-					pointer prev = ptr;
-					ptr++;
-					return Iterator(prev);
-				}
-				friend bool operator==(const Iterator& fst, const Iterator& snd) {
-					return fst.ptr == snd.ptr;
-				}
-				friend bool operator!=(const Iterator& fst, const Iterator& snd) {
-					return fst.ptr != snd.ptr;
-				}
-		};
-		Iterator begin() {
-			return Iterator(&nodes[0]);
+		const std::vector<InputTuple>& getNodes() const {
+			return nodes;
 		}
-		Iterator end() {
-			return Iterator(&nodes[0] + nodes.size());
-		}
+	
 };
 #endif

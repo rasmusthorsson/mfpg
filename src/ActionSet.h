@@ -2,9 +2,6 @@
 #define ACTION_SET_H_MFPG
 
 #include "Action.h"
-#include <algorithm>
-#include <iterator>
-#include <cstddef>
 #include <map>
 
 //Class for a set of actions to be considered when calculating the transition between
@@ -12,6 +9,8 @@
 //is only executed if there are no dependencies preventing it from doing so (as 
 //defined by the user).
 template <class InputTuple, OutputViable OutputValue> class ActionSet {
+	typedef OutputValue (*distfun) (InputTuple, InputTuple);
+	typedef bool (*condfun) (InputTuple, InputTuple);
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
@@ -51,19 +50,49 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 				}
 			}
 			return ret;
-		}	
+		}
+
+		//Checks whether a specific action is part of the actionset via ID.
+		bool checkUnique(const Action<InputTuple, OutputValue>& a) {
+			for (const auto& as : actions) {
+				if (std::get<0>(as) == a) {
+					return false;
+				}
+			}
+			return true;
+		}
 	public:
-		ActionSet() = delete;
-		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> as) : actions(as) {}
+		ActionSet() {};
+		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> as) {
+			for (auto a : as) {
+				if (checkUnique(a)) {
+					actions.push_back(a);
+				}
+			}
+		}
 		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
 			actions.push_back({a, b});
 		}
 		ActionSet(std::initializer_list<std::tuple<Action<InputTuple, OutputValue>, bool>> as) {
-			for (auto a : as) {
-				actions.push_back(a);
+			for (auto& a : as) {
+				if (checkUnique(std::get<0>(a))) {
+					actions.push_back(a);
+				}
 			}
 		}	
 		~ActionSet() {};
+		
+		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
+		//already existing action.
+		int makeAction(condfun cf, distfun df, std::string name, bool _default) {
+			const Action<InputTuple, OutputValue> a(cf, df, name);
+			if (checkUnique(a)) {
+				actions.push_back(std::tuple<Action<InputTuple, OutputValue>, bool> {a, 
+											_default});
+				return 1;
+			}
+			return -1;
+		}
 
 		//Adds a dependency, if dependent then dependency is subjected to adjustment. returns
 		//-1 on failure to insert.

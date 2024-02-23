@@ -4,6 +4,8 @@
 #include "LayerList.h"
 #include "HandPosition.h"
 
+#include <vector>
+
 //Abstract class for a solver to the graph created representing the transitions 
 //between notes. A shortest path graph algorithm is the intended algorithm to be
 //implemented.

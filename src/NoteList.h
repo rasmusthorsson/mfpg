@@ -7,7 +7,6 @@
 
 //Class for representing a score as a list of notes, simpler than mx representation.
 class NoteList {
-		using it = std::list<SimplifiedNote>::const_iterator;
 	private:
 		//List of notes in simplified form in the score.
 		const std::list<SimplifiedNote> notes;
@@ -22,7 +21,5 @@ class NoteList {
 		
 		const SimplifiedNote& front() const;
 		const std::list<SimplifiedNote>& getNotes() const;
-		const it begin() const;
-		const it end() const;
 };
 #endif

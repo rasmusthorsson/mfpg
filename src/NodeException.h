@@ -1,8 +1,10 @@
 #ifndef NODE_EXCEPTION_H_MFPG
 #define NODE_EXCEPTION_H_MFPG
 
-#include <exception>
 #include "SimplifiedNote.h"
+
+#include <exception>
+#include <string>
 
 //Exception for attempting layer modification.
 template <class T> class NodeException : public std::exception {

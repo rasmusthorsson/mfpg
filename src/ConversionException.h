@@ -1,9 +1,10 @@
 #ifndef CONVERSION_EXCEPTION_H_MFPG
 #define CONVERSION_EXCEPTION_H_MFPG
 
+#include "mx/api/ScoreData.h"
+
 #include <exception>
 #include <string>
-#include "mx/api/ScoreData.h"
 
 //Exception for conversion failure between mx notes and noteenums notes.
 class ConversionException : public std::exception {

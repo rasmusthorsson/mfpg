@@ -227,7 +227,7 @@ TEST(NoteList, OrderPreserved) {
 
 	const NoteList notes(score);
 
-	auto note_itr = notes.begin();
+	auto note_itr = notes.getNotes().begin();
 	
 	ASSERT_EQ(notes.size(), 5);
 
@@ -257,10 +257,10 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 	using namespace std;
 
 	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
-
+	
 	int note_count = 0;
-	for (auto i = map->begin(), end = map->end(); i != end;
-		  i = map->getUpper(i->first)) {
+	for (auto i = map->getMap().begin(), end = map->getMap().end(); i != end;
+		  i = map->getMap().upper_bound(i->first)) {
 		note_count++;
 	}
 
@@ -283,10 +283,10 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 
 	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
 
-	auto C3 = map->getRange(Note::C_3);
-	auto D_3 = map->getRange(Note::D_3);
-	auto E3 = map->getRange(Note::E_3);
-	auto As_3 = map->getRange(Note::As_3);
+	auto C3 = map->getMap().equal_range(Note::C_3);
+	auto D_3 = map->getMap().equal_range(Note::D_3);
+	auto E3 = map->getMap().equal_range(Note::E_3);
+	auto As_3 = map->getMap().equal_range(Note::As_3);
 
 	int comb_count = 0;
 	//Check valid combinations for C_3.
@@ -351,7 +351,7 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	unique_ptr<NoteMapper<tuple<int, int, int>>> 
 		map(new BasicNoteMapper({s1, s2}));
 
-	for (auto i = map->begin(); i != map->end(); i++) {
+	for (auto i = map->getMap().begin(); i != map->getMap().end(); i++) {
 		if (i->first != Note::REST) {
 			ASSERT_THAT(get<0>(i->second), AllOf(Lt(3), Gt(0)));
 			ASSERT_THAT(get<1>(i->second), AllOf(Lt(3), Gt(-1)));
@@ -615,8 +615,7 @@ class LayerList_Tests : public ::testing::Test {
 				return true;
 			};
 			a_type_dist fa_dist = [] (in_type s1, in_type s2) {
-				return max(get<2>(s1), get<2>(s2))
-					- min(get<2>(s1), get<2>(s2));
+				return max(get<2>(s1), get<2>(s2)) - min(get<2>(s1), get<2>(s2));
 			};
 			const Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
 			
@@ -624,8 +623,7 @@ class LayerList_Tests : public ::testing::Test {
 				return true;
 			};
 			a_type_dist ha_dist = [] (in_type s1, in_type s2) {
-				return max(get<1>(s1), get<1>(s2))
-					- min(get<1>(s1), get<1>(s2));
+				return max(get<1>(s1), get<1>(s2)) - min(get<1>(s1), get<1>(s2));
 			};
 			const Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
 			
@@ -637,14 +635,13 @@ class LayerList_Tests : public ::testing::Test {
 					- min(get<0>(s1), get<0>(s2));
 			};
 			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
-
+			
 			std::shared_ptr<ActionSet<in_type, out_type>> actions(
-							new ActionSet<in_type, out_type>{
-							    {f_a, true}, 
-							    {h_a, true}, 
-							    {s_a, true}
-							    });
-
+						new ActionSet<in_type, out_type>());
+			actions->makeAction(fa_cond, fa_dist, "FA", true);
+			actions->makeAction(ha_cond, ha_dist, "HA", true);
+			actions->makeAction(sa_cond, sa_dist, "SA", true);
+			
 			list->buildTransitions(actions);
 		}
 };
@@ -824,6 +821,93 @@ TEST(LayerList, FromNoteList) {
 	ASSERT_EQ(it++->getElem().getNote().getNote(), Note::E_5);
 }
 
+//Tests that strings created in an instrument exist in the correct order and contain the correct notes.
+TEST(Instrument_Test, CorrectStrings) {
+	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
+	
+	using namespace noteenums;
+
+	Instrument<in_type, out_type> inst;
+
+	inst.makeIString(1, Note::E_4, Note::E_6);
+	inst.makeIString(2, Note::Ds_2, Note::F_3);
+	
+	std::vector<Note> notes_1{
+		Note::E_4, Note::F_4, Note::Fs_4, Note::G_4, Note::Gs_4, Note::A_4, Note::As_4, Note::B_4,
+		Note::C_5, Note::Cs_5, Note::D_5, Note::Ds_5, Note::E_5, Note::F_5, Note::Fs_5, Note::G_5,
+		Note::Gs_5, Note::A_5, Note::As_5, Note::B_5, Note::C_6, Note::Cs_6, Note::D_6, Note::Ds_6,
+		Note::E_6};
+
+	std::vector<Note> notes_2{
+		Note::Ds_2, Note::E_2, Note::F_2, Note::Fs_2, Note::G_2, Note::Gs_2, Note::A_2, 
+		Note::As_2, Note::B_2, Note::C_3, Note::Cs_3, Note::D_3, Note::Ds_3, Note::E_3, Note::F_3};
+
+	int count = 1;
+	for (const IString& s : inst.getIStrings()) {
+		int index = 0;
+		for (auto n : s.getPlayable()) {
+			if (count == 1) {
+				ASSERT_EQ(n, notes_1[index++]);
+			} else if (count == 2) {
+				ASSERT_EQ(n, notes_2[index++]);
+			}
+		}
+		count++;
+	}
+}
+
+//Tests that trying to insert a string with an invalid position. 
+TEST(Instrument_Test, IncorrectPos) {
+	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
+	
+	using namespace noteenums;
+
+	Instrument<in_type, out_type> inst;
+
+	inst.makeIString(-1, Note::E_4, Note::E_6);
+
+	ASSERT_EQ(inst.getIStrings().size(), 0);
+}
+
+//Tests that adding two strings with the same position results in the first being kept and the second 
+//discarded.
+TEST(Instrument_Test, DupePosition) {
+	using in_type = std::tuple<int, int, int>;
+	using out_type = int;
+	
+	using namespace noteenums;
+
+	Instrument<in_type, out_type> inst;
+
+	inst.makeIString(1, Note::E_4, Note::E_6);
+	inst.makeIString(1, Note::Ds_2, Note::F_3);
+	
+	std::vector<Note> notes_1{
+		Note::E_4, Note::F_4, Note::Fs_4, Note::G_4, Note::Gs_4, Note::A_4, Note::As_4, Note::B_4,
+		Note::C_5, Note::Cs_5, Note::D_5, Note::Ds_5, Note::E_5, Note::F_5, Note::Fs_5, Note::G_5,
+		Note::Gs_5, Note::A_5, Note::As_5, Note::B_5, Note::C_6, Note::Cs_6, Note::D_6, Note::Ds_6,
+		Note::E_6};
+
+	std::vector<Note> notes_2{
+		Note::Ds_2, Note::E_2, Note::F_2, Note::Fs_2, Note::G_2, Note::Gs_2, Note::A_2, 
+		Note::As_2, Note::B_2, Note::C_3, Note::Cs_3, Note::D_3, Note::Ds_3, Note::E_3, Note::F_3};
+
+	int count = 1;
+	for (const IString& s : inst.getIStrings()) {
+		int index = 0;
+		for (auto n : s.getPlayable()) {
+			if (count == 1) {
+				ASSERT_EQ(n, notes_1[index++]);
+			} else if (count == 2) {
+				FAIL();
+			}
+		}
+		count++;
+	}
+}
+
 class GreedySolver_Tests : public ::testing::Test {
 	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
@@ -875,7 +959,7 @@ TEST_F(GreedySolver_Tests, Basic) {
 	using in_type = tuple<int, int, int>;
 	using out_type = int;	
 		
-	std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper(instrument.getStrings()));
+	std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper(instrument.getIStrings()));
 	
 	std::unique_ptr<GraphSolver<in_type, out_type>> solver(new GreedySolver());
 	

@@ -6,13 +6,16 @@
 #include "IString.h"
 
 #include <memory>
+#include <vector>
+#include <string>
 
 template <class StateTuple, OutputViable Cost> class Instrument {
 	private:
 		std::vector<IString> strings;
 		const std::shared_ptr<ActionSet<StateTuple, Cost>> action_set;
 	public:
-		Instrument() {}
+		Instrument() {};
+		Instrument(std::vector<IString> sv) : strings(sv) {};
 		Instrument(std::vector<IString> sv, std::shared_ptr<ActionSet<StateTuple, Cost>> as) 
 			   	: action_set(as), strings(sv) {}
 		Instrument(std::shared_ptr<ActionSet<StateTuple, Cost>> as) : action_set(as) {}
@@ -20,6 +23,9 @@ template <class StateTuple, OutputViable Cost> class Instrument {
 
 		//Builds a string and adds it to the vector, returns -1 if the string position is occupied.
 		int makeIString(int pos, noteenums::Note start, noteenums::Note end) {
+			if (pos < 1) {
+				return -1;
+			}
 			for (auto s : strings) {
 				if (s.getPosition() == pos) {
 					return -1;
@@ -29,10 +35,13 @@ template <class StateTuple, OutputViable Cost> class Instrument {
 			return 1;
 		}
 
+		void setActionSet(std::shared_ptr<ActionSet<StateTuple, Cost>> as) {
+			action_set = new ActionSet<StateTuple, Cost>(*as);
+		}
 		const std::shared_ptr<ActionSet<StateTuple, Cost>> getActionSet() const {
 			return action_set;
 		}
-		std::vector<IString>& getStrings() {
+		const std::vector<IString>& getIStrings() {
 			return strings;
 		}
 };

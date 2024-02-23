@@ -3,16 +3,15 @@
 
 #include "IString.h"
 #include "NoteEnums.h"
+
 #include <map>
-#include <utility>
 
 //Virtual class for implementing a notemapper, InputTuple refers to the different
 //ways a note can be played, this is what the concrete mapper is supposed to identify;
 //all different ways a note can be played represented as InputTuple.
 template <class InputTuple> class NoteMapper {
-		using it = std::multimap<noteenums::Note, InputTuple>::iterator;
 	protected:
-		virtual void mapString(IString&) = 0;
+		virtual void mapString(const IString&) = 0;
                 std::multimap<noteenums::Note, InputTuple> mapped_notes;
         public:
 	       	NoteMapper() {};
@@ -23,21 +22,5 @@ template <class InputTuple> class NoteMapper {
 		int size() const {
 			return mapped_notes.size();
 		}
-
-		std::pair<it, it> getRange(const noteenums::Note& n) {
-			return mapped_notes.equal_range(n);
-		}
-		it getUpper(const noteenums::Note& n) {
-			return mapped_notes.upper_bound(n);
-		}
-		it getLower(const noteenums::Note& n) {
-			return mapped_notes.lower_bound(n);
-		}
-		it begin() {
-			return mapped_notes.begin();
-		}
-		it end() {
-			return mapped_notes.end();
-		}		
 };
 #endif

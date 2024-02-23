@@ -14,6 +14,10 @@ on:
                 required: false
                 type: boolean
                 default: false
+            build-tests:
+                required: false
+                type: boolean
+                default: true
             build-type:
                 required: false
                 type: string
@@ -38,6 +42,7 @@ jobs:
                 -DCMAKE_C_COMPILER=${{ inputs.c-compiler }}
                 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
                 -DREBUILD_MX=${{ inputs.mx-rebuild }}
+                -DBUILD_TESTS=${{ inputs.build-tests }}
                 -S ${{ github.workspace }}
                 
             - name: Build

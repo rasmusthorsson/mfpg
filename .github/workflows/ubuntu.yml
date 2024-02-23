@@ -12,4 +12,5 @@ jobs:
       c-compiler: gcc
       cxx-compiler: g++
       mx-rebuild: false
+      build-tests: true
       build-type: Release
