@@ -6,6 +6,9 @@ set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
 
 configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
+option(REBUILD_MX "Recompile mx library .a file" OFF)
+option(BUILD_TESTS "Build tests" OFF)
+
 project(mfpr VERSION ${VERSION_MFPG})
 
 #MX library is not compatible with g++-13.
@@ -19,18 +22,20 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
-FetchContent_Declare(
-	googletest
-	GIT_REPOSITORY https://github.com/google/googletest.git
-	GIT_TAG f8d7d77c06936315286eb55f8de22cd23c188571
-)
+if (BUILD_TESTS) 
+  FetchContent_Declare(
+	  googletest
+	  GIT_REPOSITORY https://github.com/google/googletest.git
+  	  GIT_TAG f8d7d77c06936315286eb55f8de22cd23c188571
+  )
+  FetchContent_MakeAvailable(googletest)
+endif()
 FetchContent_Declare(
 	cxxopts
 	GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
 	GIT_TAG eb787304d67ec22f7c3a184ee8b4c481d04357fd
 )
 
-FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(cxxopts)
 
 
@@ -39,12 +44,7 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
 	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
 	src/GreedySolver.cpp)
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
-file(GLOB_RECURSE TEST_BASE tests/tests.cpp ${BASE})
-
 add_executable(mfpr ${SRC_BASE})
-add_executable(tests_mfpg ${TEST_BASE}) 
-
-option(REBUILD_MX "Recompile mx library .a file" OFF)
 
 if(REBUILD_MX)
  FetchContent_Declare(
@@ -58,54 +58,58 @@ if(REBUILD_MX)
 endif()
 
 add_subdirectory(src)
-add_subdirectory(tests)
 
-target_link_libraries(
+if(BUILD_TESTS)
+  file(GLOB_RECURSE TEST_BASE tests/tests.cpp ${BASE})
+  add_executable(tests_mfpg ${TEST_BASE}) 
+  add_subdirectory(tests)
+  target_link_libraries(
 	tests_mfpg
 	GTest::gtest_main
 	GTest::gmock_main
-)
+  ) 
+  include(GoogleTest)
 
-include(GoogleTest)
+  enable_testing()
 
-enable_testing()
+  gtest_discover_tests(tests_mfpg)
 
-gtest_discover_tests(tests_mfpg)
-
-add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
-	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
+  add_custom_command(
+	  OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
+	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
 		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-)
-add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
-	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+  )
+  add_custom_command(
+	  OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
+	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
 		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-)
-add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
-	COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
+  )
+  add_custom_command(
+	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
+	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
 		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
-)
-add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
-	COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
+  )
+  add_custom_command(
+	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
+  	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
 		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
-)
+  )
 
-add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
+  add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_one.cmake)
-add_test(NAME A_W_two COMMAND ${CMAKE_COMMAND} -P 
+  add_test(NAME A_W_two COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_two.cmake)
-add_test(NAME A_D_o_F_one COMMAND ${CMAKE_COMMAND} -P 
+  add_test(NAME A_D_o_F_one COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_D_o_F_one.cmake)
-add_test(NAME A_D_o_F_two COMMAND ${CMAKE_COMMAND} -P 
+  add_test(NAME A_D_o_F_two COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_D_o_F_two.cmake)
 
-set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
-set_tests_properties(A_W_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  set_tests_properties(A_W_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
-set_tests_properties(A_D_o_F_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  set_tests_properties(A_D_o_F_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
-set_tests_properties(A_D_o_F_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  set_tests_properties(A_D_o_F_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+
+endif()
