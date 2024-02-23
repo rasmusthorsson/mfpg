@@ -2,9 +2,6 @@
 #define ACTION_SET_H_MFPG
 
 #include "Action.h"
-#include <algorithm>
-#include <iterator>
-#include <cstddef>
 #include <map>
 
 //Class for a set of actions to be considered when calculating the transition between

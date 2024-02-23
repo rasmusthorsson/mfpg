@@ -2,6 +2,7 @@
 #define HAND_POSITION_H_MFPG
 
 #include "SimplifiedNote.h"
+#include "LayerList.h"
 
 //A linked list 
 template <class InputTuple, class Output> class HandPosition {

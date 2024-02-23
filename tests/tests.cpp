@@ -227,7 +227,7 @@ TEST(NoteList, OrderPreserved) {
 
 	const NoteList notes(score);
 
-	auto note_itr = notes.begin();
+	auto note_itr = notes.getNotes().begin();
 	
 	ASSERT_EQ(notes.size(), 5);
 

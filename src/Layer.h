@@ -8,7 +8,6 @@
 
 #include <memory>
 #include <vector>
-#include <cassert>
 
 //Class to represent a layer of nodes, each layer corresponds to a note in the music 
 //piece, a node is generally a user-defined tuple, (simple example is a 3-tuple of 

@@ -2,7 +2,6 @@
 #define LINK_EXCEPTION_H_MFPG
 
 #include <exception>
-#include <memory>
 
 //Exception for attempting layerlist modification.
 template <class InputTuple, class Output> class LinkException : public std::exception {

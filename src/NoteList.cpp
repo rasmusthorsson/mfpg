@@ -31,11 +31,3 @@ const SimplifiedNote& NoteList::front() const {
 const list<SimplifiedNote>& NoteList::getNotes() const {
 	return notes;
 }
-
-const it NoteList::begin() const {
-	return notes.begin();
-}
-
-const it NoteList::end() const {
-	return notes.end();
-}

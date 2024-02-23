@@ -4,24 +4,22 @@
 #include "cxxopts.hpp"
 
 #include "NoteEnums.h"
-#include "IString.h"
+#include "NoteMapper.h"
 #include "BasicNoteMapper.h"
-#include "Action.h"
 #include "ActionSet.h"
 #include "LayerList.h"
 #include "NoteList.h"
-#include "NoteMapper.h"
 #include "GraphSolver.h"
 #include "GreedySolver.h"
 #include "Instrument.h"
+
 #include "conf_cmake.h"
 #include "configs.h"
 
 #include <iostream>
-#include <string>
-#include <cstdint>
-#include <sstream>
 #include <fstream>
+#include <memory>
+#include <string>
 
 using namespace noteenums;
 using namespace std;

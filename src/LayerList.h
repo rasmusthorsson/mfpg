@@ -64,8 +64,8 @@ template <class InputTuple, class Output> class LayerList {
 			: elem(s, note_mapper) {} 
 		LayerList(const NoteList& list, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) : 
 				elem(list.front(), note_mapper) {
-			auto it = list.begin();
-			for (++it; it != list.end(); it++) {
+			auto it = list.getNotes().begin();
+			for (++it; it != list.getNotes().end(); it++) {
 				pushBack(*it, note_mapper);
 			}	
 		}

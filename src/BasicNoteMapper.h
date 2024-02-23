@@ -1,9 +1,6 @@
 #ifndef BASIC_NOTE_MAPPER_H_MFPG
 #define BASIC_NOTE_MAPPER_H_MFPG
 
-#include <map>
-#include <tuple>
-#include <vector>
 #include "NoteMapper.h"
 
 //Basic implementation of NoteMapper as an example, converts notes into 3-tuples of 

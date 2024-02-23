@@ -1,10 +1,13 @@
 #ifndef SIMPLIFIED_NOTE_H_MFPG
 #define SIMPLIFIED_NOTE_H_MFPG
 
+#include "mx/api/ScoreData.h"
+
+#include "NoteEnums.h"
+#include "MXConverter.h"
+
 #include <string>
 #include <iostream>
-#include "NoteEnums.h"
-#include "mx/api/ScoreData.h"
 
 using namespace noteenums;
 

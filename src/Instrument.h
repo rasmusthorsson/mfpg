@@ -6,6 +6,8 @@
 #include "IString.h"
 
 #include <memory>
+#include <vector>
+#include <string>
 
 template <class StateTuple, OutputViable Cost> class Instrument {
 	private:
