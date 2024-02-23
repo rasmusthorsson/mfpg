@@ -14,10 +14,10 @@ on:
                 required: false
                 type: boolean
                 default: false
-	    build-tests:
-	    	required: false
-		type: boolean
-		default: true
+            build-tests:
+                required: false
+                type: boolean
+                default: true
             build-type:
                 required: false
                 type: string
