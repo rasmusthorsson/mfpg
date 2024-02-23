@@ -257,10 +257,10 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 	using namespace std;
 
 	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
-
+	
 	int note_count = 0;
-	for (auto i = map->begin(), end = map->end(); i != end;
-		  i = map->getUpper(i->first)) {
+	for (auto i = map->getMap().begin(), end = map->getMap().end(); i != end;
+		  i = map->getMap().upper_bound(i->first)) {
 		note_count++;
 	}
 
@@ -283,10 +283,10 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 
 	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
 
-	auto C3 = map->getRange(Note::C_3);
-	auto D_3 = map->getRange(Note::D_3);
-	auto E3 = map->getRange(Note::E_3);
-	auto As_3 = map->getRange(Note::As_3);
+	auto C3 = map->getMap().equal_range(Note::C_3);
+	auto D_3 = map->getMap().equal_range(Note::D_3);
+	auto E3 = map->getMap().equal_range(Note::E_3);
+	auto As_3 = map->getMap().equal_range(Note::As_3);
 
 	int comb_count = 0;
 	//Check valid combinations for C_3.
@@ -351,7 +351,7 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	unique_ptr<NoteMapper<tuple<int, int, int>>> 
 		map(new BasicNoteMapper({s1, s2}));
 
-	for (auto i = map->begin(); i != map->end(); i++) {
+	for (auto i = map->getMap().begin(); i != map->getMap().end(); i++) {
 		if (i->first != Note::REST) {
 			ASSERT_THAT(get<0>(i->second), AllOf(Lt(3), Gt(0)));
 			ASSERT_THAT(get<1>(i->second), AllOf(Lt(3), Gt(-1)));

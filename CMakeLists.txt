@@ -10,7 +10,7 @@ project(mfpr VERSION ${VERSION_MFPG})
 
 #MX library is not compatible with g++-13.
 if (UNIX)
-  set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "")
+  set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "" FORCE)
 endif(UNIX)
 
 
@@ -39,10 +39,10 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
 	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
 	src/GreedySolver.cpp)
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
-file(GLOB_RECURSE TEST_BASE src/tests.cpp ${BASE})
+file(GLOB_RECURSE TEST_BASE tests/tests.cpp ${BASE})
 
 add_executable(mfpr ${SRC_BASE})
-add_executable(tests ${TEST_BASE}) 
+add_executable(tests_mfpg ${TEST_BASE}) 
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 
@@ -58,9 +58,10 @@ if(REBUILD_MX)
 endif()
 
 add_subdirectory(src)
+add_subdirectory(tests)
 
 target_link_libraries(
-	tests
+	tests_mfpg
 	GTest::gtest_main
 	GTest::gmock_main
 )
@@ -69,7 +70,7 @@ include(GoogleTest)
 
 enable_testing()
 
-gtest_discover_tests(tests)
+gtest_discover_tests(tests_mfpg)
 
 add_custom_command(
 	OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv

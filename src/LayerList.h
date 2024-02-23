@@ -122,9 +122,9 @@ template <class InputTuple, class Output> class LayerList {
 				return 1;
 			}
 			auto next_layer = next->getElem();
-			for (const InputTuple& this_tuple : elem) {
+			for (const InputTuple& this_tuple : elem.getNodes()) {
 				std::vector<Output> outputs;
-				for (const InputTuple& next_tuple : next_layer) {
+				for (const InputTuple& next_tuple : next_layer.getNodes()) {
 					outputs.push_back(
 						as->apply(this_tuple, next_tuple));
 				}

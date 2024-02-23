@@ -23,21 +23,5 @@ template <class InputTuple> class NoteMapper {
 		int size() const {
 			return mapped_notes.size();
 		}
-
-		std::pair<it, it> getRange(const noteenums::Note& n) {
-			return mapped_notes.equal_range(n);
-		}
-		it getUpper(const noteenums::Note& n) {
-			return mapped_notes.upper_bound(n);
-		}
-		it getLower(const noteenums::Note& n) {
-			return mapped_notes.lower_bound(n);
-		}
-		it begin() {
-			return mapped_notes.begin();
-		}
-		it end() {
-			return mapped_notes.end();
-		}		
 };
 #endif
