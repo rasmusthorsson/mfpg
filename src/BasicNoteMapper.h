@@ -12,7 +12,7 @@ class BasicNoteMapper : public virtual NoteMapper<std::tuple<int, int, int>>{
 	public:
 		BasicNoteMapper() {}
 		BasicNoteMapper(std::initializer_list<IString>);
-		BasicNoteMapper(std::vector<IString>&);
+		BasicNoteMapper(const std::vector<IString>&);
 		~BasicNoteMapper() {}
 };
 #endif

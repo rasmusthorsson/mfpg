@@ -120,7 +120,7 @@ int main (int argc, char *argv[]) {
 	violin.makeIString(3, Note::A_4, Note::As_6);
 	violin.makeIString(4, Note::E_5, Note::F_7);
 
-	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(violin.getStrings()));
+	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(violin.getIStrings()));
 
 //-------------------------- Graph building/solving -------------------------
 	std::shared_ptr<GraphSolver<Node_Tuple, Distance>> solver;

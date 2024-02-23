@@ -19,9 +19,7 @@ template <class InputTuple, class Output> class HandPosition {
 		HandPosition() {}
 		HandPosition(InputTuple i, LayerList<InputTuple, Output>& ls) : state(i), layer_list(ls) {}
 		HandPosition(InputTuple i, SimplifiedNote n, LayerList<InputTuple, Output>& ls) 
-						: state(i), 
-						  note(n), 
-						  layer_list(ls) {}
+						: state(i), note(n), layer_list(ls) {}
 		const InputTuple getState() const {
 			return state;
 		}

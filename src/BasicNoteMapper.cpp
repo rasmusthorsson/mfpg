@@ -10,7 +10,7 @@ BasicNoteMapper::BasicNoteMapper(initializer_list<IString> strings) {
 	}
 
 }
-BasicNoteMapper::BasicNoteMapper(vector<IString>& strings) {
+BasicNoteMapper::BasicNoteMapper(const vector<IString>& strings) {
 	mapped_notes.insert({noteenums::Note::REST, {0, 0, 0}});
 	for (IString s : strings) {
 		mapString(s);
