@@ -149,6 +149,7 @@ int main (int argc, char *argv[]) {
 					configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
+
 		//------------------------------ Output ----------------------------------
 		if (result.count("output")) {
 			auto out_file = result["output"].as<std::string>();
@@ -165,7 +166,7 @@ int main (int argc, char *argv[]) {
 			ostream out(std::cout.rdbuf());
 			configs::writeOutput(out, solver, result["csv"].as<bool>());
 		}
-		return 0;
+		return 1;
 	}
 	catch (NodeException<Node_Tuple> e) {
 		configs::MyLog::verbose_out(log,
