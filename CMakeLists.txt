@@ -7,7 +7,7 @@ set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
 configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
-option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_TESTS "Build tests" ON)
 
 project(mfpr VERSION ${VERSION_MFPG})
 
@@ -16,10 +16,10 @@ if (UNIX)
   set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "" FORCE)
 endif(UNIX)
 
-
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #For YMC
 
 include(FetchContent)
 if (BUILD_TESTS) 

@@ -12,6 +12,7 @@
 #include "GraphSolver.h"
 #include "GreedySolver.h"
 #include "Instrument.h"
+#include "PhysAttrMap.h"
 
 #include "conf_cmake.h"
 #include "configs.h"
@@ -27,7 +28,21 @@ using namespace std;
 using Node_Tuple = std::tuple<int, int, int>;
 using Distance = int;
 
+
 int main (int argc, char *argv[]) {
+
+	std::vector<std::pair<const std::string, PhysTuple>> v_1 {
+		{"STRING", PhysTuple(1)},				
+		{"FINGER", PhysTuple(5)},				
+		{"DISTANCE", PhysTuple(40.0)}			
+	};
+	
+	PhysAttrMap p_1(v_1);
+
+	std::cout << p_1.getVal("STRING").getI() << "\n";
+	std::cout << p_1.getVal("STRING").getI() << "\n";
+	std::cout << p_1.getVal("FINGER").getI() << "\n";
+	std::cout << p_1.getVal("DISTANCE").getD() << "\n";
 
 //-------------------------------- Input/Arguments -------------------------
 	cxxopts::Options options("mfpr");
