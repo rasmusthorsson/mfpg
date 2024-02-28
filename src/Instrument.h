@@ -9,16 +9,16 @@
 #include <vector>
 #include <string>
 
-template <class StateTuple, OutputViable Cost> class Instrument {
+template <OutputViable Cost> class Instrument {
 	private:
 		std::vector<IString> strings;
-		const std::shared_ptr<ActionSet<StateTuple, Cost>> action_set;
+		const std::shared_ptr<ActionSet<Cost>> action_set;
 	public:
 		Instrument() {};
 		Instrument(std::vector<IString> sv) : strings(sv) {};
-		Instrument(std::vector<IString> sv, std::shared_ptr<ActionSet<StateTuple, Cost>> as) 
+		Instrument(std::vector<IString> sv, std::shared_ptr<ActionSet<Cost>> as) 
 			   	: action_set(as), strings(sv) {}
-		Instrument(std::shared_ptr<ActionSet<StateTuple, Cost>> as) : action_set(as) {}
+		Instrument(std::shared_ptr<ActionSet<Cost>> as) : action_set(as) {}
 		~Instrument() {}
 
 		//Builds a string and adds it to the vector, returns -1 if the string position is occupied.
@@ -35,10 +35,10 @@ template <class StateTuple, OutputViable Cost> class Instrument {
 			return 1;
 		}
 
-		void setActionSet(std::shared_ptr<ActionSet<StateTuple, Cost>> as) {
-			action_set = new ActionSet<StateTuple, Cost>(*as);
+		void setActionSet(std::shared_ptr<ActionSet<Cost>> as) {
+			action_set = new ActionSet<Cost>(*as);
 		}
-		const std::shared_ptr<ActionSet<StateTuple, Cost>> getActionSet() const {
+		const std::shared_ptr<ActionSet<Cost>> getActionSet() const {
 			return action_set;
 		}
 		const std::vector<IString>& getIStrings() {

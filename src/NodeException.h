@@ -2,15 +2,16 @@
 #define NODE_EXCEPTION_H_MFPG
 
 #include "SimplifiedNote.h"
+#include "PhysAttrMap.h"
 
 #include <exception>
 #include <string>
 
 //Exception for attempting layer modification.
-template <class T> class NodeException : public std::exception {
+class NodeException : public std::exception {
 	private:
 		//Node which failed.
-		const T node;
+		const PhysAttrMap node;
 
 		//Note represented by the node.
 		const SimplifiedNote note;
@@ -18,12 +19,12 @@ template <class T> class NodeException : public std::exception {
 		//Failure message
 		const std::string errorMsg;
 	public:
-		NodeException(std::string msg, T nd, SimplifiedNote nt) 
+		NodeException(std::string msg, PhysAttrMap nd, SimplifiedNote nt) 
 						: errorMsg(msg), node(nd), note(nt) {};
 		const std::string what() {
 			return errorMsg;
 		};
-		const T& failedNode() const {
+		const PhysAttrMap& failedNode() const {
 			return node;
 		};
 		const SimplifiedNote& failedNote() const {

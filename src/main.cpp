@@ -3,6 +3,7 @@
 
 #include "cxxopts.hpp"
 
+
 #include "NoteEnums.h"
 #include "NoteMapper.h"
 #include "BasicNoteMapper.h"
@@ -13,6 +14,7 @@
 #include "GreedySolver.h"
 #include "Instrument.h"
 #include "PhysAttrMap.h"
+#include "AttrException.h"
 
 #include "conf_cmake.h"
 #include "configs.h"
@@ -25,24 +27,17 @@
 using namespace noteenums;
 using namespace std;
 
-using Node_Tuple = std::tuple<int, int, int>;
 using Distance = int;
 
+extern int TUPLESIZE;
+extern char* ATTRIBUTE_TYPES;
+extern std::vector<std::string> ATTRIBUTES;
 
 int main (int argc, char *argv[]) {
 
-	std::vector<std::pair<const std::string, PhysTuple>> v_1 {
-		{"STRING", PhysTuple(1)},				
-		{"FINGER", PhysTuple(5)},				
-		{"DISTANCE", PhysTuple(40.0)}			
-	};
-	
-	PhysAttrMap p_1(v_1);
-
-	std::cout << p_1.getVal("STRING").getI() << "\n";
-	std::cout << p_1.getVal("STRING").getI() << "\n";
-	std::cout << p_1.getVal("FINGER").getI() << "\n";
-	std::cout << p_1.getVal("DISTANCE").getD() << "\n";
+	TUPLESIZE = 3;
+	ATTRIBUTE_TYPES = "iii";
+	ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
 
 //-------------------------------- Input/Arguments -------------------------
 	cxxopts::Options options("mfpr");
@@ -118,7 +113,7 @@ int main (int argc, char *argv[]) {
 
 //---------------------- Instrument creation ----------------------------
 	
-	std::shared_ptr<ActionSet<Node_Tuple, Distance>> action_set;
+	std::shared_ptr<ActionSet<Distance>> action_set;
 	if (result.count("test")) {
 		if (result["test"].as<int>() == 1) {
 			action_set = configs::test_configuration_1();
@@ -129,28 +124,28 @@ int main (int argc, char *argv[]) {
 		action_set = configs::test_configuration_1();
 	}
 
-	Instrument<Node_Tuple, Distance> violin(action_set);
+	Instrument<Distance> violin(action_set);
 	violin.makeIString(1, Note::G_3, Note::Gs_5);
 	violin.makeIString(2, Note::D_4, Note::Ds_6);
 	violin.makeIString(3, Note::A_4, Note::As_6);
 	violin.makeIString(4, Note::E_5, Note::F_7);
 
-	std::shared_ptr<NoteMapper<Node_Tuple>> note_mapper(new BasicNoteMapper(violin.getIStrings()));
 
 //-------------------------- Graph building/solving -------------------------
-	std::shared_ptr<GraphSolver<Node_Tuple, Distance>> solver;
+	std::shared_ptr<GraphSolver<Distance>> solver;
 	
 	try {
-		LayerList<Node_Tuple, Distance> list(note_list, note_mapper);
+		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin.getIStrings()));
+		LayerList<Distance> list(note_list, note_mapper);
 	 	list.buildTransitions(violin.getActionSet());
 		
 		if (result.count("greedy")) {
-			solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
+			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
 		} else {
 			configs::MyLog::verbose_out(log, 
 					"Defaulting to greedysolver as no other solver is available.\n",
 					configs::VERBOSE_LEVEL::VERBOSE_ALL);
-			solver = std::shared_ptr<GraphSolver<Node_Tuple, Distance>>(new GreedySolver());
+			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
 		}
 		try {
 			solver->solve(list);
@@ -183,15 +178,31 @@ int main (int argc, char *argv[]) {
 		}
 		return 1;
 	}
-	catch (NodeException<Node_Tuple> e) {
+	catch (NodeException e) {
 		configs::MyLog::verbose_out(log,
-					    e.what() + "Failed note: " + e.failedNote().to_string() + "\n",
+					    e.what() + "Failed note: " + e.failedNote().to_string() + 
+					    " Failed node: " + e.failedNode().to_string() + "\n",
 					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
-	} catch (LinkException<Node_Tuple, Distance> e) {
+	} catch (LinkException<Distance> e) {
 		configs::MyLog::verbose_out(log,
 					    e.what(),
 					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
+	} catch (AttrException e) {
+		std::string affected_tuples = "[";
+		int count = 1;
+		for (auto t : e.getAttr()) {
+			affected_tuples += "Tuple " + std::to_string(count) + ": " + t.to_string();
+			if (count < e.getAttr().size()) {
+				affected_tuples += ", ";
+			} else {
+				affected_tuples += "]";
+			}
+			count++;
+		}
+		configs::MyLog::verbose_out(log,
+					    e.what() + "\nAffected Tuples: " + affected_tuples + "\n",
+					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 	}
 }

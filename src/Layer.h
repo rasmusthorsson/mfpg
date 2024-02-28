@@ -5,6 +5,7 @@
 #include "NodeException.h"
 #include "NoteEnums.h"
 #include "NoteMapper.h"
+#include "PhysAttrMap.h"
 
 #include <memory>
 #include <vector>
@@ -12,32 +13,32 @@
 //Class to represent a layer of nodes, each layer corresponds to a note in the music 
 //piece, a node is generally a user-defined tuple, (simple example is a 3-tuple of 
 //ints representing String, Hand Position, and Finger Position).
-template<class InputTuple> class Layer {
+class Layer {
 	private:
 		const SimplifiedNote note;
 		
 		//All possible ways to play a the note (as represented by the tuple,
 		//calculated by the notemapper.)
-		std::vector<InputTuple> nodes;
+		std::vector<PhysAttrMap> nodes;
 	public:
 		Layer() = delete;
 		Layer(noteenums::Note n, 
 		      noteenums::Duration d, 
-		      std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n, d) {
+		      std::shared_ptr<NoteMapper> mapper) : note(n, d) {
 			auto range = mapper->getMap().equal_range(n);
 			for (auto i = range.first; i != range.second; ++i) {
 				if (addNode(i->second) == -1) {
-					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
+					throw(NodeException("Failed to add node to layer.\n", 
 									i->second, note));
 				}
 			}		
 		}
 		Layer(noteenums::Note n, noteenums::Duration d) : note(n, d) {}
-		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper<InputTuple>> mapper) : note(n) {
+		Layer(const SimplifiedNote& n, std::shared_ptr<NoteMapper> mapper) : note(n) {
 			auto range = mapper->getMap().equal_range(note.getNote());
 			for (auto i = range.first; i != range.second; ++i) {
 				if (addNode(i->second) == -1) {
-					throw(NodeException<InputTuple>("Failed to add node to layer.\n", 
+					throw(NodeException("Failed to add node to layer.\n", 
 									i->second, note));
 				}
 			}
@@ -46,7 +47,7 @@ template<class InputTuple> class Layer {
 
 		//Attempts to add a node to a layer, if node is already present does 
 		//nothing and returns -1.
-		int addNode(InputTuple n) {
+		int addNode(const PhysAttrMap n) {
         		const int old_size = nodes.size();
         		for (auto i = nodes.begin(); i != nodes.end(); i++) {
 				if (n == *i) {
@@ -61,7 +62,7 @@ template<class InputTuple> class Layer {
 		}
 		
 		//Attempts to remove a node from a layer, returns -1 if failure.
-		int removeNode(InputTuple n) {
+		int removeNode(PhysAttrMap n) {
 			if (nodes.size() < 1) {
 				return -1;
 			}
@@ -75,7 +76,7 @@ template<class InputTuple> class Layer {
 		}
 
 		//Index the nodes
-		const InputTuple& operator[](int index) const {
+		const PhysAttrMap& operator[](int index) const {
 			if (index >= getSize()) {
 				throw std::out_of_range("Layer index out of range.");
 			}
@@ -90,7 +91,7 @@ template<class InputTuple> class Layer {
 		const SimplifiedNote& getNote() const {
 			return note;
 		}
-		const std::vector<InputTuple>& getNodes() const {
+		const std::vector<PhysAttrMap>& getNodes() const {
 			return nodes;
 		}
 	

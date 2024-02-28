@@ -1,6 +1,8 @@
 #ifndef ACTION_H_MFPG
 #define ACTION_H_MFPG
 
+#include "PhysAttrMap.h"
+
 //Applying constraints on the output. 
 template<typename T>
 concept OutputViable = requires(T a, T b) {
@@ -8,12 +10,12 @@ concept OutputViable = requires(T a, T b) {
 	a > b;
 };
 
-//Class for defining costs for actions, InputTuple defines tuple structure of input 
+//Class for defining costs for actions, PhysAttrMap defines tuple structure of input 
 //(dictated by how note tuples are defined). OutputValue is for the output structure,
 //generally int or float.
-template <class InputTuple, OutputViable OutputValue> class Action {
-	typedef OutputValue (*distfun) (InputTuple, InputTuple);
-	typedef bool (*condfun) (InputTuple, InputTuple);
+template <OutputViable OutputValue> class Action {
+	typedef OutputValue (*distfun) (PhysAttrMap, PhysAttrMap);
+	typedef bool (*condfun) (PhysAttrMap, PhysAttrMap);
 	private:
 		//Action name.
 		std::string ID;
@@ -31,12 +33,12 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 		~Action() {}
 
 		//Apply the distance function to two tuples.
-		OutputValue distance(const InputTuple& s1, const InputTuple& s2) const {
+		OutputValue distance(const PhysAttrMap& s1, const PhysAttrMap& s2) const {
 			return distance_fun(s1, s2);
 		}
 
 		//Apply the condition function to two tuples.
-		bool condition(const InputTuple& s1, const InputTuple& s2) const {
+		bool condition(const PhysAttrMap& s1, const PhysAttrMap& s2) const {
 			return condition_fun(s1, s2);
 		}
 
@@ -44,8 +46,8 @@ template <class InputTuple, OutputViable OutputValue> class Action {
 			return ID;
 		}
 
-		friend bool operator ==(const Action<InputTuple, OutputValue>& lhs, 
-					const Action<InputTuple, OutputValue>& rhs) {
+		friend bool operator ==(const Action<OutputValue>& lhs, 
+					const Action<OutputValue>& rhs) {
 			return (lhs.ID == rhs.ID);
 		}
 };

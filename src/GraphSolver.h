@@ -9,20 +9,20 @@
 //Abstract class for a solver to the graph created representing the transitions 
 //between notes. A shortest path graph algorithm is the intended algorithm to be
 //implemented.
-template <class InputTuple, class Output> class GraphSolver {
+template <class Output> class GraphSolver {
 	protected:
 		//solution vector represents the transitions for the solution and the
 		//costs of each transition.
-		std::vector<std::tuple<HandPosition<InputTuple, Output>, Output>> solution;
+		std::vector<std::tuple<HandPosition<Output>, Output>> solution;
 	public:
 		GraphSolver() {};
 		virtual ~GraphSolver() {};
 		
 		//Solves the graph represented by a layerlist and fills the solution vector with the
 		//solution.
-		virtual void solve(LayerList<InputTuple, Output>&) = 0;
+		virtual void solve(LayerList<Output>&) = 0;
 		
-		std::vector<std::tuple<HandPosition<InputTuple, Output>, Output>> getSolution() const {
+		std::vector<std::tuple<HandPosition<Output>, Output>> getSolution() const {
 			return solution;
 		};
 };

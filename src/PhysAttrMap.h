@@ -1,74 +1,51 @@
 #ifndef PHYS_ATTR_LIST_H_MFPG
 #define PHYS_ATTR_LIST_H_MFPG
 
+#include <initializer_list>
 #include <map>
 #include <string>
 #include <vector>
+#include <ostream>
 
-const int TUPLESIZE = 3;
-const char* ATTRIBUTES = "iid";
-//Possible physical attribute types
-class PhysTuple {
-	private:
-		union PhysAttr {
-			public:
-				explicit PhysAttr(int _i) : i(_i) {};
-				explicit PhysAttr(bool _b) : b(_b) {};
-				explicit PhysAttr(double _d) : d(_d) {};
-				PhysAttr() = delete;
-				int i;
-				bool b;
-				double d;
-		};
-		const PhysAttr phys_attr;
-		const char type;
-	public:
-		PhysTuple() = delete;
-		explicit PhysTuple(int i) : type('i'), phys_attr(PhysAttr(i)) {}
-		explicit PhysTuple(double d) : type('d'), phys_attr(PhysAttr(d)) {}
-		explicit PhysTuple(bool b) : type('b'), phys_attr(PhysAttr(b)) {}
-		const int getI() const {
-			if (type != 'i') {
-				//throw exception
-			}
-			return phys_attr.i;
-		}
-		const bool getB() const {
-			if (type != 'b') {
-				//throw exception
-			}
-			return phys_attr.b;
-		}
-		const double getD() const {
-			if (type != 'd') {
-				//throw exception
-			}
-			return phys_attr.d;
-		}
-		const char getType() const {
-			return type;
-		}
-};
+#include "PhysTuple.h"
+
+extern int TUPLESIZE;
+extern char* ATTRIBUTE_TYPES;
+extern std::vector<std::string> ATTRIBUTES;
 
 class PhysAttrMap {
 	private: 
 		std::map<const std::string, const PhysTuple> attr_map = {};
 	public:
-		PhysAttrMap(std::vector<std::pair<const std::string, PhysTuple>> v){
-			if (v.size() != TUPLESIZE) {
-				//TODO throw exception
-			}
-			for (int i = 0; i < TUPLESIZE; i++) {
-				if (ATTRIBUTES[i] != v[i].second.getType()) {
-					//throw exception
-				}
-				attr_map.insert(v[i]);
-			}
-			
-		}
-		const PhysTuple& getVal(std::string s) {
-			return attr_map.at(s);
-		}
+		PhysAttrMap() {};
+		PhysAttrMap(std::vector<std::pair<const std::string, PhysTuple>> v);
+		PhysAttrMap(std::initializer_list<std::pair<const std::string, PhysTuple>> list);
+		PhysAttrMap(std::initializer_list<PhysTuple> list);
+		const PhysTuple& getVal(std::string s) const; 
+		bool operator == (const PhysAttrMap& rhs) const;
+		bool operator != (const PhysAttrMap& rhs) const;
+		std::string to_string() const;
+		std::string to_string_csv() const;
+		friend std::ostream& operator << (std::ostream& out, PhysAttrMap); 
 
+
+		//Used of lexicographic sorting needed for map.
+		struct AttrLess {
+			bool operator() (const PhysAttrMap& lhs, const PhysAttrMap& rhs) const {
+				bool acc = true;
+				bool temp_acc = true;
+				std::string key;
+
+				for (int i = 0; i < ATTRIBUTES.size(); i++) {
+					key = ATTRIBUTES[i];
+					acc = lhs.attr_map.at(key) < rhs.attr_map.at(key);
+					if (acc && temp_acc) {
+						return true;
+					}
+					temp_acc &= lhs.attr_map.at(key) == rhs.attr_map.at(key); 
+				}
+				return false;
+			}
+		};
 };
 #endif

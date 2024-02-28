@@ -4,7 +4,7 @@
 #include <exception>
 
 //Exception for attempting layerlist modification.
-template <class InputTuple, class Output> class LinkException : public std::exception {
+template <class Output> class LinkException : public std::exception {
 	private:
 		//Failure message
 		const std::string errorMsg;

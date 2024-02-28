@@ -3,18 +3,19 @@
 
 #include "Action.h"
 #include <map>
+#include <iostream>
 
 //Class for a set of actions to be considered when calculating the transition between
 //two states, each action is considered individually for the state transition but 
 //is only executed if there are no dependencies preventing it from doing so (as 
 //defined by the user).
-template <class InputTuple, OutputViable OutputValue> class ActionSet {
-	typedef OutputValue (*distfun) (InputTuple, InputTuple);
-	typedef bool (*condfun) (InputTuple, InputTuple);
+template <OutputViable OutputValue> class ActionSet {
+	typedef OutputValue (*distfun) (PhysAttrMap, PhysAttrMap);
+	typedef bool (*condfun) (PhysAttrMap, PhysAttrMap);
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
-		std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> actions;
+		std::vector<std::tuple<Action<OutputValue>, bool>> actions;
 
 		//Multimap of dependencies, the key is the dependent, the values
 		//are the dependency actions with the boolean adjustment as a tuple.
@@ -53,7 +54,7 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}
 
 		//Checks whether a specific action is part of the actionset via ID.
-		bool checkUnique(const Action<InputTuple, OutputValue>& a) {
+		bool checkUnique(const Action<OutputValue>& a) {
 			for (const auto& as : actions) {
 				if (std::get<0>(as) == a) {
 					return false;
@@ -63,17 +64,17 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}
 	public:
 		ActionSet() {};
-		ActionSet(std::vector<std::tuple<Action<InputTuple, OutputValue>, bool>> as) {
+		ActionSet(std::vector<std::tuple<Action<OutputValue>, bool>> as) {
 			for (auto a : as) {
 				if (checkUnique(a)) {
 					actions.push_back(a);
 				}
 			}
 		}
-		ActionSet(Action<InputTuple, OutputValue> a, bool b) {
+		ActionSet(Action<OutputValue> a, bool b) {
 			actions.push_back({a, b});
 		}
-		ActionSet(std::initializer_list<std::tuple<Action<InputTuple, OutputValue>, bool>> as) {
+		ActionSet(std::initializer_list<std::tuple<Action<OutputValue>, bool>> as) {
 			for (auto& a : as) {
 				if (checkUnique(std::get<0>(a))) {
 					actions.push_back(a);
@@ -85,10 +86,9 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
 		//already existing action.
 		int makeAction(condfun cf, distfun df, std::string name, bool _default) {
-			const Action<InputTuple, OutputValue> a(cf, df, name);
+			const Action<OutputValue> a(cf, df, name);
 			if (checkUnique(a)) {
-				actions.push_back(std::tuple<Action<InputTuple, OutputValue>, bool> {a, 
-											_default});
+				actions.push_back(std::tuple<Action<OutputValue>, bool> {a, _default});
 				return 1;
 			}
 			return -1;
@@ -106,11 +106,11 @@ template <class InputTuple, OutputViable OutputValue> class ActionSet {
 		}	
 
 		//Applies the actionset to two tuples; n1 to n2.
-		OutputValue apply(const InputTuple& n1, const InputTuple& n2) const {
+		OutputValue apply(const PhysAttrMap& n1, const PhysAttrMap& n2) const {
 			OutputValue output = {}; //output must be zero-initializable
 			std::vector<std::string> taken = {};
 
-			for (const std::tuple<Action<InputTuple, OutputValue>, bool>& a : actions) 
+			for (const std::tuple<Action<OutputValue>, bool>& a : actions) 
 			{
 				if (checkAction(std::get<0>(a).getID(), std::get<1>(a), taken) 
 						&& std::get<0>(a).condition(n1, n2))

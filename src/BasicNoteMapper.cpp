@@ -4,14 +4,22 @@ using namespace noteenums;
 using namespace std;
 
 BasicNoteMapper::BasicNoteMapper(initializer_list<IString> strings) {
-	mapped_notes.insert({noteenums::Note::REST, {0, 0, 0}});
+	mapped_notes.insert({noteenums::Note::REST, PhysAttrMap({
+				{"STRING", PhysTuple(0)},
+				{"FINGER", PhysTuple(0)},
+				{"HAND_POS", PhysTuple(0)}})
+				});
 	for (IString s : strings) {
 		mapString(s);
 	}
 
 }
 BasicNoteMapper::BasicNoteMapper(const vector<IString>& strings) {
-	mapped_notes.insert({noteenums::Note::REST, {0, 0, 0}});
+	mapped_notes.insert({noteenums::Note::REST, PhysAttrMap({
+				{"STRING", PhysTuple(0)},
+				{"FINGER", PhysTuple(0)},
+				{"HAND_POS", PhysTuple(0)}})
+				});
 	for (IString s : strings) {
 		mapString(s);
 	}
@@ -26,7 +34,11 @@ void BasicNoteMapper::mapString(const IString& s) {
 	const int notes = playable_notes.size() - 2;
 	
 	//First note is always played on an empty string
-	mapped_notes.insert(make_pair(s.getNote(0), make_tuple(string_position, 0, 0)));
+	mapped_notes.insert(make_pair(s.getNote(0), PhysAttrMap({ 
+				{"STRING", PhysTuple(string_position)},
+				{"FINGER", PhysTuple(0)},
+				{"HAND_POS", PhysTuple(0)}}))
+				);
 
 	//For each note we construct a 3-tuple of each playable combination on the 
 	//string. (String position (constant here), hand position, finger position), 
@@ -49,15 +61,19 @@ void BasicNoteMapper::mapString(const IString& s) {
 		for (int hand_position = lowest_hand_position; 
 			 hand_position <= highest_hand_position; 
 			 hand_position++) {
-				const tuple<int, int, int> t_first = make_tuple(string_position, 
-										hand_position, 
-										fingers);
+				const PhysAttrMap t_first({
+						{"STRING", PhysTuple(string_position)},
+						{"FINGER", PhysTuple(fingers)},
+						{"HAND_POS", PhysTuple(hand_position)}
+						});
 				mapped_notes.insert(make_pair(s.getNote(note + 1), t_first));
 			if (note != notes) { //Check for uneven amount of notes 
 					     //on a string to avoid out of bounds.
-				const tuple<int, int, int> t_second = make_tuple(string_position, 
-										 hand_position, 
-										 fingers);
+				const PhysAttrMap t_second({
+						{"STRING", PhysTuple(string_position)},
+						{"FINGER", PhysTuple(fingers)},
+						{"HAND_POS", PhysTuple(hand_position)}
+						});
 				mapped_notes.insert(make_pair(s.getNote(note + 2), t_second));
 			}
 			fingers--;
