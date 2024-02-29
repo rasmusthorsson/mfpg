@@ -10,6 +10,7 @@
 #include "Instrument.h"
 #include "SolverException.h"
 #include "PhysAttrMap.h"
+#include "AttrException.h"
 
 extern int TUPLESIZE;
 extern char* ATTRIBUTES_TYPES;
@@ -175,6 +176,321 @@ TEST(IString, RangedNotes) {
 	}
 }
 
+//Tests that construction of different types results in the currect type being accessable through the tuple.
+TEST(PhysTuple, Types) {
+	PhysTuple int_phys(1);	
+	PhysTuple double_phys(1.0);	
+	PhysTuple bool_phys(false);	
+	ASSERT_THROW(int_phys.getB(), AttrException);
+	ASSERT_THROW(int_phys.getD(), AttrException);
+	ASSERT_THROW(double_phys.getB(), AttrException);
+	ASSERT_THROW(double_phys.getI(), AttrException);
+	ASSERT_THROW(bool_phys.getI(), AttrException);
+	ASSERT_THROW(bool_phys.getD(), AttrException);
+
+	try {
+		int_phys.getB();
+	} catch (AttrException e) {
+		EXPECT_EQ(e.what(), "Attribute is not a boolean.\n");
+	}	
+	try {
+		int_phys.getD();
+	} catch (AttrException e) {
+		EXPECT_EQ(e.what(), "Attribute is not a double.\n");
+	}	
+	try {
+		double_phys.getB();
+	} catch (AttrException e) {
+		EXPECT_EQ(e.what(), "Attribute is not a boolean.\n");
+	}	
+	try {
+		double_phys.getI();
+	} catch (AttrException e) {
+		EXPECT_EQ(e.what(), "Attribute is not an integer.\n");
+	}	
+	try {
+		bool_phys.getD();
+	} catch (AttrException e) {
+		EXPECT_EQ(e.what(), "Attribute is not a double.\n");
+	}	
+	try {
+		bool_phys.getI();
+	} catch (AttrException e) {
+		EXPECT_EQ(e.what(), "Attribute is not an integer.\n");
+	}	
+	ASSERT_EQ(int_phys.getI(), 1);
+	ASSERT_EQ(double_phys.getD(), 1.0);
+	ASSERT_EQ(bool_phys.getB(), false);
+}
+
+//Tests that all comparison operations on PhysTuples work as intended,
+TEST(PhysTuple, ComparisonOperations) {
+	PhysTuple low_int(1);
+	PhysTuple high_int(8);
+	PhysTuple low_double(1.0);
+	PhysTuple high_double(8.0);
+	PhysTuple true_bool(true);
+	PhysTuple false_bool(false);
+
+	//Equality
+	ASSERT_EQ(low_int == high_int, false);
+	ASSERT_EQ(low_int == low_double, false);
+	ASSERT_EQ(low_int == false_bool, false);
+	ASSERT_EQ(low_int == low_int, true);
+
+	ASSERT_EQ(low_double == high_double, false);
+	ASSERT_EQ(low_double == low_int, false);
+	ASSERT_EQ(low_double == false_bool, false);
+	ASSERT_EQ(low_double == low_double, true);
+
+	ASSERT_EQ(false_bool == true_bool, false);
+	ASSERT_EQ(false_bool == low_int, false);
+	ASSERT_EQ(false_bool == low_double, false);
+	ASSERT_EQ(false_bool == false_bool, true);
+
+	//Unequality
+	ASSERT_EQ(low_int != high_int, true);
+	ASSERT_EQ(low_int != low_double, true);
+	ASSERT_EQ(low_int != false_bool, true);
+	ASSERT_EQ(low_int != low_int, false);
+
+	ASSERT_EQ(low_double != high_double, true);
+	ASSERT_EQ(low_double != low_int, true);
+	ASSERT_EQ(low_double != false_bool, true);
+	ASSERT_EQ(low_double != low_double, false);
+
+	ASSERT_EQ(false_bool != true_bool, true);
+	ASSERT_EQ(false_bool != low_int, true);
+	ASSERT_EQ(false_bool != low_double, true);
+	ASSERT_EQ(false_bool != false_bool, false);
+
+	//Less Than
+	ASSERT_EQ(low_int < high_int, true);
+	ASSERT_EQ(low_int < low_double, true);
+	ASSERT_EQ(low_int < false_bool, false);
+	ASSERT_EQ(low_int < low_int, false);
+
+	ASSERT_EQ(low_double < high_double, true);
+	ASSERT_EQ(low_double < low_int, false);
+	ASSERT_EQ(low_double < false_bool, false);
+	ASSERT_EQ(low_double < low_double, false);
+
+	ASSERT_EQ(false_bool < true_bool, true);
+	ASSERT_EQ(false_bool < low_int, true);
+	ASSERT_EQ(false_bool < low_double, true);
+	ASSERT_EQ(false_bool < false_bool, false);
+
+	//Greater Than
+	ASSERT_EQ(low_int > high_int, false);
+	ASSERT_EQ(low_int > low_double, false);
+	ASSERT_EQ(low_int > false_bool, true);
+	ASSERT_EQ(low_int > low_int, false);
+
+	ASSERT_EQ(low_double > high_double, false);
+	ASSERT_EQ(low_double > low_int, true);
+	ASSERT_EQ(low_double > false_bool, true);
+	ASSERT_EQ(low_double > low_double, false);
+
+	ASSERT_EQ(false_bool > true_bool, false);
+	ASSERT_EQ(false_bool > low_int, false);
+	ASSERT_EQ(false_bool > low_double, false);
+	ASSERT_EQ(false_bool > false_bool, false);
+}
+
+//Tests that all arithmetic operations on PhysTuples work as intended,
+TEST(PhysTuple, ArithmeticOperations) {
+	PhysTuple low_int(1);
+	PhysTuple high_int(8);
+	PhysTuple low_double(1.0);
+	PhysTuple high_double(8.0);
+	PhysTuple true_bool(true);
+	PhysTuple false_bool(false);
+	
+	//Minus
+	ASSERT_EQ(high_int - low_int, 7);
+	ASSERT_EQ(high_int - high_int, 0);
+	ASSERT_THROW(high_int - low_double, AttrException);
+	ASSERT_THROW(high_int - false_bool, AttrException);
+	
+	ASSERT_EQ(high_double - low_double, 7.0);
+	ASSERT_EQ(high_double - high_double, 0.0);
+	ASSERT_THROW(high_double - low_int, AttrException);
+	ASSERT_THROW(high_double - false_bool, AttrException);
+
+	ASSERT_THROW(true_bool - false_bool, AttrException);
+	ASSERT_THROW(true_bool - true_bool, AttrException);
+	ASSERT_THROW(true_bool - low_double, AttrException);
+	ASSERT_THROW(true_bool - false_bool, AttrException);
+	
+	//Plus
+	ASSERT_EQ(high_int + low_int, 9);
+	ASSERT_EQ(high_int + high_int, 16);
+	ASSERT_THROW(high_int + low_double, AttrException);
+	ASSERT_THROW(high_int + false_bool, AttrException);
+	
+	ASSERT_EQ(high_double + low_double, 9.0);
+	ASSERT_EQ(high_double + high_double, 16.0);
+	ASSERT_THROW(high_double + low_int, AttrException);
+	ASSERT_THROW(high_double + false_bool, AttrException);
+
+	ASSERT_THROW(true_bool + false_bool, AttrException);
+	ASSERT_THROW(true_bool + true_bool, AttrException);
+	ASSERT_THROW(true_bool + low_double, AttrException);
+	ASSERT_THROW(true_bool + false_bool, AttrException);
+	
+	//Multiplication
+	ASSERT_EQ(high_int * low_int, 8);
+	ASSERT_EQ(high_int * high_int, 64);
+	ASSERT_THROW(high_int * low_double, AttrException);
+	ASSERT_THROW(high_int * false_bool, AttrException);
+	
+	ASSERT_EQ(high_double * low_double, 8.0);
+	ASSERT_EQ(high_double * high_double, 64.0);
+	ASSERT_THROW(high_double * low_int, AttrException);
+	ASSERT_THROW(high_double * false_bool, AttrException);
+
+	ASSERT_THROW(true_bool * false_bool, AttrException);
+	ASSERT_THROW(true_bool * true_bool, AttrException);
+	ASSERT_THROW(true_bool * low_double, AttrException);
+	ASSERT_THROW(true_bool * false_bool, AttrException);
+}
+
+//Tests that all boolean operations on PhysTuples work as intended,
+TEST(PhysTuple, BooleanOperations) {
+	PhysTuple low_int(1);
+	PhysTuple high_int(8);
+	PhysTuple low_double(1.0);
+	PhysTuple high_double(8.0);
+	PhysTuple true_bool(true);
+	PhysTuple false_bool(false);
+	
+	//Conjunction
+	ASSERT_THROW(high_int && low_int, AttrException);
+	ASSERT_THROW(high_int && high_int, AttrException);
+	ASSERT_THROW(high_int && low_double, AttrException);
+	ASSERT_THROW(high_int && false_bool, AttrException);
+	
+	ASSERT_THROW(high_double && low_double, AttrException);
+	ASSERT_THROW(high_double && high_double, AttrException);
+	ASSERT_THROW(high_double && low_int, AttrException);
+	ASSERT_THROW(high_double && false_bool, AttrException);
+
+	ASSERT_EQ(true_bool && false_bool, false);
+	ASSERT_EQ(true_bool && true_bool, true);
+	ASSERT_THROW(true_bool && low_int, AttrException);
+	ASSERT_THROW(true_bool && low_double, AttrException);
+	
+	//Disjunction
+	ASSERT_THROW(high_int || low_int, AttrException);
+	ASSERT_THROW(high_int || high_int, AttrException);
+	ASSERT_THROW(high_int || low_double, AttrException);
+	ASSERT_THROW(high_int || false_bool, AttrException);
+	
+	ASSERT_THROW(high_double || low_double, AttrException);
+	ASSERT_THROW(high_double || high_double, AttrException);
+	ASSERT_THROW(high_double || low_int, AttrException);
+	ASSERT_THROW(high_double || false_bool, AttrException);
+
+	ASSERT_EQ(true_bool || false_bool, true);
+	ASSERT_EQ(true_bool || true_bool, true);
+	ASSERT_THROW(true_bool || low_int, AttrException);
+	ASSERT_THROW(true_bool || low_double, AttrException);
+}
+
+//Tests that init of PhysAttrMap using a pair list will result in a thrown exception if there are too many 
+//attributes specified.
+TEST(PhysAttrMap, PairListTooManyAttributes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}}), AttrException);
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}});
+	} catch (AttrException e) {
+		ASSERT_EQ(e.what(), "List size is not the same as TUPLESIZE.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a pair list will result in a thrown exception if the types of the 
+//fundamentals do not match the ATTRIBUTE_TYPES.
+TEST(PhysAttrMap, PairListWrongAttributeTypes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}}), AttrException);
+	
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}});
+	} catch (AttrException e) {
+		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that getting values from a pair-list PhysAttrMap init results in the correct values and exception
+//when trying to get a non-existant value.
+TEST(PhysAttrMap, PairListGetVals) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	PhysAttrMap map_pair({{"STRING", 2}, {"FINGER", 1}, {"HAND_POS", 4}});
+
+	ASSERT_EQ(map_pair.getVal("STRING"), 2);
+	ASSERT_EQ(map_pair.getVal("FINGER"), 1);
+	ASSERT_EQ(map_pair.getVal("HAND_POS"), 4);
+	ASSERT_THROW(map_pair.getVal("NON_EXISTANT"), std::out_of_range);
+}
+
+//Tests that init of PhysAttrMap using a list init will result in a thrown exception if the list contains 
+//more arguments than the tuplesize
+TEST(PhysAttrMap, ImplicitListTooManyAttributes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 7, 2}), AttrException);
+	try {
+		const PhysAttrMap failed_map_implicit({2, 5, 7, 2});
+	} catch (AttrException e) {
+		ASSERT_EQ(e.what(), "List size is not the same as TUPLESIZE.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a list init will fail if one of the arguements does not line up with
+//the specified ATTRIBUTE_TYPES
+TEST(PhysAttrMap, ImplicitListWrongAttributeTypes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 2.2}), AttrException);
+	try {
+		const PhysAttrMap failed_map_implicit({2, 5, 2.2});
+	} catch (AttrException e) {
+		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that getting values from a implicit-list PhysAttrMap init results in the correct values and 
+//exception when trying to get a non-existant value.
+TEST(PhysAttrMap, ImplicitListGetVals) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	PhysAttrMap map_implicit({2, 1, 4});
+
+	ASSERT_EQ(map_implicit.getVal("STRING"), 2);
+	ASSERT_EQ(map_implicit.getVal("HAND_POS"), 1);
+	ASSERT_EQ(map_implicit.getVal("FINGER"), 4);
+	ASSERT_THROW(map_implicit.getVal("NON_EXISTANT"), std::out_of_range);
+}
+
+//Tests that boolean operations result in the expected results regardless of initialization method used.
+TEST(PhysAttrMap, BooleanOperations) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	PhysAttrMap implicit_one{2, 5, 3};
+	PhysAttrMap implicit_two{4, 5, 1};
+	PhysAttrMap pair_one({{"STRING", 2}, {"FINGER", 3}, {"HAND_POS", 5}});
+	PhysAttrMap pair_two({{"FINGER", 1}, {"STRING", 4}, {"HAND_POS", 5}});
+
+	//Equality
+	ASSERT_EQ(implicit_one == implicit_one, true);
+	ASSERT_EQ(implicit_one == implicit_two, false);
+	ASSERT_EQ(implicit_one == pair_one, true);
+	ASSERT_EQ(implicit_one == pair_two, false);
+	
+	//Unequality
+	ASSERT_EQ(implicit_one != implicit_one, false);
+	ASSERT_EQ(implicit_one != implicit_two, true);
+	ASSERT_EQ(implicit_one != pair_one, false);
+	ASSERT_EQ(implicit_one != pair_two, true);
+}
+
 //Tests that an empty NoteList is the result of an empty score.
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
@@ -277,9 +593,6 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
 	using namespace std;
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
-//	TUPLESIZE = 3;
-//	ATTRIBUTE_TYPES = "iii";
-//	ATTRIBUTES = {"STRING", "HAND_POS", "FINGER"};
 	unique_ptr<NoteMapper>map(new BasicNoteMapper({s1, s2}));
 	
 	int note_count = 0;

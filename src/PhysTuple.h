@@ -8,9 +8,9 @@ class PhysTuple {
 	private:
 		union PhysAttr {
 			public:
-				PhysAttr(int _i) : i(_i) {};
-				PhysAttr(bool _b) : b(_b) {};
-				PhysAttr(double _d) : d(_d) {};
+				explicit PhysAttr(int _i) : i(_i) {};
+				explicit PhysAttr(bool _b) : b(_b) {};
+				explicit PhysAttr(double _d) : d(_d) {};
 				PhysAttr() = delete;
 				int i;
 				bool b;

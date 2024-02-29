@@ -14,14 +14,14 @@ const int PhysTuple::getI() const {
 
 const bool PhysTuple::getB() const {
 	if (type != 'b') {
-		throw (AttrException("Attribute is not an boolean.\n", std::vector<PhysTuple>({*this})));
+		throw (AttrException("Attribute is not a boolean.\n", std::vector<PhysTuple>({*this})));
 	}
 	return phys_attr.b;
 }
 
 const double PhysTuple::getD() const {
 	if (type != 'd') {
-		throw (AttrException("Attribute is not an double.\n", std::vector<PhysTuple>({*this})));
+		throw (AttrException("Attribute is not a double.\n", std::vector<PhysTuple>({*this})));
 	}
 	return phys_attr.d;
 }
@@ -92,6 +92,7 @@ std::ostream& operator << (std::ostream& out, PhysTuple tup) {
 }
 
 //------------------------------------------ OPERATORS -------------------------------------------------
+//------------------------------------COMPARISON OPERATORS ---------------------------------------------
 
 bool PhysTuple::operator == (const PhysTuple& rhs) const {
 	switch (getType()) {
@@ -141,19 +142,19 @@ bool operator > (const PhysTuple& lhs, const PhysTuple& rhs) {
 	switch (lhs.getType()) {
 		case 'd':
 			if (rhs.getType() != 'd') {
-				return false;
+				return true;
 			}
 			return lhs.getD() > rhs.getD();
 		case 'i':
 			if (rhs.getType() == 'd') {
-				return true;
-			} else if (rhs.getType() == 'b') {
 				return false;
+			} else if (rhs.getType() == 'b') {
+				return true;
 			}
 			return lhs.getI() > rhs.getI();
 		case 'b':
 			if (rhs.getType() != 'b') {
-				return true;
+				return false;
 			}
 			return lhs.getB() > rhs.getB();
 		default:
@@ -164,25 +165,27 @@ bool operator < (const PhysTuple& lhs, const PhysTuple& rhs) {
 	switch (lhs.getType()) {
 		case 'd':
 			if (rhs.getType() != 'd') {
-				return true;
+				return false;
 			}
 			return lhs.getD() < rhs.getD();
 		case 'i':
 			if (rhs.getType() == 'd') {
-				return false;
-			} else if (rhs.getType() == 'b') {
 				return true;
+			} else if (rhs.getType() == 'b') {
+				return false;
 			}
 			return lhs.getI() < rhs.getI();
 		case 'b':
 			if (rhs.getType() != 'b') {
-				return false;
+				return true;
 			}
 			return lhs.getB() < rhs.getB();
 		default:
 			throw (AttrException("Could not apply '<' operator, type unrecognized.", std::vector<PhysTuple>({lhs, rhs})));
 	}
 }
+
+//----------------------------------------- ARITHMETIC OPERATORS -----------------------------------
 
 PhysTuple operator - (PhysTuple lhs, PhysTuple rhs) {
 	switch (lhs.getType()) {
@@ -200,6 +203,9 @@ PhysTuple operator - (PhysTuple lhs, PhysTuple rhs) {
 			}
 		case 'b':
 			throw AttrException("Attempting to apply 'minus' operation to boolean.", std::vector<PhysTuple>({lhs, rhs}));
+		default:
+			throw AttrException("Type unrecognized for 'minus' operation.", std::vector<PhysTuple>({lhs, rhs}));
+			
 	}
 }
 
@@ -219,6 +225,8 @@ PhysTuple operator + (PhysTuple lhs, PhysTuple rhs) {
 			}
 		case 'b':
 			throw AttrException("Attempting to apply 'plus' operation to boolean.", std::vector<PhysTuple>({lhs, rhs}));
+		default:
+			throw AttrException("Type unrecognized for 'plus' operation.", std::vector<PhysTuple>({lhs, rhs}));
 	}
 }
 
@@ -238,8 +246,13 @@ PhysTuple operator * (PhysTuple lhs, PhysTuple rhs) {
 			}
 		case 'b':
 			throw AttrException("Attempting to apply 'multiplication' operation to boolean.", std::vector<PhysTuple>({lhs, rhs}));
+		default:
+			throw AttrException("Type unrecognized for 'multiplication' operation.", std::vector<PhysTuple>({lhs, rhs}));
 	}
 }
+
+//---------------------------------- BOOLEAN OPERATORS ------------------------------------------
+
 PhysTuple operator && (PhysTuple lhs, PhysTuple rhs) {
 	switch (lhs.getType()) {
 		case 'd':
@@ -252,6 +265,8 @@ PhysTuple operator && (PhysTuple lhs, PhysTuple rhs) {
 			} else {
 				throw AttrException("Attempting to apply 'conjunction' operation to different types of PhysAttr.", std::vector<PhysTuple>({lhs, rhs}));
 			}
+		default:
+			throw AttrException("Type unrecognized for 'conjunction' operation.", std::vector<PhysTuple>({lhs, rhs}));
 	}
 }
 
@@ -267,5 +282,7 @@ PhysTuple operator || (PhysTuple lhs, PhysTuple rhs) {
 			} else {
 				throw AttrException("Attempting to apply 'disjunction' operation to different types of PhysAttr.", std::vector<PhysTuple>({lhs, rhs}));
 			}
+		default:
+			throw AttrException("Type unrecognized for 'disjunction' operation.", std::vector<PhysTuple>({lhs, rhs}));
 	}
 }

@@ -18,7 +18,6 @@ class PhysAttrMap {
 		std::map<const std::string, const PhysTuple> attr_map = {};
 	public:
 		PhysAttrMap() {};
-		PhysAttrMap(std::vector<std::pair<const std::string, PhysTuple>> v);
 		PhysAttrMap(std::initializer_list<std::pair<const std::string, PhysTuple>> list);
 		PhysAttrMap(std::initializer_list<PhysTuple> list);
 		const PhysTuple& getVal(std::string s) const; 
@@ -28,8 +27,7 @@ class PhysAttrMap {
 		std::string to_string_csv() const;
 		friend std::ostream& operator << (std::ostream& out, PhysAttrMap); 
 
-
-		//Used of lexicographic sorting needed for map.
+		//lexicographic sorting needed for map.
 		struct AttrLess {
 			bool operator() (const PhysAttrMap& lhs, const PhysAttrMap& rhs) const {
 				bool acc = true;

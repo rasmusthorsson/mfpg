@@ -2,27 +2,12 @@
 #include "AttrException.h"
 
 #include <ostream>
+#include <typeinfo>
 
 extern int TUPLESIZE;
 extern char* ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
-PhysAttrMap::PhysAttrMap(std::vector<std::pair<const std::string, PhysTuple>> v){
-	if (v.size() != TUPLESIZE) {
-		std::vector<PhysTuple> ex_v;
-		for (auto pair : v) {
-			ex_v.push_back(pair.second);
-		}
-		throw (AttrException("Vector size is not the same as TUPLESIZE.", ex_v));
-	}
-	for (int i = 0; i < TUPLESIZE; i++) {
-		if (ATTRIBUTE_TYPES[i] != v[i].second.getType()) {
-			throw (AttrException("Attribute map is not consistent with attribute types.", std::vector<PhysTuple>({v[i].second})));
-		}
-		attr_map.insert(v[i]);
-	}
-	
-}
 PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, PhysTuple>> list) {
 	if (list.size() != TUPLESIZE) {
 		std::vector<PhysTuple> ex_v;
@@ -30,7 +15,7 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, Phys
 			ex_v.push_back(pair.second);
 		}
 		std::cout << "TUPLE SIZE: " << TUPLESIZE << "\n";
-		throw (AttrException("List size is not the same as TUPLESIZE", ex_v));
+		throw (AttrException("List size is not the same as TUPLESIZE.", ex_v));
 	}
 	int count = 0;
 	for (auto pair : list) {
@@ -47,10 +32,13 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<PhysTuple> list) {
 		for (auto p : list) {
 			ex_v.push_back(p);
 		}
-		throw (AttrException("List size is not the same as TUPLESIZE", ex_v));
+		throw (AttrException("List size is not the same as TUPLESIZE.", ex_v));
 	}
 	int ind = 0;
 	for (auto l : list) {
+		if (l.getType() != ATTRIBUTE_TYPES[ind]) {
+			throw (AttrException("Attribute map is not consistent with attribute types.", std::vector<PhysTuple>({list})));
+		}
 		attr_map.insert({ATTRIBUTES[ind], l});
 		ind++;
 	}
