@@ -1188,7 +1188,9 @@ TEST(Instrument_Test, CorrectStrings) {
 	
 	using namespace noteenums;
 
-	Instrument<out_type> inst;
+	std::shared_ptr<ActionSet<out_type>> dummy(new ActionSet<out_type>());
+
+	Instrument<out_type> inst(dummy);
 
 	inst.makeIString(1, Note::E_4, Note::E_6);
 	inst.makeIString(2, Note::Ds_2, Note::F_3);
@@ -1222,7 +1224,9 @@ TEST(Instrument_Test, IncorrectPos) {
 	using namespace noteenums;
 	using out_type = int;
 
-	Instrument<out_type> inst;
+	std::shared_ptr<ActionSet<out_type>> dummy(new ActionSet<out_type>());
+	
+	Instrument<out_type> inst(dummy);
 
 	inst.makeIString(-1, Note::E_4, Note::E_6);
 
@@ -1235,7 +1239,9 @@ TEST(Instrument_Test, DupePosition) {
 	using namespace noteenums;
 	using out_type = int;
 
-	Instrument<out_type> inst;
+	std::shared_ptr<ActionSet<out_type>> dummy(new ActionSet<out_type>());
+	
+	Instrument<out_type> inst(dummy);
 
 	inst.makeIString(1, Note::E_4, Note::E_6);
 	inst.makeIString(1, Note::Ds_2, Note::F_3);
