@@ -19,36 +19,20 @@ template <OutputViable OutputValue> class Action {
 	private:
 		//Action name.
 		std::string ID;
-
 		//Function calculating the distance between two nodes.
 		distfun distance_fun;
-
 		//Function calculating whether the action was taken.
 		condfun condition_fun;
 	public:
-		Action(condfun cond, distfun dist, std::string name) : ID(name) {
-			distance_fun = dist;
-			condition_fun = cond;
-		} 
-		~Action() {}
+		Action(condfun cond, distfun, std::string);
+		~Action();
 
 		//Apply the distance function to two tuples.
-		OutputValue distance(const PhysAttrMap& s1, const PhysAttrMap& s2) const {
-			return distance_fun(s1, s2);
-		}
-
+		OutputValue distance(const PhysAttrMap&, const PhysAttrMap&) const;
 		//Apply the condition function to two tuples.
-		bool condition(const PhysAttrMap& s1, const PhysAttrMap& s2) const {
-			return condition_fun(s1, s2);
-		}
+		bool condition(const PhysAttrMap&, const PhysAttrMap&) const;
 
-		std::string getID() const {
-			return ID;
-		}
-
-		friend bool operator ==(const Action<OutputValue>& lhs, 
-					const Action<OutputValue>& rhs) {
-			return (lhs.ID == rhs.ID);
-		}
+		std::string getID() const;
+		bool operator ==(const Action<OutputValue>&) const;
 };
 #endif
