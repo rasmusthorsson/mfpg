@@ -12,23 +12,15 @@ class NodeException : public std::exception {
 	private:
 		//Node which failed.
 		const PhysAttrMap node;
-
 		//Note represented by the node.
 		const SimplifiedNote note;
-
 		//Failure message
 		const std::string errorMsg;
 	public:
-		NodeException(std::string msg, PhysAttrMap nd, SimplifiedNote nt) 
-						: errorMsg(msg), node(nd), note(nt) {};
-		const std::string what() {
-			return errorMsg;
-		};
-		const PhysAttrMap& failedNode() const {
-			return node;
-		};
-		const SimplifiedNote& failedNote() const {
-			return note;
-		};
+		NodeException(std::string, PhysAttrMap, SimplifiedNote); 
+
+		const std::string what(); 
+		const PhysAttrMap& failedNode() const;
+		const SimplifiedNote& failedNote() const;
 };
 #endif
