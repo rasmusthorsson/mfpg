@@ -2,8 +2,9 @@
 #define ACTION_SET_H_MFPG
 
 #include "Action.h"
+
 #include <map>
-#include <iostream>
+#include <algorithm>
 
 //Class for a set of actions to be considered when calculating the transition between
 //two states, each action is considered individually for the state transition but 
@@ -16,110 +17,31 @@ template <OutputViable OutputValue> class ActionSet {
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
 		std::vector<std::tuple<Action<OutputValue>, bool>> actions;
-
 		//Multimap of dependencies, the key is the dependent, the values
 		//are the dependency actions with the boolean adjustment as a tuple.
 		//For Example: "action1", {"action2", true} means that if action2 
 		//occurred then action1 should occur.
 		std::multimap<std::string, std::tuple<std::string, bool>> dependencies;
-
 		//Check whether an action is to be taken or not with respect to the
 		//dependencies in the dependencies multimap, the default action in the 
 		//action set, and with the previous actions already taken.
-		bool checkAction(std::string action_name, 
-				 bool _default, 
-				 std::vector<std::string>& previous_actions) const {
-
-			std::vector<bool> bools;
-
-			for (auto [dep_itr, range_end] = dependencies.equal_range(action_name); 
-			     dep_itr != range_end; 
-			     dep_itr++) {
-
-				if (find(previous_actions.begin(),
-				    previous_actions.end(),
-				    std::get<0>(dep_itr->second)) != previous_actions.end()) {
-					bools.push_back(std::get<1>(dep_itr->second));
-				}
-			}
-			bool ret = _default;
-			for (bool b : bools) {
-				if (_default) {
-					ret = ret && b;
-				} else {
-					ret = ret || b;
-				}
-			}
-			return ret;
-		}
-
+		bool checkAction(std::string, bool, std::vector<std::string>&) const; 
 		//Checks whether a specific action is part of the actionset via ID.
-		bool checkUnique(const Action<OutputValue>& a) {
-			for (const auto& as : actions) {
-				if (std::get<0>(as) == a) {
-					return false;
-				}
-			}
-			return true;
-		}
+		bool checkUnique(const Action<OutputValue>&);
 	public:
-		ActionSet() {};
-		ActionSet(std::vector<std::tuple<Action<OutputValue>, bool>> as) {
-			for (auto a : as) {
-				if (checkUnique(a)) {
-					actions.push_back(a);
-				}
-			}
-		}
-		ActionSet(Action<OutputValue> a, bool b) {
-			actions.push_back({a, b});
-		}
-		ActionSet(std::initializer_list<std::tuple<Action<OutputValue>, bool>> as) {
-			for (auto& a : as) {
-				if (checkUnique(std::get<0>(a))) {
-					actions.push_back(a);
-				}
-			}
-		}	
-		~ActionSet() {};
+		ActionSet();
+		ActionSet(std::vector<std::tuple<Action<OutputValue>, bool>>);
+		ActionSet(Action<OutputValue>, bool);
+		ActionSet(std::initializer_list<std::tuple<Action<OutputValue>, bool>>);
+		~ActionSet();
 		
 		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
 		//already existing action.
-		int makeAction(condfun cf, distfun df, std::string name, bool _default) {
-			const Action<OutputValue> a(cf, df, name);
-			if (checkUnique(a)) {
-				actions.push_back(std::tuple<Action<OutputValue>, bool> {a, _default});
-				return 1;
-			}
-			return -1;
-		}
-
+		int makeAction(condfun, distfun, std::string, bool);
 		//Adds a dependency, if dependent then dependency is subjected to adjustment. returns
 		//-1 on failure to insert.
-		int addDependency(std::string dependent, std::string dependency, bool adjustment) {
-			std::tuple<std::string, bool> dep = {dependency, adjustment};
-			if (dependencies.insert({dependent, dep}) != dependencies.end()) {
-				return 1;
-			} else {
-				return -1;
-			}
-		}	
-
+		int addDependency(std::string, std::string, bool); 
 		//Applies the actionset to two tuples; n1 to n2.
-		OutputValue apply(const PhysAttrMap& n1, const PhysAttrMap& n2) const {
-			OutputValue output = {}; //output must be zero-initializable
-			std::vector<std::string> taken = {};
-
-			for (const std::tuple<Action<OutputValue>, bool>& a : actions) 
-			{
-				if (checkAction(std::get<0>(a).getID(), std::get<1>(a), taken) 
-						&& std::get<0>(a).condition(n1, n2))
-				{
-					output = output + std::get<0>(a).distance(n1, n2);
-					taken.push_back(std::get<0>(a).getID());
-				}	
-			}
-			return output;	
-		}
+		OutputValue apply(const PhysAttrMap&, const PhysAttrMap&) const;
 };
 #endif
