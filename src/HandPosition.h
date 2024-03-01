@@ -9,25 +9,17 @@ template <class Output> class HandPosition {
 	private:
 		//Outgoing tuple state
 		const PhysAttrMap state;
-
 		//Represented note
 		const SimplifiedNote note;
-
 		//Points to the layerlist corresponding to this HandPosition
 		const LayerList<Output>& layer_list; 
 	public:
-		HandPosition() {}
-		HandPosition(PhysAttrMap i, LayerList<Output>& ls) : state(i), layer_list(ls) {}
-		HandPosition(PhysAttrMap i, SimplifiedNote n, LayerList<Output>& ls) 
-						: state(i), note(n), layer_list(ls) {}
-		const PhysAttrMap getState() const {
-			return state;
-		}
-		const SimplifiedNote getNote() const {
-			return note;
-		}
-		const LayerList<Output>& getLayerList() const {
-			return layer_list;
-		}
+		HandPosition() = delete;
+		HandPosition(PhysAttrMap, LayerList<Output>&);
+		HandPosition(PhysAttrMap, SimplifiedNote, LayerList<Output>&);
+		
+		const PhysAttrMap getState() const;
+		const SimplifiedNote getNote() const;
+		const LayerList<Output>& getLayerList() const;
 }; 
 #endif
