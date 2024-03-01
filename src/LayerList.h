@@ -6,6 +6,7 @@
 #include "NoteList.h"
 #include "ActionSet.h"
 #include "LinkException.h"
+#include "PhysAttrMap.h"
 
 #include <iterator>
 #include <cstddef>
@@ -16,134 +17,54 @@
 //A linked list of layers, each link contains a layer, a pointer to the nect link, and
 //a vector of transition costs between the nodes in the current layer and the nodes in
 //the next layer
-template <class InputTuple, class Output> class LayerList {
+template <class Output> class LayerList {
 	private:
 		//Map each tuple in the current layer to an array of values, each 
 		//value at position n in the array corresponds to the cost of 
 		//transitioning from the mapped tuple to the n'th tuple in the next 
 		//layer.
-		std::map<InputTuple, std::vector<Output>> transitions;
-
+		std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess> transitions;
 		//Layers are to be owned by the respective LayerList node.
-		Layer<InputTuple> elem;
-
+		Layer elem;
 		//Next link in list.
-		LayerList<InputTuple, Output>* next = NULL;
+		LayerList<Output>* next = NULL;
 
 		//Functions used for testing only
-		void pushBack(Layer<InputTuple> layer) {
-			if (next == NULL) {
-				if (setNext(layer) == -1) {
-					throw (LinkException<InputTuple, Output> 
-									("Failed to set next link"));
-				}
-			} else {
-				next->pushBack(layer);
-			}
-		}
-		int setNext(Layer<InputTuple> layer) {
-			if (next != NULL) {
-				return -1;
-			}
-			next = new LayerList<InputTuple, Output>(layer);
-			return 1;
-		}
+		void pushBack(Layer);
+		int setNext(Layer);
 	public:
-		LayerList() {}
-
-		//Constructors for tests only -----------
-		LayerList(Layer<InputTuple> l) : elem(l) {}
-		LayerList(std::vector<Layer<InputTuple>> ls) : elem(ls[0]) {
-			for (int i = 1; i < ls.size(); i++) {
-				pushBack(ls[i]);
-			}
-		}
+		//Constructors for tests only
+		LayerList(Layer l);
+		LayerList(std::vector<Layer> ls);
+		
 		//---------------------------------------
-
-		LayerList(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper)
-			: elem(s, note_mapper) {} 
-		LayerList(const NoteList& list, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) : 
-				elem(list.front(), note_mapper) {
-			auto it = list.getNotes().begin();
-			for (++it; it != list.getNotes().end(); it++) {
-				pushBack(*it, note_mapper);
-			}	
-		}
-		~LayerList() {
-			if (next != NULL) {
-				delete next;
-			}
-		}
-
+		LayerList();
+		LayerList(const SimplifiedNote&, std::shared_ptr<NoteMapper>); 
+		LayerList(const NoteList&, std::shared_ptr<NoteMapper>);
+		~LayerList(); 
+	
 		//Set next, fails if next is already set.
-		int setNext(LayerList<InputTuple, Output>* l) {
-			if (next != NULL) {
-				return -1;
-			}
-			next = l;
-			return 1;
-		}
+		int setNext(LayerList<Output>*);
 		//Set next, fails if next is already set.
-		int setNext(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
-			if (next != NULL) {
-				return -1;
-			}
-			next = new LayerList<InputTuple, Output>(s, note_mapper);
-			return 1;
-		}
-
-		const LayerList<InputTuple, Output>* getNext() const {
-			return next;
-		}
-
+		int setNext(const SimplifiedNote&, std::shared_ptr<NoteMapper>);
 		//Push new layerlist to the end of the list.
-		void pushBack(const SimplifiedNote& s, std::shared_ptr<NoteMapper<InputTuple>> note_mapper) {
-			if (next == NULL) {
-				if (setNext(s, note_mapper) == -1) {
-					throw (LinkException<InputTuple, Output> 
-									("Failed to set next link"));
-				}
-			} else {
-				next->pushBack(s, note_mapper);
-			}
-		}
-
-		const Layer<InputTuple>& getElem() const {
-			return elem;
-		}
-
-		int getSize() const {
-			return elem.getSize();
-		}
-
+		void pushBack(const SimplifiedNote&, std::shared_ptr<NoteMapper>);
+		
+		const LayerList<Output>* getNext() const;
+		const Layer& getElem() const;
+		int getSize() const;
+		std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess>& getTransitions();
+		
 		//Builds transitions through the entire layerlist using an actionset.
-		int buildTransitions(const std::shared_ptr<ActionSet<InputTuple, Output>> as) {
-			if (next == NULL) {
-				return 1;
-			}
-			auto next_layer = next->getElem();
-			for (const InputTuple& this_tuple : elem.getNodes()) {
-				std::vector<Output> outputs;
-				for (const InputTuple& next_tuple : next_layer.getNodes()) {
-					outputs.push_back(
-						as->apply(this_tuple, next_tuple));
-				}
-				transitions.insert({this_tuple, outputs});
-			} 
-			return next->buildTransitions(as);
-		}
-
-		std::map<InputTuple, std::vector<Output>>& getTransitions() {
-			return transitions;
-		}
+		int buildTransitions(const std::shared_ptr<ActionSet<Output>>);
 
 		//Iterator
 		struct Iterator {
 			using it_cat = std::forward_iterator_tag;
 			using diff_t = std::ptrdiff_t;
-			using val_t = LayerList<InputTuple, Output>;
-			using pointer = LayerList<InputTuple, Output>*;
-			using reference = LayerList<InputTuple, Output>&;
+			using val_t = LayerList<Output>;
+			using pointer = LayerList<Output>*;
+			using reference = LayerList<Output>&;
 			private:
 				pointer ptr;
 			public:

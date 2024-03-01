@@ -5,29 +5,21 @@
 #include "LayerList.h"
 
 //A linked list 
-template <class InputTuple, class Output> class HandPosition {
+template <class Output> class HandPosition {
 	private:
 		//Outgoing tuple state
-		const InputTuple state;
-
+		const PhysAttrMap state;
 		//Represented note
 		const SimplifiedNote note;
-
 		//Points to the layerlist corresponding to this HandPosition
-		const LayerList<InputTuple, Output>& layer_list; 
+		const LayerList<Output>& layer_list; 
 	public:
-		HandPosition() {}
-		HandPosition(InputTuple i, LayerList<InputTuple, Output>& ls) : state(i), layer_list(ls) {}
-		HandPosition(InputTuple i, SimplifiedNote n, LayerList<InputTuple, Output>& ls) 
-						: state(i), note(n), layer_list(ls) {}
-		const InputTuple getState() const {
-			return state;
-		}
-		const SimplifiedNote getNote() const {
-			return note;
-		}
-		const LayerList<InputTuple, Output>& getLayerList() const {
-			return layer_list;
-		}
+		HandPosition() = delete;
+		HandPosition(PhysAttrMap, LayerList<Output>&);
+		HandPosition(PhysAttrMap, SimplifiedNote, LayerList<Output>&);
+		
+		const PhysAttrMap getState() const;
+		const SimplifiedNote getNote() const;
+		const LayerList<Output>& getLayerList() const;
 }; 
 #endif

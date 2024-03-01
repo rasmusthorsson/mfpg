@@ -1,8 +1,8 @@
 #include "GreedySolver.h"
 
-void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
+void GreedySolver::solve(LayerList<out_type>& ls) {
 
-	in_type res_node;
+	PhysAttrMap res_node;
 	out_type new_output;
 	out_type output;
 	int edge_index;
@@ -53,16 +53,15 @@ void GreedySolver::solve(LayerList<in_type, out_type>& ls) {
 			}
 		}
 
-		const HandPosition<in_type, out_type> hp(res_node, layerlist.getElem().getNote(), layerlist);
-
-		const std::tuple<HandPosition<in_type, out_type>, out_type> t(hp, output);
+		const HandPosition<out_type> hp(res_node, layerlist.getElem().getNote(), layerlist);
+		const std::tuple<HandPosition<out_type>, out_type> t(hp, output);
 
 		solution.push_back(t);
 	}
 }
 
-const std::tuple<int, int> GreedySolver::findCheapest(LayerList<in_type, out_type>& ls, 
-						      const in_type& prev) const {
+const std::tuple<int, int> GreedySolver::findCheapest(LayerList<out_type>& ls, 
+						      const PhysAttrMap& prev) const {
 	const std::vector<int>& transitions = ls.getTransitions()[prev];
 	int transition_cost = -1;
 	int next_index = -1;

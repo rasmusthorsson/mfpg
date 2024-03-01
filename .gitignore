@@ -7,3 +7,5 @@ Sourcecode/private/mxtest/file/PathRoot.h
 **/xcshareddata/
 *.DS_Store
 src/conf_cmake.h
+.cache
+src/.cache

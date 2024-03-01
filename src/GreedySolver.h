@@ -8,13 +8,12 @@
 //This does not find the shortest path of the graph, instead if finds a path through
 //the graph that results in the shortest distance between each layer. Only to be
 //used for testing purposes. Might get removed in future versions.
-class GreedySolver : public virtual GraphSolver<std::tuple<int, int, int>, int> {
-		using in_type = std::tuple<int, int, int>;
+class GreedySolver : public virtual GraphSolver<int> {
 		using out_type = int;
 	private:
-		const std::tuple<int, int> findCheapest(LayerList<in_type, out_type>&, const in_type&) const;
+		const std::tuple<int, int> findCheapest(LayerList<out_type>&, const PhysAttrMap&) const;
 	public:
 		GreedySolver() {}
-		void solve(LayerList<in_type, out_type>&);
+		void solve(LayerList<out_type>&);
 };
 #endif

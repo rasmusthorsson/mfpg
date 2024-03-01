@@ -2,17 +2,15 @@
 #define LINK_EXCEPTION_H_MFPG
 
 #include <exception>
+#include <string>
 
 //Exception for attempting layerlist modification.
-template <class InputTuple, class Output> class LinkException : public std::exception {
+template <class Output> class LinkException : public std::exception {
 	private:
 		//Failure message
 		const std::string errorMsg;
 	public:
-		LinkException(std::string s) : errorMsg(s) {}
-
-		const std::string what() {
-			return errorMsg;
-		};
+		LinkException(std::string); 
+		const std::string what();
 };
 #endif

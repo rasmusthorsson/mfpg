@@ -1,11 +1,33 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <string>
+#include <vector>
 
+#include "configs.h"
 #include "ConversionException.h"
 #include "BasicNoteMapper.h"
 #include "GreedySolver.h"
 #include "Instrument.h"
 #include "SolverException.h"
+#include "PhysAttrMap.h"
+#include "ExValException.h"
+
+extern int TUPLESIZE;
+extern std::string ATTRIBUTES_TYPES;
+extern std::vector<std::string> ATTRIBUTES;
+
+class GlobEnvironment : public ::testing::Environment {
+	public:
+		GlobEnvironment() {
+			TUPLESIZE = 3;
+			ATTRIBUTE_TYPES = "iii";
+			ATTRIBUTES = {"STRING", "HAND_POS", "FINGER"};
+		}
+		~GlobEnvironment() override {}
+		void SetUp() override {}
+		void TearDown() override {}
+};
+
 
 //Tests a valid construction of a simplified note.
 TEST(SimplifiedNote, ValidInputs) {
@@ -154,6 +176,347 @@ TEST(IString, RangedNotes) {
 	}
 }
 
+//Tests that construction of different types results in the currect type being accessable through the tuple.
+TEST(ExValContainer, Types) {
+	ExValContainer int_phys(1);	
+	ExValContainer double_phys(1.0);	
+	ExValContainer bool_phys(false);	
+	ASSERT_THROW(int_phys.getB(), ExValException);
+	ASSERT_THROW(int_phys.getD(), ExValException);
+	ASSERT_THROW(double_phys.getB(), ExValException);
+	ASSERT_THROW(double_phys.getI(), ExValException);
+	ASSERT_THROW(bool_phys.getI(), ExValException);
+	ASSERT_THROW(bool_phys.getD(), ExValException);
+
+	try {
+		int_phys.getB();
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a boolean.\n");
+	}	
+	try {
+		int_phys.getD();
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a double.\n");
+	}	
+	try {
+		double_phys.getB();
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a boolean.\n");
+	}	
+	try {
+		double_phys.getI();
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not an integer.\n");
+	}	
+	try {
+		bool_phys.getD();
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a double.\n");
+	}	
+	try {
+		bool_phys.getI();
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not an integer.\n");
+	}	
+	ASSERT_EQ(int_phys.getI(), 1);
+	ASSERT_EQ(double_phys.getD(), 1.0);
+	ASSERT_EQ(bool_phys.getB(), false);
+}
+
+//Tests that all comparison operations on ExValContainers work as intended,
+TEST(ExValContainer, ComparisonOperations) {
+	ExValContainer low_int(1);
+	ExValContainer high_int(8);
+	ExValContainer low_double(1.0);
+	ExValContainer high_double(8.0);
+	ExValContainer true_bool(true);
+	ExValContainer false_bool(false);
+
+	//Equality
+	ASSERT_EQ(low_int == high_int, false);
+	ASSERT_EQ(low_int == low_double, false);
+	ASSERT_EQ(low_int == false_bool, false);
+	ASSERT_EQ(low_int == low_int, true);
+
+	ASSERT_EQ(low_double == high_double, false);
+	ASSERT_EQ(low_double == low_int, false);
+	ASSERT_EQ(low_double == false_bool, false);
+	ASSERT_EQ(low_double == low_double, true);
+
+	ASSERT_EQ(false_bool == true_bool, false);
+	ASSERT_EQ(false_bool == low_int, false);
+	ASSERT_EQ(false_bool == low_double, false);
+	ASSERT_EQ(false_bool == false_bool, true);
+
+	//Unequality
+	ASSERT_EQ(low_int != high_int, true);
+	ASSERT_EQ(low_int != low_double, true);
+	ASSERT_EQ(low_int != false_bool, true);
+	ASSERT_EQ(low_int != low_int, false);
+
+	ASSERT_EQ(low_double != high_double, true);
+	ASSERT_EQ(low_double != low_int, true);
+	ASSERT_EQ(low_double != false_bool, true);
+	ASSERT_EQ(low_double != low_double, false);
+
+	ASSERT_EQ(false_bool != true_bool, true);
+	ASSERT_EQ(false_bool != low_int, true);
+	ASSERT_EQ(false_bool != low_double, true);
+	ASSERT_EQ(false_bool != false_bool, false);
+
+	//Less Than
+	ASSERT_EQ(low_int < high_int, true);
+	ASSERT_EQ(low_int < low_double, true);
+	ASSERT_EQ(low_int < false_bool, false);
+	ASSERT_EQ(low_int < low_int, false);
+
+	ASSERT_EQ(low_double < high_double, true);
+	ASSERT_EQ(low_double < low_int, false);
+	ASSERT_EQ(low_double < false_bool, false);
+	ASSERT_EQ(low_double < low_double, false);
+
+	ASSERT_EQ(false_bool < true_bool, true);
+	ASSERT_EQ(false_bool < low_int, true);
+	ASSERT_EQ(false_bool < low_double, true);
+	ASSERT_EQ(false_bool < false_bool, false);
+
+	//Greater Than
+	ASSERT_EQ(low_int > high_int, false);
+	ASSERT_EQ(low_int > low_double, false);
+	ASSERT_EQ(low_int > false_bool, true);
+	ASSERT_EQ(low_int > low_int, false);
+
+	ASSERT_EQ(low_double > high_double, false);
+	ASSERT_EQ(low_double > low_int, true);
+	ASSERT_EQ(low_double > false_bool, true);
+	ASSERT_EQ(low_double > low_double, false);
+
+	ASSERT_EQ(false_bool > true_bool, false);
+	ASSERT_EQ(false_bool > low_int, false);
+	ASSERT_EQ(false_bool > low_double, false);
+	ASSERT_EQ(false_bool > false_bool, false);
+}
+
+//Tests that all arithmetic operations on ExValContainers work as intended,
+TEST(ExValContainer, ArithmeticOperations) {
+	ExValContainer low_int(1);
+	ExValContainer high_int(8);
+	ExValContainer low_double(1.0);
+	ExValContainer high_double(8.0);
+	ExValContainer true_bool(true);
+	ExValContainer false_bool(false);
+	
+	//Minus
+	ASSERT_EQ(high_int - low_int, 7);
+	ASSERT_EQ(high_int - high_int, 0);
+	ASSERT_THROW(high_int - low_double, ExValException);
+	ASSERT_THROW(high_int - false_bool, ExValException);
+	
+	ASSERT_EQ(high_double - low_double, 7.0);
+	ASSERT_EQ(high_double - high_double, 0.0);
+	ASSERT_THROW(high_double - low_int, ExValException);
+	ASSERT_THROW(high_double - false_bool, ExValException);
+
+	ASSERT_THROW(true_bool - false_bool, ExValException);
+	ASSERT_THROW(true_bool - true_bool, ExValException);
+	ASSERT_THROW(true_bool - low_double, ExValException);
+	ASSERT_THROW(true_bool - false_bool, ExValException);
+	
+	//Plus
+	ASSERT_EQ(high_int + low_int, 9);
+	ASSERT_EQ(high_int + high_int, 16);
+	ASSERT_THROW(high_int + low_double, ExValException);
+	ASSERT_THROW(high_int + false_bool, ExValException);
+	
+	ASSERT_EQ(high_double + low_double, 9.0);
+	ASSERT_EQ(high_double + high_double, 16.0);
+	ASSERT_THROW(high_double + low_int, ExValException);
+	ASSERT_THROW(high_double + false_bool, ExValException);
+
+	ASSERT_THROW(true_bool + false_bool, ExValException);
+	ASSERT_THROW(true_bool + true_bool, ExValException);
+	ASSERT_THROW(true_bool + low_double, ExValException);
+	ASSERT_THROW(true_bool + false_bool, ExValException);
+	
+	//Multiplication
+	ASSERT_EQ(high_int * low_int, 8);
+	ASSERT_EQ(high_int * high_int, 64);
+	ASSERT_THROW(high_int * low_double, ExValException);
+	ASSERT_THROW(high_int * false_bool, ExValException);
+	
+	ASSERT_EQ(high_double * low_double, 8.0);
+	ASSERT_EQ(high_double * high_double, 64.0);
+	ASSERT_THROW(high_double * low_int, ExValException);
+	ASSERT_THROW(high_double * false_bool, ExValException);
+
+	ASSERT_THROW(true_bool * false_bool, ExValException);
+	ASSERT_THROW(true_bool * true_bool, ExValException);
+	ASSERT_THROW(true_bool * low_double, ExValException);
+	ASSERT_THROW(true_bool * false_bool, ExValException);
+}
+
+//Tests that all boolean operations on ExValContainers work as intended,
+TEST(ExValContainer, BooleanOperations) {
+	ExValContainer low_int(1);
+	ExValContainer high_int(8);
+	ExValContainer low_double(1.0);
+	ExValContainer high_double(8.0);
+	ExValContainer true_bool(true);
+	ExValContainer false_bool(false);
+	
+	//Conjunction
+	ASSERT_THROW(high_int && low_int, ExValException);
+	ASSERT_THROW(high_int && high_int, ExValException);
+	ASSERT_THROW(high_int && low_double, ExValException);
+	ASSERT_THROW(high_int && false_bool, ExValException);
+	
+	ASSERT_THROW(high_double && low_double, ExValException);
+	ASSERT_THROW(high_double && high_double, ExValException);
+	ASSERT_THROW(high_double && low_int, ExValException);
+	ASSERT_THROW(high_double && false_bool, ExValException);
+
+	ASSERT_EQ(true_bool && false_bool, false);
+	ASSERT_EQ(true_bool && true_bool, true);
+	ASSERT_THROW(true_bool && low_int, ExValException);
+	ASSERT_THROW(true_bool && low_double, ExValException);
+	
+	//Disjunction
+	ASSERT_THROW(high_int || low_int, ExValException);
+	ASSERT_THROW(high_int || high_int, ExValException);
+	ASSERT_THROW(high_int || low_double, ExValException);
+	ASSERT_THROW(high_int || false_bool, ExValException);
+	
+	ASSERT_THROW(high_double || low_double, ExValException);
+	ASSERT_THROW(high_double || high_double, ExValException);
+	ASSERT_THROW(high_double || low_int, ExValException);
+	ASSERT_THROW(high_double || false_bool, ExValException);
+
+	ASSERT_EQ(true_bool || false_bool, true);
+	ASSERT_EQ(true_bool || true_bool, true);
+	ASSERT_THROW(true_bool || low_int, ExValException);
+	ASSERT_THROW(true_bool || low_double, ExValException);
+}
+
+//Tests that init of PhysAttrMap using a pair list will result in a thrown exception if there are too many 
+//attributes specified.
+TEST(PhysAttrMap, PairListTooManyAttributes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}}), ExValException);
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}});
+	} catch (ExValException e) {
+		ASSERT_EQ(e.what(), "List size is not the same as TUPLESIZE.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a pair list will result in a thrown exception if the types of the 
+//fundamentals do not match the ATTRIBUTE_TYPES.
+TEST(PhysAttrMap, PairListWrongAttributeTypes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}}), ExValException);
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}});
+	} catch (ExValException e) {
+		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a pair list will result in a thrown exception if the types of the
+//fundamentals match the ATTRIBUTE_TYPES but not in the order they are defined in ATTRIBUTES.
+TEST(PhysAttrMap, PairList) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ATTRIBUTE_TYPES = "iid";
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}}), ExValException);
+	
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}});
+	} catch (ExValException e) {
+		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a pair list will throw an exception if two of the attributes are of
+//the same type.
+TEST(PhysAttrMap, PairListDupeAttribute) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 2}, {"FINGER", 5}}), ExValException);
+	
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 5}, {"FINGER", 5}});
+	} catch (ExValException e) {
+		ASSERT_EQ(e.what(), "Attribute map already contains a value of this attribute type.");
+	}
+}
+
+//Tests that getting values from a pair-list PhysAttrMap init results in the correct values and exception
+//when trying to get a non-existant value.
+TEST(PhysAttrMap, PairListGetVals) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	PhysAttrMap map_pair({{"STRING", 2}, {"FINGER", 1}, {"HAND_POS", 4}});
+
+	ASSERT_EQ(map_pair.getVal("STRING"), 2);
+	ASSERT_EQ(map_pair.getVal("FINGER"), 1);
+	ASSERT_EQ(map_pair.getVal("HAND_POS"), 4);
+	ASSERT_THROW(map_pair.getVal("NON_EXISTANT"), std::out_of_range);
+}
+
+//Tests that init of PhysAttrMap using a list init will result in a thrown exception if the list contains 
+//more arguments than the tuplesize
+TEST(PhysAttrMap, ImplicitListTooManyAttributes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 7, 2}), ExValException);
+	try {
+		const PhysAttrMap failed_map_implicit({2, 5, 7, 2});
+	} catch (ExValException e) {
+		ASSERT_EQ(e.what(), "List size is not the same as TUPLESIZE.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a list init will fail if one of the arguements does not line up with
+//the specified ATTRIBUTE_TYPES
+TEST(PhysAttrMap, ImplicitListWrongAttributeTypes) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 2.2}), ExValException);
+	try {
+		const PhysAttrMap failed_map_implicit({2, 5, 2.2});
+	} catch (ExValException e) {
+		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that getting values from a implicit-list PhysAttrMap init results in the correct values and 
+//exception when trying to get a non-existant value.
+TEST(PhysAttrMap, ImplicitListGetVals) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	PhysAttrMap map_implicit({2, 1, 4});
+
+	ASSERT_EQ(map_implicit.getVal("STRING"), 2);
+	ASSERT_EQ(map_implicit.getVal("HAND_POS"), 1);
+	ASSERT_EQ(map_implicit.getVal("FINGER"), 4);
+	ASSERT_THROW(map_implicit.getVal("NON_EXISTANT"), std::out_of_range);
+}
+
+//Tests that boolean operations result in the expected results regardless of initialization method used.
+TEST(PhysAttrMap, BooleanOperations) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	PhysAttrMap implicit_one{2, 5, 3};
+	PhysAttrMap implicit_two{4, 5, 1};
+	PhysAttrMap pair_one({{"STRING", 2}, {"FINGER", 3}, {"HAND_POS", 5}});
+	PhysAttrMap pair_two({{"FINGER", 1}, {"STRING", 4}, {"HAND_POS", 5}});
+
+	//Equality
+	ASSERT_EQ(implicit_one == implicit_one, true);
+	ASSERT_EQ(implicit_one == implicit_two, false);
+	ASSERT_EQ(implicit_one == pair_one, true);
+	ASSERT_EQ(implicit_one == pair_two, false);
+	
+	//Unequality
+	ASSERT_EQ(implicit_one != implicit_one, false);
+	ASSERT_EQ(implicit_one != implicit_two, true);
+	ASSERT_EQ(implicit_one != pair_one, false);
+	ASSERT_EQ(implicit_one != pair_two, true);
+}
+
 //Tests that an empty NoteList is the result of an empty score.
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
@@ -255,8 +618,8 @@ class BasicNoteMapper_Tests : public ::testing::Test {
 TEST_F(BasicNoteMapper_Tests, ValidNotes) {
         using namespace noteenums;
 	using namespace std;
-
-	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	unique_ptr<NoteMapper>map(new BasicNoteMapper({s1, s2}));
 	
 	int note_count = 0;
 	for (auto i = map->getMap().begin(), end = map->getMap().end(); i != end;
@@ -266,9 +629,9 @@ TEST_F(BasicNoteMapper_Tests, ValidNotes) {
 
 	for (auto& elem : map->getMap()) {
 		cout << "Note: " << elem.first << "\n";
-		cout << "String: " << get<0>(elem.second)
-			<< " HP: " << get<1>(elem.second)
-			<< " Finger: " << get<2>(elem.second) << "\n";
+		cout << "String: " << elem.second.getVal("STRING")
+			<< " HP: " << elem.second.getVal("HAND_POS")
+			<< " Finger: " << elem.second.getVal("FINGER") << "\n";
 	}
 	ASSERT_EQ(note_count, 14);
 	ASSERT_EQ(map->size(), 33);
@@ -280,8 +643,9 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	using namespace noteenums;
 	using namespace mx::api;
 	using namespace std;
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
-	unique_ptr<NoteMapper<tuple<int, int, int>>>map(new BasicNoteMapper({s1, s2}));
+	unique_ptr<NoteMapper>map(new BasicNoteMapper({s1, s2}));
 
 	auto C3 = map->getMap().equal_range(Note::C_3);
 	auto D_3 = map->getMap().equal_range(Note::D_3);
@@ -293,48 +657,48 @@ TEST_F(BasicNoteMapper_Tests, SampleTests) {
 	for (auto i = C3.first; i != C3.second; i++) {
 		comb_count++;
 		if (comb_count == 1) {
-			ASSERT_EQ(get<0>(i->second), 1);
-			ASSERT_EQ(get<1>(i->second), 0);
-			ASSERT_EQ(get<2>(i->second), 0);
+			ASSERT_EQ(i->second.getVal("STRING"), 1);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 0);
+			ASSERT_EQ(i->second.getVal("FINGER"), 0);
 		}
 	}
 	//Check valid combinations for D_3.
 	for (auto i = D_3.first; i != D_3.second; i++) {
 		comb_count++;
 		if (comb_count == 2) {
-			ASSERT_EQ(get<0>(i->second), 1);
-			ASSERT_EQ(get<1>(i->second), 1);
-			ASSERT_EQ(get<2>(i->second), 1);
+			ASSERT_EQ(i->second.getVal("STRING"), 1);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 1);
+			ASSERT_EQ(i->second.getVal("FINGER"), 1);
 		}
 	}
 	//Check valid combinations for E_3.
 	for (auto i = E3.first; i != E3.second; i++) {
 		comb_count++;
 		if (comb_count == 3) {
-			ASSERT_EQ(get<0>(i->second), 1);
-			ASSERT_EQ(get<1>(i->second), 1);
-			ASSERT_EQ(get<2>(i->second), 2);
+			ASSERT_EQ(i->second.getVal("STRING"), 1);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 1);
+			ASSERT_EQ(i->second.getVal("FINGER"), 2);
 		} else if (comb_count == 4) {
-			ASSERT_EQ(get<0>(i->second), 1);
-			ASSERT_EQ(get<1>(i->second), 2);
-			ASSERT_EQ(get<2>(i->second), 1);
+			ASSERT_EQ(i->second.getVal("STRING"), 1);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 2);
+			ASSERT_EQ(i->second.getVal("FINGER"), 1);
 		} else if (comb_count == 5) {
-			ASSERT_EQ(get<0>(i->second), 2);
-			ASSERT_EQ(get<1>(i->second), 1);
-			ASSERT_EQ(get<2>(i->second), 1);
+			ASSERT_EQ(i->second.getVal("STRING"), 2);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 1);
+			ASSERT_EQ(i->second.getVal("FINGER"), 1);
 		}
 	}
 	//Check valid combinations for As_3.
 	for (auto i = As_3.first; i != As_3.second; i++) {
 		comb_count++;
 		if (comb_count == 6) {
-			ASSERT_EQ(get<0>(i->second), 2);
-			ASSERT_EQ(get<1>(i->second), 1);
-			ASSERT_EQ(get<2>(i->second), 4);
+			ASSERT_EQ(i->second.getVal("STRING"), 2);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 1);
+			ASSERT_EQ(i->second.getVal("FINGER"), 4);
 		} else if (comb_count == 7) {
-			ASSERT_EQ(get<0>(i->second), 2);
-			ASSERT_EQ(get<1>(i->second), 2);
-			ASSERT_EQ(get<2>(i->second), 3);
+			ASSERT_EQ(i->second.getVal("STRING"), 2);
+			ASSERT_EQ(i->second.getVal("HAND_POS"), 2);
+			ASSERT_EQ(i->second.getVal("FINGER"), 3);
 		} 
 	}
 	//Ensure there are no more unchecked combinations.
@@ -347,17 +711,17 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 	using namespace mx::api;
 	using namespace testing;
 	using namespace std;
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
-	unique_ptr<NoteMapper<tuple<int, int, int>>> 
-		map(new BasicNoteMapper({s1, s2}));
+	unique_ptr<NoteMapper> map(new BasicNoteMapper({s1, s2}));
 
 	for (auto i = map->getMap().begin(); i != map->getMap().end(); i++) {
 		if (i->first != Note::REST) {
-			ASSERT_THAT(get<0>(i->second), AllOf(Lt(3), Gt(0)));
-			ASSERT_THAT(get<1>(i->second), AllOf(Lt(3), Gt(-1)));
-			ASSERT_THAT(get<2>(i->second), AllOf(Lt(5), Gt(-1)));
+			ASSERT_THAT(i->second.getVal("STRING"), AllOf(Lt(3), Gt(0)));
+			ASSERT_THAT(i->second.getVal("HAND_POS"), AllOf(Lt(3), Gt(-1)));
+			ASSERT_THAT(i->second.getVal("FINGER"), AllOf(Lt(5), Gt(-1)));
 		} else {
-			ASSERT_THAT(get<2>(i->second), AllOf(Lt(1), Gt(-1)));
+			ASSERT_THAT(i->second.getVal("FINGER"), AllOf(Lt(1), Gt(-1)));
 		}
 	}
 }
@@ -365,25 +729,28 @@ TEST_F(BasicNoteMapper_Tests, ValidPosition) {
 //distance and condition.
 TEST(Action, BasicAction) {
 	using namespace std;
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
-	using Input_Tuple = tuple<int, int, int>;
+	typedef bool (*a_type_cond)(PhysAttrMap, PhysAttrMap);
+	typedef int (*a_type_dist)(PhysAttrMap, PhysAttrMap);
 
-	typedef bool (*a_type_cond)(Input_Tuple, Input_Tuple);
-	typedef int (*a_type_dist)(Input_Tuple, Input_Tuple);
-
-	a_type_cond d_f_cond = [] (Input_Tuple t1, Input_Tuple t2) {
+	a_type_cond d_f_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
 		return true;
 	};
-	a_type_dist d_f_dist = [] (Input_Tuple t1, Input_Tuple t2) {
-		int string = abs(get<0>(t1) - get<0>(t2));
-		int hand = abs(get<1>(t1) - get<1>(t2));
-		int finger = abs(get<2>(t1) - get<2>(t2));
+	a_type_dist d_f_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
+		int string = abs((int)(t1.getVal("STRING") - t2.getVal("STRING")));
+		int hand = abs((int)(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
+		int finger = abs((int)(t1.getVal("FINGER") - t2.getVal("FINGER")));
 		return string + hand + finger;	
 	};
-	const Action<Input_Tuple, int> NOC(d_f_cond, d_f_dist, "NOC");
+	const Action<int> NOC(d_f_cond, d_f_dist, "NOC");
 
-	const Input_Tuple t1{1, 1, 1};
-	const Input_Tuple t2{2, 2, 2};
+	const PhysAttrMap t1({{"STRING", 1}, 
+			      {"HAND_POS", 1}, 
+			      {"FINGER", 1}});
+	const PhysAttrMap t2({{"STRING", 2}, 
+			      {"HAND_POS", 2}, 
+			      {"FINGER", 2}});
 
 	ASSERT_EQ(NOC.distance(t1, t2), 3);
 	ASSERT_EQ(NOC.condition(t1, t2), true);
@@ -393,35 +760,37 @@ TEST(Action, BasicAction) {
 //distance and condition.
 TEST(Action, FiveTupleAction) {
 	using namespace std;
-	using Input_Tuple = tuple<int, int, int, bool, float>;
+	TUPLESIZE = 5;
+	ATTRIBUTE_TYPES = "iiibd";
+	ATTRIBUTES = {"STRING", "HAND_POS", "FINGER", "UP_STROKE", "B_DISTANCE"};
 
-	typedef bool (*a_type_cond)(Input_Tuple, Input_Tuple);
-	typedef float (*a_type_dist)(Input_Tuple, Input_Tuple);
+	typedef bool (*a_type_cond)(PhysAttrMap, PhysAttrMap);
+	typedef double (*a_type_dist)(PhysAttrMap, PhysAttrMap);
 
-	a_type_dist d_f_dist = [] (Input_Tuple s1, Input_Tuple s2) {
-		int string = abs(get<0>(s1) - get<0>(s2));
-		int hand = abs(get<1>(s1) - get<1>(s2));
-		int finger = abs(get<2>(s1) - get<2>(s2));
-		int up_stroke = get<3>(s1) || get<3>(s2);
-		float note_distance = abs(get<4>(s1) - get<4>(s2));
-		float res;
+	a_type_dist d_f_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+		int string = abs(int(s1.getVal("STRING") - s2.getVal("STRING")));
+		int hand = abs(int(s1.getVal("HAND_POS") - s2.getVal("HAND_POS")));
+		int finger = abs(int(s1.getVal("FINGER") - s2.getVal("FINGER")));
+		bool up_stroke = s1.getVal("UP_STROKE") || s2.getVal("UP_STROKE");
+		double note_distance = abs(double(s1.getVal("B_DISTANCE") - s2.getVal("B_DISTANCE")));
+		double res;
 
 	       	if (up_stroke) {
 			res = (string + hand + finger) * note_distance;
 		} else{
 			res = (string + hand + finger);
 		}
-		return static_cast<float>(res);
+		return static_cast<double>(res);
 	};
-	a_type_cond d_f_cond = [] (Input_Tuple s1, Input_Tuple s2) {
+	a_type_cond d_f_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 		return true;
 	};
-	const Action<Input_Tuple, float> upstroke_distance(d_f_cond, d_f_dist, "UD");
+	const Action<double> upstroke_distance(d_f_cond, d_f_dist, "UD");
 
-	const Input_Tuple t1(1, 2, 1, false, 3.0);
-	const Input_Tuple t2(1, 2, 3, false, 7.0);
-	const Input_Tuple t3(1, 2, 1, true, 3.0);
-	const Input_Tuple t4(1, 2, 3, false, 7.0);
+	const PhysAttrMap t1({1, 2, 1, false, 3.0});
+	const PhysAttrMap t2({1, 2, 3, false, 7.0});
+	const PhysAttrMap t3({1, 2, 1, true, 3.0});
+	const PhysAttrMap t4({1, 2, 3, false, 7.0});
 
 	ASSERT_EQ(upstroke_distance.distance(t1, t2), 2.0);
 	ASSERT_EQ(upstroke_distance.distance(t3, t4), 8.0);
@@ -430,40 +799,41 @@ TEST(Action, FiveTupleAction) {
 class Layer_Tests : public ::testing::Test {
 	typedef std::tuple<int, int, int> ret;
 	public:
-		Layer_Tests() : l(noteenums::Note::C_3, noteenums::Duration::Whole) {}
+		Layer_Tests() : l(noteenums::Note::C_3, noteenums::Duration::Whole) {
+			::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+		}
 		void SetUp() override {
 			l.clear();
 		}
 		void TearDown() override {
 			l.clear();
 		}
-		Layer<ret> l;
+		Layer l;
 };
 
 //Tests that creating a basic layer using add and remove results in the correct
 //tuples are being added and removed.
 TEST_F(Layer_Tests, BasicLayer) {
 	using namespace mx::api;
-	typedef std::tuple<int, int, int> ret;
 	
-	const ret first{1, 1, 1};
+	const PhysAttrMap first{1, 1, 1};
 
 	EXPECT_NO_THROW(l.addNode(first));
 	ASSERT_EQ(l.getSize(), 1);
 
-	const ret second{2, 1, 1};
+	const PhysAttrMap second{2, 1, 1};
 
 	EXPECT_NO_THROW(l.addNode(second));
 	ASSERT_EQ(l.getSize(), 2);
 	EXPECT_NO_THROW(l.removeNode(first));
 	ASSERT_EQ(l.getSize(), 1);
 
-	const ret third{1, 2, 1};
+	const PhysAttrMap third{1, 2, 1};
 
 	EXPECT_NO_THROW(l.addNode(third));
 	ASSERT_EQ(l.getSize(), 2);
 
-	const ret fourth{1, 1, 2};
+	const PhysAttrMap fourth{1, 1, 2};
 
 	EXPECT_NO_THROW(l.addNode(fourth));
 	ASSERT_EQ(l.getSize(), 3);
@@ -476,10 +846,8 @@ TEST_F(Layer_Tests, BasicLayer) {
 TEST_F(Layer_Tests, AddSameNodeTwice) {
 	using namespace mx::api;
 
-	typedef std::tuple<int, int, int> ret;
-
-	const ret first{1, 1, 1};
-	const ret second{1, 1, 1};
+	const PhysAttrMap first{1, 1, 1};
+	const PhysAttrMap second{1, 1, 1};
 
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.addNode(second), -1);
@@ -490,10 +858,9 @@ TEST_F(Layer_Tests, AddSameNodeTwice) {
 //Tests that failure to remove a non-existant node returns -1 and retains first node.
 TEST_F(Layer_Tests, RemoveNonexistantNode) {
 	using namespace mx::api;
-	typedef std::tuple<int, int, int> ret;
 	
-	const ret first{1, 1, 1};	
-	const ret second{2, 2, 2};
+	const PhysAttrMap first{1, 1, 1};	
+	const PhysAttrMap second{2, 2, 2};
 
 	EXPECT_EQ(l.addNode(first), 1);
 	ASSERT_EQ(l.removeNode(second), -1);
@@ -502,45 +869,45 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 }
 
 class ActionSet_Tests : public ::testing::Test {
-	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 
-	typedef out_type (*a_type_dist)(in_type, in_type);
-	typedef bool (*a_type_cond)(in_type, in_type);
+	typedef out_type (*a_type_dist)(PhysAttrMap, PhysAttrMap);
+	typedef bool (*a_type_cond)(PhysAttrMap, PhysAttrMap);
 
 	public:
-		std::unique_ptr<ActionSet<in_type, out_type>> set;
+		std::unique_ptr<ActionSet<out_type>> set;
 		ActionSet_Tests() {		
+			::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 			using namespace std;
 
-			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
+			a_type_cond fa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 				return true;
 			};
-			a_type_dist fa_dist = [] (in_type s1, in_type s2) {
-				return max(get<2>(s1), get<2>(s2))
-				       - min(get<2>(s1), get<2>(s2));
+			a_type_dist fa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+				return int(max(s1.getVal("FINGER"), s2.getVal("FINGER"))
+				       - min(s1.getVal("FINGER"), s2.getVal("FINGER")));
 			};
-			const Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
+			const Action<out_type> f_a(fa_cond, fa_dist, "FA");
 			
-			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
+			a_type_cond ha_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 				return true;
 			};
-			a_type_dist ha_dist = [] (in_type s1, in_type s2) {
-				return max(get<1>(s1), get<1>(s2))
-					 - min(get<1>(s1), get<1>(s2));
+			a_type_dist ha_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+				return int(max(s1.getVal("HAND_POS"), s2.getVal("HAND_POS"))
+					 - min(s1.getVal("HAND_POS"), s2.getVal("HAND_POS")));
 			};
-			const Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
+			const Action<out_type> h_a(ha_cond, ha_dist, "HA");
 			
-			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
+			a_type_cond sa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 				return true;
 			};
-			a_type_dist sa_dist = [] (in_type s1, in_type s2) {
-				return max(get<0>(s1), get<0>(s2))
-					- min(get<0>(s1), get<0>(s2));
+			a_type_dist sa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+				return int(max(s1.getVal("STRING"), s2.getVal("STRING"))
+					- min(s1.getVal("STRING"), s2.getVal("STRING")));
 			};
-			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
+			const Action<out_type> s_a(sa_cond, sa_dist, "SA");
 
-			set = unique_ptr<ActionSet<in_type, out_type>>(new ActionSet<in_type, out_type>{
+			set = unique_ptr<ActionSet<out_type>>(new ActionSet<out_type>{
 							{f_a, true}, 
 							{h_a, true}, 
 							{s_a, true}
@@ -551,27 +918,23 @@ class ActionSet_Tests : public ::testing::Test {
 //Tests that the distance between different inputs corresponds with the actions in 
 //the ActionSet
 TEST_F(ActionSet_Tests, CorrectDistance) {
-	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
-
-	const in_type f1 = {0, 0, 0};
-	const in_type s1 = {1, 2, 1};
+	const PhysAttrMap f1 = {0, 0, 0};
+	const PhysAttrMap s1 = {1, 2, 1};
 
 	ASSERT_EQ(set->apply(f1, s1), 4);
 
-	const in_type f2 = {2, 2, 2};
-	const in_type s2 = {0, 3, 2};
+	const PhysAttrMap f2 = {2, 2, 2};
+	const PhysAttrMap s2 = {0, 3, 2};
 
 	ASSERT_EQ(set->apply(f2, s2), 3);
 }
 
 //Tests that dependencies correctly disable actions and cannot re-enable them.
 TEST_F(ActionSet_Tests, Dependencies) {
-	using in_type = std::tuple<unsigned int, unsigned int, unsigned int>;
-
 	set->addDependency("HA", "FA", false);
 
-	const in_type f1 = {0, 0, 0};
-	const in_type s1 = {1, 10, 1};
+	const PhysAttrMap f1 = {0, 0, 0};
+	const PhysAttrMap s1 = {1, 10, 1};
 
 	ASSERT_EQ(set->apply(f1, s1), 2);	
 
@@ -585,59 +948,57 @@ TEST_F(ActionSet_Tests, Dependencies) {
 }
 
 class LayerList_Tests : public ::testing::Test {
-	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 
 	public:
-		std::unique_ptr<LayerList<in_type, int>> list;
+		std::unique_ptr<LayerList<int>> list;
 		LayerList_Tests() {
 			using namespace noteenums;
 			using namespace std;
+			::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
-			typedef out_type (*a_type_dist) (in_type, in_type);
-			typedef bool (*a_type_cond) (in_type, in_type);
+			typedef out_type (*a_type_dist) (PhysAttrMap, PhysAttrMap);
+			typedef bool (*a_type_cond) (PhysAttrMap, PhysAttrMap);
 
 			const IString s1(1, Note::C_3, Note::B_3);
 			const IString s2(2, Note::G_3, Note::Ds_4);
 
-			std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper({s1, s2}));
+			std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper({s1, s2}));
 
-			const Layer<in_type> first(Note::D_3, Duration::Whole, note_mapper);
-			const Layer<in_type> second(Note::Fs_3, Duration::Whole, note_mapper);
-			const Layer<in_type> third(Note::G_3, Duration::Whole, note_mapper);
-			const Layer<in_type> fourth(Note::Cs_4, Duration::Whole, note_mapper);
+			const Layer first(Note::D_3, Duration::Whole, note_mapper);
+			const Layer second(Note::Fs_3, Duration::Whole, note_mapper);
+			const Layer third(Note::G_3, Duration::Whole, note_mapper);
+			const Layer fourth(Note::Cs_4, Duration::Whole, note_mapper);
 
-			vector<Layer<in_type>> l_vec({first, second, third, fourth});
+			vector<Layer> l_vec({first, second, third, fourth});
 
-			list = unique_ptr<LayerList<in_type, int>>(new LayerList<in_type, out_type>(l_vec));
+			list = unique_ptr<LayerList<int>>(new LayerList<out_type>(l_vec));
 
-			a_type_cond fa_cond = [] (in_type s1, in_type s2) {
+			a_type_cond fa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 				return true;
 			};
-			a_type_dist fa_dist = [] (in_type s1, in_type s2) {
-				return max(get<2>(s1), get<2>(s2)) - min(get<2>(s1), get<2>(s2));
+			a_type_dist fa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+				return int(max(s1.getVal("FINGER"), s2.getVal("FINGER")) - min(s1.getVal("FINGER"), s2.getVal("FINGER")));
 			};
-			const Action<in_type, out_type> f_a(fa_cond, fa_dist, "FA");
+			const Action<out_type> f_a(fa_cond, fa_dist, "FA");
 			
-			a_type_cond ha_cond = [] (in_type s1, in_type s2) {
+			a_type_cond ha_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 				return true;
 			};
-			a_type_dist ha_dist = [] (in_type s1, in_type s2) {
-				return max(get<1>(s1), get<1>(s2)) - min(get<1>(s1), get<1>(s2));
+			a_type_dist ha_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+				return int(max(s1.getVal("HAND_POS"), s2.getVal("HAND_POS")) - min(s1.getVal("HAND_POS"), s2.getVal("HAND_POS")));
 			};
-			const Action<in_type, out_type> h_a(ha_cond, ha_dist, "HA");
+			const Action<out_type> h_a(ha_cond, ha_dist, "HA");
 			
-			a_type_cond sa_cond = [] (in_type s1, in_type s2) {
+			a_type_cond sa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
 				return true;
 			};
-			a_type_dist sa_dist = [] (in_type s1, in_type s2) {
-				return max(get<0>(s1), get<0>(s2))
-					- min(get<0>(s1), get<0>(s2));
+			a_type_dist sa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
+				return int(max(s1.getVal("STRING"), s2.getVal("STRING")) - min(s1.getVal("STRING"), s2.getVal("STRING")));
 			};
-			const Action<in_type, out_type> s_a(sa_cond, sa_dist, "SA");
+			const Action<out_type> s_a(sa_cond, sa_dist, "SA");
 			
-			std::shared_ptr<ActionSet<in_type, out_type>> actions(
-						new ActionSet<in_type, out_type>());
+			std::shared_ptr<ActionSet<out_type>> actions(new ActionSet<out_type>());
 			actions->makeAction(fa_cond, fa_dist, "FA", true);
 			actions->makeAction(ha_cond, ha_dist, "HA", true);
 			actions->makeAction(sa_cond, sa_dist, "SA", true);
@@ -678,9 +1039,9 @@ TEST_F(LayerList_Tests, Transitions) {
 	int count = 0;
 	//D_3 = {1, 1, 1}
 	for (auto& transition : l_it->getTransitions()) {
-		cout << get<0>(transition.first) << ", ";
-		cout << get<1>(transition.first) << ", ";
-		cout << get<2>(transition.first) << "\n";
+		cout << transition.first << ", ";
+		cout << transition.first << ", ";
+		cout << transition.first << "\n";
 		for (auto& output : transition.second) {
 			cout << "Count: " 
 			     << count 
@@ -696,9 +1057,9 @@ TEST_F(LayerList_Tests, Transitions) {
 	l_it++;
 	//Fs_3 = {1, 1, 3}, {1, 2, 2}, {1, 3, 1}
 	for (auto& transition : l_it->getTransitions()) {
-		cout << get<0>(transition.first) << ", ";
-		cout << get<1>(transition.first) << ", ";
-		cout << get<2>(transition.first) << "\n";
+		cout << transition.first << ", ";
+		cout << transition.first << ", ";
+		cout << transition.first << "\n";
 		for (auto& output : transition.second) {
 			cout << "Count: " 
 			     << count 
@@ -714,9 +1075,9 @@ TEST_F(LayerList_Tests, Transitions) {
 	l_it++;
 	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 0, 0}
 	for (auto& transition : l_it->getTransitions()) {
-		cout << get<0>(transition.first) << ", ";
-		cout << get<1>(transition.first) << ", ";
-		cout << get<2>(transition.first) << "\n";
+		cout << transition.first << ", ";
+		cout << transition.first << ", ";
+		cout << transition.first << "\n";
 		for (auto& output : transition.second) {
 			cout << "Count: " 
 			     << count 
@@ -801,9 +1162,9 @@ TEST(LayerList, FromNoteList) {
 
 	const NoteList notes(score);
 
-	std::shared_ptr<NoteMapper<std::tuple<int, int, int>>>note_mapper(new BasicNoteMapper());
+	std::shared_ptr<NoteMapper>note_mapper(new BasicNoteMapper());
 	
-	LayerList<std::tuple<int, int, int>, int> l1(notes, note_mapper);
+	LayerList<int> l1(notes, note_mapper);
 	
 	int count = 0;
 	for (auto& l : l1) {
@@ -823,12 +1184,13 @@ TEST(LayerList, FromNoteList) {
 
 //Tests that strings created in an instrument exist in the correct order and contain the correct notes.
 TEST(Instrument_Test, CorrectStrings) {
-	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 	
 	using namespace noteenums;
 
-	Instrument<in_type, out_type> inst;
+	std::shared_ptr<ActionSet<out_type>> dummy(new ActionSet<out_type>());
+
+	Instrument<out_type> inst(dummy);
 
 	inst.makeIString(1, Note::E_4, Note::E_6);
 	inst.makeIString(2, Note::Ds_2, Note::F_3);
@@ -859,12 +1221,12 @@ TEST(Instrument_Test, CorrectStrings) {
 
 //Tests that trying to insert a string with an invalid position. 
 TEST(Instrument_Test, IncorrectPos) {
-	using in_type = std::tuple<int, int, int>;
-	using out_type = int;
-	
 	using namespace noteenums;
+	using out_type = int;
 
-	Instrument<in_type, out_type> inst;
+	std::shared_ptr<ActionSet<out_type>> dummy(new ActionSet<out_type>());
+	
+	Instrument<out_type> inst(dummy);
 
 	inst.makeIString(-1, Note::E_4, Note::E_6);
 
@@ -874,12 +1236,12 @@ TEST(Instrument_Test, IncorrectPos) {
 //Tests that adding two strings with the same position results in the first being kept and the second 
 //discarded.
 TEST(Instrument_Test, DupePosition) {
-	using in_type = std::tuple<int, int, int>;
-	using out_type = int;
-	
 	using namespace noteenums;
+	using out_type = int;
 
-	Instrument<in_type, out_type> inst;
+	std::shared_ptr<ActionSet<out_type>> dummy(new ActionSet<out_type>());
+	
+	Instrument<out_type> inst(dummy);
 
 	inst.makeIString(1, Note::E_4, Note::E_6);
 	inst.makeIString(1, Note::Ds_2, Note::F_3);
@@ -909,46 +1271,44 @@ TEST(Instrument_Test, DupePosition) {
 }
 
 class GreedySolver_Tests : public ::testing::Test {
-	using in_type = std::tuple<int, int, int>;
 	using out_type = int;
 
 	private:
-		Instrument<in_type, out_type> buildInstrument() {
+		Instrument<out_type> buildInstrument() {
 			using namespace std;
 
-			typedef out_type (*action_type_dist)(in_type, in_type);
-			typedef bool (*action_type_cond)(in_type, in_type);
+			typedef out_type (*action_type_dist)(PhysAttrMap, PhysAttrMap);
+			typedef bool (*action_type_cond)(PhysAttrMap, PhysAttrMap);
 			
 
-			action_type_cond action_cond = [] (in_type t1, in_type t2) {
+			action_type_cond action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
 				return true;
 			};
-			action_type_dist action_dist = [] (in_type t1, in_type t2) {
-				int out = abs(get<1>(t1) - get<1>(t2));
-				out = out + abs(get<2>(t1) - get<2>(t2));
-				if (abs(get<0>(t1) - get<0>(t2)) >= 2) {
+			action_type_dist action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
+				int out = abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
+				out = out + abs(int(t1.getVal("FINGER") - t2.getVal("FINGER")));
+				if (abs(int(t1.getVal("STRING") - t2.getVal("STRING"))) >= 2) {
 					out = out + 100;
 				} else {
 					out = out + 1;
 				}
 				return out;
 			};
-			const Action<in_type, out_type> a1(action_cond, 
-							   action_dist, 
-							   "A1");
+			const Action<out_type> a1(action_cond, action_dist, "A1");
 			
-			std::shared_ptr<ActionSet<in_type, out_type>> set(
-						new ActionSet<in_type, out_type>({a1, true}));
+			std::shared_ptr<ActionSet<out_type>> set(new ActionSet<out_type>({a1, true}));
 
-			Instrument<in_type, out_type> i(set);
+			Instrument<out_type> i(set);
 			i.makeIString(1, Note::C_3, Note::G_3);
 			i.makeIString(2, Note::D_3, Note::A_3);
 			i.makeIString(3, Note::E_3, Note::B_3);
 			return i;
 		}
 	public:
-		GreedySolver_Tests() : instrument(buildInstrument()) {}
-		Instrument<in_type, out_type> instrument;
+		GreedySolver_Tests() : instrument(buildInstrument()) {
+			::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+		}
+		Instrument<out_type> instrument;
 };
 
 //Tests that the greedysolver selects the correct path and outputs the correct costs.
@@ -956,18 +1316,17 @@ TEST_F(GreedySolver_Tests, Basic) {
 	using namespace noteenums;
 	using namespace std;
 
-	using in_type = tuple<int, int, int>;
 	using out_type = int;	
 		
-	std::shared_ptr<NoteMapper<in_type>> note_mapper(new BasicNoteMapper(instrument.getIStrings()));
+	std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(instrument.getIStrings()));
 	
-	std::unique_ptr<GraphSolver<in_type, out_type>> solver(new GreedySolver());
+	std::unique_ptr<GraphSolver<out_type>> solver(new GreedySolver());
 	
-	const Layer<in_type> first(Note::C_3, Duration::Whole, note_mapper);
-	const Layer<in_type> second(Note::E_3, Duration::Whole, note_mapper);
-	const Layer<in_type> third(Note::Gs_3, Duration::Whole, note_mapper);
+	const Layer first(Note::C_3, Duration::Whole, note_mapper);
+	const Layer second(Note::E_3, Duration::Whole, note_mapper);
+	const Layer third(Note::Gs_3, Duration::Whole, note_mapper);
 
-	LayerList<in_type, out_type> l_list({first, second, third});
+	LayerList<out_type> l_list({first, second, third});
 	l_list.buildTransitions(instrument.getActionSet());			
 
 	solver->solve(l_list);
@@ -976,9 +1335,9 @@ TEST_F(GreedySolver_Tests, Basic) {
 	//E_3 = {2, 1, 1}, {3, 0, 0}
 	//Gs_3 = {3, 1, 3}, {3, 1, 2}
 
-	const in_type sol_1({1, 0, 0});
-	const in_type sol_2({2, 1, 1});
-	const in_type sol_3({3, 1, 2});
+	const PhysAttrMap sol_1({1, 0, 0});
+	const PhysAttrMap sol_2({2, 1, 1});
+	const PhysAttrMap sol_3({3, 1, 2});
 
 	const int cost_1 = 3;
 	const int cost_2 = 2;

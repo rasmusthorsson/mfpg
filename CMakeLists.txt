@@ -7,7 +7,7 @@ set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
 configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
-option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_TESTS "Build tests" ON)
 
 project(mfpr VERSION ${VERSION_MFPG})
 
@@ -16,10 +16,10 @@ if (UNIX)
   set(CMAKE_CXX_COMPILER /usr/bin/g++-12 CACHE PATH "" FORCE)
 endif(UNIX)
 
-
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #For YMC
 
 include(FetchContent)
 if (BUILD_TESTS) 
@@ -39,10 +39,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 
-file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
-	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp 
-	src/BasicNoteMapper.cpp src/Instrument.cpp src/SolverException.cpp
-	src/GreedySolver.cpp)
+file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkException.cpp src/NodeException.cpp
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp 
+	src/BasicNoteMapper.cpp src/LayerList.cpp src/Instrument.cpp src/SolverException.cpp Action.cpp
+	src/GreedySolver.cpp src/ExValContainer.cpp src/PhysAttrMap.cpp src/ExValException.cpp 
+	src/ActionSet.cpp src/HandPosition.cpp)
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
 add_executable(mfpr ${SRC_BASE})
 
