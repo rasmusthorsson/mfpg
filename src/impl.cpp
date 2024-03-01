@@ -1,6 +1,7 @@
 #include "LayerList.cpp"
 #include "Action.cpp"
 #include "ActionSet.cpp"
+#include "LinkException.cpp"
 
 //Generation of templated classes possible for outputs.
 template class LayerList<int>;
@@ -11,3 +12,7 @@ template class Action<double>;
 
 template class ActionSet<int>;
 template class ActionSet<double>;
+
+template class LinkException<int>;
+template class LinkException<double>;
+

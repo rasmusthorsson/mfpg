@@ -39,7 +39,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cxxopts)
 
 
-file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp
+file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkException.cpp
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp 
 	src/BasicNoteMapper.cpp src/LayerList.cpp src/Instrument.cpp src/SolverException.cpp Action.cpp
 	src/GreedySolver.cpp src/PhysTuple.cpp src/PhysAttrMap.cpp src/AttrException.cpp src/ActionSet.cpp)
