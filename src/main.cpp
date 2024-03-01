@@ -3,6 +3,8 @@
 
 #include "cxxopts.hpp"
 
+#include "conf_cmake.h"
+#include "configs.h"
 
 #include "NoteEnums.h"
 #include "NoteMapper.h"
@@ -15,9 +17,6 @@
 #include "Instrument.h"
 #include "PhysAttrMap.h"
 #include "AttrException.h"
-
-#include "conf_cmake.h"
-#include "configs.h"
 
 #include <iostream>
 #include <fstream>

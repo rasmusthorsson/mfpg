@@ -21,7 +21,7 @@ class Layer {
 		//calculated by the notemapper.)
 		std::vector<PhysAttrMap> nodes;
 	public:
-		Layer() = delete;
+		Layer() : note(Note::C_4, Duration::Whole) {};
 		Layer(noteenums::Note n, 
 		      noteenums::Duration d, 
 		      std::shared_ptr<NoteMapper> mapper) : note(n, d) {
