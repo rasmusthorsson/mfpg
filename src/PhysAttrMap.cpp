@@ -2,12 +2,13 @@
 #include "AttrException.h"
 
 #include <ostream>
-#include <typeinfo>
 
+//----------------------------------------- GLOBALS -----------------------------------------
 extern int TUPLESIZE;
 extern char* ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
+//----------------------------------------- CONSTRUCTORS -----------------------------------------
 PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, PhysTuple>> list) {
 	if (list.size() != TUPLESIZE) {
 		std::vector<PhysTuple> ex_v;
@@ -17,13 +18,20 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, Phys
 		std::cout << "TUPLE SIZE: " << TUPLESIZE << "\n";
 		throw (AttrException("List size is not the same as TUPLESIZE.", ex_v));
 	}
-	int count = 0;
 	for (auto pair : list) {
-		if (ATTRIBUTE_TYPES[count] != pair.second.getType()) {
+		int attr_index = 0;
+		for (; attr_index < ATTRIBUTES.size(); attr_index++) {
+			if (ATTRIBUTES[attr_index] == pair.first) {
+				break;
+			}
+		}
+		if (ATTRIBUTE_TYPES[attr_index] != pair.second.getType()) {
 			throw (AttrException("Attribute map is not consistent with attribute types.", std::vector<PhysTuple>({pair.second})));
 		}
-		count++;
-		attr_map.insert(pair);
+		auto inserted_val = attr_map.insert(pair);
+		if (!inserted_val.second) {
+			throw (AttrException("Attribute map already contains a value of this attribute type.", std::vector<PhysTuple>({pair.second})));
+		}
 	}
 }
 PhysAttrMap::PhysAttrMap(std::initializer_list<PhysTuple> list) {
@@ -43,10 +51,13 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<PhysTuple> list) {
 		ind++;
 	}
 }
+
+//----------------------------------------- GETTERS -----------------------------------------
 const PhysTuple& PhysAttrMap::getVal(std::string s) const {
 	return attr_map.at(s);
 }
 
+//----------------------------------------- OPERATORS -----------------------------------------
 bool PhysAttrMap::operator == (const PhysAttrMap& rhs) const {
 	auto this_itr = attr_map.cbegin();
 	auto other_itr = rhs.attr_map.cbegin();
@@ -68,7 +79,7 @@ bool PhysAttrMap::operator != (const PhysAttrMap& rhs) const {
 	return !(*this == rhs);
 }
 
-
+//----------------------------------------- STRINGS -----------------------------------------
 std::string PhysAttrMap::to_string() const {
 	std::string ret = "";
 	if (attr_map.size() < 1) {

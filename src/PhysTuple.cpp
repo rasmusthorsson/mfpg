@@ -1,10 +1,12 @@
 #include "PhysTuple.h"
 #include "AttrException.h"
 
+//--------------------------------- CONSTRUCTORS ---------------------------------
 PhysTuple::PhysTuple(int i) : type('i'), phys_attr(PhysAttr(i)) {}
 PhysTuple::PhysTuple(double d) : type('d'), phys_attr(PhysAttr(d)) {}
 PhysTuple::PhysTuple(bool b) : type('b'), phys_attr(PhysAttr(b)) {}
 
+//--------------------------------- GETTERS ---------------------------------
 const int PhysTuple::getI() const {
 	if (type != 'i') {
 		throw (AttrException("Attribute is not an integer.\n", std::vector<PhysTuple>({*this})));
@@ -30,6 +32,7 @@ const char PhysTuple::getType() const {
 	return type;
 }
 
+//--------------------------------- CONVERSIONS ---------------------------------
 PhysTuple::operator int() {
 	return getI();
 }
@@ -40,6 +43,7 @@ PhysTuple::operator double() {
 	return getD();
 }
 
+//--------------------------------- STRINGS ---------------------------------
 std::string PhysTuple::to_string() const {
 	std::string val;
 	switch (type) {

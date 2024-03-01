@@ -414,11 +414,37 @@ TEST(PhysAttrMap, PairListTooManyAttributes) {
 TEST(PhysAttrMap, PairListWrongAttributeTypes) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}}), AttrException);
-	
 	try {
 		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}});
 	} catch (AttrException e) {
 		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a pair list will result in a thrown exception if the types of the
+//fundamentals match the ATTRIBUTE_TYPES but not in the order they are defined in ATTRIBUTES.
+TEST(PhysAttrMap, PairList) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ATTRIBUTE_TYPES = "iid";
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}}), AttrException);
+	
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}});
+	} catch (AttrException e) {
+		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
+	}
+}
+
+//Tests that init of PhysAttrMap using a pair list will throw an exception if two of the attributes are of
+//the same type.
+TEST(PhysAttrMap, PairListDupeAttribute) {
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 2}, {"FINGER", 5}}), AttrException);
+	
+	try {
+		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 5}, {"FINGER", 5}});
+	} catch (AttrException e) {
+		ASSERT_EQ(e.what(), "Attribute map already contains a value of this attribute type.");
 	}
 }
 
