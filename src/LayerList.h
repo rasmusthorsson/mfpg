@@ -24,46 +24,39 @@ template <class Output> class LayerList {
 		//transitioning from the mapped tuple to the n'th tuple in the next 
 		//layer.
 		std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess> transitions;
-
 		//Layers are to be owned by the respective LayerList node.
 		Layer elem;
 		//Next link in list.
 		LayerList<Output>* next = NULL;
 
 		//Functions used for testing only
-		void pushBack(Layer layer);
-		int setNext(Layer layer);
+		void pushBack(Layer);
+		int setNext(Layer);
 	public:
-		LayerList();
-
-		//Constructors for tests only -----------
+		//Constructors for tests only
 		LayerList(Layer l);
 		LayerList(std::vector<Layer> ls);
 		
 		//---------------------------------------
-		LayerList(const SimplifiedNote& s, std::shared_ptr<NoteMapper> note_mapper); 
-		LayerList(const NoteList& list, std::shared_ptr<NoteMapper> note_mapper);
+		LayerList();
+		LayerList(const SimplifiedNote&, std::shared_ptr<NoteMapper>); 
+		LayerList(const NoteList&, std::shared_ptr<NoteMapper>);
 		~LayerList(); 
 	
 		//Set next, fails if next is already set.
-		int setNext(LayerList<Output>* l);
-		
+		int setNext(LayerList<Output>*);
 		//Set next, fails if next is already set.
-		int setNext(const SimplifiedNote& s, std::shared_ptr<NoteMapper> note_mapper);
-
-		const LayerList<Output>* getNext() const;
-
+		int setNext(const SimplifiedNote&, std::shared_ptr<NoteMapper>);
 		//Push new layerlist to the end of the list.
-		void pushBack(const SimplifiedNote& s, std::shared_ptr<NoteMapper> note_mapper);
-
+		void pushBack(const SimplifiedNote&, std::shared_ptr<NoteMapper>);
+		
+		const LayerList<Output>* getNext() const;
 		const Layer& getElem() const;
-
 		int getSize() const;
-
-		//Builds transitions through the entire layerlist using an actionset.
-		int buildTransitions(const std::shared_ptr<ActionSet<Output>> as);
-
 		std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess>& getTransitions();
+		
+		//Builds transitions through the entire layerlist using an actionset.
+		int buildTransitions(const std::shared_ptr<ActionSet<Output>>);
 
 		//Iterator
 		struct Iterator {
