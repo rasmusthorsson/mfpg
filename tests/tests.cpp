@@ -10,7 +10,7 @@
 #include "Instrument.h"
 #include "SolverException.h"
 #include "PhysAttrMap.h"
-#include "AttrException.h"
+#include "ExValException.h"
 
 extern int TUPLESIZE;
 extern char* ATTRIBUTES_TYPES;
@@ -177,60 +177,60 @@ TEST(IString, RangedNotes) {
 }
 
 //Tests that construction of different types results in the currect type being accessable through the tuple.
-TEST(PhysTuple, Types) {
-	PhysTuple int_phys(1);	
-	PhysTuple double_phys(1.0);	
-	PhysTuple bool_phys(false);	
-	ASSERT_THROW(int_phys.getB(), AttrException);
-	ASSERT_THROW(int_phys.getD(), AttrException);
-	ASSERT_THROW(double_phys.getB(), AttrException);
-	ASSERT_THROW(double_phys.getI(), AttrException);
-	ASSERT_THROW(bool_phys.getI(), AttrException);
-	ASSERT_THROW(bool_phys.getD(), AttrException);
+TEST(ExValContainer, Types) {
+	ExValContainer int_phys(1);	
+	ExValContainer double_phys(1.0);	
+	ExValContainer bool_phys(false);	
+	ASSERT_THROW(int_phys.getB(), ExValException);
+	ASSERT_THROW(int_phys.getD(), ExValException);
+	ASSERT_THROW(double_phys.getB(), ExValException);
+	ASSERT_THROW(double_phys.getI(), ExValException);
+	ASSERT_THROW(bool_phys.getI(), ExValException);
+	ASSERT_THROW(bool_phys.getD(), ExValException);
 
 	try {
 		int_phys.getB();
-	} catch (AttrException e) {
-		EXPECT_EQ(e.what(), "Attribute is not a boolean.\n");
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a boolean.\n");
 	}	
 	try {
 		int_phys.getD();
-	} catch (AttrException e) {
-		EXPECT_EQ(e.what(), "Attribute is not a double.\n");
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a double.\n");
 	}	
 	try {
 		double_phys.getB();
-	} catch (AttrException e) {
-		EXPECT_EQ(e.what(), "Attribute is not a boolean.\n");
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a boolean.\n");
 	}	
 	try {
 		double_phys.getI();
-	} catch (AttrException e) {
-		EXPECT_EQ(e.what(), "Attribute is not an integer.\n");
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not an integer.\n");
 	}	
 	try {
 		bool_phys.getD();
-	} catch (AttrException e) {
-		EXPECT_EQ(e.what(), "Attribute is not a double.\n");
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not a double.\n");
 	}	
 	try {
 		bool_phys.getI();
-	} catch (AttrException e) {
-		EXPECT_EQ(e.what(), "Attribute is not an integer.\n");
+	} catch (ExValException e) {
+		EXPECT_EQ(e.what(), "Exclusive Value is not an integer.\n");
 	}	
 	ASSERT_EQ(int_phys.getI(), 1);
 	ASSERT_EQ(double_phys.getD(), 1.0);
 	ASSERT_EQ(bool_phys.getB(), false);
 }
 
-//Tests that all comparison operations on PhysTuples work as intended,
-TEST(PhysTuple, ComparisonOperations) {
-	PhysTuple low_int(1);
-	PhysTuple high_int(8);
-	PhysTuple low_double(1.0);
-	PhysTuple high_double(8.0);
-	PhysTuple true_bool(true);
-	PhysTuple false_bool(false);
+//Tests that all comparison operations on ExValContainers work as intended,
+TEST(ExValContainer, ComparisonOperations) {
+	ExValContainer low_int(1);
+	ExValContainer high_int(8);
+	ExValContainer low_double(1.0);
+	ExValContainer high_double(8.0);
+	ExValContainer true_bool(true);
+	ExValContainer false_bool(false);
 
 	//Equality
 	ASSERT_EQ(low_int == high_int, false);
@@ -297,114 +297,114 @@ TEST(PhysTuple, ComparisonOperations) {
 	ASSERT_EQ(false_bool > false_bool, false);
 }
 
-//Tests that all arithmetic operations on PhysTuples work as intended,
-TEST(PhysTuple, ArithmeticOperations) {
-	PhysTuple low_int(1);
-	PhysTuple high_int(8);
-	PhysTuple low_double(1.0);
-	PhysTuple high_double(8.0);
-	PhysTuple true_bool(true);
-	PhysTuple false_bool(false);
+//Tests that all arithmetic operations on ExValContainers work as intended,
+TEST(ExValContainer, ArithmeticOperations) {
+	ExValContainer low_int(1);
+	ExValContainer high_int(8);
+	ExValContainer low_double(1.0);
+	ExValContainer high_double(8.0);
+	ExValContainer true_bool(true);
+	ExValContainer false_bool(false);
 	
 	//Minus
 	ASSERT_EQ(high_int - low_int, 7);
 	ASSERT_EQ(high_int - high_int, 0);
-	ASSERT_THROW(high_int - low_double, AttrException);
-	ASSERT_THROW(high_int - false_bool, AttrException);
+	ASSERT_THROW(high_int - low_double, ExValException);
+	ASSERT_THROW(high_int - false_bool, ExValException);
 	
 	ASSERT_EQ(high_double - low_double, 7.0);
 	ASSERT_EQ(high_double - high_double, 0.0);
-	ASSERT_THROW(high_double - low_int, AttrException);
-	ASSERT_THROW(high_double - false_bool, AttrException);
+	ASSERT_THROW(high_double - low_int, ExValException);
+	ASSERT_THROW(high_double - false_bool, ExValException);
 
-	ASSERT_THROW(true_bool - false_bool, AttrException);
-	ASSERT_THROW(true_bool - true_bool, AttrException);
-	ASSERT_THROW(true_bool - low_double, AttrException);
-	ASSERT_THROW(true_bool - false_bool, AttrException);
+	ASSERT_THROW(true_bool - false_bool, ExValException);
+	ASSERT_THROW(true_bool - true_bool, ExValException);
+	ASSERT_THROW(true_bool - low_double, ExValException);
+	ASSERT_THROW(true_bool - false_bool, ExValException);
 	
 	//Plus
 	ASSERT_EQ(high_int + low_int, 9);
 	ASSERT_EQ(high_int + high_int, 16);
-	ASSERT_THROW(high_int + low_double, AttrException);
-	ASSERT_THROW(high_int + false_bool, AttrException);
+	ASSERT_THROW(high_int + low_double, ExValException);
+	ASSERT_THROW(high_int + false_bool, ExValException);
 	
 	ASSERT_EQ(high_double + low_double, 9.0);
 	ASSERT_EQ(high_double + high_double, 16.0);
-	ASSERT_THROW(high_double + low_int, AttrException);
-	ASSERT_THROW(high_double + false_bool, AttrException);
+	ASSERT_THROW(high_double + low_int, ExValException);
+	ASSERT_THROW(high_double + false_bool, ExValException);
 
-	ASSERT_THROW(true_bool + false_bool, AttrException);
-	ASSERT_THROW(true_bool + true_bool, AttrException);
-	ASSERT_THROW(true_bool + low_double, AttrException);
-	ASSERT_THROW(true_bool + false_bool, AttrException);
+	ASSERT_THROW(true_bool + false_bool, ExValException);
+	ASSERT_THROW(true_bool + true_bool, ExValException);
+	ASSERT_THROW(true_bool + low_double, ExValException);
+	ASSERT_THROW(true_bool + false_bool, ExValException);
 	
 	//Multiplication
 	ASSERT_EQ(high_int * low_int, 8);
 	ASSERT_EQ(high_int * high_int, 64);
-	ASSERT_THROW(high_int * low_double, AttrException);
-	ASSERT_THROW(high_int * false_bool, AttrException);
+	ASSERT_THROW(high_int * low_double, ExValException);
+	ASSERT_THROW(high_int * false_bool, ExValException);
 	
 	ASSERT_EQ(high_double * low_double, 8.0);
 	ASSERT_EQ(high_double * high_double, 64.0);
-	ASSERT_THROW(high_double * low_int, AttrException);
-	ASSERT_THROW(high_double * false_bool, AttrException);
+	ASSERT_THROW(high_double * low_int, ExValException);
+	ASSERT_THROW(high_double * false_bool, ExValException);
 
-	ASSERT_THROW(true_bool * false_bool, AttrException);
-	ASSERT_THROW(true_bool * true_bool, AttrException);
-	ASSERT_THROW(true_bool * low_double, AttrException);
-	ASSERT_THROW(true_bool * false_bool, AttrException);
+	ASSERT_THROW(true_bool * false_bool, ExValException);
+	ASSERT_THROW(true_bool * true_bool, ExValException);
+	ASSERT_THROW(true_bool * low_double, ExValException);
+	ASSERT_THROW(true_bool * false_bool, ExValException);
 }
 
-//Tests that all boolean operations on PhysTuples work as intended,
-TEST(PhysTuple, BooleanOperations) {
-	PhysTuple low_int(1);
-	PhysTuple high_int(8);
-	PhysTuple low_double(1.0);
-	PhysTuple high_double(8.0);
-	PhysTuple true_bool(true);
-	PhysTuple false_bool(false);
+//Tests that all boolean operations on ExValContainers work as intended,
+TEST(ExValContainer, BooleanOperations) {
+	ExValContainer low_int(1);
+	ExValContainer high_int(8);
+	ExValContainer low_double(1.0);
+	ExValContainer high_double(8.0);
+	ExValContainer true_bool(true);
+	ExValContainer false_bool(false);
 	
 	//Conjunction
-	ASSERT_THROW(high_int && low_int, AttrException);
-	ASSERT_THROW(high_int && high_int, AttrException);
-	ASSERT_THROW(high_int && low_double, AttrException);
-	ASSERT_THROW(high_int && false_bool, AttrException);
+	ASSERT_THROW(high_int && low_int, ExValException);
+	ASSERT_THROW(high_int && high_int, ExValException);
+	ASSERT_THROW(high_int && low_double, ExValException);
+	ASSERT_THROW(high_int && false_bool, ExValException);
 	
-	ASSERT_THROW(high_double && low_double, AttrException);
-	ASSERT_THROW(high_double && high_double, AttrException);
-	ASSERT_THROW(high_double && low_int, AttrException);
-	ASSERT_THROW(high_double && false_bool, AttrException);
+	ASSERT_THROW(high_double && low_double, ExValException);
+	ASSERT_THROW(high_double && high_double, ExValException);
+	ASSERT_THROW(high_double && low_int, ExValException);
+	ASSERT_THROW(high_double && false_bool, ExValException);
 
 	ASSERT_EQ(true_bool && false_bool, false);
 	ASSERT_EQ(true_bool && true_bool, true);
-	ASSERT_THROW(true_bool && low_int, AttrException);
-	ASSERT_THROW(true_bool && low_double, AttrException);
+	ASSERT_THROW(true_bool && low_int, ExValException);
+	ASSERT_THROW(true_bool && low_double, ExValException);
 	
 	//Disjunction
-	ASSERT_THROW(high_int || low_int, AttrException);
-	ASSERT_THROW(high_int || high_int, AttrException);
-	ASSERT_THROW(high_int || low_double, AttrException);
-	ASSERT_THROW(high_int || false_bool, AttrException);
+	ASSERT_THROW(high_int || low_int, ExValException);
+	ASSERT_THROW(high_int || high_int, ExValException);
+	ASSERT_THROW(high_int || low_double, ExValException);
+	ASSERT_THROW(high_int || false_bool, ExValException);
 	
-	ASSERT_THROW(high_double || low_double, AttrException);
-	ASSERT_THROW(high_double || high_double, AttrException);
-	ASSERT_THROW(high_double || low_int, AttrException);
-	ASSERT_THROW(high_double || false_bool, AttrException);
+	ASSERT_THROW(high_double || low_double, ExValException);
+	ASSERT_THROW(high_double || high_double, ExValException);
+	ASSERT_THROW(high_double || low_int, ExValException);
+	ASSERT_THROW(high_double || false_bool, ExValException);
 
 	ASSERT_EQ(true_bool || false_bool, true);
 	ASSERT_EQ(true_bool || true_bool, true);
-	ASSERT_THROW(true_bool || low_int, AttrException);
-	ASSERT_THROW(true_bool || low_double, AttrException);
+	ASSERT_THROW(true_bool || low_int, ExValException);
+	ASSERT_THROW(true_bool || low_double, ExValException);
 }
 
 //Tests that init of PhysAttrMap using a pair list will result in a thrown exception if there are too many 
 //attributes specified.
 TEST(PhysAttrMap, PairListTooManyAttributes) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
-	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}}), AttrException);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}}), ExValException);
 	try {
 		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5}, {"STRING", 5}, {"FINGER", 5}});
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		ASSERT_EQ(e.what(), "List size is not the same as TUPLESIZE.");
 	}
 }
@@ -413,10 +413,10 @@ TEST(PhysAttrMap, PairListTooManyAttributes) {
 //fundamentals do not match the ATTRIBUTE_TYPES.
 TEST(PhysAttrMap, PairListWrongAttributeTypes) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
-	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}}), AttrException);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}}), ExValException);
 	try {
 		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"HAND_POS", 5.0}, {"FINGER", 5}});
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
 	}
 }
@@ -426,11 +426,11 @@ TEST(PhysAttrMap, PairListWrongAttributeTypes) {
 TEST(PhysAttrMap, PairList) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 	ATTRIBUTE_TYPES = "iid";
-	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}}), AttrException);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}}), ExValException);
 	
 	try {
 		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"FINGER", 5}, {"HAND_POS", 5.0}});
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
 	}
 }
@@ -439,11 +439,11 @@ TEST(PhysAttrMap, PairList) {
 //the same type.
 TEST(PhysAttrMap, PairListDupeAttribute) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
-	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 2}, {"FINGER", 5}}), AttrException);
+	ASSERT_THROW(const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 2}, {"FINGER", 5}}), ExValException);
 	
 	try {
 		const PhysAttrMap failed_map_pair({{"STRING", 5}, {"STRING", 5}, {"FINGER", 5}});
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		ASSERT_EQ(e.what(), "Attribute map already contains a value of this attribute type.");
 	}
 }
@@ -464,10 +464,10 @@ TEST(PhysAttrMap, PairListGetVals) {
 //more arguments than the tuplesize
 TEST(PhysAttrMap, ImplicitListTooManyAttributes) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
-	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 7, 2}), AttrException);
+	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 7, 2}), ExValException);
 	try {
 		const PhysAttrMap failed_map_implicit({2, 5, 7, 2});
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		ASSERT_EQ(e.what(), "List size is not the same as TUPLESIZE.");
 	}
 }
@@ -476,10 +476,10 @@ TEST(PhysAttrMap, ImplicitListTooManyAttributes) {
 //the specified ATTRIBUTE_TYPES
 TEST(PhysAttrMap, ImplicitListWrongAttributeTypes) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
-	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 2.2}), AttrException);
+	ASSERT_THROW(const PhysAttrMap failed_map_implicit({2, 5, 2.2}), ExValException);
 	try {
 		const PhysAttrMap failed_map_implicit({2, 5, 2.2});
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		ASSERT_EQ(e.what(), "Attribute map is not consistent with attribute types.");
 	}
 }

@@ -7,7 +7,7 @@
 #include <vector>
 #include <ostream>
 
-#include "PhysTuple.h"
+#include "ExValContainer.h"
 
 //Global variables to ensure correct behaviour and defining allowed actions.
 extern int TUPLESIZE;
@@ -17,17 +17,17 @@ extern std::vector<std::string> ATTRIBUTES;
 class PhysAttrMap {
 	private: 
 		//Map to index via string rather than template index as with tuples.
-		std::map<const std::string, const PhysTuple> attr_map = {};
+		std::map<const std::string, const ExValContainer> attr_map = {};
 	public:
 		PhysAttrMap() {};
 		
 		//Constructor where you specify attribute names along with their values as a pair, must
 		//contain TUPLESIZE amount of attributes, must not contain duplicates. 
-		PhysAttrMap(std::initializer_list<std::pair<const std::string, PhysTuple>> list);
-		PhysAttrMap(std::initializer_list<PhysTuple> list);
+		PhysAttrMap(std::initializer_list<std::pair<const std::string, ExValContainer>> list);
+		PhysAttrMap(std::initializer_list<ExValContainer> list);
 
-		//Returns the PhysTuple of the corresponding mapped value of the string input.
-		const PhysTuple& getVal(std::string s) const; 
+		//Returns the ExValContainer of the corresponding mapped value of the string input.
+		const ExValContainer& getVal(std::string s) const; 
 
 		bool operator == (const PhysAttrMap& rhs) const;
 		bool operator != (const PhysAttrMap& rhs) const;
@@ -37,21 +37,7 @@ class PhysAttrMap {
 
 		//lexicographic sorting needed for comparisons when inserting into map in LayerList.
 		struct AttrLess {
-			bool operator() (const PhysAttrMap& lhs, const PhysAttrMap& rhs) const {
-				bool acc = true;
-				bool temp_acc = true;
-				std::string key;
-
-				for (int i = 0; i < ATTRIBUTES.size(); i++) {
-					key = ATTRIBUTES[i];
-					acc = lhs.attr_map.at(key) < rhs.attr_map.at(key);
-					if (acc && temp_acc) {
-						return true;
-					}
-					temp_acc &= lhs.attr_map.at(key) == rhs.attr_map.at(key); 
-				}
-				return false;
-			}
+			bool operator() (const PhysAttrMap& lhs, const PhysAttrMap& rhs) const;
 		};
 };
 #endif

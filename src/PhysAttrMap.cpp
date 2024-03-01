@@ -1,5 +1,5 @@
 #include "PhysAttrMap.h"
-#include "AttrException.h"
+#include "ExValException.h"
 
 #include <ostream>
 
@@ -9,14 +9,14 @@ extern char* ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
 //----------------------------------------- CONSTRUCTORS -----------------------------------------
-PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, PhysTuple>> list) {
+PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, ExValContainer>> list) {
 	if (list.size() != TUPLESIZE) {
-		std::vector<PhysTuple> ex_v;
+		std::vector<ExValContainer> ex_v;
 		for (auto pair : list) {
 			ex_v.push_back(pair.second);
 		}
 		std::cout << "TUPLE SIZE: " << TUPLESIZE << "\n";
-		throw (AttrException("List size is not the same as TUPLESIZE.", ex_v));
+		throw (ExValException("List size is not the same as TUPLESIZE.", ex_v));
 	}
 	for (auto pair : list) {
 		int attr_index = 0;
@@ -26,34 +26,51 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, Phys
 			}
 		}
 		if (ATTRIBUTE_TYPES[attr_index] != pair.second.getType()) {
-			throw (AttrException("Attribute map is not consistent with attribute types.", std::vector<PhysTuple>({pair.second})));
+			throw (ExValException("Attribute map is not consistent with attribute types.", std::vector<ExValContainer>({pair.second})));
 		}
 		auto inserted_val = attr_map.insert(pair);
 		if (!inserted_val.second) {
-			throw (AttrException("Attribute map already contains a value of this attribute type.", std::vector<PhysTuple>({pair.second})));
+			throw (ExValException("Attribute map already contains a value of this attribute type.", std::vector<ExValContainer>({pair.second})));
 		}
 	}
 }
-PhysAttrMap::PhysAttrMap(std::initializer_list<PhysTuple> list) {
+PhysAttrMap::PhysAttrMap(std::initializer_list<ExValContainer> list) {
 	if (list.size() != TUPLESIZE) {
-		std::vector<PhysTuple> ex_v;
+		std::vector<ExValContainer> ex_v;
 		for (auto p : list) {
 			ex_v.push_back(p);
 		}
-		throw (AttrException("List size is not the same as TUPLESIZE.", ex_v));
+		throw (ExValException("List size is not the same as TUPLESIZE.", ex_v));
 	}
 	int ind = 0;
 	for (auto l : list) {
 		if (l.getType() != ATTRIBUTE_TYPES[ind]) {
-			throw (AttrException("Attribute map is not consistent with attribute types.", std::vector<PhysTuple>({list})));
+			throw (ExValException("Attribute map is not consistent with attribute types.", std::vector<ExValContainer>({list})));
 		}
 		attr_map.insert({ATTRIBUTES[ind], l});
 		ind++;
 	}
 }
 
+//----------------------------------------- NESTED STRUCT ---------------------------------------
+bool PhysAttrMap::AttrLess::operator() (const PhysAttrMap& lhs, const PhysAttrMap& rhs) const {
+	bool acc = true;
+	bool temp_acc = true;
+	std::string key;
+
+	for (int i = 0; i < ATTRIBUTES.size(); i++) {
+		key = ATTRIBUTES[i];
+		acc = lhs.attr_map.at(key) < rhs.attr_map.at(key);
+		if (acc && temp_acc) {
+			return true;
+		}
+		temp_acc &= lhs.attr_map.at(key) == rhs.attr_map.at(key); 
+	}
+	return false;
+}
+
 //----------------------------------------- GETTERS -----------------------------------------
-const PhysTuple& PhysAttrMap::getVal(std::string s) const {
+const ExValContainer& PhysAttrMap::getVal(std::string s) const {
 	return attr_map.at(s);
 }
 
@@ -86,7 +103,7 @@ std::string PhysAttrMap::to_string() const {
 		return "Empty";
 	}
 	for (const std::string attr : ATTRIBUTES) {
-		ret += "Name: " + attr + " PhysTuple: " + attr_map.at(attr).to_string() + "\n";
+		ret += "Name: " + attr + " ExValContainer: " + attr_map.at(attr).to_string() + "\n";
 	}
 	return ret;
 }

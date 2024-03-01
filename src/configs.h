@@ -75,7 +75,6 @@ namespace configs {
 		a_t_d rest_d = [](PhysAttrMap t1, PhysAttrMap t2) {
 			return 0;
 		};
-
 		a_t_c f_a_c = [](PhysAttrMap t1, PhysAttrMap t2) {
 			return (0 != int(t1.getVal("FINGER") - t2.getVal("FINGER")));
 		};

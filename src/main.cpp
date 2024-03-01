@@ -16,7 +16,7 @@
 #include "GreedySolver.h"
 #include "Instrument.h"
 #include "PhysAttrMap.h"
-#include "AttrException.h"
+#include "ExValException.h"
 
 #include <iostream>
 #include <fstream>
@@ -188,12 +188,12 @@ int main (int argc, char *argv[]) {
 					    e.what(),
 					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
-	} catch (AttrException e) {
+	} catch (ExValException e) {
 		std::string affected_tuples = "[";
 		int count = 1;
-		for (auto t : e.getAttr()) {
+		for (auto t : e.getExVal()) {
 			affected_tuples += "Tuple " + std::to_string(count) + ": " + t.to_string();
-			if (count < e.getAttr().size()) {
+			if (count < e.getExVal().size()) {
 				affected_tuples += ", ";
 			} else {
 				affected_tuples += "]";
