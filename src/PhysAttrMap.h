@@ -9,11 +9,6 @@
 
 #include "ExValContainer.h"
 
-//Global variables to ensure correct behaviour and defining allowed actions.
-extern int TUPLESIZE;
-extern char* ATTRIBUTE_TYPES;
-extern std::vector<std::string> ATTRIBUTES;
-
 class PhysAttrMap {
 	private: 
 		//Map to index via string rather than template index as with tuples.

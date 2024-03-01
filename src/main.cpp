@@ -29,7 +29,7 @@ using namespace std;
 using Distance = int;
 
 extern int TUPLESIZE;
-extern char* ATTRIBUTE_TYPES;
+extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
 int main (int argc, char *argv[]) {

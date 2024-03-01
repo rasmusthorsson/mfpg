@@ -5,7 +5,7 @@
 
 //----------------------------------------- GLOBALS -----------------------------------------
 extern int TUPLESIZE;
-extern char* ATTRIBUTE_TYPES;
+extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
 //----------------------------------------- CONSTRUCTORS -----------------------------------------

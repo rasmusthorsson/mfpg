@@ -8,7 +8,7 @@
 using Distance = int;
 
 int TUPLESIZE;
-char* ATTRIBUTE_TYPES;
+std::string ATTRIBUTE_TYPES;
 std::vector<std::string> ATTRIBUTES;
 
 namespace configs {

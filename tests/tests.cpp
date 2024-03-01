@@ -13,7 +13,7 @@
 #include "ExValException.h"
 
 extern int TUPLESIZE;
-extern char* ATTRIBUTES_TYPES;
+extern std::string ATTRIBUTES_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
 class GlobEnvironment : public ::testing::Environment {
