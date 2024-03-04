@@ -24,13 +24,13 @@ Below is an image of how the graph is represented in the program.
 
 ![Program graph.](resources/docs/Layers.png "Program graph")
 
-The tuples in the layers represent the nodes in the graph and the costs in the 
-transition map represent the weights on the edges. The edges are defined as going
-between the tuple that is the key in the transition map and the tuple in the *n'th* 
-position in the layer of the next LayerList, where *n* is the index of the vector
-in the mapped value. A future improvement would be to replace the maps with 
-matrices and instead of defining the first node of the edges via the key the edge
-is instead defined as a column/row pairing in the matrix.
+The Physical Note Representations (__PNR__) in the layers represent the nodes in the 
+graph and the costs in the 
+transition matrix represent the weights on the edges between PNRs in adjacent layers.
+The edges are defined as going between the PNR that is the *n'th* PNR in the current 
+layer (by index) and the PNR that is the *m'th* PNR in the layer of the next 
+LayerList (again by index). The cost in the transition matrix for that transition is 
+then found at row *n*, column *m*.
 
 ## Program Structure
 
@@ -48,7 +48,7 @@ to play the score according to the action setup.
 
 ## User Inputs
 
-The user will eventually supply up to 4 files as input.
+The user will eventually supply up to 4 configurations/files.
 
 ### Music Score
 
@@ -81,6 +81,5 @@ note is played on string 2 the cost could increase by 1, for example. The action
 are to be defined in order of when they are checked, they can also be defined as 
 either occurring by default or only occurring if some other specific action has
 occurred. This means actions can also have dependencies defined between eachother, 
-with some actions disabling later actions if they do occur. Actions are the main 
-reason for defining a future DSL.
-
+with some actions disabling later actions if they do occur. Actions will be the main
+focus in a future DSL.
