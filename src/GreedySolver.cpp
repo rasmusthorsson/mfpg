@@ -63,7 +63,7 @@ void GreedySolver::solve(LayerList<out_type>& ls) {
 const std::tuple<int, int> GreedySolver::findCheapest(LayerList<out_type>& ls, int prev) const {
 	int transition_cost = -1;
 	int next_index = -1;
-	if (ls.getTransitions().size() == 0) {
+	if (ls.getTransitions().size() == 0) { //Should only happen on last note.
 		return std::tuple<int, int>{transition_cost, next_index};
 	}
 	const std::vector<int>& transitions = ls.getTransitions()[prev];

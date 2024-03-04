@@ -19,6 +19,9 @@
 //the next layer
 template <class Output> class LayerList {
 	private:
+		//Matrix of outputs, the rows represent current physical representation nodes, while the
+		//columns represent the next layers nodes. The values in the matrix are the costs for
+		//each transition.
 		std::vector<std::vector<Output>> transitions;
 		//Layers are to be owned by the respective LayerList node.
 		Layer elem;
