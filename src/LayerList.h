@@ -19,11 +19,7 @@
 //the next layer
 template <class Output> class LayerList {
 	private:
-		//Map each tuple in the current layer to an array of values, each 
-		//value at position n in the array corresponds to the cost of 
-		//transitioning from the mapped tuple to the n'th tuple in the next 
-		//layer.
-		std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess> transitions;
+		std::vector<std::vector<Output>> transitions;
 		//Layers are to be owned by the respective LayerList node.
 		Layer elem;
 		//Next link in list.
@@ -53,7 +49,7 @@ template <class Output> class LayerList {
 		const LayerList<Output>* getNext() const;
 		const Layer& getElem() const;
 		int getSize() const;
-		std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess>& getTransitions();
+		std::vector<std::vector<Output>>& getTransitions();
 		
 		//Builds transitions through the entire layerlist using an actionset.
 		int buildTransitions(const std::shared_ptr<ActionSet<Output>>);

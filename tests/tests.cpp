@@ -1038,11 +1038,9 @@ TEST_F(LayerList_Tests, Transitions) {
 			       	     };
 	int count = 0;
 	//D_3 = {1, 1, 1}
-	for (auto& transition : l_it->getTransitions()) {
-		cout << transition.first << ", ";
-		cout << transition.first << ", ";
-		cout << transition.first << "\n";
-		for (auto& output : transition.second) {
+	for (int i = 0; i < l_it->getTransitions().size(); i++) {
+		cout << l_it->getElem()[i] << "\n";
+		for (auto& output : l_it->getTransitions()[i]) {
 			cout << "Count: " 
 			     << count 
 			     << "\nOutput D -> Fs: " 
@@ -1056,11 +1054,9 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	l_it++;
 	//Fs_3 = {1, 1, 3}, {1, 2, 2}, {1, 3, 1}
-	for (auto& transition : l_it->getTransitions()) {
-		cout << transition.first << ", ";
-		cout << transition.first << ", ";
-		cout << transition.first << "\n";
-		for (auto& output : transition.second) {
+	for (int i = 0; i < l_it->getTransitions().size(); i++) {
+		cout << l_it->getElem()[i] << "\n";
+		for (auto& output : l_it->getTransitions()[i]) {
 			cout << "Count: " 
 			     << count 
 			     << "\nOutput Fs -> G: " 
@@ -1074,11 +1070,9 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	l_it++;
 	//G_3 = {1, 1, 4}, {1, 2, 3}, {1, 3, 2}, {2, 0, 0}
-	for (auto& transition : l_it->getTransitions()) {
-		cout << transition.first << ", ";
-		cout << transition.first << ", ";
-		cout << transition.first << "\n";
-		for (auto& output : transition.second) {
+	for (int i = 0; i < l_it->getTransitions().size(); i++) {
+		cout << l_it->getElem()[i] << "\n";
+		for (auto& output : l_it->getTransitions()[i]) {
 			cout << "Count: " 
 			     << count 
 			     << "\nOutput G -> Cs: " 
@@ -1092,8 +1086,8 @@ TEST_F(LayerList_Tests, Transitions) {
 
 	//Cs_4 = {2, 1, 3} -- Does not transition out
 	l_it++;
-	for (auto& transition : l_it->getTransitions()) {
-		for (auto& output : transition.second) {
+	for (int i = 0; i < l_it->getTransitions().size(); i++) {
+		for (auto& output : l_it->getTransitions()[i]) {
 			ASSERT_EQ(output, -1);
 			count++;
 		}

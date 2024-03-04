@@ -108,12 +108,12 @@ int LayerList<Output>::buildTransitions(const std::shared_ptr<ActionSet<Output>>
 		for (const PhysAttrMap& next_tuple : next_layer.getNodes()) {
 			outputs.push_back(as->apply(this_tuple, next_tuple));
 		}
-		bool l = transitions.insert(std::make_pair(this_tuple, outputs)).second;
+		transitions.push_back(outputs);
 	} 
 	return next->buildTransitions(as);
 }
 
 template<typename Output>
-std::map<PhysAttrMap, std::vector<Output>, PhysAttrMap::AttrLess>& LayerList<Output>::getTransitions() {
+std::vector<std::vector<Output>>& LayerList<Output>::getTransitions() {
 	return transitions;
 }
