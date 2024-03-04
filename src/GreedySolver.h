@@ -11,7 +11,7 @@
 class GreedySolver : public virtual GraphSolver<int> {
 		using out_type = int;
 	private:
-		const std::tuple<int, int> findCheapest(LayerList<out_type>&, const PhysAttrMap&) const;
+		const std::tuple<int, int> findCheapest(LayerList<out_type>&, int) const;
 	public:
 		GreedySolver() {}
 		void solve(LayerList<out_type>&);

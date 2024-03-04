@@ -19,19 +19,19 @@ void GreedySolver::solve(LayerList<out_type>& ls) {
 			bool first_transition_tuple = true;
 
 			//Iterate through all nodes and select best starting point.
-			for (auto transition : layerlist.getTransitions()) {
-				next_tuple = findCheapest(layerlist, transition.first);
+			for (int i = 0; i < layerlist.getTransitions().size(); i++) {
+				next_tuple = findCheapest(layerlist, i);
 				new_output = std::get<0>(next_tuple);
 
 				//Set output on first tuple.
 				if (first_transition_tuple) {
 					first_transition_tuple = false;
 					output = new_output;
-					res_node = transition.first;
+					res_node = layerlist.getElem()[i];
 					edge_index = std::get<1>(next_tuple);
 				}
 				if (new_output < output) {
-					res_node = transition.first;
+					res_node = layerlist.getElem()[i];
 					output = new_output;
 					edge_index = std::get<1>(next_tuple);
 				}
@@ -43,7 +43,7 @@ void GreedySolver::solve(LayerList<out_type>& ls) {
 			}
 		} else {
 			res_node = layerlist.getElem()[edge_index];
-			next_tuple = findCheapest(layerlist, res_node);
+			next_tuple = findCheapest(layerlist, edge_index);
 			output = std::get<0>(next_tuple);
 			edge_index = std::get<1>(next_tuple);
 			
@@ -60,11 +60,13 @@ void GreedySolver::solve(LayerList<out_type>& ls) {
 	}
 }
 
-const std::tuple<int, int> GreedySolver::findCheapest(LayerList<out_type>& ls, 
-						      const PhysAttrMap& prev) const {
-	const std::vector<int>& transitions = ls.getTransitions()[prev];
+const std::tuple<int, int> GreedySolver::findCheapest(LayerList<out_type>& ls, int prev) const {
 	int transition_cost = -1;
 	int next_index = -1;
+	if (ls.getTransitions().size() == 0) {
+		return std::tuple<int, int>{transition_cost, next_index};
+	}
+	const std::vector<int>& transitions = ls.getTransitions()[prev];
 	for (int i = 0; i < transitions.size(); i++) {
 		if (i == 0) {
 			transition_cost = transitions[0];
