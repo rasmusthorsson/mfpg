@@ -43,7 +43,7 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkExcept
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp 
 	src/BasicNoteMapper.cpp src/LayerList.cpp src/Instrument.cpp src/SolverException.cpp Action.cpp
 	src/GreedySolver.cpp src/ExValContainer.cpp src/PhysAttrMap.cpp src/ExValException.cpp 
-	src/ActionSet.cpp src/HandPosition.cpp)
+	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp)
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
 add_executable(mfpr ${SRC_BASE})
 

@@ -11,6 +11,7 @@
 #include "SolverException.h"
 #include "PhysAttrMap.h"
 #include "ExValException.h"
+#include "SPSolver.h"
 
 extern int TUPLESIZE;
 extern std::string ATTRIBUTES_TYPES;
@@ -1019,10 +1020,10 @@ TEST_F(LayerList_Tests, CountAndLayerCount) {
 
 	auto l_it = list->begin();
 
-	ASSERT_EQ(l_it++->getSize(), 1);
-	ASSERT_EQ(l_it++->getSize(), 3);
-	ASSERT_EQ(l_it++->getSize(), 4);
-	ASSERT_EQ(l_it++->getSize(), 1);
+	ASSERT_EQ(l_it++->getElem().getSize(), 1);
+	ASSERT_EQ(l_it++->getElem().getSize(), 3);
+	ASSERT_EQ(l_it++->getElem().getSize(), 4);
+	ASSERT_EQ(l_it++->getElem().getSize(), 1);
 }
 
 //Tests that the transitions between layers are calculated correctly.
@@ -1284,7 +1285,7 @@ class GreedySolver_Tests : public ::testing::Test {
 				if (abs(int(t1.getVal("STRING") - t2.getVal("STRING"))) >= 2) {
 					out = out + 100;
 				} else {
-					out = out + 1;
+					out = out + 1; //TODO always adds 1, even if string same
 				}
 				return out;
 			};
@@ -1326,7 +1327,7 @@ TEST_F(GreedySolver_Tests, Basic) {
 	solver->solve(l_list);
 
 	//C_3 = {1, 0, 0}
-	//E_3 = {2, 1, 1}, {3, 0, 0}
+	//E_3 = {1, 1, 2}, {2, 1, 1}, {3, 0, 0}
 	//Gs_3 = {3, 1, 3}, {3, 1, 2}
 
 	const PhysAttrMap sol_1({1, 0, 0});
@@ -1351,4 +1352,96 @@ TEST_F(GreedySolver_Tests, Basic) {
 		}
 		count++;
 	}
+}
+
+TEST(SPSolver_Tests, Basic) {
+	using namespace noteenums;
+	using namespace std;
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
+	using out_type = int;
+
+	typedef out_type (*action_type_dist)(PhysAttrMap, PhysAttrMap);
+	typedef bool (*action_type_cond)(PhysAttrMap, PhysAttrMap);
+	
+
+	action_type_cond action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
+		return true;
+	};
+	action_type_dist action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
+		int out = abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
+		out = out + abs(int(t1.getVal("FINGER") - t2.getVal("FINGER")));
+		if (abs(int(t1.getVal("STRING") - t2.getVal("STRING"))) >= 2) {
+			out = out + 100;
+		} else {
+			out = out + 1;
+		}
+		return out;
+	};
+	const Action<out_type> a1(action_cond, action_dist, "A1");
+	
+	std::shared_ptr<ActionSet<out_type>> set(new ActionSet<out_type>({a1, true}));
+
+	Instrument<out_type> i(set);
+	i.makeIString(1, Note::C_3, Note::G_3);
+	i.makeIString(2, Note::D_3, Note::A_3);
+	i.makeIString(3, Note::E_3, Note::B_3);
+
+	using out_type = int;	
+		
+	std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(i.getIStrings()));
+	
+	std::unique_ptr<GraphSolver<out_type>> solver(new SPSolver<int>());
+	
+	//C_3 = {1, 0, 0}
+	//E_3 = {1, 1, 2}, {2, 1, 1}, {3, 0, 0}
+	//Gs_3 = {2, 1, 3}, {3, 1, 2}
+	//G_3 = {1, 1, 4}, {2, 1, 3}, {3, 1, 2}
+	//A_3 = {2, 1, 4}, {3, 1, 3}
+	//B_3 = {3, 1, 3}
+	//E_3 = {1, 1, 2}, {2, 1, 1}, {3, 0, 0}
+	//Ds_3 = {1, 1, 2}, {2, 1, 1}
+	const Layer first(Note::C_3, Duration::Whole, note_mapper);
+	const Layer second(Note::E_3, Duration::Whole, note_mapper);
+	const Layer third(Note::Gs_3, Duration::Whole, note_mapper);
+	const Layer fourth(Note::G_3, Duration::Whole, note_mapper);
+	const Layer fifth(Note::A_3, Duration::Whole, note_mapper);
+	const Layer sixth(Note::B_3, Duration::Whole, note_mapper);
+	const Layer seventh(Note::E_3, Duration::Whole, note_mapper);
+	const Layer eigth(Note::Ds_3, Duration::Whole, note_mapper);
+
+	LayerList<out_type> l_list({first, second, third, fourth, fifth, sixth, seventh, eigth});
+	l_list.buildTransitions(i.getActionSet());			
+	
+	solver->solve(l_list);
+	int count = 0;
+	for (auto sol : solver->getSolution()) {
+		if (count == 0) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 1) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 2) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 3) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 4) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 5) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 6) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		} else if (count == 7) {
+			std::cout << get<0>(sol).getState() << "\n";
+			std::cout << "COST: " << get<1>(sol) << "\n";
+		}
+		std::cout << "\n";
+		
+	}
+	FAIL();
 }

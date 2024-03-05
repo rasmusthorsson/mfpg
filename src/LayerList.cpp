@@ -93,8 +93,24 @@ const Layer& LayerList<Output>::getElem() const {
 }
 
 template<typename Output>
-int LayerList<Output>::getSize() const {
-	return elem.getSize();
+int LayerList<Output>::getSize() {
+	if (next != NULL) {
+		return next->getSize() + 1;
+	} else {
+		return 1;
+	}
+}
+
+template<typename Output>
+const LayerList<Output>& LayerList<Output>::getList(int n) const {
+	if (n < 1) {
+		return *this;
+	} else {
+		if (next == NULL) {
+			throw (LinkException<Output> ("Tried to get list link out of range"));
+		}
+		return next->getList(n-1);
+	}
 }
 
 template<typename Output>
@@ -114,6 +130,11 @@ int LayerList<Output>::buildTransitions(const std::shared_ptr<ActionSet<Output>>
 }
 
 template<typename Output>
-std::vector<std::vector<Output>>& LayerList<Output>::getTransitions() {
+const std::vector<std::vector<Output>>& LayerList<Output>::getTransitions() const {
+	return transitions;
+}
+
+template<typename Output>
+std::vector<std::vector<Output>> LayerList<Output>::copyTransitions() {
 	return transitions;
 }

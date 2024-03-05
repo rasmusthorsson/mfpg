@@ -7,6 +7,9 @@ template<typename Output>
 HandPosition<Output>::HandPosition(PhysAttrMap i, SimplifiedNote n, LayerList<Output>& ls) : state(i), note(n), layer_list(ls) {}
 
 template<typename Output>
+HandPosition<Output>::HandPosition(PhysAttrMap i, SimplifiedNote n, const LayerList<Output>& ls) : state(i), note(n), layer_list(ls) {}
+
+template<typename Output>
 const PhysAttrMap HandPosition<Output>::getState() const {
 	return state;
 }

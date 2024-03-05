@@ -42,7 +42,7 @@ namespace configs {
 					<< get<0>(sol).getNote() << ","
 					<< get<0>(sol).getState().to_string_csv()
 					<< get<1>(sol) << ","
-					<< get<0>(sol).getLayerList().getSize() 
+					<< get<0>(sol).getLayerList().getElem().getSize() 
 					<< "\r\n";
 				count++;
 			}
@@ -56,7 +56,7 @@ namespace configs {
 					<< "Distance of transition: " << get<1>(sol) 
 					<< "\n"
 					<< "Amount of possible fingerings: " 
-					<< get<0>(sol).getLayerList().getSize() 
+					<< get<0>(sol).getLayerList().getElem().getSize() 
 					<< "\n"
 					<< "------------------------------------" 
 					<< "\n";
