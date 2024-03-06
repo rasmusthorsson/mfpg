@@ -1,3 +1,6 @@
+#ifndef SP_SOLVER_MFPG_H
+#define SP_SOLVER_MFPG_H
+
 #include "GraphSolver.h"
 
 template<class Output> class SPSolver : public virtual GraphSolver<Output> {
@@ -8,3 +11,4 @@ template<class Output> class SPSolver : public virtual GraphSolver<Output> {
 		void solve(LayerList<Output>&) override;
 
 };
+#endif

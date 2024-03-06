@@ -17,6 +17,7 @@
 #include "Instrument.h"
 #include "PhysAttrMap.h"
 #include "ExValException.h"
+#include "SPSolver.h"
 
 #include <iostream>
 #include <fstream>
@@ -142,9 +143,9 @@ int main (int argc, char *argv[]) {
 			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
 		} else {
 			configs::MyLog::verbose_out(log, 
-					"Defaulting to greedysolver as no other solver is available.\n",
+					"Using Shortest Path solver\n",
 					configs::VERBOSE_LEVEL::VERBOSE_ALL);
-			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
+			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>());
 		}
 		try {
 			solver->solve(list);

@@ -1,3 +1,6 @@
+#ifndef CONFIGS_MFPG_H
+#define CONFIGS_MFPG_H
+
 #include "GraphSolver.h"
 #include "ActionSet.h"
 
@@ -34,6 +37,7 @@ namespace configs {
 
 	void writeOutput(ostream& out, shared_ptr<GraphSolver<Distance>> solver, bool csv) {
 		int count = 1;
+		int total_cost = 0;
 		if (csv) {
 			out << "note number, note, string, finger, hp, cost, "
 				"combinations\r\n";
@@ -45,6 +49,7 @@ namespace configs {
 					<< get<0>(sol).getLayerList().getElem().getSize() 
 					<< "\r\n";
 				count++;
+				total_cost += get<1>(sol);
 			}
 		} else {
 			for (auto sol : solver->getSolution()) {
@@ -61,8 +66,12 @@ namespace configs {
 					<< "------------------------------------" 
 					<< "\n";
 				count++;
+				total_cost += get<1>(sol);
 			}
 		}
+		MyLog::verbose_out(std::cout,
+				   "Total cost of the path: " + to_string(total_cost) + "\n",
+				   VERBOSE_LEVEL::VERBOSE_ALL);
 	}
 	shared_ptr<ActionSet<Distance>> test_configuration_2() {
 		typedef Distance (*a_t_d) (PhysAttrMap, PhysAttrMap);
@@ -201,3 +210,4 @@ namespace configs {
 		return action_set;
 	}
 };
+#endif

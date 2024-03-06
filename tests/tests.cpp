@@ -1412,6 +1412,24 @@ TEST(SPSolver_Tests, Basic) {
 	LayerList<out_type> l_list({first, second, third, fourth, fifth, sixth, seventh, eigth});
 	l_list.buildTransitions(i.getActionSet());			
 	
+	const PhysAttrMap sol_1({1, 0, 0});
+	const PhysAttrMap sol_2({2, 1, 1});
+	const PhysAttrMap sol_3({3, 1, 2});
+	const PhysAttrMap sol_4({1, 0, 0});
+	const PhysAttrMap sol_5({2, 1, 1});
+	const PhysAttrMap sol_6({3, 1, 2});
+	const PhysAttrMap sol_7({1, 0, 0});
+	const PhysAttrMap sol_8({2, 1, 1});
+
+	const int cost_1 = 3;
+	const int cost_2 = 2;
+	const int cost_3 = -1;
+	const int cost_4 = 3;
+	const int cost_5 = 2;
+	const int cost_6 = -1;
+	const int cost_7 = 3;
+	const int cost_8 = 2;
+	
 	solver->solve(l_list);
 	int count = 0;
 	for (auto sol : solver->getSolution()) {
