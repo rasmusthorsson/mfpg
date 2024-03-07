@@ -1397,7 +1397,7 @@ TEST(SPSolver_Tests, Basic) {
 	//Gs_3 = {2, 1, 3}, {3, 1, 2}
 	//G_3 = {1, 1, 4}, {2, 1, 3}, {3, 1, 2}
 	//A_3 = {2, 1, 4}, {3, 1, 3}
-	//B_3 = {3, 1, 3}
+	//B_3 = {3, 1, 4}
 	//E_3 = {1, 1, 2}, {2, 1, 1}, {3, 0, 0}
 	//Ds_3 = {1, 1, 2}, {2, 1, 1}
 	const Layer first(Note::C_3, Duration::Whole, note_mapper);
@@ -1415,51 +1415,49 @@ TEST(SPSolver_Tests, Basic) {
 	const PhysAttrMap sol_1({1, 0, 0});
 	const PhysAttrMap sol_2({2, 1, 1});
 	const PhysAttrMap sol_3({3, 1, 2});
-	const PhysAttrMap sol_4({1, 0, 0});
-	const PhysAttrMap sol_5({2, 1, 1});
-	const PhysAttrMap sol_6({3, 1, 2});
-	const PhysAttrMap sol_7({1, 0, 0});
+	const PhysAttrMap sol_4({3, 1, 2});
+	const PhysAttrMap sol_5({3, 1, 3});
+	const PhysAttrMap sol_6({3, 1, 4});
+	const PhysAttrMap sol_7({2, 1, 1});
 	const PhysAttrMap sol_8({2, 1, 1});
 
 	const int cost_1 = 3;
 	const int cost_2 = 2;
-	const int cost_3 = -1;
-	const int cost_4 = 3;
+	const int cost_3 = 1;
+	const int cost_4 = 2;
 	const int cost_5 = 2;
-	const int cost_6 = -1;
-	const int cost_7 = 3;
-	const int cost_8 = 2;
+	const int cost_6 = 4;
+	const int cost_7 = 1;
+	const int cost_8 = -1;
 	
 	solver->solve(l_list);
 	int count = 0;
 	for (auto sol : solver->getSolution()) {
 		if (count == 0) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_1);
+			ASSERT_EQ(get<1>(sol), cost_1);
 		} else if (count == 1) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_2);
+			ASSERT_EQ(get<1>(sol), cost_2);
 		} else if (count == 2) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_3);
+			ASSERT_EQ(get<1>(sol), cost_3);
 		} else if (count == 3) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_4);
+			ASSERT_EQ(get<1>(sol), cost_4);
 		} else if (count == 4) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_5);
+			ASSERT_EQ(get<1>(sol), cost_5);
 		} else if (count == 5) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_6);
+			ASSERT_EQ(get<1>(sol), cost_6);
 		} else if (count == 6) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_7);
+			ASSERT_EQ(get<1>(sol), cost_7);
 		} else if (count == 7) {
-			std::cout << get<0>(sol).getState() << "\n";
-			std::cout << "COST: " << get<1>(sol) << "\n";
+			ASSERT_EQ(get<0>(sol).getState(), sol_8);
+			ASSERT_EQ(get<1>(sol), cost_8);
 		}
-		std::cout << "\n";
-		
+		count++;
 	}
-	FAIL();
 }

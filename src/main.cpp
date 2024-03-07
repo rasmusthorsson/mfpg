@@ -50,7 +50,8 @@ int main (int argc, char *argv[]) {
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose.", cxxopts::value<int>())
-		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>());
+		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
+		("interactive", "For interactive testing of layers.");
 	options.parse_positional({"score"});
 
 	ostream& log = std::cout;
@@ -139,6 +140,58 @@ int main (int argc, char *argv[]) {
 		LayerList<Distance> list(note_list, note_mapper);
 	 	list.buildTransitions(violin.getActionSet());
 		
+		if (result.count("interactive")) {
+			int row, column;
+			char cont;
+			while (true) {
+				std::cout << "Enter which layer you want to view.\n";
+				std::cin >> row;
+				if (row < list.getSize() && row >= 0) {
+					std::cout << "Layer " << row << " selected, size (from 0): " 
+						  << list.getList(row).getElem().getSize() - 1 << "\n";
+					std::cout << "Enter which physmap you want to view.\n";
+					std::cin >> column;
+					if (column < list.getList(row).getElem().getSize() && column >= 0) {
+						std::cout << "Transitions for physmap: " << list.getList(row)
+											.getElem()
+											.getNodes()[column]
+											.to_string_csv() 
+						  << " Note: " << list.getList(row).getElem().getNote() 
+						  << "\n";
+						std::cout << "Elems:      | ";
+						for (int i = 0; i < list.getList(row)
+									.getTransitions()[column]
+									.size(); i++) {
+							std::cout << i << " | ";
+						}
+						std::cout << "\n";
+						std::cout << "Costs:      | ";
+						for (int i = 0; i < list.getList(row)
+									.getTransitions()[column]
+									.size(); i++) {
+							std::cout << list.getList(row)
+									.getTransitions()
+									[column][i] << " | ";
+						}
+						while (true) {
+						std::cout << "\nContinue? [y/n]\n";
+						std::cin >> cont;
+							if (cont == 'n') {
+								return 1;
+							} else if (cont == 'y') {
+								break;
+							} else {
+								std::cout << "Character not recognized.";
+							}
+						}
+					} else {
+						std::cout << "Physmap index out of bounds, try again.\n\n";
+					}
+				} else {
+					std::cout << "LayerList index out of bounds, try again.\n";
+				}
+			}
+		}
 		if (result.count("greedy")) {
 			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
 		} else {
