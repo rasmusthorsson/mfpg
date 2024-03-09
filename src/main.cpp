@@ -46,6 +46,7 @@ int main (int argc, char *argv[]) {
 		("score", "Input file in musicXML format.", cxxopts::value<std::string>())
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
+		("shortest-path", "Use shortest path solver with optional optimizing levels.", cxxopts::value<int>()->implicit_value("0"))
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
@@ -194,12 +195,21 @@ int main (int argc, char *argv[]) {
 		}
 		if (result.count("greedy")) {
 			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
+			configs::MyLog::verbose_out(log, 
+					"Using Greedy solver\n",
+					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+		} else if (result.count("shortest-path")) {
+			int opt = result["shortest-path"].as<int>();
+			configs::MyLog::verbose_out(log, 
+					"Using Shortest Path solver with optimizing level: " + to_string(opt) + "\n",
+					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(opt));
 		} else {
 			configs::MyLog::verbose_out(log, 
-					"Using Shortest Path solver\n",
+					"No solver selected, defaulting to Shortest Path solver with optimizing level 1\n",
 					configs::VERBOSE_LEVEL::VERBOSE_ALL);
-			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>());
-		}
+			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(1));
+		} 
 		try {
 			solver->solve(list);
 		} catch (SolverException e) {

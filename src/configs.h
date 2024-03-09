@@ -49,7 +49,9 @@ namespace configs {
 					<< get<0>(sol).getLayerList().getElem().getSize() 
 					<< "\r\n";
 				count++;
-				total_cost += get<1>(sol);
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
 			}
 		} else {
 			for (auto sol : solver->getSolution()) {
@@ -66,7 +68,9 @@ namespace configs {
 					<< "------------------------------------" 
 					<< "\n";
 				count++;
-				total_cost += get<1>(sol);
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
 			}
 		}
 		MyLog::verbose_out(std::cout,

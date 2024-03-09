@@ -1390,7 +1390,7 @@ TEST(SPSolver_Tests, Basic) {
 		
 	std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(i.getIStrings()));
 	
-	std::unique_ptr<GraphSolver<out_type>> solver(new SPSolver<int>());
+	std::unique_ptr<GraphSolver<out_type>> solver(new SPSolver<int>(0));
 	
 	//C_3 = {1, 0, 0}
 	//E_3 = {1, 1, 2}, {2, 1, 1}, {3, 0, 0}
