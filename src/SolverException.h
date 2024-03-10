@@ -11,10 +11,10 @@ class SolverException : public std::exception {
 	private:
 		const std::string errorMsg;
 		//Count refers to the layer that was reached before the exception was thrown.
-		int count;
+		int layer;
 	public:
 		SolverException(std::string, int);
 		const std::string what();
-		int getCount();
+		int getLayer();
 };
 #endif

@@ -214,7 +214,7 @@ int main (int argc, char *argv[]) {
 			solver->solve(list);
 		} catch (SolverException e) {
 			configs::MyLog::verbose_out(log, e.what() + "\nFailed layer transition: " + 
-				to_string(e.getCount()) + " -> " + to_string(e.getCount() + 1) + "\n", 
+				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
 				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		} catch (std::out_of_range e) {
