@@ -4,6 +4,7 @@
 #include "cxxopts.hpp"
 
 #include "conf_cmake.h"
+#include "Log.h"
 #include "configs.h"
 
 #include "NoteEnums.h"
@@ -70,10 +71,10 @@ int main (int argc, char *argv[]) {
 	}
 
 	if (result.count("verbose")) {
-		configs::MyLog::verbose_out(log, "Verbose option set: " + 
+		mfpg_log::VERBOSE = static_cast<mfpg_log::VERBOSE_LEVEL>(result["verbose"].as<int>());
+		mfpg_log::Log::verbose_out(log, "Verbose option set: " + 
 				(to_string(result["verbose"].as<int>())) + "\n", 
-				configs::VERBOSE_LEVEL::VERBOSE_ALL);
-		configs::VERBOSE = static_cast<configs::VERBOSE_LEVEL>(result["verbose"].as<int>());
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
 
 	ifstream input_file;
@@ -82,14 +83,14 @@ int main (int argc, char *argv[]) {
 		auto file_path = result["score"].as<std::string>();
 		input_file.open(file_path);
 		if (!input_file.is_open()) {
-			configs::MyLog::verbose_out(log, ("ERROR: Could not open file: " + 
+			mfpg_log::Log::verbose_out(log, ("ERROR: Could not open file: " + 
 				result["score"].as<string>() + "\n"), 
-				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
 	} else {
-		configs::MyLog::verbose_out(log, ("ERROR: No musicXML file found, please supply a "
-			"musicXML file to process.\n"), configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		mfpg_log::Log::verbose_out(log, ("ERROR: No musicXML file found, please supply a "
+			"musicXML file to process.\n"), mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
 
@@ -140,17 +141,17 @@ int main (int argc, char *argv[]) {
 		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin.getIStrings()));
 		LayerList<Distance> list(note_list, note_mapper);
 	 	list.buildTransitions(violin.getActionSet());
-		
+		//Interactive mode allows to explore the graph interactively, very basic, used for testing.
 		if (result.count("interactive")) {
 			int row, column;
 			char cont;
 			while (true) {
-				std::cout << "Enter which layer you want to view.\n";
+				std::cout << "Select which layer you want to view.\n";
 				std::cin >> row;
 				if (row < list.getSize() && row >= 0) {
 					std::cout << "Layer " << row << " selected, size (from 0): " 
 						  << list.getList(row).getElem().getSize() - 1 << "\n";
-					std::cout << "Enter which physmap you want to view.\n";
+					std::cout << "Select which physmap you want to view.\n";
 					std::cin >> column;
 					if (column < list.getList(row).getElem().getSize() && column >= 0) {
 						std::cout << "Transitions for physmap: " << list.getList(row)
@@ -195,31 +196,31 @@ int main (int argc, char *argv[]) {
 		}
 		if (result.count("greedy")) {
 			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
-			configs::MyLog::verbose_out(log, 
+			mfpg_log::Log::verbose_out(log, 
 					"Using Greedy solver\n",
-					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 		} else if (result.count("shortest-path")) {
 			int opt = result["shortest-path"].as<int>();
-			configs::MyLog::verbose_out(log, 
+			mfpg_log::Log::verbose_out(log, 
 					"Using Shortest Path solver with optimizing level: " + to_string(opt) + "\n",
-					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(opt));
 		} else {
-			configs::MyLog::verbose_out(log, 
+			mfpg_log::Log::verbose_out(log, 
 					"No solver selected, defaulting to Shortest Path solver with optimizing level 1\n",
-					configs::VERBOSE_LEVEL::VERBOSE_ALL);
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(1));
 		} 
 		try {
 			solver->solve(list);
 		} catch (SolverException e) {
-			configs::MyLog::verbose_out(log, e.what() + "\nFailed layer transition: " + 
+			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
 				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
-				configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		} catch (std::out_of_range e) {
-			configs::MyLog::verbose_out(log, std::string(e.what()) + "\n", 
-					configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
 
@@ -229,8 +230,8 @@ int main (int argc, char *argv[]) {
 			ofstream out;
 			out.open(out_file, std::ofstream::binary);
 			if (!out.is_open()) {
-				configs::MyLog::verbose_out(log, "Failed to open file: " + out_file + 
-					", Aborting...\n", configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+				mfpg_log::Log::verbose_out(log, "Failed to open file: " + out_file + 
+					", Aborting...\n", mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 				return -1;
 			}
 			configs::writeOutput(out, solver, result["csv"].as<bool>());
@@ -242,15 +243,15 @@ int main (int argc, char *argv[]) {
 		return 1;
 	}
 	catch (NodeException e) {
-		configs::MyLog::verbose_out(log,
+		mfpg_log::Log::verbose_out(log,
 					    e.what() + "Failed note: " + e.failedNote().to_string() + 
 					    " Failed node: " + e.failedNode().to_string() + "\n",
-					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	} catch (LinkException<Distance> e) {
-		configs::MyLog::verbose_out(log,
+		mfpg_log::Log::verbose_out(log,
 					    e.what(),
-					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	} catch (ExValException e) {
 		std::string affected_tuples = "[";
@@ -264,8 +265,8 @@ int main (int argc, char *argv[]) {
 			}
 			count++;
 		}
-		configs::MyLog::verbose_out(log,
+		mfpg_log::Log::verbose_out(log,
 					    e.what() + "\nAffected Tuples: " + affected_tuples + "\n",
-					    configs::VERBOSE_LEVEL::VERBOSE_ERRORS);
+					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 	}
 }

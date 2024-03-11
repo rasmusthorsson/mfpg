@@ -40,7 +40,7 @@ FetchContent_MakeAvailable(cxxopts)
 
 
 file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkException.cpp src/NodeException.cpp
-	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp 
+	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp src/Log.cpp 
 	src/BasicNoteMapper.cpp src/LayerList.cpp src/Instrument.cpp src/SolverException.cpp Action.cpp
 	src/GreedySolver.cpp src/ExValContainer.cpp src/PhysAttrMap.cpp src/ExValException.cpp 
 	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp)
@@ -74,27 +74,32 @@ if(BUILD_TESTS)
   enable_testing()
 
   gtest_discover_tests(tests_mfpg)
-
-  add_custom_command(
-	  OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
-	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
-		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-  )
-  add_custom_command(
-	  OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
-	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
-		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-  )
-  add_custom_command(
-	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
-	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
-		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
-  )
-  add_custom_command(
-	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
-  	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
-		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
-  )
+  #------------------ No longer needed? -----------------------------------#  
+  #  add_custom_command(
+  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
+  #	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
+  #		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
+  #  )
+  #  add_custom_command(
+  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
+  #	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
+  #		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
+  #  )
+  #  add_custom_command(
+  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
+  #	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
+  #		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
+  #  )
+  #  add_custom_command(
+  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
+  #  	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
+  #		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
+  #  )
+  #  add_custom_command(
+  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_W_sps_two.csv
+  #	  COMMAND mfpr --csv --shortest-path=1 -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two.csv 
+  #		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
+  #  )
 
   add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_one.cmake)
@@ -104,6 +109,8 @@ if(BUILD_TESTS)
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_D_o_F_one.cmake)
   add_test(NAME A_D_o_F_two COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_D_o_F_two.cmake)
+  add_test(NAME A_W_sps_two COMMAND ${CMAKE_COMMAND} -P 
+			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_sps_two.cmake)
 
   set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
@@ -113,4 +120,5 @@ if(BUILD_TESTS)
 
   set_tests_properties(A_D_o_F_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
+  set_tests_properties(A_W_sps_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 endif()

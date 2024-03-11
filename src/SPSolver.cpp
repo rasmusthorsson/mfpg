@@ -1,6 +1,7 @@
 #include "SPSolver.h"
 #include "SolverException.h"
 #include <limits.h>
+#include "Log.h"
 
 template<typename Output>
 SPSolver<Output>::SPSolver(int opt) : opt_level(opt) {}
@@ -67,7 +68,7 @@ std::pair<int, int> SPSolver<Output>::findCheapest(std::map<int, std::vector<int
 						   std::vector<std::vector<Output>>& dist) {
 	std::pair<int, int> current_node({-1, -1});
 	int cost = INT_MAX;
-	//For all nodes, find one with lowest dist
+	//For all unvisited nodes, find one with lowest dist
 	for (auto outer_itr = unvisited.crbegin(); outer_itr != unvisited.crend(); outer_itr++) {
 		for (auto inner_itr = outer_itr->second.begin(); inner_itr != outer_itr->second.end(); inner_itr++) {
 			if (dist[outer_itr->first][*inner_itr] < cost) {
@@ -135,7 +136,7 @@ void SPSolver<Output>::solve(LayerList<Output>& list) {
 	int best = INT_MAX;
 	std::pair<int, int> best_pos({-1, -1});
 
-	//Since we have several targets (all nodes in the last layer) we look for the target with the lowest 
+	//Since we can have several targets (all nodes in the last layer) we look for the target with the lowest 
 	//dist cost.
 	for (int i = 0; i < ll_size; i++) { 
 		if (dist[d_size - 1][i] < best) {
@@ -152,7 +153,10 @@ void SPSolver<Output>::solve(LayerList<Output>& list) {
 		path[i] = sol;
 		sol = prev[sol.first][sol.second];
 	}
-	std::cout << "Solution found in " << count << " iterations.\n"; //TODO verbose log
+	mfpg_log::Log::verbose_out(std::cout,
+			"Solution found in " + std::to_string(count) + " iterations.\n",
+			mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL
+			);
 
 	//Traverse path and store nodes and transition costs in solution.
 	for (int i = 0; i < path.size(); i++) { 
@@ -163,11 +167,11 @@ void SPSolver<Output>::solve(LayerList<Output>& list) {
 		HandPosition<Output> hp(m, n, l);
 
 		//Final transition cost is -1.
-		Output final_cost = -1;
+		Output t_cost = -1;
 		if (i != path.size() - 1) {
-			final_cost = list.getList(i).getTransitions()[path[i].second][path[i+1].second];
+			t_cost = list.getList(i).getTransitions()[path[i].second][path[i+1].second];
 		} 
 
-		this->solution.push_back(std::tuple<HandPosition<Output>, Output>({hp, final_cost}));
+		this->solution.push_back(std::tuple<HandPosition<Output>, Output>({hp, t_cost}));
 	}
 }

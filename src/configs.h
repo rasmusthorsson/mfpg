@@ -3,6 +3,7 @@
 
 #include "GraphSolver.h"
 #include "ActionSet.h"
+#include "Log.h"
 
 #include <ostream>
 #include <memory>
@@ -16,24 +17,6 @@ std::vector<std::string> ATTRIBUTES;
 
 namespace configs {
 	using namespace std;
-	
-	enum class VERBOSE_LEVEL {
-		VERBOSE_NONE = 0,
-		VERBOSE_ERRORS = 1,
-		VERBOSE_ALL = 2
-	};
-	
-	static VERBOSE_LEVEL VERBOSE = configs::VERBOSE_LEVEL::VERBOSE_ERRORS;
-
-	class MyLog {
-		public:
-			MyLog() = delete;
-			static void verbose_out(ostream& out, std::string s, VERBOSE_LEVEL v) {
-				if (v <= VERBOSE) {
-					out << s;
-				}
-			}	
-	};
 
 	void writeOutput(ostream& out, shared_ptr<GraphSolver<Distance>> solver, bool csv) {
 		int count = 1;
@@ -73,9 +56,9 @@ namespace configs {
 				}
 			}
 		}
-		MyLog::verbose_out(std::cout,
+		mfpg_log::Log::verbose_out(std::cout,
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
-				   VERBOSE_LEVEL::VERBOSE_ALL);
+				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
 	shared_ptr<ActionSet<Distance>> test_configuration_2() {
 		typedef Distance (*a_t_d) (PhysAttrMap, PhysAttrMap);
