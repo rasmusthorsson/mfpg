@@ -1,5 +1,9 @@
+#ifndef CONFIGS_MFPG_H
+#define CONFIGS_MFPG_H
+
 #include "GraphSolver.h"
 #include "ActionSet.h"
+#include "Log.h"
 
 #include <ostream>
 #include <memory>
@@ -13,27 +17,10 @@ std::vector<std::string> ATTRIBUTES;
 
 namespace configs {
 	using namespace std;
-	
-	enum class VERBOSE_LEVEL {
-		VERBOSE_NONE = 0,
-		VERBOSE_ERRORS = 1,
-		VERBOSE_ALL = 2
-	};
-	
-	static VERBOSE_LEVEL VERBOSE = configs::VERBOSE_LEVEL::VERBOSE_ERRORS;
-
-	class MyLog {
-		public:
-			MyLog() = delete;
-			static void verbose_out(ostream& out, std::string s, VERBOSE_LEVEL v) {
-				if (v <= VERBOSE) {
-					out << s;
-				}
-			}	
-	};
 
 	void writeOutput(ostream& out, shared_ptr<GraphSolver<Distance>> solver, bool csv) {
 		int count = 1;
+		int total_cost = 0;
 		if (csv) {
 			out << "note number, note, string, finger, hp, cost, "
 				"combinations\r\n";
@@ -42,9 +29,12 @@ namespace configs {
 					<< get<0>(sol).getNote() << ","
 					<< get<0>(sol).getState().to_string_csv()
 					<< get<1>(sol) << ","
-					<< get<0>(sol).getLayerList().getSize() 
+					<< get<0>(sol).getLayerList().getElem().getSize() 
 					<< "\r\n";
 				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
 			}
 		} else {
 			for (auto sol : solver->getSolution()) {
@@ -56,13 +46,19 @@ namespace configs {
 					<< "Distance of transition: " << get<1>(sol) 
 					<< "\n"
 					<< "Amount of possible fingerings: " 
-					<< get<0>(sol).getLayerList().getSize() 
+					<< get<0>(sol).getLayerList().getElem().getSize() 
 					<< "\n"
 					<< "------------------------------------" 
 					<< "\n";
 				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
 			}
 		}
+		mfpg_log::Log::verbose_out(std::cout,
+				   "Total cost of the path: " + to_string(total_cost) + "\n",
+				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
 	shared_ptr<ActionSet<Distance>> test_configuration_2() {
 		typedef Distance (*a_t_d) (PhysAttrMap, PhysAttrMap);
@@ -201,3 +197,4 @@ namespace configs {
 		return action_set;
 	}
 };
+#endif

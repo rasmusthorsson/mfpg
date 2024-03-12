@@ -15,7 +15,6 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, ExVa
 		for (auto pair : list) {
 			ex_v.push_back(pair.second);
 		}
-		std::cout << "TUPLE SIZE: " << TUPLESIZE << "\n";
 		throw (ExValException("List size is not the same as TUPLESIZE.", ex_v));
 	}
 	for (auto pair : list) {

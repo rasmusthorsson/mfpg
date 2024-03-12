@@ -17,7 +17,7 @@
 //A linked list of layers, each link contains a layer, a pointer to the nect link, and
 //a vector of transition costs between the nodes in the current layer and the nodes in
 //the next layer
-template <class Output> class LayerList {
+template <typename Output> class LayerList {
 	private:
 		//Matrix of outputs, the rows represent current physical representation nodes, while the
 		//columns represent the next layers nodes. The values in the matrix are the costs for
@@ -51,8 +51,13 @@ template <class Output> class LayerList {
 		
 		const LayerList<Output>* getNext() const;
 		const Layer& getElem() const;
-		int getSize() const;
-		std::vector<std::vector<Output>>& getTransitions();
+
+		//Gets size of layerlist until NULL pointer is reached.
+		int getSize();
+		//Gets the list in the n'th link, where n is the parameter (from 0).
+		const LayerList<Output>& getList(int) const;
+		const std::vector<std::vector<Output>>& getTransitions() const;
+		std::vector<std::vector<Output>> copyTransitions();
 		
 		//Builds transitions through the entire layerlist using an actionset.
 		int buildTransitions(const std::shared_ptr<ActionSet<Output>>);

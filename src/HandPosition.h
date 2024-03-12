@@ -17,6 +17,7 @@ template <class Output> class HandPosition {
 		HandPosition() = delete;
 		HandPosition(PhysAttrMap, LayerList<Output>&);
 		HandPosition(PhysAttrMap, SimplifiedNote, LayerList<Output>&);
+		HandPosition(PhysAttrMap, SimplifiedNote, const LayerList<Output>&);
 		
 		const PhysAttrMap getState() const;
 		const SimplifiedNote getNote() const;

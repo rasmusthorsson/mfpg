@@ -4,6 +4,7 @@
 #include "LinkException.cpp"
 #include "HandPosition.cpp"
 #include "Instrument.cpp"
+#include "SPSolver.cpp"
 
 //Generation of templated classes possible for outputs.
 template class LayerList<int>;
@@ -23,3 +24,6 @@ template class HandPosition<double>;
 
 template class Instrument<int>;
 template class Instrument<double>;
+
+template class SPSolver<int>;
+template class SPSolver<double>;
