@@ -9,7 +9,7 @@ execute_process(
 			../tests/cases/A_W.xml
 	       )
 execute_process(
-		COMMAND ${MFPR_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_two.csv --csv --shortest-path=1
+		COMMAND ${MFPR_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_two.csv --csv --shortest-path=2
 			../tests/cases/A_W.xml
 	       )
 execute_process(

@@ -124,7 +124,8 @@ void SPSolver<Output>::solve(LayerList<Output>& list) {
 		//If current node is in the last layer it is a target and has no neighbors.
 		if (current_node.first < dist.size() - 1) { 
 			calculateNB(list, unvisited, current_node, dist, prev);
-		} else {
+		//Opt level less than 2 if all targets should be explored.
+		} else if (opt_level >= 2) {
 			//if we reach a target we have a solution.
 			break;
 		}
@@ -136,13 +137,16 @@ void SPSolver<Output>::solve(LayerList<Output>& list) {
 	int best = INT_MAX;
 	std::pair<int, int> best_pos({-1, -1});
 
-	//Since we can have several targets (all nodes in the last layer) we look for the target with the lowest 
-	//dist cost.
+	//Since we can have several targets (all nodes in the last layer) we look for the target with the 
+	//lowest dist cost.
 	for (int i = 0; i < ll_size; i++) { 
 		if (dist[d_size - 1][i] < best) {
 			best = dist[d_size - 1][i];
 			best_pos = std::make_pair(d_size - 1, i);
 		}	
+	}
+	if (best_pos.first == -1 || best == INT_MAX) {
+		throw SolverException("Could not find a solved target after running algorithm.", dist.size() - 1);
 	}
 	
 	std::pair<int, int> sol = best_pos; 	
