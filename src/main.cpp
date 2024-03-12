@@ -209,7 +209,7 @@ int main (int argc, char *argv[]) {
 			mfpg_log::Log::verbose_out(log, 
 					"No solver selected, defaulting to Shortest Path solver with optimizing level 1\n",
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
-			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(1));
+			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(2));
 		} 
 		try {
 			solver->solve(list);

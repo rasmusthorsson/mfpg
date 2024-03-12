@@ -1363,7 +1363,6 @@ TEST(SPSolver_Tests, Basic) {
 	typedef out_type (*action_type_dist)(PhysAttrMap, PhysAttrMap);
 	typedef bool (*action_type_cond)(PhysAttrMap, PhysAttrMap);
 	
-
 	action_type_cond action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
 		return true;
 	};
@@ -1390,7 +1389,7 @@ TEST(SPSolver_Tests, Basic) {
 		
 	std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(i.getIStrings()));
 	
-	std::unique_ptr<GraphSolver<out_type>> solver(new SPSolver<int>(0));
+	std::unique_ptr<GraphSolver<out_type>> solver(new SPSolver<int>(2));
 	
 	//C_3 = {1, 0, 0}
 	//E_3 = {1, 1, 2}, {2, 1, 1}, {3, 0, 0}
