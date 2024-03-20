@@ -21,6 +21,7 @@ template <OutputViable OutputValue> class Instrument {
 		Instrument(std::shared_ptr<ActionSet<OutputValue>>);
 		~Instrument();
 
+		void addIString(IString);
 		//Builds a string and adds it to the vector, returns -1 if the string position is occupied.
 		int makeIString(int pos, noteenums::Note, noteenums::Note);
 		const std::shared_ptr<ActionSet<OutputValue>> getActionSet() const;

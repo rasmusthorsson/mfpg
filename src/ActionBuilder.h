@@ -55,6 +55,9 @@ public:
 	std::function<int_fun> i_fun;
 	std::function<dub_fun> d_fun;
 
+//----------- Action Dependencies ----------//
+	std::vector<std::tuple<std::string, std::string, bool>> deps;
+
 //----------- General ----------------------//
 	int integer;
 	char character;
@@ -68,8 +71,8 @@ public:
   void visitAttrDecl(AttrDecl *p);
   void visitIStr(IStr *p);
   void visitSPos(SPos *p);
-  void visitNote(Note *p);
-  void visitNoteBase(NoteBase *p);
+  void visitNoteDef(NoteDef *p);
+  void visitNoteDefBase(NoteDefBase *p);
   void visitAttrType(AttrType *p);
   void visitAct(Act *p);
   void visitActionName(ActionName *p);
@@ -90,18 +93,18 @@ public:
   void visitISPos(ISPos *p);
   void visitINote(INote *p);
   void visitNNote(NNote *p);
-  void visitNoteBase_A(NoteBase_A *p);
-  void visitNoteBase_As(NoteBase_As *p);
-  void visitNoteBase_B(NoteBase_B *p);
-  void visitNoteBase_C(NoteBase_C *p);
-  void visitNoteBase_Cs(NoteBase_Cs *p);
-  void visitNoteBase_D(NoteBase_D *p);
-  void visitNoteBase_Ds(NoteBase_Ds *p);
-  void visitNoteBase_E(NoteBase_E *p);
-  void visitNoteBase_F(NoteBase_F *p);
-  void visitNoteBase_Fs(NoteBase_Fs *p);
-  void visitNoteBase_G(NoteBase_G *p);
-  void visitNoteBase_Gs(NoteBase_Gs *p);
+  void visitNoteDefBase_A(NoteDefBase_A *p);
+  void visitNoteDefBase_As(NoteDefBase_As *p);
+  void visitNoteDefBase_B(NoteDefBase_B *p);
+  void visitNoteDefBase_C(NoteDefBase_C *p);
+  void visitNoteDefBase_Cs(NoteDefBase_Cs *p);
+  void visitNoteDefBase_D(NoteDefBase_D *p);
+  void visitNoteDefBase_Ds(NoteDefBase_Ds *p);
+  void visitNoteDefBase_E(NoteDefBase_E *p);
+  void visitNoteDefBase_F(NoteDefBase_F *p);
+  void visitNoteDefBase_Fs(NoteDefBase_Fs *p);
+  void visitNoteDefBase_G(NoteDefBase_G *p);
+  void visitNoteDefBase_Gs(NoteDefBase_Gs *p);
   void visitAttrType_i(AttrType_i *p);
   void visitAttrType_d(AttrType_d *p);
   void visitAttrType_b(AttrType_b *p);

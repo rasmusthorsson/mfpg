@@ -8,17 +8,17 @@ DAttr.		AttrDecl ::= "(" AttrType ")" Attr ;
 separator nonempty AttrDecl "," ;
 terminator nonempty AttrDecl ";" ;
 
-StringDef.	IStr ::= SPos ":" Note "->" Note ;
+StringDef.	IStr ::= SPos ":" NoteDef "->" NoteDef ;
 
 separator nonempty IStr "::" ;
 terminator nonempty IStr ";" ;
 
 ISPos.		SPos ::= Integer ;
 
-INote.		Note ::= Integer ;
-NNote.		Note ::= NoteBase "_" Integer ;
+INote.		NoteDef ::= Integer ;
+NNote.		NoteDef ::= NoteDefBase "_" Integer ;
 
-rules NoteBase ::= "A" | "As" | "B" | "C" | "Cs" | "D" | "Ds" | "E" | "F" | "Fs" | "G" | "Gs" ;
+rules NoteDefBase ::= "A" | "As" | "B" | "C" | "Cs" | "D" | "Ds" | "E" | "F" | "Fs" | "G" | "Gs" ;
 rules AttrType ::= "i" | "d" | "b" ;
 
 FunList. 	Act ::= ActionName "=" CFun1 ":" DFun1 ;

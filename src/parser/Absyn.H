@@ -26,8 +26,8 @@ class Output;
 class AttrDecl;
 class IStr;
 class SPos;
-class Note;
-class NoteBase;
+class NoteDef;
+class NoteDefBase;
 class AttrType;
 class Act;
 class ActionName;
@@ -48,18 +48,18 @@ class StringDef;
 class ISPos;
 class INote;
 class NNote;
-class NoteBase_A;
-class NoteBase_As;
-class NoteBase_B;
-class NoteBase_C;
-class NoteBase_Cs;
-class NoteBase_D;
-class NoteBase_Ds;
-class NoteBase_E;
-class NoteBase_F;
-class NoteBase_Fs;
-class NoteBase_G;
-class NoteBase_Gs;
+class NoteDefBase_A;
+class NoteDefBase_As;
+class NoteDefBase_B;
+class NoteDefBase_C;
+class NoteDefBase_Cs;
+class NoteDefBase_D;
+class NoteDefBase_Ds;
+class NoteDefBase_E;
+class NoteDefBase_F;
+class NoteDefBase_Fs;
+class NoteDefBase_G;
+class NoteDefBase_Gs;
 class AttrType_i;
 class AttrType_d;
 class AttrType_b;
@@ -105,8 +105,8 @@ public:
   virtual void visitAttrDecl(AttrDecl *p) = 0;
   virtual void visitIStr(IStr *p) = 0;
   virtual void visitSPos(SPos *p) = 0;
-  virtual void visitNote(Note *p) = 0;
-  virtual void visitNoteBase(NoteBase *p) = 0;
+  virtual void visitNoteDef(NoteDef *p) = 0;
+  virtual void visitNoteDefBase(NoteDefBase *p) = 0;
   virtual void visitAttrType(AttrType *p) = 0;
   virtual void visitAct(Act *p) = 0;
   virtual void visitActionName(ActionName *p) = 0;
@@ -127,18 +127,18 @@ public:
   virtual void visitISPos(ISPos *p) = 0;
   virtual void visitINote(INote *p) = 0;
   virtual void visitNNote(NNote *p) = 0;
-  virtual void visitNoteBase_A(NoteBase_A *p) = 0;
-  virtual void visitNoteBase_As(NoteBase_As *p) = 0;
-  virtual void visitNoteBase_B(NoteBase_B *p) = 0;
-  virtual void visitNoteBase_C(NoteBase_C *p) = 0;
-  virtual void visitNoteBase_Cs(NoteBase_Cs *p) = 0;
-  virtual void visitNoteBase_D(NoteBase_D *p) = 0;
-  virtual void visitNoteBase_Ds(NoteBase_Ds *p) = 0;
-  virtual void visitNoteBase_E(NoteBase_E *p) = 0;
-  virtual void visitNoteBase_F(NoteBase_F *p) = 0;
-  virtual void visitNoteBase_Fs(NoteBase_Fs *p) = 0;
-  virtual void visitNoteBase_G(NoteBase_G *p) = 0;
-  virtual void visitNoteBase_Gs(NoteBase_Gs *p) = 0;
+  virtual void visitNoteDefBase_A(NoteDefBase_A *p) = 0;
+  virtual void visitNoteDefBase_As(NoteDefBase_As *p) = 0;
+  virtual void visitNoteDefBase_B(NoteDefBase_B *p) = 0;
+  virtual void visitNoteDefBase_C(NoteDefBase_C *p) = 0;
+  virtual void visitNoteDefBase_Cs(NoteDefBase_Cs *p) = 0;
+  virtual void visitNoteDefBase_D(NoteDefBase_D *p) = 0;
+  virtual void visitNoteDefBase_Ds(NoteDefBase_Ds *p) = 0;
+  virtual void visitNoteDefBase_E(NoteDefBase_E *p) = 0;
+  virtual void visitNoteDefBase_F(NoteDefBase_F *p) = 0;
+  virtual void visitNoteDefBase_Fs(NoteDefBase_Fs *p) = 0;
+  virtual void visitNoteDefBase_G(NoteDefBase_G *p) = 0;
+  virtual void visitNoteDefBase_Gs(NoteDefBase_Gs *p) = 0;
   virtual void visitAttrType_i(AttrType_i *p) = 0;
   virtual void visitAttrType_d(AttrType_d *p) = 0;
   virtual void visitAttrType_b(AttrType_b *p) = 0;
@@ -228,17 +228,17 @@ public:
 
 };
 
-class Note : public Visitable
+class NoteDef : public Visitable
 {
 public:
-  virtual Note *clone() const = 0;
+  virtual NoteDef *clone() const = 0;
 
 };
 
-class NoteBase : public Visitable
+class NoteDefBase : public Visitable
 {
 public:
-  virtual NoteBase *clone() const = 0;
+  virtual NoteDefBase *clone() const = 0;
 
 };
 
@@ -390,12 +390,12 @@ class StringDef : public IStr
 {
 public:
   SPos *spos_;
-  Note *note_1;
-  Note *note_2;
+  NoteDef *notedef_1;
+  NoteDef *notedef_2;
 
   StringDef(const StringDef &);
   StringDef &operator=(const StringDef &);
-  StringDef(SPos *p1, Note *p2, Note *p3);
+  StringDef(SPos *p1, NoteDef *p2, NoteDef *p3);
   ~StringDef();
   virtual void accept(Visitor *v);
   virtual StringDef *clone() const;
@@ -416,7 +416,7 @@ public:
   void swap(ISPos &);
 };
 
-class INote : public Note
+class INote : public NoteDef
 {
 public:
   Integer integer_;
@@ -430,175 +430,175 @@ public:
   void swap(INote &);
 };
 
-class NNote : public Note
+class NNote : public NoteDef
 {
 public:
-  NoteBase *notebase_;
+  NoteDefBase *notedefbase_;
   Integer integer_;
 
   NNote(const NNote &);
   NNote &operator=(const NNote &);
-  NNote(NoteBase *p1, Integer p2);
+  NNote(NoteDefBase *p1, Integer p2);
   ~NNote();
   virtual void accept(Visitor *v);
   virtual NNote *clone() const;
   void swap(NNote &);
 };
 
-class NoteBase_A : public NoteBase
+class NoteDefBase_A : public NoteDefBase
 {
 public:
 
-  NoteBase_A(const NoteBase_A &);
-  NoteBase_A &operator=(const NoteBase_A &);
-  NoteBase_A();
-  ~NoteBase_A();
+  NoteDefBase_A(const NoteDefBase_A &);
+  NoteDefBase_A &operator=(const NoteDefBase_A &);
+  NoteDefBase_A();
+  ~NoteDefBase_A();
   virtual void accept(Visitor *v);
-  virtual NoteBase_A *clone() const;
-  void swap(NoteBase_A &);
+  virtual NoteDefBase_A *clone() const;
+  void swap(NoteDefBase_A &);
 };
 
-class NoteBase_As : public NoteBase
+class NoteDefBase_As : public NoteDefBase
 {
 public:
 
-  NoteBase_As(const NoteBase_As &);
-  NoteBase_As &operator=(const NoteBase_As &);
-  NoteBase_As();
-  ~NoteBase_As();
+  NoteDefBase_As(const NoteDefBase_As &);
+  NoteDefBase_As &operator=(const NoteDefBase_As &);
+  NoteDefBase_As();
+  ~NoteDefBase_As();
   virtual void accept(Visitor *v);
-  virtual NoteBase_As *clone() const;
-  void swap(NoteBase_As &);
+  virtual NoteDefBase_As *clone() const;
+  void swap(NoteDefBase_As &);
 };
 
-class NoteBase_B : public NoteBase
+class NoteDefBase_B : public NoteDefBase
 {
 public:
 
-  NoteBase_B(const NoteBase_B &);
-  NoteBase_B &operator=(const NoteBase_B &);
-  NoteBase_B();
-  ~NoteBase_B();
+  NoteDefBase_B(const NoteDefBase_B &);
+  NoteDefBase_B &operator=(const NoteDefBase_B &);
+  NoteDefBase_B();
+  ~NoteDefBase_B();
   virtual void accept(Visitor *v);
-  virtual NoteBase_B *clone() const;
-  void swap(NoteBase_B &);
+  virtual NoteDefBase_B *clone() const;
+  void swap(NoteDefBase_B &);
 };
 
-class NoteBase_C : public NoteBase
+class NoteDefBase_C : public NoteDefBase
 {
 public:
 
-  NoteBase_C(const NoteBase_C &);
-  NoteBase_C &operator=(const NoteBase_C &);
-  NoteBase_C();
-  ~NoteBase_C();
+  NoteDefBase_C(const NoteDefBase_C &);
+  NoteDefBase_C &operator=(const NoteDefBase_C &);
+  NoteDefBase_C();
+  ~NoteDefBase_C();
   virtual void accept(Visitor *v);
-  virtual NoteBase_C *clone() const;
-  void swap(NoteBase_C &);
+  virtual NoteDefBase_C *clone() const;
+  void swap(NoteDefBase_C &);
 };
 
-class NoteBase_Cs : public NoteBase
+class NoteDefBase_Cs : public NoteDefBase
 {
 public:
 
-  NoteBase_Cs(const NoteBase_Cs &);
-  NoteBase_Cs &operator=(const NoteBase_Cs &);
-  NoteBase_Cs();
-  ~NoteBase_Cs();
+  NoteDefBase_Cs(const NoteDefBase_Cs &);
+  NoteDefBase_Cs &operator=(const NoteDefBase_Cs &);
+  NoteDefBase_Cs();
+  ~NoteDefBase_Cs();
   virtual void accept(Visitor *v);
-  virtual NoteBase_Cs *clone() const;
-  void swap(NoteBase_Cs &);
+  virtual NoteDefBase_Cs *clone() const;
+  void swap(NoteDefBase_Cs &);
 };
 
-class NoteBase_D : public NoteBase
+class NoteDefBase_D : public NoteDefBase
 {
 public:
 
-  NoteBase_D(const NoteBase_D &);
-  NoteBase_D &operator=(const NoteBase_D &);
-  NoteBase_D();
-  ~NoteBase_D();
+  NoteDefBase_D(const NoteDefBase_D &);
+  NoteDefBase_D &operator=(const NoteDefBase_D &);
+  NoteDefBase_D();
+  ~NoteDefBase_D();
   virtual void accept(Visitor *v);
-  virtual NoteBase_D *clone() const;
-  void swap(NoteBase_D &);
+  virtual NoteDefBase_D *clone() const;
+  void swap(NoteDefBase_D &);
 };
 
-class NoteBase_Ds : public NoteBase
+class NoteDefBase_Ds : public NoteDefBase
 {
 public:
 
-  NoteBase_Ds(const NoteBase_Ds &);
-  NoteBase_Ds &operator=(const NoteBase_Ds &);
-  NoteBase_Ds();
-  ~NoteBase_Ds();
+  NoteDefBase_Ds(const NoteDefBase_Ds &);
+  NoteDefBase_Ds &operator=(const NoteDefBase_Ds &);
+  NoteDefBase_Ds();
+  ~NoteDefBase_Ds();
   virtual void accept(Visitor *v);
-  virtual NoteBase_Ds *clone() const;
-  void swap(NoteBase_Ds &);
+  virtual NoteDefBase_Ds *clone() const;
+  void swap(NoteDefBase_Ds &);
 };
 
-class NoteBase_E : public NoteBase
+class NoteDefBase_E : public NoteDefBase
 {
 public:
 
-  NoteBase_E(const NoteBase_E &);
-  NoteBase_E &operator=(const NoteBase_E &);
-  NoteBase_E();
-  ~NoteBase_E();
+  NoteDefBase_E(const NoteDefBase_E &);
+  NoteDefBase_E &operator=(const NoteDefBase_E &);
+  NoteDefBase_E();
+  ~NoteDefBase_E();
   virtual void accept(Visitor *v);
-  virtual NoteBase_E *clone() const;
-  void swap(NoteBase_E &);
+  virtual NoteDefBase_E *clone() const;
+  void swap(NoteDefBase_E &);
 };
 
-class NoteBase_F : public NoteBase
+class NoteDefBase_F : public NoteDefBase
 {
 public:
 
-  NoteBase_F(const NoteBase_F &);
-  NoteBase_F &operator=(const NoteBase_F &);
-  NoteBase_F();
-  ~NoteBase_F();
+  NoteDefBase_F(const NoteDefBase_F &);
+  NoteDefBase_F &operator=(const NoteDefBase_F &);
+  NoteDefBase_F();
+  ~NoteDefBase_F();
   virtual void accept(Visitor *v);
-  virtual NoteBase_F *clone() const;
-  void swap(NoteBase_F &);
+  virtual NoteDefBase_F *clone() const;
+  void swap(NoteDefBase_F &);
 };
 
-class NoteBase_Fs : public NoteBase
+class NoteDefBase_Fs : public NoteDefBase
 {
 public:
 
-  NoteBase_Fs(const NoteBase_Fs &);
-  NoteBase_Fs &operator=(const NoteBase_Fs &);
-  NoteBase_Fs();
-  ~NoteBase_Fs();
+  NoteDefBase_Fs(const NoteDefBase_Fs &);
+  NoteDefBase_Fs &operator=(const NoteDefBase_Fs &);
+  NoteDefBase_Fs();
+  ~NoteDefBase_Fs();
   virtual void accept(Visitor *v);
-  virtual NoteBase_Fs *clone() const;
-  void swap(NoteBase_Fs &);
+  virtual NoteDefBase_Fs *clone() const;
+  void swap(NoteDefBase_Fs &);
 };
 
-class NoteBase_G : public NoteBase
+class NoteDefBase_G : public NoteDefBase
 {
 public:
 
-  NoteBase_G(const NoteBase_G &);
-  NoteBase_G &operator=(const NoteBase_G &);
-  NoteBase_G();
-  ~NoteBase_G();
+  NoteDefBase_G(const NoteDefBase_G &);
+  NoteDefBase_G &operator=(const NoteDefBase_G &);
+  NoteDefBase_G();
+  ~NoteDefBase_G();
   virtual void accept(Visitor *v);
-  virtual NoteBase_G *clone() const;
-  void swap(NoteBase_G &);
+  virtual NoteDefBase_G *clone() const;
+  void swap(NoteDefBase_G &);
 };
 
-class NoteBase_Gs : public NoteBase
+class NoteDefBase_Gs : public NoteDefBase
 {
 public:
 
-  NoteBase_Gs(const NoteBase_Gs &);
-  NoteBase_Gs &operator=(const NoteBase_Gs &);
-  NoteBase_Gs();
-  ~NoteBase_Gs();
+  NoteDefBase_Gs(const NoteDefBase_Gs &);
+  NoteDefBase_Gs &operator=(const NoteDefBase_Gs &);
+  NoteDefBase_Gs();
+  ~NoteDefBase_Gs();
   virtual void accept(Visitor *v);
-  virtual NoteBase_Gs *clone() const;
-  void swap(NoteBase_Gs &);
+  virtual NoteDefBase_Gs *clone() const;
+  void swap(NoteDefBase_Gs &);
 };
 
 class AttrType_i : public AttrType

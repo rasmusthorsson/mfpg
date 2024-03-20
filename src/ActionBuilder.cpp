@@ -20,8 +20,8 @@ void ActionBuilder::visitOutput(Output *t) {} //abstract class
 void ActionBuilder::visitAttrDecl(AttrDecl *t) {} //abstract class
 void ActionBuilder::visitIStr(IStr *t) {} //abstract class
 void ActionBuilder::visitSPos(SPos *t) {} //abstract class
-void ActionBuilder::visitNote(Note *t) {} //abstract class
-void ActionBuilder::visitNoteBase(NoteBase *t) {} //abstract class
+void ActionBuilder::visitNoteDef(NoteDef *t) {} //abstract class
+void ActionBuilder::visitNoteDefBase(NoteDefBase *t) {} //abstract class
 void ActionBuilder::visitAttrType(AttrType *t) {} //abstract class
 void ActionBuilder::visitAct(Act *t) {} //abstract class
 void ActionBuilder::visitActionName(ActionName *t) {} //abstract class
@@ -75,9 +75,9 @@ void ActionBuilder::visitStringDef(StringDef *string_def)
 
   if (string_def->spos_) string_def->spos_->accept(this);
   int spos = integer;
-  if (string_def->note_1) string_def->note_1->accept(this);
+  if (string_def->notedef_1) string_def->notedef_1->accept(this);
   noteenums::Note first = note;
-  if (string_def->note_2) string_def->note_2->accept(this);
+  if (string_def->notedef_2) string_def->notedef_2->accept(this);
   noteenums::Note second = note;
 
   IString new_string(spos, first, second);
@@ -105,97 +105,97 @@ void ActionBuilder::visitNNote(NNote *n_note)
   /* Code For NNote Goes Here */
 
   visitInteger(n_note->integer_);
-  if (n_note->notebase_) n_note->notebase_->accept(this);
+  if (n_note->notedefbase_) n_note->notedefbase_->accept(this);
 
 }
 
-void ActionBuilder::visitNoteBase_A(NoteBase_A *note_base_a)
+void ActionBuilder::visitNoteDefBase_A(NoteDefBase_A *notedef_base_a)
 {
-  /* Code For NoteBase_A Goes Here */
+  /* Code For NoteDefBase_A Goes Here */
 	note = static_cast<noteenums::Note>(9 + (12 * integer));
 
 }
 
-void ActionBuilder::visitNoteBase_As(NoteBase_As *note_base_as)
+void ActionBuilder::visitNoteDefBase_As(NoteDefBase_As *notedef_base_as)
 {
-  /* Code For NoteBase_As Goes Here */
+  /* Code For NoteDefBase_As Goes Here */
 	note = static_cast<noteenums::Note>(10 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_B(NoteBase_B *note_base_b)
+void ActionBuilder::visitNoteDefBase_B(NoteDefBase_B *notedef_base_b)
 {
-  /* Code For NoteBase_B Goes Here */
+  /* Code For NoteDefBase_B Goes Here */
 	note = static_cast<noteenums::Note>(11 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_C(NoteBase_C *note_base_c)
+void ActionBuilder::visitNoteDefBase_C(NoteDefBase_C *notedef_base_c)
 {
-  /* Code For NoteBase_C Goes Here */
+  /* Code For NoteDefBase_C Goes Here */
 	note = static_cast<noteenums::Note>(0 + (12 * integer));
 
 }
 
-void ActionBuilder::visitNoteBase_Cs(NoteBase_Cs *note_base_cs)
+void ActionBuilder::visitNoteDefBase_Cs(NoteDefBase_Cs *notedef_base_cs)
 {
-  /* Code For NoteBase_Cs Goes Here */
+  /* Code For NoteDefBase_Cs Goes Here */
 	note = static_cast<noteenums::Note>(1 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_D(NoteBase_D *note_base_d)
+void ActionBuilder::visitNoteDefBase_D(NoteDefBase_D *notedef_base_d)
 {
-  /* Code For NoteBase_D Goes Here */
+  /* Code For NoteDefBase_D Goes Here */
 	note = static_cast<noteenums::Note>(2 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_Ds(NoteBase_Ds *note_base_ds)
+void ActionBuilder::visitNoteDefBase_Ds(NoteDefBase_Ds *notedef_base_ds)
 {
-  /* Code For NoteBase_Ds Goes Here */
+  /* Code For NoteDefBase_Ds Goes Here */
 	note = static_cast<noteenums::Note>(3 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_E(NoteBase_E *note_base_e)
+void ActionBuilder::visitNoteDefBase_E(NoteDefBase_E *notedef_base_e)
 {
-  /* Code For NoteBase_E Goes Here */
+  /* Code For NoteDefBase_E Goes Here */
 	note = static_cast<noteenums::Note>(4 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_F(NoteBase_F *note_base_f)
+void ActionBuilder::visitNoteDefBase_F(NoteDefBase_F *notedef_base_f)
 {
-  /* Code For NoteBase_F Goes Here */
+  /* Code For NoteDefBase_F Goes Here */
 	note = static_cast<noteenums::Note>(5 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_Fs(NoteBase_Fs *note_base_fs)
+void ActionBuilder::visitNoteDefBase_Fs(NoteDefBase_Fs *notedef_base_fs)
 {
-  /* Code For NoteBase_Fs Goes Here */
+  /* Code For NoteDefBase_Fs Goes Here */
 	note = static_cast<noteenums::Note>(6 + (12 * integer));
 
 
 }
 
-void ActionBuilder::visitNoteBase_G(NoteBase_G *note_base_g)
+void ActionBuilder::visitNoteDefBase_G(NoteDefBase_G *notedef_base_g)
 {
-  /* Code For NoteBase_G Goes Here */
+  /* Code For NoteDefBase_G Goes Here */
 	note = static_cast<noteenums::Note>(7 + (12 * integer));
 }
 
-void ActionBuilder::visitNoteBase_Gs(NoteBase_Gs *note_base_gs)
+void ActionBuilder::visitNoteDefBase_Gs(NoteDefBase_Gs *notedef_base_gs)
 {
-  /* Code For NoteBase_Gs Goes Here */
+  /* Code For NoteDefBase_Gs Goes Here */
 	note = static_cast<noteenums::Note>(8 + (12 * integer));
 }
 

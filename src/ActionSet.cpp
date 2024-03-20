@@ -63,6 +63,12 @@ ActionSet<OutputValue>::ActionSet(std::initializer_list<std::tuple<Action<Output
 template<OutputViable OutputValue>
 ActionSet<OutputValue>::~ActionSet() {};
 
+
+template<OutputViable OutputValue>
+void ActionSet<OutputValue>::addAction(Action<OutputValue> a, bool b) {
+	actions.push_back(std::tuple<Action<OutputValue>, bool>({a, b}));
+}
+
 template<OutputViable OutputValue>
 int ActionSet<OutputValue>::makeAction(condfun cf, distfun df, std::string name, bool _default) {
 	const Action<OutputValue> a(cf, df, name);

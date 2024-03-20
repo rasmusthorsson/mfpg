@@ -123,8 +123,8 @@ union YYSTYPE
   IStr* istr_;
   ListIStr* lististr_;
   SPos* spos_;
-  Note* note_;
-  NoteBase* notebase_;
+  NoteDef* notedef_;
+  NoteDefBase* notedefbase_;
   AttrType* attrtype_;
   Act* act_;
   ActionName* actionname_;

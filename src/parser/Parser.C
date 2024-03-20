@@ -188,8 +188,8 @@ enum yysymbol_kind_t
   YYSYMBOL_IStr = 56,                      /* IStr  */
   YYSYMBOL_ListIStr = 57,                  /* ListIStr  */
   YYSYMBOL_SPos = 58,                      /* SPos  */
-  YYSYMBOL_Note = 59,                      /* Note  */
-  YYSYMBOL_NoteBase = 60,                  /* NoteBase  */
+  YYSYMBOL_NoteDef = 59,                   /* NoteDef  */
+  YYSYMBOL_NoteDefBase = 60,               /* NoteDefBase  */
   YYSYMBOL_AttrType = 61,                  /* AttrType  */
   YYSYMBOL_Act = 62,                       /* Act  */
   YYSYMBOL_ActionName = 63,                /* ActionName  */
@@ -645,9 +645,9 @@ static const char *const yytname[] =
   "_KW_double", "_KW_false", "_KW_i", "_KW_int", "_KW_true", "_LBRACE",
   "_DBAR", "_RBRACE", "_STRING_", "_INTEGER_", "_DOUBLE_", "$accept",
   "Input", "Output", "AttrDecl", "ListAttrDecl", "IStr", "ListIStr",
-  "SPos", "Note", "NoteBase", "AttrType", "Act", "ActionName", "ListAct",
-  "DFun", "DFun1", "DFun2", "CFun", "CFun1", "CFun2", "Attr", "CompOp",
-  "BoolOp", "Num", "Exp", "Scale", "Bool", YY_NULLPTR
+  "SPos", "NoteDef", "NoteDefBase", "AttrType", "Act", "ActionName",
+  "ListAct", "DFun", "DFun1", "DFun2", "CFun", "CFun1", "CFun2", "Attr",
+  "CompOp", "BoolOp", "Num", "Exp", "Scale", "Bool", YY_NULLPTR
 };
 
 static const char *
@@ -1425,9 +1425,9 @@ yyreduce:
 #line 1426 "Parser.C"
     break;
 
-  case 10: /* IStr: SPos _COLON Note _RARROW Note  */
+  case 10: /* IStr: SPos _COLON NoteDef _RARROW NoteDef  */
 #line 183 "mfpg_dsl.y"
-                                     { (yyval.istr_) = new StringDef((yyvsp[-4].spos_), (yyvsp[-2].note_), (yyvsp[0].note_)); result->istr_ = (yyval.istr_); }
+                                           { (yyval.istr_) = new StringDef((yyvsp[-4].spos_), (yyvsp[-2].notedef_), (yyvsp[0].notedef_)); result->istr_ = (yyval.istr_); }
 #line 1432 "Parser.C"
     break;
 
@@ -1461,87 +1461,87 @@ yyreduce:
 #line 1462 "Parser.C"
     break;
 
-  case 16: /* Note: _INTEGER_  */
+  case 16: /* NoteDef: _INTEGER_  */
 #line 192 "mfpg_dsl.y"
-                 { (yyval.note_) = new INote((yyvsp[0]._int)); result->note_ = (yyval.note_); }
+                    { (yyval.notedef_) = new INote((yyvsp[0]._int)); result->notedef_ = (yyval.notedef_); }
 #line 1468 "Parser.C"
     break;
 
-  case 17: /* Note: NoteBase _UNDERSCORE _INTEGER_  */
+  case 17: /* NoteDef: NoteDefBase _UNDERSCORE _INTEGER_  */
 #line 193 "mfpg_dsl.y"
-                                   { (yyval.note_) = new NNote((yyvsp[-2].notebase_), (yyvsp[0]._int)); result->note_ = (yyval.note_); }
+                                      { (yyval.notedef_) = new NNote((yyvsp[-2].notedefbase_), (yyvsp[0]._int)); result->notedef_ = (yyval.notedef_); }
 #line 1474 "Parser.C"
     break;
 
-  case 18: /* NoteBase: _KW_A  */
+  case 18: /* NoteDefBase: _KW_A  */
 #line 195 "mfpg_dsl.y"
-                 { (yyval.notebase_) = new NoteBase_A(); result->notebase_ = (yyval.notebase_); }
+                    { (yyval.notedefbase_) = new NoteDefBase_A(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1480 "Parser.C"
     break;
 
-  case 19: /* NoteBase: _KW_As  */
+  case 19: /* NoteDefBase: _KW_As  */
 #line 196 "mfpg_dsl.y"
-           { (yyval.notebase_) = new NoteBase_As(); result->notebase_ = (yyval.notebase_); }
+           { (yyval.notedefbase_) = new NoteDefBase_As(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1486 "Parser.C"
     break;
 
-  case 20: /* NoteBase: _KW_B  */
+  case 20: /* NoteDefBase: _KW_B  */
 #line 197 "mfpg_dsl.y"
-          { (yyval.notebase_) = new NoteBase_B(); result->notebase_ = (yyval.notebase_); }
+          { (yyval.notedefbase_) = new NoteDefBase_B(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1492 "Parser.C"
     break;
 
-  case 21: /* NoteBase: _KW_C  */
+  case 21: /* NoteDefBase: _KW_C  */
 #line 198 "mfpg_dsl.y"
-          { (yyval.notebase_) = new NoteBase_C(); result->notebase_ = (yyval.notebase_); }
+          { (yyval.notedefbase_) = new NoteDefBase_C(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1498 "Parser.C"
     break;
 
-  case 22: /* NoteBase: _KW_Cs  */
+  case 22: /* NoteDefBase: _KW_Cs  */
 #line 199 "mfpg_dsl.y"
-           { (yyval.notebase_) = new NoteBase_Cs(); result->notebase_ = (yyval.notebase_); }
+           { (yyval.notedefbase_) = new NoteDefBase_Cs(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1504 "Parser.C"
     break;
 
-  case 23: /* NoteBase: _KW_D  */
+  case 23: /* NoteDefBase: _KW_D  */
 #line 200 "mfpg_dsl.y"
-          { (yyval.notebase_) = new NoteBase_D(); result->notebase_ = (yyval.notebase_); }
+          { (yyval.notedefbase_) = new NoteDefBase_D(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1510 "Parser.C"
     break;
 
-  case 24: /* NoteBase: _KW_Ds  */
+  case 24: /* NoteDefBase: _KW_Ds  */
 #line 201 "mfpg_dsl.y"
-           { (yyval.notebase_) = new NoteBase_Ds(); result->notebase_ = (yyval.notebase_); }
+           { (yyval.notedefbase_) = new NoteDefBase_Ds(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1516 "Parser.C"
     break;
 
-  case 25: /* NoteBase: _KW_E  */
+  case 25: /* NoteDefBase: _KW_E  */
 #line 202 "mfpg_dsl.y"
-          { (yyval.notebase_) = new NoteBase_E(); result->notebase_ = (yyval.notebase_); }
+          { (yyval.notedefbase_) = new NoteDefBase_E(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1522 "Parser.C"
     break;
 
-  case 26: /* NoteBase: _KW_F  */
+  case 26: /* NoteDefBase: _KW_F  */
 #line 203 "mfpg_dsl.y"
-          { (yyval.notebase_) = new NoteBase_F(); result->notebase_ = (yyval.notebase_); }
+          { (yyval.notedefbase_) = new NoteDefBase_F(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1528 "Parser.C"
     break;
 
-  case 27: /* NoteBase: _KW_Fs  */
+  case 27: /* NoteDefBase: _KW_Fs  */
 #line 204 "mfpg_dsl.y"
-           { (yyval.notebase_) = new NoteBase_Fs(); result->notebase_ = (yyval.notebase_); }
+           { (yyval.notedefbase_) = new NoteDefBase_Fs(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1534 "Parser.C"
     break;
 
-  case 28: /* NoteBase: _KW_G  */
+  case 28: /* NoteDefBase: _KW_G  */
 #line 205 "mfpg_dsl.y"
-          { (yyval.notebase_) = new NoteBase_G(); result->notebase_ = (yyval.notebase_); }
+          { (yyval.notedefbase_) = new NoteDefBase_G(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1540 "Parser.C"
     break;
 
-  case 29: /* NoteBase: _KW_Gs  */
+  case 29: /* NoteDefBase: _KW_Gs  */
 #line 206 "mfpg_dsl.y"
-           { (yyval.notebase_) = new NoteBase_Gs(); result->notebase_ = (yyval.notebase_); }
+           { (yyval.notedefbase_) = new NoteDefBase_Gs(); result->notedefbase_ = (yyval.notedefbase_); }
 #line 1546 "Parser.C"
     break;
 
@@ -2300,8 +2300,8 @@ SPos* psSPos(const char *str)
   }
 }
 
-/* Entrypoint: parse Note* from file. */
-Note* pNote(FILE *inp)
+/* Entrypoint: parse NoteDef* from file. */
+NoteDef* pNoteDef(FILE *inp)
 {
   YYSTYPE result;
   yyscan_t scanner = mfpg_dsl__initialize_lexer(inp);
@@ -2317,12 +2317,12 @@ Note* pNote(FILE *inp)
   }
   else
   { /* Success */
-    return result.note_;
+    return result.notedef_;
   }
 }
 
-/* Entrypoint: parse Note* from string. */
-Note* psNote(const char *str)
+/* Entrypoint: parse NoteDef* from string. */
+NoteDef* psNoteDef(const char *str)
 {
   YYSTYPE result;
   yyscan_t scanner = mfpg_dsl__initialize_lexer(0);
@@ -2340,12 +2340,12 @@ Note* psNote(const char *str)
   }
   else
   { /* Success */
-    return result.note_;
+    return result.notedef_;
   }
 }
 
-/* Entrypoint: parse NoteBase* from file. */
-NoteBase* pNoteBase(FILE *inp)
+/* Entrypoint: parse NoteDefBase* from file. */
+NoteDefBase* pNoteDefBase(FILE *inp)
 {
   YYSTYPE result;
   yyscan_t scanner = mfpg_dsl__initialize_lexer(inp);
@@ -2361,12 +2361,12 @@ NoteBase* pNoteBase(FILE *inp)
   }
   else
   { /* Success */
-    return result.notebase_;
+    return result.notedefbase_;
   }
 }
 
-/* Entrypoint: parse NoteBase* from string. */
-NoteBase* psNoteBase(const char *str)
+/* Entrypoint: parse NoteDefBase* from string. */
+NoteDefBase* psNoteDefBase(const char *str)
 {
   YYSTYPE result;
   yyscan_t scanner = mfpg_dsl__initialize_lexer(0);
@@ -2384,7 +2384,7 @@ NoteBase* psNoteBase(const char *str)
   }
   else
   { /* Success */
-    return result.notebase_;
+    return result.notedefbase_;
   }
 }
 

@@ -191,19 +191,19 @@ DAttr *DAttr::clone() const
 
 
 /********************   StringDef    ********************/
-StringDef::StringDef(SPos *p1, Note *p2, Note *p3)
+StringDef::StringDef(SPos *p1, NoteDef *p2, NoteDef *p3)
 {
   spos_ = p1;
-  note_1 = p2;
-  note_2 = p3;
+  notedef_1 = p2;
+  notedef_2 = p3;
 
 }
 
 StringDef::StringDef(const StringDef & other)
 {
   spos_ = other.spos_->clone();
-  note_1 = other.note_1->clone();
-  note_2 = other.note_2->clone();
+  notedef_1 = other.notedef_1->clone();
+  notedef_2 = other.notedef_2->clone();
 
 }
 
@@ -217,16 +217,16 @@ StringDef &StringDef::operator=(const StringDef & other)
 void StringDef::swap(StringDef & other)
 {
   std::swap(spos_, other.spos_);
-  std::swap(note_1, other.note_1);
-  std::swap(note_2, other.note_2);
+  std::swap(notedef_1, other.notedef_1);
+  std::swap(notedef_2, other.notedef_2);
 
 }
 
 StringDef::~StringDef()
 {
   delete(spos_);
-  delete(note_1);
-  delete(note_2);
+  delete(notedef_1);
+  delete(notedef_2);
 
 }
 
@@ -329,16 +329,16 @@ INote *INote::clone() const
 
 
 /********************   NNote    ********************/
-NNote::NNote(NoteBase *p1, Integer p2)
+NNote::NNote(NoteDefBase *p1, Integer p2)
 {
-  notebase_ = p1;
+  notedefbase_ = p1;
   integer_ = p2;
 
 }
 
 NNote::NNote(const NNote & other)
 {
-  notebase_ = other.notebase_->clone();
+  notedefbase_ = other.notedefbase_->clone();
   integer_ = other.integer_;
 
 }
@@ -352,14 +352,14 @@ NNote &NNote::operator=(const NNote & other)
 
 void NNote::swap(NNote & other)
 {
-  std::swap(notebase_, other.notebase_);
+  std::swap(notedefbase_, other.notedefbase_);
   std::swap(integer_, other.integer_);
 
 }
 
 NNote::~NNote()
 {
-  delete(notebase_);
+  delete(notedefbase_);
 
 }
 
@@ -375,482 +375,482 @@ NNote *NNote::clone() const
 
 
 
-/********************   NoteBase_A    ********************/
-NoteBase_A::NoteBase_A()
+/********************   NoteDefBase_A    ********************/
+NoteDefBase_A::NoteDefBase_A()
 {
 
 }
 
-NoteBase_A::NoteBase_A(const NoteBase_A & other)
+NoteDefBase_A::NoteDefBase_A(const NoteDefBase_A & other)
 {
 
 }
 
-NoteBase_A &NoteBase_A::operator=(const NoteBase_A & other)
+NoteDefBase_A &NoteDefBase_A::operator=(const NoteDefBase_A & other)
 {
-  NoteBase_A tmp(other);
+  NoteDefBase_A tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_A::swap(NoteBase_A & other)
+void NoteDefBase_A::swap(NoteDefBase_A & other)
 {
 
 }
 
-NoteBase_A::~NoteBase_A()
+NoteDefBase_A::~NoteDefBase_A()
 {
 
 }
 
-void NoteBase_A::accept(Visitor *v)
+void NoteDefBase_A::accept(Visitor *v)
 {
-  v->visitNoteBase_A(this);
+  v->visitNoteDefBase_A(this);
 }
 
-NoteBase_A *NoteBase_A::clone() const
+NoteDefBase_A *NoteDefBase_A::clone() const
 {
-  return new NoteBase_A(*this);
+  return new NoteDefBase_A(*this);
 }
 
 
 
-/********************   NoteBase_As    ********************/
-NoteBase_As::NoteBase_As()
-{
-
-}
-
-NoteBase_As::NoteBase_As(const NoteBase_As & other)
+/********************   NoteDefBase_As    ********************/
+NoteDefBase_As::NoteDefBase_As()
 {
 
 }
 
-NoteBase_As &NoteBase_As::operator=(const NoteBase_As & other)
+NoteDefBase_As::NoteDefBase_As(const NoteDefBase_As & other)
 {
-  NoteBase_As tmp(other);
+
+}
+
+NoteDefBase_As &NoteDefBase_As::operator=(const NoteDefBase_As & other)
+{
+  NoteDefBase_As tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_As::swap(NoteBase_As & other)
+void NoteDefBase_As::swap(NoteDefBase_As & other)
 {
 
 }
 
-NoteBase_As::~NoteBase_As()
+NoteDefBase_As::~NoteDefBase_As()
 {
 
 }
 
-void NoteBase_As::accept(Visitor *v)
+void NoteDefBase_As::accept(Visitor *v)
 {
-  v->visitNoteBase_As(this);
+  v->visitNoteDefBase_As(this);
 }
 
-NoteBase_As *NoteBase_As::clone() const
+NoteDefBase_As *NoteDefBase_As::clone() const
 {
-  return new NoteBase_As(*this);
+  return new NoteDefBase_As(*this);
 }
 
 
 
-/********************   NoteBase_B    ********************/
-NoteBase_B::NoteBase_B()
-{
-
-}
-
-NoteBase_B::NoteBase_B(const NoteBase_B & other)
+/********************   NoteDefBase_B    ********************/
+NoteDefBase_B::NoteDefBase_B()
 {
 
 }
 
-NoteBase_B &NoteBase_B::operator=(const NoteBase_B & other)
+NoteDefBase_B::NoteDefBase_B(const NoteDefBase_B & other)
 {
-  NoteBase_B tmp(other);
+
+}
+
+NoteDefBase_B &NoteDefBase_B::operator=(const NoteDefBase_B & other)
+{
+  NoteDefBase_B tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_B::swap(NoteBase_B & other)
+void NoteDefBase_B::swap(NoteDefBase_B & other)
 {
 
 }
 
-NoteBase_B::~NoteBase_B()
+NoteDefBase_B::~NoteDefBase_B()
 {
 
 }
 
-void NoteBase_B::accept(Visitor *v)
+void NoteDefBase_B::accept(Visitor *v)
 {
-  v->visitNoteBase_B(this);
+  v->visitNoteDefBase_B(this);
 }
 
-NoteBase_B *NoteBase_B::clone() const
+NoteDefBase_B *NoteDefBase_B::clone() const
 {
-  return new NoteBase_B(*this);
+  return new NoteDefBase_B(*this);
 }
 
 
 
-/********************   NoteBase_C    ********************/
-NoteBase_C::NoteBase_C()
-{
-
-}
-
-NoteBase_C::NoteBase_C(const NoteBase_C & other)
+/********************   NoteDefBase_C    ********************/
+NoteDefBase_C::NoteDefBase_C()
 {
 
 }
 
-NoteBase_C &NoteBase_C::operator=(const NoteBase_C & other)
+NoteDefBase_C::NoteDefBase_C(const NoteDefBase_C & other)
 {
-  NoteBase_C tmp(other);
+
+}
+
+NoteDefBase_C &NoteDefBase_C::operator=(const NoteDefBase_C & other)
+{
+  NoteDefBase_C tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_C::swap(NoteBase_C & other)
+void NoteDefBase_C::swap(NoteDefBase_C & other)
 {
 
 }
 
-NoteBase_C::~NoteBase_C()
+NoteDefBase_C::~NoteDefBase_C()
 {
 
 }
 
-void NoteBase_C::accept(Visitor *v)
+void NoteDefBase_C::accept(Visitor *v)
 {
-  v->visitNoteBase_C(this);
+  v->visitNoteDefBase_C(this);
 }
 
-NoteBase_C *NoteBase_C::clone() const
+NoteDefBase_C *NoteDefBase_C::clone() const
 {
-  return new NoteBase_C(*this);
+  return new NoteDefBase_C(*this);
 }
 
 
 
-/********************   NoteBase_Cs    ********************/
-NoteBase_Cs::NoteBase_Cs()
-{
-
-}
-
-NoteBase_Cs::NoteBase_Cs(const NoteBase_Cs & other)
+/********************   NoteDefBase_Cs    ********************/
+NoteDefBase_Cs::NoteDefBase_Cs()
 {
 
 }
 
-NoteBase_Cs &NoteBase_Cs::operator=(const NoteBase_Cs & other)
+NoteDefBase_Cs::NoteDefBase_Cs(const NoteDefBase_Cs & other)
 {
-  NoteBase_Cs tmp(other);
+
+}
+
+NoteDefBase_Cs &NoteDefBase_Cs::operator=(const NoteDefBase_Cs & other)
+{
+  NoteDefBase_Cs tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_Cs::swap(NoteBase_Cs & other)
+void NoteDefBase_Cs::swap(NoteDefBase_Cs & other)
 {
 
 }
 
-NoteBase_Cs::~NoteBase_Cs()
+NoteDefBase_Cs::~NoteDefBase_Cs()
 {
 
 }
 
-void NoteBase_Cs::accept(Visitor *v)
+void NoteDefBase_Cs::accept(Visitor *v)
 {
-  v->visitNoteBase_Cs(this);
+  v->visitNoteDefBase_Cs(this);
 }
 
-NoteBase_Cs *NoteBase_Cs::clone() const
+NoteDefBase_Cs *NoteDefBase_Cs::clone() const
 {
-  return new NoteBase_Cs(*this);
+  return new NoteDefBase_Cs(*this);
 }
 
 
 
-/********************   NoteBase_D    ********************/
-NoteBase_D::NoteBase_D()
-{
-
-}
-
-NoteBase_D::NoteBase_D(const NoteBase_D & other)
+/********************   NoteDefBase_D    ********************/
+NoteDefBase_D::NoteDefBase_D()
 {
 
 }
 
-NoteBase_D &NoteBase_D::operator=(const NoteBase_D & other)
+NoteDefBase_D::NoteDefBase_D(const NoteDefBase_D & other)
 {
-  NoteBase_D tmp(other);
+
+}
+
+NoteDefBase_D &NoteDefBase_D::operator=(const NoteDefBase_D & other)
+{
+  NoteDefBase_D tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_D::swap(NoteBase_D & other)
+void NoteDefBase_D::swap(NoteDefBase_D & other)
 {
 
 }
 
-NoteBase_D::~NoteBase_D()
+NoteDefBase_D::~NoteDefBase_D()
 {
 
 }
 
-void NoteBase_D::accept(Visitor *v)
+void NoteDefBase_D::accept(Visitor *v)
 {
-  v->visitNoteBase_D(this);
+  v->visitNoteDefBase_D(this);
 }
 
-NoteBase_D *NoteBase_D::clone() const
+NoteDefBase_D *NoteDefBase_D::clone() const
 {
-  return new NoteBase_D(*this);
+  return new NoteDefBase_D(*this);
 }
 
 
 
-/********************   NoteBase_Ds    ********************/
-NoteBase_Ds::NoteBase_Ds()
-{
-
-}
-
-NoteBase_Ds::NoteBase_Ds(const NoteBase_Ds & other)
+/********************   NoteDefBase_Ds    ********************/
+NoteDefBase_Ds::NoteDefBase_Ds()
 {
 
 }
 
-NoteBase_Ds &NoteBase_Ds::operator=(const NoteBase_Ds & other)
+NoteDefBase_Ds::NoteDefBase_Ds(const NoteDefBase_Ds & other)
 {
-  NoteBase_Ds tmp(other);
+
+}
+
+NoteDefBase_Ds &NoteDefBase_Ds::operator=(const NoteDefBase_Ds & other)
+{
+  NoteDefBase_Ds tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_Ds::swap(NoteBase_Ds & other)
+void NoteDefBase_Ds::swap(NoteDefBase_Ds & other)
 {
 
 }
 
-NoteBase_Ds::~NoteBase_Ds()
+NoteDefBase_Ds::~NoteDefBase_Ds()
 {
 
 }
 
-void NoteBase_Ds::accept(Visitor *v)
+void NoteDefBase_Ds::accept(Visitor *v)
 {
-  v->visitNoteBase_Ds(this);
+  v->visitNoteDefBase_Ds(this);
 }
 
-NoteBase_Ds *NoteBase_Ds::clone() const
+NoteDefBase_Ds *NoteDefBase_Ds::clone() const
 {
-  return new NoteBase_Ds(*this);
+  return new NoteDefBase_Ds(*this);
 }
 
 
 
-/********************   NoteBase_E    ********************/
-NoteBase_E::NoteBase_E()
-{
-
-}
-
-NoteBase_E::NoteBase_E(const NoteBase_E & other)
+/********************   NoteDefBase_E    ********************/
+NoteDefBase_E::NoteDefBase_E()
 {
 
 }
 
-NoteBase_E &NoteBase_E::operator=(const NoteBase_E & other)
+NoteDefBase_E::NoteDefBase_E(const NoteDefBase_E & other)
 {
-  NoteBase_E tmp(other);
+
+}
+
+NoteDefBase_E &NoteDefBase_E::operator=(const NoteDefBase_E & other)
+{
+  NoteDefBase_E tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_E::swap(NoteBase_E & other)
+void NoteDefBase_E::swap(NoteDefBase_E & other)
 {
 
 }
 
-NoteBase_E::~NoteBase_E()
+NoteDefBase_E::~NoteDefBase_E()
 {
 
 }
 
-void NoteBase_E::accept(Visitor *v)
+void NoteDefBase_E::accept(Visitor *v)
 {
-  v->visitNoteBase_E(this);
+  v->visitNoteDefBase_E(this);
 }
 
-NoteBase_E *NoteBase_E::clone() const
+NoteDefBase_E *NoteDefBase_E::clone() const
 {
-  return new NoteBase_E(*this);
+  return new NoteDefBase_E(*this);
 }
 
 
 
-/********************   NoteBase_F    ********************/
-NoteBase_F::NoteBase_F()
-{
-
-}
-
-NoteBase_F::NoteBase_F(const NoteBase_F & other)
+/********************   NoteDefBase_F    ********************/
+NoteDefBase_F::NoteDefBase_F()
 {
 
 }
 
-NoteBase_F &NoteBase_F::operator=(const NoteBase_F & other)
+NoteDefBase_F::NoteDefBase_F(const NoteDefBase_F & other)
 {
-  NoteBase_F tmp(other);
+
+}
+
+NoteDefBase_F &NoteDefBase_F::operator=(const NoteDefBase_F & other)
+{
+  NoteDefBase_F tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_F::swap(NoteBase_F & other)
+void NoteDefBase_F::swap(NoteDefBase_F & other)
 {
 
 }
 
-NoteBase_F::~NoteBase_F()
+NoteDefBase_F::~NoteDefBase_F()
 {
 
 }
 
-void NoteBase_F::accept(Visitor *v)
+void NoteDefBase_F::accept(Visitor *v)
 {
-  v->visitNoteBase_F(this);
+  v->visitNoteDefBase_F(this);
 }
 
-NoteBase_F *NoteBase_F::clone() const
+NoteDefBase_F *NoteDefBase_F::clone() const
 {
-  return new NoteBase_F(*this);
+  return new NoteDefBase_F(*this);
 }
 
 
 
-/********************   NoteBase_Fs    ********************/
-NoteBase_Fs::NoteBase_Fs()
-{
-
-}
-
-NoteBase_Fs::NoteBase_Fs(const NoteBase_Fs & other)
+/********************   NoteDefBase_Fs    ********************/
+NoteDefBase_Fs::NoteDefBase_Fs()
 {
 
 }
 
-NoteBase_Fs &NoteBase_Fs::operator=(const NoteBase_Fs & other)
+NoteDefBase_Fs::NoteDefBase_Fs(const NoteDefBase_Fs & other)
 {
-  NoteBase_Fs tmp(other);
+
+}
+
+NoteDefBase_Fs &NoteDefBase_Fs::operator=(const NoteDefBase_Fs & other)
+{
+  NoteDefBase_Fs tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_Fs::swap(NoteBase_Fs & other)
+void NoteDefBase_Fs::swap(NoteDefBase_Fs & other)
 {
 
 }
 
-NoteBase_Fs::~NoteBase_Fs()
+NoteDefBase_Fs::~NoteDefBase_Fs()
 {
 
 }
 
-void NoteBase_Fs::accept(Visitor *v)
+void NoteDefBase_Fs::accept(Visitor *v)
 {
-  v->visitNoteBase_Fs(this);
+  v->visitNoteDefBase_Fs(this);
 }
 
-NoteBase_Fs *NoteBase_Fs::clone() const
+NoteDefBase_Fs *NoteDefBase_Fs::clone() const
 {
-  return new NoteBase_Fs(*this);
+  return new NoteDefBase_Fs(*this);
 }
 
 
 
-/********************   NoteBase_G    ********************/
-NoteBase_G::NoteBase_G()
-{
-
-}
-
-NoteBase_G::NoteBase_G(const NoteBase_G & other)
+/********************   NoteDefBase_G    ********************/
+NoteDefBase_G::NoteDefBase_G()
 {
 
 }
 
-NoteBase_G &NoteBase_G::operator=(const NoteBase_G & other)
+NoteDefBase_G::NoteDefBase_G(const NoteDefBase_G & other)
 {
-  NoteBase_G tmp(other);
+
+}
+
+NoteDefBase_G &NoteDefBase_G::operator=(const NoteDefBase_G & other)
+{
+  NoteDefBase_G tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_G::swap(NoteBase_G & other)
+void NoteDefBase_G::swap(NoteDefBase_G & other)
 {
 
 }
 
-NoteBase_G::~NoteBase_G()
+NoteDefBase_G::~NoteDefBase_G()
 {
 
 }
 
-void NoteBase_G::accept(Visitor *v)
+void NoteDefBase_G::accept(Visitor *v)
 {
-  v->visitNoteBase_G(this);
+  v->visitNoteDefBase_G(this);
 }
 
-NoteBase_G *NoteBase_G::clone() const
+NoteDefBase_G *NoteDefBase_G::clone() const
 {
-  return new NoteBase_G(*this);
+  return new NoteDefBase_G(*this);
 }
 
 
 
-/********************   NoteBase_Gs    ********************/
-NoteBase_Gs::NoteBase_Gs()
-{
-
-}
-
-NoteBase_Gs::NoteBase_Gs(const NoteBase_Gs & other)
+/********************   NoteDefBase_Gs    ********************/
+NoteDefBase_Gs::NoteDefBase_Gs()
 {
 
 }
 
-NoteBase_Gs &NoteBase_Gs::operator=(const NoteBase_Gs & other)
+NoteDefBase_Gs::NoteDefBase_Gs(const NoteDefBase_Gs & other)
 {
-  NoteBase_Gs tmp(other);
+
+}
+
+NoteDefBase_Gs &NoteDefBase_Gs::operator=(const NoteDefBase_Gs & other)
+{
+  NoteDefBase_Gs tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NoteBase_Gs::swap(NoteBase_Gs & other)
+void NoteDefBase_Gs::swap(NoteDefBase_Gs & other)
 {
 
 }
 
-NoteBase_Gs::~NoteBase_Gs()
+NoteDefBase_Gs::~NoteDefBase_Gs()
 {
 
 }
 
-void NoteBase_Gs::accept(Visitor *v)
+void NoteDefBase_Gs::accept(Visitor *v)
 {
-  v->visitNoteBase_Gs(this);
+  v->visitNoteDefBase_Gs(this);
 }
 
-NoteBase_Gs *NoteBase_Gs::clone() const
+NoteDefBase_Gs *NoteDefBase_Gs::clone() const
 {
-  return new NoteBase_Gs(*this);
+  return new NoteDefBase_Gs(*this);
 }
 
 

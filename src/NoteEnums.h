@@ -33,7 +33,7 @@ namespace noteenums {
 	};
 
 	enum Duration {
-		Double, 
+		DoubleDur, 
 		Whole, 
 		Half, 
 		Quarter, 

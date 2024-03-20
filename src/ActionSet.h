@@ -36,6 +36,7 @@ template <OutputViable OutputValue> class ActionSet {
 		ActionSet(std::initializer_list<std::tuple<Action<OutputValue>, bool>>);
 		~ActionSet();
 		
+		void addAction(Action<OutputValue>, bool);
 		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
 		//already existing action.
 		int makeAction(condfun, distfun, std::string, bool);

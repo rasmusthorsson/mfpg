@@ -19,8 +19,12 @@
 #include "PhysAttrMap.h"
 #include "ExValException.h"
 #include "SPSolver.h"
+#include "ActionBuilder.h"
+#include "ParserError.H"
+#include "Parser.H"
 
 #include <iostream>
+#include <cstdio>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -35,15 +39,8 @@ extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
-shared_ptr<ActionSet<Distance>> makeActionSet() {
-	return NULL;
-}
-
 int main (int argc, char *argv[]) {
 
-	TUPLESIZE = 3;
-	ATTRIBUTE_TYPES = "iii";
-	ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
 
 //-------------------------------- Input/Arguments -------------------------
 	cxxopts::Options options("mfpr");
@@ -58,6 +55,7 @@ int main (int argc, char *argv[]) {
 		("t,test", "Select test parameters.", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose.", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
+		("d,dsl", "Use the DSL to specify strings, actions and attributes.", cxxopts::value<std::string>())
 		("interactive", "For interactive testing of layers.");
 	options.parse_positional({"score"});
 
@@ -120,19 +118,87 @@ int main (int argc, char *argv[]) {
 	const NoteList note_list(score);
 
 //---------------------- Instrument creation ----------------------------
+	//Patchwork solution until fixed output typing.
+	std::shared_ptr<ActionSet<int>> action_set_i(new ActionSet<int>());
+	std::shared_ptr<ActionSet<double>> action_set_d(new ActionSet<double>());
 	
-	std::shared_ptr<ActionSet<Distance>> action_set;
-	if (result.count("test")) {
-		if (result["test"].as<int>() == 1) {
-			action_set = configs::test_configuration_1();
-		} else if (result["test"].as<int>() == 2) { 
-			action_set = configs::test_configuration_2();
+	Instrument<Distance> violin(action_set_i);
+	if (result.count("dsl")) {
+		char output = 'i';
+		ActionBuilder action_builder;
+		FILE *dsl_file;
+		auto dsl_path = result["dsl"].as<std::string>();
+		dsl_file = fopen(dsl_path.c_str(), "r");
+		
+		if (!dsl_file) {
+			mfpg_log::Log::verbose_out(log, ("ERROR: Could not open file: " + 
+				result["dsl"].as<string>() + "\n"), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
 		}
+		
+		Input *parse_tree = NULL;
+		
+		try {
+			parse_tree = pInput(dsl_file);
+		} catch( parse_error &e) {
+			mfpg_log::Log::verbose_out(log, 
+				("ERROR: Could not parse DSL file: " + result["dsl"].as<string>() 
+				 	+ "\nParse error on line: " + to_string(e.getLine())), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		}
+		delete(dsl_file);
+		
+		action_builder.visitInput(parse_tree);
+
+		output = action_builder.output;
+		for (IString s : action_builder.strings) {
+			violin.addIString(s);
+		}
+		
+		if (output == 'i') {
+			for (auto a : action_builder.int_acts) {
+				action_set_i->addAction(a, true);
+			}
+			for (auto d : action_builder.deps) {
+				action_set_i->addDependency(std::get<0>(d), std::get<1>(d), std::get<2>(d));
+			}
+		} else if (output == 'd') {
+			for (auto a : action_builder.dub_acts) {
+				action_set_d->addAction(a, true);
+			}
+			for (auto d : action_builder.deps) {
+				action_set_d->addDependency(std::get<0>(d), std::get<1>(d), std::get<2>(d));
+			}
+		}
+		
+		TUPLESIZE = action_builder.attrs.size();
+		ATTRIBUTES = action_builder.attrs;
+		ATTRIBUTE_TYPES = action_builder.attrtypes;
+
 	} else {
-		action_set = makeActionSet();
-		//action_set = configs::test_configuration_1();
+		if (result.count("test")) {
+			TUPLESIZE = 3;
+			ATTRIBUTE_TYPES = "iii";
+			ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
+			if (result["test"].as<int>() == 1) {
+				action_set_i = configs::test_configuration_1();
+			} else if (result["test"].as<int>() == 2) { 
+				action_set_i = configs::test_configuration_2();
+			} else {
+				action_set_i = configs::test_configuration_1();
+			}
+		} 
+		violin.makeIString(1, Note::G_3, Note::Gs_5);
+		violin.makeIString(2, Note::D_4, Note::Ds_6);
+		violin.makeIString(3, Note::A_4, Note::As_6);
+		violin.makeIString(4, Note::E_5, Note::F_7);
+		TUPLESIZE = 3;
+		ATTRIBUTE_TYPES = "iii";
+		ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
 	}
-	if (!action_set) {
+
+	if (!action_set_i) {
 		mfpg_log::Log::verbose_out(std::cout,
 			    "No ActionSet was defined, Aborting...\n",
 			    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS
@@ -140,16 +206,8 @@ int main (int argc, char *argv[]) {
 		return -1;
 	}
 
-	Instrument<Distance> violin(action_set);
-	violin.makeIString(1, Note::G_3, Note::Gs_5);
-	violin.makeIString(2, Note::D_4, Note::Ds_6);
-	violin.makeIString(3, Note::A_4, Note::As_6);
-	violin.makeIString(4, Note::E_5, Note::F_7);
-
-
 //-------------------------- Graph building/solving -------------------------
 	std::shared_ptr<GraphSolver<Distance>> solver;
-	
 	try {
 		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin.getIStrings()));
 		LayerList<Distance> list(note_list, note_mapper);
