@@ -1,4 +1,4 @@
-build64/*
+ build64/*
 build/*
 cmake-build-*
 Sourcecode/private/mxtest/file/PathRoot.h
@@ -6,6 +6,17 @@ Sourcecode/private/mxtest/file/PathRoot.h
 **/xcuserdata/
 **/xcshareddata/
 *.DS_Store
+
+# Cmake conf files
 src/conf_cmake.h
 .cache
 src/.cache
+
+# Parser files not used directly by MFPG, but needed to build the absyn.
+src/parser/*.o
+src/parser/Skeleton.*
+src/parser/Test.C
+src/parser/Printer.*
+src/parser/mfpg_dsl.l
+src/parser/mfpg_dsl.y
+src/parser/ActionTest

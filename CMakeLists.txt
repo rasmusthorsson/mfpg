@@ -38,13 +38,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cxxopts)
 
+file (GLOB_RECURSE DSL src/parser/Absyn.C src/parser/Parser.C src/parser/Lexer.C src/parser/Buffer.C src/ActionBuilder.cpp)
 
 file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkException.cpp src/NodeException.cpp
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp src/Log.cpp 
 	src/BasicNoteMapper.cpp src/LayerList.cpp src/Instrument.cpp src/SolverException.cpp Action.cpp
 	src/GreedySolver.cpp src/ExValContainer.cpp src/PhysAttrMap.cpp src/ExValException.cpp 
-	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp)
+	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp ${DSL})
+
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
+
 add_executable(mfpr ${SRC_BASE})
 
 if(REBUILD_MX)

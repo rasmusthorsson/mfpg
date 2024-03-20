@@ -72,6 +72,9 @@ bool PhysAttrMap::AttrLess::operator() (const PhysAttrMap& lhs, const PhysAttrMa
 const ExValContainer& PhysAttrMap::getVal(std::string s) const {
 	return attr_map.at(s);
 }
+const ExValContainer& PhysAttrMap::getVal(int i) const {
+	return attr_map.at(ATTRIBUTES[i]);
+}
 
 //----------------------------------------- OPERATORS -----------------------------------------
 bool PhysAttrMap::operator == (const PhysAttrMap& rhs) const {

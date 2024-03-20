@@ -1,0 +1,66 @@
+BInput.		Input ::= "(" Output ")" "[" [AttrDecl] "]" "{" [IStr] "}" [Act] ;
+
+DOutput.	Output ::= "double";
+IOutput.	Output ::= "int";
+
+DAttr.		AttrDecl ::= "(" AttrType ")" Attr ;
+
+separator nonempty AttrDecl "," ;
+terminator nonempty AttrDecl ";" ;
+
+StringDef.	IStr ::= SPos ":" Note "->" Note ;
+
+separator nonempty IStr "::" ;
+terminator nonempty IStr ";" ;
+
+ISPos.		SPos ::= Integer ;
+
+INote.		Note ::= Integer ;
+NNote.		Note ::= NoteBase "_" Integer ;
+
+rules NoteBase ::= "A" | "As" | "B" | "C" | "Cs" | "D" | "Ds" | "E" | "F" | "Fs" | "G" | "Gs" ;
+rules AttrType ::= "i" | "d" | "b" ;
+
+FunList. 	Act ::= ActionName "=" CFun1 ":" DFun1 ;
+
+AName.		ActionName ::= String ;
+
+separator nonempty Act "--" ;
+terminator Act ";" ;
+
+coercions DFun 2 ;
+coercions CFun 2 ;
+
+CombDist.	DFun1 ::= DFun1 Exp DFun2 ;
+ScaledDist.	DFun2 ::= Attr Exp Attr Scale Num ;
+DirectDist.	DFun2 ::= Attr Exp Attr ;
+ConstDist.	DFun2 ::= Num ;
+
+CombCond.	CFun1 ::= CFun1 BoolOp CFun2 ;
+CompCond.	CFun2 ::= Attr Exp Attr CompOp Num ;
+ValueCond.	CFun2 ::= Attr CompOp Num ;
+BoolCond.	CFun2 ::= Bool ;
+AttrCond.	CFun2 ::= Attr ;
+
+EAttr.		Attr ::= String ;
+
+Eq.		CompOp ::= "==" ;
+NEq.		CompOp ::= "!=" ;
+Gt.		CompOp ::= ">" ;
+Lt.		CompOp ::= "<" ;
+Gte.		CompOp ::= ">=" ;
+Lte.		CompOp ::= "<=" ;
+
+And.		BoolOp ::= "&&" ;
+Or.		BoolOp ::= "||" ;
+
+CInt.		Num ::= Integer ;
+CDouble.	Num ::= Double ;
+
+ESub.		Exp ::= "-" ;
+EPlus.		Exp ::= "+" ;
+
+SMul.		Scale ::= "*" ;
+
+VTrue.		Bool ::= "true" ;
+VFalse.		Bool ::= "false" ;

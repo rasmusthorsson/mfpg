@@ -16,3 +16,5 @@ endif()
 
 target_include_directories(mfpr 
 	PRIVATE "${CMAKE_SOURCE_DIR}/deps/mx/Sourcecode/include/")
+target_include_directories(mfpr 
+	PRIVATE "${CMAKE_SOURCE_DIR}/src/parser/")

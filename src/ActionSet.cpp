@@ -74,6 +74,24 @@ int ActionSet<OutputValue>::makeAction(condfun cf, distfun df, std::string name,
 }
 
 template<OutputViable OutputValue>
+void ActionSet<OutputValue>::addCondToAction(condfun cf, std::string s) {
+	for (auto a : actions) {
+		if (std::get<0>(a).getID() == s) {
+			std::get<0>(a).addCondFun(cf);	
+		}
+	}
+}
+
+template<OutputViable OutputValue>
+void ActionSet<OutputValue>::addDistToAction(distfun df, std::string s) {
+	for (auto a : actions) {
+		if (std::get<0>(a).getID() == s) {
+			std::get<0>(a).addDistFun(df);	
+		}
+	}
+}
+
+template<OutputViable OutputValue>
 int ActionSet<OutputValue>::addDependency(std::string dependent, std::string dependency, bool adjustment) {
 	std::tuple<std::string, bool> dep = {dependency, adjustment};
 	if (dependencies.insert({dependent, dep}) != dependencies.end()) {

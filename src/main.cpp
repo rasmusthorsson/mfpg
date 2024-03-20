@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 
+
 using namespace noteenums;
 using namespace std;
 
@@ -33,6 +34,10 @@ using Distance = int;
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
+
+shared_ptr<ActionSet<Distance>> makeActionSet() {
+	return NULL;
+}
 
 int main (int argc, char *argv[]) {
 
@@ -124,7 +129,15 @@ int main (int argc, char *argv[]) {
 			action_set = configs::test_configuration_2();
 		}
 	} else {
-		action_set = configs::test_configuration_1();
+		action_set = makeActionSet();
+		//action_set = configs::test_configuration_1();
+	}
+	if (!action_set) {
+		mfpg_log::Log::verbose_out(std::cout,
+			    "No ActionSet was defined, Aborting...\n",
+			    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS
+			    );
+		return -1;
 	}
 
 	Instrument<Distance> violin(action_set);

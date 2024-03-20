@@ -5,14 +5,15 @@
 
 #include <map>
 #include <algorithm>
+#include <vector>
 
 //Class for a set of actions to be considered when calculating the transition between
 //two states, each action is considered individually for the state transition but 
 //is only executed if there are no dependencies preventing it from doing so (as 
 //defined by the user).
 template <OutputViable OutputValue> class ActionSet {
-	typedef OutputValue (*distfun) (PhysAttrMap, PhysAttrMap);
-	typedef bool (*condfun) (PhysAttrMap, PhysAttrMap);
+	typedef OutputValue (distfun) (PhysAttrMap, PhysAttrMap);
+	typedef bool (condfun) (PhysAttrMap, PhysAttrMap);
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
@@ -38,6 +39,10 @@ template <OutputViable OutputValue> class ActionSet {
 		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
 		//already existing action.
 		int makeAction(condfun, distfun, std::string, bool);
+		//Adds a condition function to an action.
+		void addCondToAction(condfun, std::string);
+		//Adds a distance function to an action.
+		void addDistToAction(distfun, std::string);
 		//Adds a dependency, if dependent then dependency is subjected to adjustment. returns
 		//-1 on failure to insert.
 		int addDependency(std::string, std::string, bool); 
