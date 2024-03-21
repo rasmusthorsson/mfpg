@@ -31,6 +31,7 @@ class NoteDefBase;
 class AttrType;
 class Act;
 class ActionName;
+class Dep;
 class DFun;
 class CFun;
 class Attr;
@@ -65,6 +66,7 @@ class AttrType_d;
 class AttrType_b;
 class FunList;
 class AName;
+class ADeps;
 class CombDist;
 class ScaledDist;
 class DirectDist;
@@ -93,6 +95,7 @@ class VFalse;
 class ListAttrDecl;
 class ListIStr;
 class ListAct;
+class ListDep;
 
 
 /********************   Visitor Interfaces    ********************/
@@ -110,6 +113,7 @@ public:
   virtual void visitAttrType(AttrType *p) = 0;
   virtual void visitAct(Act *p) = 0;
   virtual void visitActionName(ActionName *p) = 0;
+  virtual void visitDep(Dep *p) = 0;
   virtual void visitDFun(DFun *p) = 0;
   virtual void visitCFun(CFun *p) = 0;
   virtual void visitAttr(Attr *p) = 0;
@@ -144,6 +148,7 @@ public:
   virtual void visitAttrType_b(AttrType_b *p) = 0;
   virtual void visitFunList(FunList *p) = 0;
   virtual void visitAName(AName *p) = 0;
+  virtual void visitADeps(ADeps *p) = 0;
   virtual void visitCombDist(CombDist *p) = 0;
   virtual void visitScaledDist(ScaledDist *p) = 0;
   virtual void visitDirectDist(DirectDist *p) = 0;
@@ -172,6 +177,7 @@ public:
   virtual void visitListAttrDecl(ListAttrDecl *p) = 0;
   virtual void visitListIStr(ListIStr *p) = 0;
   virtual void visitListAct(ListAct *p) = 0;
+  virtual void visitListDep(ListDep *p) = 0;
 
 
   virtual void visitInteger(Integer x) = 0;
@@ -263,6 +269,13 @@ public:
 
 };
 
+class Dep : public Visitable
+{
+public:
+  virtual Dep *clone() const = 0;
+
+};
+
 class DFun : public Visitable
 {
 public:
@@ -335,10 +348,11 @@ public:
   ListAttrDecl *listattrdecl_;
   ListIStr *lististr_;
   ListAct *listact_;
+  ListDep *listdep_;
 
   BInput(const BInput &);
   BInput &operator=(const BInput &);
-  BInput(Output *p1, ListAttrDecl *p2, ListIStr *p3, ListAct *p4);
+  BInput(Output *p1, ListAttrDecl *p2, ListIStr *p3, ListAct *p4, ListDep *p5);
   ~BInput();
   virtual void accept(Visitor *v);
   virtual BInput *clone() const;
@@ -646,10 +660,11 @@ public:
   ActionName *actionname_;
   CFun *cfun_;
   DFun *dfun_;
+  Bool *bool_;
 
   FunList(const FunList &);
   FunList &operator=(const FunList &);
-  FunList(ActionName *p1, CFun *p2, DFun *p3);
+  FunList(ActionName *p1, CFun *p2, DFun *p3, Bool *p4);
   ~FunList();
   virtual void accept(Visitor *v);
   virtual FunList *clone() const;
@@ -668,6 +683,22 @@ public:
   virtual void accept(Visitor *v);
   virtual AName *clone() const;
   void swap(AName &);
+};
+
+class ADeps : public Dep
+{
+public:
+  String string_1;
+  String string_2;
+  Bool *bool_;
+
+  ADeps(const ADeps &);
+  ADeps &operator=(const ADeps &);
+  ADeps(String p1, String p2, Bool *p3);
+  ~ADeps();
+  virtual void accept(Visitor *v);
+  virtual ADeps *clone() const;
+  void swap(ADeps &);
 };
 
 class CombDist : public DFun
@@ -1051,6 +1082,15 @@ public:
 };
 
 ListAct* consListAct(Act* x, ListAct* xs);
+
+class ListDep : public Visitable, public std::vector<Dep*>
+{
+public:
+  virtual void accept(Visitor *v);
+  virtual ListDep *clone() const;
+};
+
+ListDep* consListDep(Dep* x, ListDep* xs);
 
 
 

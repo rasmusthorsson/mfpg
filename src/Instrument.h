@@ -14,7 +14,7 @@ template <OutputViable OutputValue> class Instrument {
 		std::vector<IString> strings;
 		const std::shared_ptr<ActionSet<OutputValue>> action_set;
 	public:
-		Instrument() = delete;
+		Instrument() {};
 		Instrument(std::initializer_list<IString>);
 		Instrument(std::vector<IString>);
 		Instrument(std::vector<IString>, std::shared_ptr<ActionSet<OutputValue>>);

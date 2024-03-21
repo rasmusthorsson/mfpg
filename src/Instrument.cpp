@@ -33,6 +33,7 @@ int Instrument<OutputValue>::makeIString(int pos, noteenums::Note start, noteenu
 	return 1;
 }
 
+
 template<OutputViable OutputValue>
 void Instrument<OutputValue>::addIString(IString s) {
 	strings.push_back(s);

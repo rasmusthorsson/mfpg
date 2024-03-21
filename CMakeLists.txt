@@ -38,7 +38,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cxxopts)
 
-file (GLOB_RECURSE DSL src/parser/Absyn.C src/parser/Parser.C src/parser/Lexer.C src/parser/Buffer.C src/ActionBuilder.cpp)
+file (GLOB_RECURSE DSL src/parser/Absyn.C src/parser/Parser.C src/parser/Lexer.C src/parser/Buffer.C src/InstrumentBuilder.cpp)
 
 file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkException.cpp src/NodeException.cpp
 	src/ConversionException.cpp src/NoteList.cpp src/IString.cpp src/impl.cpp src/Layer.cpp src/Log.cpp 

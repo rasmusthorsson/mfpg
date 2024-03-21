@@ -7,12 +7,13 @@
 #include "Absyn.H"
 
 /********************   BInput    ********************/
-BInput::BInput(Output *p1, ListAttrDecl *p2, ListIStr *p3, ListAct *p4)
+BInput::BInput(Output *p1, ListAttrDecl *p2, ListIStr *p3, ListAct *p4, ListDep *p5)
 {
   output_ = p1;
   listattrdecl_ = p2;
   lististr_ = p3;
   listact_ = p4;
+  listdep_ = p5;
 
 }
 
@@ -22,6 +23,7 @@ BInput::BInput(const BInput & other)
   listattrdecl_ = other.listattrdecl_->clone();
   lististr_ = other.lististr_->clone();
   listact_ = other.listact_->clone();
+  listdep_ = other.listdep_->clone();
 
 }
 
@@ -38,6 +40,7 @@ void BInput::swap(BInput & other)
   std::swap(listattrdecl_, other.listattrdecl_);
   std::swap(lististr_, other.lististr_);
   std::swap(listact_, other.listact_);
+  std::swap(listdep_, other.listdep_);
 
 }
 
@@ -47,6 +50,7 @@ BInput::~BInput()
   delete(listattrdecl_);
   delete(lististr_);
   delete(listact_);
+  delete(listdep_);
 
 }
 
@@ -976,11 +980,12 @@ AttrType_b *AttrType_b::clone() const
 
 
 /********************   FunList    ********************/
-FunList::FunList(ActionName *p1, CFun *p2, DFun *p3)
+FunList::FunList(ActionName *p1, CFun *p2, DFun *p3, Bool *p4)
 {
   actionname_ = p1;
   cfun_ = p2;
   dfun_ = p3;
+  bool_ = p4;
 
 }
 
@@ -989,6 +994,7 @@ FunList::FunList(const FunList & other)
   actionname_ = other.actionname_->clone();
   cfun_ = other.cfun_->clone();
   dfun_ = other.dfun_->clone();
+  bool_ = other.bool_->clone();
 
 }
 
@@ -1004,6 +1010,7 @@ void FunList::swap(FunList & other)
   std::swap(actionname_, other.actionname_);
   std::swap(cfun_, other.cfun_);
   std::swap(dfun_, other.dfun_);
+  std::swap(bool_, other.bool_);
 
 }
 
@@ -1012,6 +1019,7 @@ FunList::~FunList()
   delete(actionname_);
   delete(cfun_);
   delete(dfun_);
+  delete(bool_);
 
 }
 
@@ -1066,6 +1074,56 @@ void AName::accept(Visitor *v)
 AName *AName::clone() const
 {
   return new AName(*this);
+}
+
+
+
+/********************   ADeps    ********************/
+ADeps::ADeps(String p1, String p2, Bool *p3)
+{
+  string_1 = p1;
+  string_2 = p2;
+  bool_ = p3;
+
+}
+
+ADeps::ADeps(const ADeps & other)
+{
+  string_1 = other.string_1;
+  string_2 = other.string_2;
+  bool_ = other.bool_->clone();
+
+}
+
+ADeps &ADeps::operator=(const ADeps & other)
+{
+  ADeps tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void ADeps::swap(ADeps & other)
+{
+  std::swap(string_1, other.string_1);
+  std::swap(string_2, other.string_2);
+  std::swap(bool_, other.bool_);
+
+}
+
+ADeps::~ADeps()
+{
+  delete(bool_);
+
+}
+
+void ADeps::accept(Visitor *v)
+{
+  v->visitADeps(this);
+}
+
+ADeps *ADeps::clone() const
+{
+  return new ADeps(*this);
 }
 
 
@@ -2229,6 +2287,24 @@ ListAct *ListAct::clone() const
 }
 
 ListAct* consListAct(Act* x, ListAct* xs) {
+  xs->insert(xs->begin(), x);
+  return xs;
+}
+
+
+/********************   ListDep    ********************/
+
+void ListDep::accept(Visitor *v)
+{
+  v->visitListDep(this);
+}
+
+ListDep *ListDep::clone() const
+{
+  return new ListDep(*this);
+}
+
+ListDep* consListDep(Dep* x, ListDep* xs) {
   xs->insert(xs->begin(), x);
   return xs;
 }

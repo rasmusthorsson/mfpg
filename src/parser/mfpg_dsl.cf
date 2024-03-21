@@ -1,4 +1,4 @@
-BInput.		Input ::= "(" Output ")" "[" [AttrDecl] "]" "{" [IStr] "}" [Act] ;
+BInput.		Input ::= "(" Output ")" "[" [AttrDecl] "]" "{" [IStr] "}" [Act] "Deps:" [Dep] ;
 
 DOutput.	Output ::= "double";
 IOutput.	Output ::= "int";
@@ -21,12 +21,20 @@ NNote.		NoteDef ::= NoteDefBase "_" Integer ;
 rules NoteDefBase ::= "A" | "As" | "B" | "C" | "Cs" | "D" | "Ds" | "E" | "F" | "Fs" | "G" | "Gs" ;
 rules AttrType ::= "i" | "d" | "b" ;
 
-FunList. 	Act ::= ActionName "=" CFun1 ":" DFun1 ;
+comment "//" ; 
+comment "/*" "*/" ; 
+
+FunList. 	Act ::= ActionName "=" CFun1 ":" DFun1 "(" Bool ")" ;
 
 AName.		ActionName ::= String ;
 
 separator nonempty Act "--" ;
 terminator Act ";" ;
+
+ADeps.		Dep ::= String String Bool ;
+
+separator nonempty Dep "," ;
+terminator Dep "." ;
 
 coercions DFun 2 ;
 coercions CFun 2 ;

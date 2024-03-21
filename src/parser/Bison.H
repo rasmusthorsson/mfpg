@@ -65,43 +65,45 @@ extern int mfpg_dsl_debug;
     _MINUS = 266,                  /* _MINUS  */
     _DMINUS = 267,                 /* _DMINUS  */
     _RARROW = 268,                 /* _RARROW  */
-    _COLON = 269,                  /* _COLON  */
-    _DCOLON = 270,                 /* _DCOLON  */
-    _SEMI = 271,                   /* _SEMI  */
-    _LT = 272,                     /* _LT  */
-    _LDARROW = 273,                /* _LDARROW  */
-    _EQ = 274,                     /* _EQ  */
-    _DEQ = 275,                    /* _DEQ  */
-    _GT = 276,                     /* _GT  */
-    _GTEQ = 277,                   /* _GTEQ  */
-    _KW_A = 278,                   /* _KW_A  */
-    _KW_As = 279,                  /* _KW_As  */
-    _KW_B = 280,                   /* _KW_B  */
-    _KW_C = 281,                   /* _KW_C  */
-    _KW_Cs = 282,                  /* _KW_Cs  */
-    _KW_D = 283,                   /* _KW_D  */
-    _KW_Ds = 284,                  /* _KW_Ds  */
-    _KW_E = 285,                   /* _KW_E  */
-    _KW_F = 286,                   /* _KW_F  */
-    _KW_Fs = 287,                  /* _KW_Fs  */
-    _KW_G = 288,                   /* _KW_G  */
-    _KW_Gs = 289,                  /* _KW_Gs  */
-    _LBRACK = 290,                 /* _LBRACK  */
-    _RBRACK = 291,                 /* _RBRACK  */
-    _UNDERSCORE = 292,             /* _UNDERSCORE  */
-    _KW_b = 293,                   /* _KW_b  */
-    _KW_d = 294,                   /* _KW_d  */
-    _KW_double = 295,              /* _KW_double  */
-    _KW_false = 296,               /* _KW_false  */
-    _KW_i = 297,                   /* _KW_i  */
-    _KW_int = 298,                 /* _KW_int  */
-    _KW_true = 299,                /* _KW_true  */
-    _LBRACE = 300,                 /* _LBRACE  */
-    _DBAR = 301,                   /* _DBAR  */
-    _RBRACE = 302,                 /* _RBRACE  */
-    _STRING_ = 303,                /* _STRING_  */
-    _INTEGER_ = 304,               /* _INTEGER_  */
-    _DOUBLE_ = 305                 /* _DOUBLE_  */
+    _DOT = 269,                    /* _DOT  */
+    _COLON = 270,                  /* _COLON  */
+    _DCOLON = 271,                 /* _DCOLON  */
+    _SEMI = 272,                   /* _SEMI  */
+    _LT = 273,                     /* _LT  */
+    _LDARROW = 274,                /* _LDARROW  */
+    _EQ = 275,                     /* _EQ  */
+    _DEQ = 276,                    /* _DEQ  */
+    _GT = 277,                     /* _GT  */
+    _GTEQ = 278,                   /* _GTEQ  */
+    _KW_A = 279,                   /* _KW_A  */
+    _KW_As = 280,                  /* _KW_As  */
+    _KW_B = 281,                   /* _KW_B  */
+    _KW_C = 282,                   /* _KW_C  */
+    _KW_Cs = 283,                  /* _KW_Cs  */
+    _KW_D = 284,                   /* _KW_D  */
+    _SYMB_6 = 285,                 /* _SYMB_6  */
+    _KW_Ds = 286,                  /* _KW_Ds  */
+    _KW_E = 287,                   /* _KW_E  */
+    _KW_F = 288,                   /* _KW_F  */
+    _KW_Fs = 289,                  /* _KW_Fs  */
+    _KW_G = 290,                   /* _KW_G  */
+    _KW_Gs = 291,                  /* _KW_Gs  */
+    _LBRACK = 292,                 /* _LBRACK  */
+    _RBRACK = 293,                 /* _RBRACK  */
+    _UNDERSCORE = 294,             /* _UNDERSCORE  */
+    _KW_b = 295,                   /* _KW_b  */
+    _KW_d = 296,                   /* _KW_d  */
+    _KW_double = 297,              /* _KW_double  */
+    _KW_false = 298,               /* _KW_false  */
+    _KW_i = 299,                   /* _KW_i  */
+    _KW_int = 300,                 /* _KW_int  */
+    _KW_true = 301,                /* _KW_true  */
+    _LBRACE = 302,                 /* _LBRACE  */
+    _DBAR = 303,                   /* _DBAR  */
+    _RBRACE = 304,                 /* _RBRACE  */
+    _STRING_ = 305,                /* _STRING_  */
+    _INTEGER_ = 306,               /* _INTEGER_  */
+    _DOUBLE_ = 307                 /* _DOUBLE_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -129,6 +131,8 @@ union YYSTYPE
   Act* act_;
   ActionName* actionname_;
   ListAct* listact_;
+  Dep* dep_;
+  ListDep* listdep_;
   DFun* dfun_;
   CFun* cfun_;
   Attr* attr_;
@@ -139,7 +143,7 @@ union YYSTYPE
   Scale* scale_;
   Bool* bool_;
 
-#line 143 "Bison.H"
+#line 147 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

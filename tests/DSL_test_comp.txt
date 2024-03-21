@@ -9,7 +9,8 @@
 	2 : A_3 -> B_5 ::
 	3 : D_4 -> G_6 ;
 }
-"A1" = true || "HAND_POS" < 5 : "HAND_POS" - "HAND_POS" + 1 --
-"A2" = "FINGER" - "FINGER" > 1  : 1 --
-"A3" = "STRING" - "STRING" > 1 || "HAND_POS" - "HAND_POS" > 4 || "HAND_POS" > 5 : 10 --
-"A4" = true : "FINGER" - "FINGER" ;
+"A1" = true && "HAND_POS" < 5 : "HAND_POS" - "HAND_POS" + 1 (true) --
+"A2" = "FINGER" - "FINGER" > 1  : 1 (true) --
+"A3" = "STRING" - "STRING" > 1 && "HAND_POS" - "HAND_POS" > 4 && "HAND_POS" > 5 : 10 (true) --
+"A4" = true : "FINGER" - "FINGER" (true) ;
+Deps: 

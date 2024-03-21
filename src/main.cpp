@@ -19,7 +19,7 @@
 #include "PhysAttrMap.h"
 #include "ExValException.h"
 #include "SPSolver.h"
-#include "ActionBuilder.h"
+#include "InstrumentBuilder.h"
 #include "ParserError.H"
 #include "Parser.H"
 
@@ -118,14 +118,14 @@ int main (int argc, char *argv[]) {
 	const NoteList note_list(score);
 
 //---------------------- Instrument creation ----------------------------
-	//Patchwork solution until fixed output typing.
-	std::shared_ptr<ActionSet<int>> action_set_i(new ActionSet<int>());
-	std::shared_ptr<ActionSet<double>> action_set_d(new ActionSet<double>());
-	
-	Instrument<Distance> violin(action_set_i);
+	//Patchwork solution until fixed output typing.	
+	std::shared_ptr<Instrument<int>> violin_i;
+	std::shared_ptr<Instrument<double>> violin_d;
+
+	//If the DSL is used.
 	if (result.count("dsl")) {
 		char output = 'i';
-		ActionBuilder action_builder;
+		InstrumentBuilder instrument_builder;
 		FILE *dsl_file;
 		auto dsl_path = result["dsl"].as<std::string>();
 		dsl_file = fopen(dsl_path.c_str(), "r");
@@ -149,58 +149,44 @@ int main (int argc, char *argv[]) {
 		}
 		delete(dsl_file);
 		
-		action_builder.visitInput(parse_tree);
+		instrument_builder.visitInput(parse_tree);
 
-		output = action_builder.output;
-		for (IString s : action_builder.strings) {
-			violin.addIString(s);
-		}
-		
+		output = instrument_builder.output;
+
 		if (output == 'i') {
-			for (auto a : action_builder.int_acts) {
-				action_set_i->addAction(a, true);
-			}
-			for (auto d : action_builder.deps) {
-				action_set_i->addDependency(std::get<0>(d), std::get<1>(d), std::get<2>(d));
-			}
+			violin_i = instrument_builder.i_inst;
 		} else if (output == 'd') {
-			for (auto a : action_builder.dub_acts) {
-				action_set_d->addAction(a, true);
-			}
-			for (auto d : action_builder.deps) {
-				action_set_d->addDependency(std::get<0>(d), std::get<1>(d), std::get<2>(d));
-			}
+			violin_d = instrument_builder.d_inst;
 		}
 		
-		TUPLESIZE = action_builder.attrs.size();
-		ATTRIBUTES = action_builder.attrs;
-		ATTRIBUTE_TYPES = action_builder.attrtypes;
+		TUPLESIZE = instrument_builder.attrs.size();
+		ATTRIBUTES = instrument_builder.attrs;
+		ATTRIBUTE_TYPES = instrument_builder.attrtypes;
 
-	} else {
-		if (result.count("test")) {
-			TUPLESIZE = 3;
-			ATTRIBUTE_TYPES = "iii";
-			ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
-			if (result["test"].as<int>() == 1) {
-				action_set_i = configs::test_configuration_1();
-			} else if (result["test"].as<int>() == 2) { 
-				action_set_i = configs::test_configuration_2();
-			} else {
-				action_set_i = configs::test_configuration_1();
-			}
-		} 
-		violin.makeIString(1, Note::G_3, Note::Gs_5);
-		violin.makeIString(2, Note::D_4, Note::Ds_6);
-		violin.makeIString(3, Note::A_4, Note::As_6);
-		violin.makeIString(4, Note::E_5, Note::F_7);
+	//If the DSL is not used and test-configuration is used
+	} else if (result.count("test")) {
+		std::shared_ptr<ActionSet<int>> action_set(new ActionSet<int>());
+		if (result["test"].as<int>() == 1) {
+			action_set = configs::test_configuration_1();
+		} else if (result["test"].as<int>() == 2) {
+			action_set = configs::test_configuration_2();
+		} else {
+			action_set = configs::test_configuration_1();
+		}
+		std::shared_ptr<Instrument<int>> tmp_v(new Instrument<int>(action_set));
+		tmp_v->makeIString(1, Note::G_3, Note::Gs_5);
+		tmp_v->makeIString(2, Note::D_4, Note::Ds_6);
+		tmp_v->makeIString(3, Note::A_4, Note::As_6);
+		tmp_v->makeIString(4, Note::E_5, Note::F_7);
+		violin_i = tmp_v;
 		TUPLESIZE = 3;
 		ATTRIBUTE_TYPES = "iii";
 		ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
-	}
 
-	if (!action_set_i) {
+	//Otherwise no instrument was defined.
+	} else {
 		mfpg_log::Log::verbose_out(std::cout,
-			    "No ActionSet was defined, Aborting...\n",
+			    "No Instrument was defined, Aborting...\n",
 			    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS
 			    );
 		return -1;
@@ -209,9 +195,9 @@ int main (int argc, char *argv[]) {
 //-------------------------- Graph building/solving -------------------------
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
-		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin.getIStrings()));
+		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin_i->getIStrings()));
 		LayerList<Distance> list(note_list, note_mapper);
-	 	list.buildTransitions(violin.getActionSet());
+	 	list.buildTransitions(violin_i->getActionSet());
 		//Interactive mode allows to explore the graph interactively, very basic, used for testing.
 		if (result.count("interactive")) {
 			int row, column;

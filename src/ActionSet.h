@@ -36,14 +36,17 @@ template <OutputViable OutputValue> class ActionSet {
 		ActionSet(std::initializer_list<std::tuple<Action<OutputValue>, bool>>);
 		~ActionSet();
 		
+		//Adds an action to the action set.
 		void addAction(Action<OutputValue>, bool);
 		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
 		//already existing action.
+		int makeAction(condfun, ACCUMULATOR, distfun, ACCUMULATOR, std::string, bool);
+		//Attempts to make a new action, using default set accumulator.
 		int makeAction(condfun, distfun, std::string, bool);
 		//Adds a condition function to an action.
-		void addCondToAction(condfun, std::string);
+		void addCondToAction(condfun, ACCUMULATOR, std::string);
 		//Adds a distance function to an action.
-		void addDistToAction(distfun, std::string);
+		void addDistToAction(distfun, ACCUMULATOR, std::string);
 		//Adds a dependency, if dependent then dependency is subjected to adjustment. returns
 		//-1 on failure to insert.
 		int addDependency(std::string, std::string, bool); 
