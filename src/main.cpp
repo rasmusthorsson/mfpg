@@ -147,7 +147,8 @@ int main (int argc, char *argv[]) {
 				 	+ "\nParse error on line: " + to_string(e.getLine())), 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		}
-		delete(dsl_file);
+		fclose(dsl_file);
+		//delete(dsl_file);
 		
 		instrument_builder.visitInput(parse_tree);
 

@@ -175,42 +175,44 @@ enum yysymbol_kind_t
   YYSYMBOL__KW_false = 43,                 /* _KW_false  */
   YYSYMBOL__KW_i = 44,                     /* _KW_i  */
   YYSYMBOL__KW_int = 45,                   /* _KW_int  */
-  YYSYMBOL__KW_true = 46,                  /* _KW_true  */
-  YYSYMBOL__LBRACE = 47,                   /* _LBRACE  */
-  YYSYMBOL__DBAR = 48,                     /* _DBAR  */
-  YYSYMBOL__RBRACE = 49,                   /* _RBRACE  */
-  YYSYMBOL__STRING_ = 50,                  /* _STRING_  */
-  YYSYMBOL__INTEGER_ = 51,                 /* _INTEGER_  */
-  YYSYMBOL__DOUBLE_ = 52,                  /* _DOUBLE_  */
-  YYSYMBOL_YYACCEPT = 53,                  /* $accept  */
-  YYSYMBOL_Input = 54,                     /* Input  */
-  YYSYMBOL_Output = 55,                    /* Output  */
-  YYSYMBOL_AttrDecl = 56,                  /* AttrDecl  */
-  YYSYMBOL_ListAttrDecl = 57,              /* ListAttrDecl  */
-  YYSYMBOL_IStr = 58,                      /* IStr  */
-  YYSYMBOL_ListIStr = 59,                  /* ListIStr  */
-  YYSYMBOL_SPos = 60,                      /* SPos  */
-  YYSYMBOL_NoteDef = 61,                   /* NoteDef  */
-  YYSYMBOL_NoteDefBase = 62,               /* NoteDefBase  */
-  YYSYMBOL_AttrType = 63,                  /* AttrType  */
-  YYSYMBOL_Act = 64,                       /* Act  */
-  YYSYMBOL_ActionName = 65,                /* ActionName  */
-  YYSYMBOL_ListAct = 66,                   /* ListAct  */
-  YYSYMBOL_Dep = 67,                       /* Dep  */
-  YYSYMBOL_ListDep = 68,                   /* ListDep  */
-  YYSYMBOL_DFun = 69,                      /* DFun  */
-  YYSYMBOL_DFun1 = 70,                     /* DFun1  */
-  YYSYMBOL_DFun2 = 71,                     /* DFun2  */
-  YYSYMBOL_CFun = 72,                      /* CFun  */
-  YYSYMBOL_CFun1 = 73,                     /* CFun1  */
-  YYSYMBOL_CFun2 = 74,                     /* CFun2  */
-  YYSYMBOL_Attr = 75,                      /* Attr  */
-  YYSYMBOL_CompOp = 76,                    /* CompOp  */
-  YYSYMBOL_BoolOp = 77,                    /* BoolOp  */
-  YYSYMBOL_Num = 78,                       /* Num  */
-  YYSYMBOL_Exp = 79,                       /* Exp  */
-  YYSYMBOL_Scale = 80,                     /* Scale  */
-  YYSYMBOL_Bool = 81                       /* Bool  */
+  YYSYMBOL__KW_this = 46,                  /* _KW_this  */
+  YYSYMBOL__KW_to = 47,                    /* _KW_to  */
+  YYSYMBOL__KW_true = 48,                  /* _KW_true  */
+  YYSYMBOL__LBRACE = 49,                   /* _LBRACE  */
+  YYSYMBOL__DBAR = 50,                     /* _DBAR  */
+  YYSYMBOL__RBRACE = 51,                   /* _RBRACE  */
+  YYSYMBOL__STRING_ = 52,                  /* _STRING_  */
+  YYSYMBOL__INTEGER_ = 53,                 /* _INTEGER_  */
+  YYSYMBOL__DOUBLE_ = 54,                  /* _DOUBLE_  */
+  YYSYMBOL_YYACCEPT = 55,                  /* $accept  */
+  YYSYMBOL_Input = 56,                     /* Input  */
+  YYSYMBOL_Output = 57,                    /* Output  */
+  YYSYMBOL_AttrDecl = 58,                  /* AttrDecl  */
+  YYSYMBOL_ListAttrDecl = 59,              /* ListAttrDecl  */
+  YYSYMBOL_IStr = 60,                      /* IStr  */
+  YYSYMBOL_ListIStr = 61,                  /* ListIStr  */
+  YYSYMBOL_SPos = 62,                      /* SPos  */
+  YYSYMBOL_NoteDef = 63,                   /* NoteDef  */
+  YYSYMBOL_NoteDefBase = 64,               /* NoteDefBase  */
+  YYSYMBOL_AttrType = 65,                  /* AttrType  */
+  YYSYMBOL_Act = 66,                       /* Act  */
+  YYSYMBOL_ActionName = 67,                /* ActionName  */
+  YYSYMBOL_ListAct = 68,                   /* ListAct  */
+  YYSYMBOL_Dep = 69,                       /* Dep  */
+  YYSYMBOL_ListDep = 70,                   /* ListDep  */
+  YYSYMBOL_DFun = 71,                      /* DFun  */
+  YYSYMBOL_DFun1 = 72,                     /* DFun1  */
+  YYSYMBOL_DFun2 = 73,                     /* DFun2  */
+  YYSYMBOL_CFun = 74,                      /* CFun  */
+  YYSYMBOL_CFun1 = 75,                     /* CFun1  */
+  YYSYMBOL_CFun2 = 76,                     /* CFun2  */
+  YYSYMBOL_Attr = 77,                      /* Attr  */
+  YYSYMBOL_CompOp = 78,                    /* CompOp  */
+  YYSYMBOL_BoolOp = 79,                    /* BoolOp  */
+  YYSYMBOL_Num = 80,                       /* Num  */
+  YYSYMBOL_Exp = 81,                       /* Exp  */
+  YYSYMBOL_Scale = 82,                     /* Scale  */
+  YYSYMBOL_Bool = 83                       /* Bool  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -228,7 +230,7 @@ int yyparse(yyscan_t scanner, YYSTYPE *result);
 
 extern int yylex(YYSTYPE *lvalp, YYLTYPE *llocp, yyscan_t scanner);
 
-#line 232 "Parser.C"
+#line 234 "Parser.C"
 
 
 #ifdef short
@@ -558,16 +560,16 @@ union yyalloc
 #define YYLAST   113
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  53
+#define YYNTOKENS  55
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  29
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  74
+#define YYNRULES  76
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  122
+#define YYNSTATES  128
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   307
+#define YYMAXUTOK   309
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -611,21 +613,21 @@ static const yytype_int8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   177,   177,   179,   180,   182,   184,   185,   186,   187,
-     189,   191,   192,   193,   194,   196,   198,   199,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
-     214,   215,   216,   218,   220,   222,   223,   224,   225,   227,
-     229,   230,   231,   232,   234,   236,   237,   239,   240,   241,
-     242,   244,   246,   247,   249,   250,   251,   252,   253,   255,
-     257,   258,   259,   260,   261,   262,   264,   265,   267,   268,
-     270,   271,   273,   275,   276
+       0,   179,   179,   181,   182,   184,   186,   187,   188,   189,
+     191,   193,   194,   195,   196,   198,   200,   201,   203,   204,
+     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
+     216,   217,   218,   220,   222,   224,   225,   226,   227,   229,
+     231,   232,   233,   234,   236,   238,   239,   241,   242,   243,
+     244,   246,   248,   249,   251,   252,   253,   254,   255,   256,
+     257,   259,   261,   262,   263,   264,   265,   266,   268,   269,
+     271,   272,   274,   275,   277,   279,   280
 };
 #endif
 
@@ -648,12 +650,12 @@ static const char *const yytname[] =
   "_KW_C", "_KW_Cs", "_KW_D", "_SYMB_6", "_KW_Ds", "_KW_E", "_KW_F",
   "_KW_Fs", "_KW_G", "_KW_Gs", "_LBRACK", "_RBRACK", "_UNDERSCORE",
   "_KW_b", "_KW_d", "_KW_double", "_KW_false", "_KW_i", "_KW_int",
-  "_KW_true", "_LBRACE", "_DBAR", "_RBRACE", "_STRING_", "_INTEGER_",
-  "_DOUBLE_", "$accept", "Input", "Output", "AttrDecl", "ListAttrDecl",
-  "IStr", "ListIStr", "SPos", "NoteDef", "NoteDefBase", "AttrType", "Act",
-  "ActionName", "ListAct", "Dep", "ListDep", "DFun", "DFun1", "DFun2",
-  "CFun", "CFun1", "CFun2", "Attr", "CompOp", "BoolOp", "Num", "Exp",
-  "Scale", "Bool", YY_NULLPTR
+  "_KW_this", "_KW_to", "_KW_true", "_LBRACE", "_DBAR", "_RBRACE",
+  "_STRING_", "_INTEGER_", "_DOUBLE_", "$accept", "Input", "Output",
+  "AttrDecl", "ListAttrDecl", "IStr", "ListIStr", "SPos", "NoteDef",
+  "NoteDefBase", "AttrType", "Act", "ActionName", "ListAct", "Dep",
+  "ListDep", "DFun", "DFun1", "DFun2", "CFun", "CFun1", "CFun2", "Attr",
+  "CompOp", "BoolOp", "Num", "Exp", "Scale", "Bool", YY_NULLPTR
 };
 
 static const char *
@@ -663,7 +665,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-87)
+#define YYPACT_NINF (-95)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -677,19 +679,19 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      19,    18,    29,   -87,   -87,    35,   -87,    14,    59,    -1,
-      13,    43,   -87,   -87,   -87,    79,    59,    59,   -11,    39,
-     -87,   -87,    42,   -87,   -87,   -87,    -8,    41,    80,    42,
-      42,    44,   -14,   -87,   -87,   -87,    15,    76,    67,   -87,
-     -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
-     -87,   -87,    85,    60,    44,    44,    -2,    51,   -14,    49,
-     -87,   -87,    -2,   -87,   -87,     1,   -87,    50,   -87,    54,
-      52,   -87,   -87,   -87,    95,     2,   -87,    -5,   -87,    -2,
-     -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,    26,    39,
-      21,    51,    51,   -87,    -5,   -87,   -87,    22,   -87,    65,
-     -87,   -87,   -87,    34,   -87,   -87,   -87,    96,    65,    21,
-      -5,    39,    26,   -87,    98,   -87,    99,   -87,   -87,   -87,
-      26,   -87
+       5,   -23,    40,   -95,   -95,    37,   -95,    21,    59,    -6,
+       0,    28,   -95,   -95,   -95,    65,    59,    59,    24,    35,
+     -95,   -95,    36,   -95,   -95,   -95,    26,    39,    73,    36,
+      36,    41,    50,   -95,   -95,   -95,    -3,    71,    62,   -95,
+     -95,   -95,   -95,   -95,   -95,   -95,   -95,   -95,   -95,   -95,
+     -95,   -95,    81,    56,    41,    41,     7,    47,    50,    43,
+     -95,   -95,     7,   -95,    35,    35,   -95,     1,   -95,    30,
+     -95,    48,    11,   -95,   -95,   -95,    94,     2,     8,     8,
+     -95,    -5,   -95,     7,   -95,   -95,    35,   -20,    47,    47,
+     -95,   -95,   -95,   -95,   -95,   -95,   -95,     3,     3,    -5,
+     -95,   -95,     9,   -95,    30,   -95,   -95,     8,   -95,   -95,
+     -95,   -95,   -95,    95,    30,   -20,    -5,    35,     3,   -95,
+      97,   -95,    98,   -95,   -95,   -95,     3,   -95
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -699,33 +701,33 @@ static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     3,     4,     0,     1,     0,     0,     0,
        6,     0,    32,    31,    30,     0,     0,     8,     0,     0,
-       7,     9,     0,    59,     5,    15,    11,     0,     0,     0,
+       7,     9,     0,    61,     5,    15,    11,     0,     0,     0,
       13,    37,     0,    12,    14,    34,    35,     0,     0,    18,
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
       29,    16,     0,     0,    37,    37,     0,    42,     0,     0,
-      36,    38,     0,    74,    73,     0,    52,    58,    57,     0,
-      40,     2,    10,    17,     0,    51,    66,     0,    67,     0,
-      61,    71,    70,    63,    65,    60,    62,    64,     0,     0,
-       0,    42,    42,    54,     0,    68,    69,     0,    45,     0,
-      50,    53,    56,     0,    39,    41,    43,     0,    44,     0,
-       0,     0,     0,    47,     0,    46,    49,    55,    33,    72,
-       0,    48
+      36,    38,     0,    76,     0,     0,    75,     0,    52,     0,
+      58,     0,    40,     2,    10,    17,     0,    51,    59,    60,
+      68,     0,    69,     0,    73,    72,     0,     0,    42,    42,
+      54,    63,    65,    67,    62,    64,    66,     0,     0,     0,
+      70,    71,     0,    45,     0,    50,    53,     0,    39,    41,
+      43,    56,    57,     0,    44,     0,     0,     0,     0,    47,
+       0,    46,    49,    55,    33,    74,     0,    48
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -87,   -87,   -87,   -87,    63,   -87,    53,   -87,    48,   -87,
-     -87,   -87,   -87,    30,   -87,    -4,   -87,    16,     3,   -87,
-      46,    32,   -19,     6,   -87,   -86,   -64,   -87,   -85
+     -95,   -95,   -95,   -95,    44,   -95,    34,   -95,    49,   -95,
+     -95,   -95,   -95,    14,   -95,   -18,   -95,     6,    -8,   -95,
+      51,    27,   -19,   -74,   -95,   -94,   -67,   -95,   -79
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
        0,     2,     5,    10,    11,    26,    27,    28,    52,    53,
-      15,    36,    37,    38,    70,    71,   107,    97,    98,    74,
-      65,    66,    67,    88,    79,   100,   110,   120,    68
+      15,    36,    37,    38,    72,    73,   113,   102,   103,    76,
+      67,    68,    69,    97,    83,   105,   116,   126,    70
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -733,66 +735,66 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      24,    94,   102,    89,    62,   104,    76,    76,    29,    30,
-      39,    40,    41,    42,    43,    44,    77,    45,    46,    47,
-      48,    49,    50,    16,   114,     1,   117,    54,   109,     6,
-      17,    81,    55,    82,   121,   111,    22,    51,    80,    12,
-      13,    63,     7,    14,    64,    23,    95,    96,    23,    78,
-      78,     8,    83,    84,    80,    85,    86,    87,    99,    81,
-       3,    82,    91,     4,    63,     9,    92,    64,    83,    84,
-     103,    85,    86,    87,    81,    99,    82,    95,    96,    20,
-      21,    18,    33,    34,    60,    61,    19,   105,   106,    23,
-      31,    99,   116,    25,    35,    32,    56,    57,    58,    59,
-      73,    69,    93,   113,    90,   118,    72,   119,    75,   112,
-     108,   101,     0,   115
+      24,    99,    86,   111,   112,    98,    80,    80,   108,    54,
+      16,     1,    91,    62,    55,   115,    81,    17,    84,     3,
+      85,    88,     4,    63,   123,    89,    92,    93,    66,    94,
+      95,    96,   127,   118,    12,    13,   120,   117,    14,    84,
+       6,    85,    29,    30,     7,    78,    79,    23,   100,   101,
+      63,    82,    82,    64,    65,    66,   100,   101,     8,    23,
+      20,    21,   104,    33,    34,     9,    18,   107,    60,    61,
+     109,   110,    19,    22,    39,    40,    41,    42,    43,    44,
+     104,    45,    46,    47,    48,    49,    50,    23,    32,    25,
+      31,    56,    57,    35,    58,    59,    75,   104,   122,    71,
+      87,    90,   119,    51,   124,   114,   125,    74,   121,     0,
+     106,     0,     0,    77
 };
 
 static const yytype_int8 yycheck[] =
 {
-      19,     6,    88,    67,     6,    90,     5,     5,    16,    17,
-      24,    25,    26,    27,    28,    29,    15,    31,    32,    33,
-      34,    35,    36,    10,   109,     6,   112,    12,     6,     0,
-      17,     9,    17,    11,   120,    99,    47,    51,     4,    40,
-      41,    43,     7,    44,    46,    50,    51,    52,    50,    48,
-      48,    37,    18,    19,     4,    21,    22,    23,    77,     9,
-      42,    11,    10,    45,    43,     6,    14,    46,    18,    19,
-      89,    21,    22,    23,     9,    94,    11,    51,    52,    16,
-      17,    38,    29,    30,    54,    55,     7,    91,    92,    50,
-      49,   110,   111,    51,    50,    15,    20,    30,    13,    39,
-      51,    50,     7,     7,    50,     7,    58,     8,    62,   103,
-      94,    79,    -1,   110
+      19,     6,    69,    97,    98,    79,     5,     5,    87,    12,
+      10,     6,     4,     6,    17,     6,    15,    17,     9,    42,
+      11,    10,    45,    43,   118,    14,    18,    19,    48,    21,
+      22,    23,   126,   107,    40,    41,   115,   104,    44,     9,
+       0,    11,    16,    17,     7,    64,    65,    52,    53,    54,
+      43,    50,    50,    46,    47,    48,    53,    54,    37,    52,
+      16,    17,    81,    29,    30,     6,    38,    86,    54,    55,
+      88,    89,     7,    49,    24,    25,    26,    27,    28,    29,
+      99,    31,    32,    33,    34,    35,    36,    52,    15,    53,
+      51,    20,    30,    52,    13,    39,    53,   116,   117,    52,
+      52,     7,     7,    53,     7,    99,     8,    58,   116,    -1,
+      83,    -1,    -1,    62
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     6,    54,    42,    45,    55,     0,     7,    37,     6,
-      56,    57,    40,    41,    44,    63,    10,    17,    38,     7,
-      57,    57,    47,    50,    75,    51,    58,    59,    60,    16,
-      17,    49,    15,    59,    59,    50,    64,    65,    66,    24,
+       0,     6,    56,    42,    45,    57,     0,     7,    37,     6,
+      58,    59,    40,    41,    44,    65,    10,    17,    38,     7,
+      59,    59,    49,    52,    77,    53,    60,    61,    62,    16,
+      17,    51,    15,    61,    61,    52,    66,    67,    68,    24,
       25,    26,    27,    28,    29,    31,    32,    33,    34,    35,
-      36,    51,    61,    62,    12,    17,    20,    30,    13,    39,
-      66,    66,     6,    43,    46,    73,    74,    75,    81,    50,
-      67,    68,    61,    51,    72,    73,     5,    15,    48,    77,
-       4,     9,    11,    18,    19,    21,    22,    23,    76,    79,
-      50,    10,    14,     7,     6,    51,    52,    70,    71,    75,
-      78,    74,    78,    75,    81,    68,    68,    69,    70,     6,
-      79,    79,    76,     7,    81,    71,    75,    78,     7,     8,
-      80,    78
+      36,    53,    63,    64,    12,    17,    20,    30,    13,    39,
+      68,    68,     6,    43,    46,    47,    48,    75,    76,    77,
+      83,    52,    69,    70,    63,    53,    74,    75,    77,    77,
+       5,    15,    50,    79,     9,    11,    81,    52,    10,    14,
+       7,     4,    18,    19,    21,    22,    23,    78,    78,     6,
+      53,    54,    72,    73,    77,    80,    76,    77,    83,    70,
+      70,    80,    80,    71,    72,     6,    81,    81,    78,     7,
+      83,    73,    77,    80,     7,     8,    82,    80
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    53,    54,    55,    55,    56,    57,    57,    57,    57,
-      58,    59,    59,    59,    59,    60,    61,    61,    62,    62,
-      62,    62,    62,    62,    62,    62,    62,    62,    62,    62,
-      63,    63,    63,    64,    65,    66,    66,    66,    66,    67,
-      68,    68,    68,    68,    69,    70,    70,    71,    71,    71,
-      71,    72,    73,    73,    74,    74,    74,    74,    74,    75,
-      76,    76,    76,    76,    76,    76,    77,    77,    78,    78,
-      79,    79,    80,    81,    81
+       0,    55,    56,    57,    57,    58,    59,    59,    59,    59,
+      60,    61,    61,    61,    61,    62,    63,    63,    64,    64,
+      64,    64,    64,    64,    64,    64,    64,    64,    64,    64,
+      65,    65,    65,    66,    67,    68,    68,    68,    68,    69,
+      70,    70,    70,    70,    71,    72,    72,    73,    73,    73,
+      73,    74,    75,    75,    76,    76,    76,    76,    76,    76,
+      76,    77,    78,    78,    78,    78,    78,    78,    79,    79,
+      80,    80,    81,    81,    82,    83,    83
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -803,9 +805,9 @@ static const yytype_int8 yyr2[] =
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     8,     1,     1,     3,     0,     3,     3,
        1,     3,     0,     3,     1,     1,     3,     3,     5,     3,
-       1,     1,     1,     3,     3,     5,     3,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1
+       1,     1,     1,     3,     3,     5,     4,     4,     1,     2,
+       2,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1
 };
 
 
@@ -1394,445 +1396,457 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* Input: _LPAREN Output _RPAREN _LBRACK ListAttrDecl _RBRACK _LBRACE ListIStr _RBRACE ListAct _SYMB_6 ListDep  */
-#line 177 "mfpg_dsl.y"
+#line 179 "mfpg_dsl.y"
                                                                                                              { std::reverse((yyvsp[-7].listattrdecl_)->begin(),(yyvsp[-7].listattrdecl_)->end()) ; std::reverse((yyvsp[-4].lististr_)->begin(),(yyvsp[-4].lististr_)->end()) ; std::reverse((yyvsp[-2].listact_)->begin(),(yyvsp[-2].listact_)->end()) ; std::reverse((yyvsp[0].listdep_)->begin(),(yyvsp[0].listdep_)->end()) ;(yyval.input_) = new BInput((yyvsp[-10].output_), (yyvsp[-7].listattrdecl_), (yyvsp[-4].lististr_), (yyvsp[-2].listact_), (yyvsp[0].listdep_)); result->input_ = (yyval.input_); }
-#line 1400 "Parser.C"
+#line 1402 "Parser.C"
     break;
 
   case 3: /* Output: _KW_double  */
-#line 179 "mfpg_dsl.y"
+#line 181 "mfpg_dsl.y"
                     { (yyval.output_) = new DOutput(); result->output_ = (yyval.output_); }
-#line 1406 "Parser.C"
+#line 1408 "Parser.C"
     break;
 
   case 4: /* Output: _KW_int  */
-#line 180 "mfpg_dsl.y"
+#line 182 "mfpg_dsl.y"
             { (yyval.output_) = new IOutput(); result->output_ = (yyval.output_); }
-#line 1412 "Parser.C"
+#line 1414 "Parser.C"
     break;
 
   case 5: /* AttrDecl: _LPAREN AttrType _RPAREN Attr  */
-#line 182 "mfpg_dsl.y"
+#line 184 "mfpg_dsl.y"
                                          { (yyval.attrdecl_) = new DAttr((yyvsp[-2].attrtype_), (yyvsp[0].attr_)); result->attrdecl_ = (yyval.attrdecl_); }
-#line 1418 "Parser.C"
+#line 1420 "Parser.C"
     break;
 
   case 6: /* ListAttrDecl: AttrDecl  */
-#line 184 "mfpg_dsl.y"
+#line 186 "mfpg_dsl.y"
                         { (yyval.listattrdecl_) = new ListAttrDecl(); (yyval.listattrdecl_)->push_back((yyvsp[0].attrdecl_)); result->listattrdecl_ = (yyval.listattrdecl_); }
-#line 1424 "Parser.C"
+#line 1426 "Parser.C"
     break;
 
   case 7: /* ListAttrDecl: AttrDecl _COMMA ListAttrDecl  */
-#line 185 "mfpg_dsl.y"
+#line 187 "mfpg_dsl.y"
                                  { (yyvsp[0].listattrdecl_)->push_back((yyvsp[-2].attrdecl_)); (yyval.listattrdecl_) = (yyvsp[0].listattrdecl_); result->listattrdecl_ = (yyval.listattrdecl_); }
-#line 1430 "Parser.C"
+#line 1432 "Parser.C"
     break;
 
   case 8: /* ListAttrDecl: AttrDecl _SEMI  */
-#line 186 "mfpg_dsl.y"
+#line 188 "mfpg_dsl.y"
                    { (yyval.listattrdecl_) = new ListAttrDecl(); (yyval.listattrdecl_)->push_back((yyvsp[-1].attrdecl_)); result->listattrdecl_ = (yyval.listattrdecl_); }
-#line 1436 "Parser.C"
+#line 1438 "Parser.C"
     break;
 
   case 9: /* ListAttrDecl: AttrDecl _SEMI ListAttrDecl  */
-#line 187 "mfpg_dsl.y"
+#line 189 "mfpg_dsl.y"
                                 { (yyvsp[0].listattrdecl_)->push_back((yyvsp[-2].attrdecl_)); (yyval.listattrdecl_) = (yyvsp[0].listattrdecl_); result->listattrdecl_ = (yyval.listattrdecl_); }
-#line 1442 "Parser.C"
+#line 1444 "Parser.C"
     break;
 
   case 10: /* IStr: SPos _COLON NoteDef _RARROW NoteDef  */
-#line 189 "mfpg_dsl.y"
+#line 191 "mfpg_dsl.y"
                                            { (yyval.istr_) = new StringDef((yyvsp[-4].spos_), (yyvsp[-2].notedef_), (yyvsp[0].notedef_)); result->istr_ = (yyval.istr_); }
-#line 1448 "Parser.C"
+#line 1450 "Parser.C"
     break;
 
   case 11: /* ListIStr: IStr  */
-#line 191 "mfpg_dsl.y"
+#line 193 "mfpg_dsl.y"
                 { (yyval.lististr_) = new ListIStr(); (yyval.lististr_)->push_back((yyvsp[0].istr_)); result->lististr_ = (yyval.lististr_); }
-#line 1454 "Parser.C"
+#line 1456 "Parser.C"
     break;
 
   case 12: /* ListIStr: IStr _DCOLON ListIStr  */
-#line 192 "mfpg_dsl.y"
+#line 194 "mfpg_dsl.y"
                           { (yyvsp[0].lististr_)->push_back((yyvsp[-2].istr_)); (yyval.lististr_) = (yyvsp[0].lististr_); result->lististr_ = (yyval.lististr_); }
-#line 1460 "Parser.C"
+#line 1462 "Parser.C"
     break;
 
   case 13: /* ListIStr: IStr _SEMI  */
-#line 193 "mfpg_dsl.y"
+#line 195 "mfpg_dsl.y"
                { (yyval.lististr_) = new ListIStr(); (yyval.lististr_)->push_back((yyvsp[-1].istr_)); result->lististr_ = (yyval.lististr_); }
-#line 1466 "Parser.C"
+#line 1468 "Parser.C"
     break;
 
   case 14: /* ListIStr: IStr _SEMI ListIStr  */
-#line 194 "mfpg_dsl.y"
+#line 196 "mfpg_dsl.y"
                         { (yyvsp[0].lististr_)->push_back((yyvsp[-2].istr_)); (yyval.lististr_) = (yyvsp[0].lististr_); result->lististr_ = (yyval.lististr_); }
-#line 1472 "Parser.C"
+#line 1474 "Parser.C"
     break;
 
   case 15: /* SPos: _INTEGER_  */
-#line 196 "mfpg_dsl.y"
+#line 198 "mfpg_dsl.y"
                  { (yyval.spos_) = new ISPos((yyvsp[0]._int)); result->spos_ = (yyval.spos_); }
-#line 1478 "Parser.C"
+#line 1480 "Parser.C"
     break;
 
   case 16: /* NoteDef: _INTEGER_  */
-#line 198 "mfpg_dsl.y"
+#line 200 "mfpg_dsl.y"
                     { (yyval.notedef_) = new INote((yyvsp[0]._int)); result->notedef_ = (yyval.notedef_); }
-#line 1484 "Parser.C"
+#line 1486 "Parser.C"
     break;
 
   case 17: /* NoteDef: NoteDefBase _UNDERSCORE _INTEGER_  */
-#line 199 "mfpg_dsl.y"
+#line 201 "mfpg_dsl.y"
                                       { (yyval.notedef_) = new NNote((yyvsp[-2].notedefbase_), (yyvsp[0]._int)); result->notedef_ = (yyval.notedef_); }
-#line 1490 "Parser.C"
+#line 1492 "Parser.C"
     break;
 
   case 18: /* NoteDefBase: _KW_A  */
-#line 201 "mfpg_dsl.y"
+#line 203 "mfpg_dsl.y"
                     { (yyval.notedefbase_) = new NoteDefBase_A(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1496 "Parser.C"
+#line 1498 "Parser.C"
     break;
 
   case 19: /* NoteDefBase: _KW_As  */
-#line 202 "mfpg_dsl.y"
+#line 204 "mfpg_dsl.y"
            { (yyval.notedefbase_) = new NoteDefBase_As(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1502 "Parser.C"
+#line 1504 "Parser.C"
     break;
 
   case 20: /* NoteDefBase: _KW_B  */
-#line 203 "mfpg_dsl.y"
+#line 205 "mfpg_dsl.y"
           { (yyval.notedefbase_) = new NoteDefBase_B(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1508 "Parser.C"
+#line 1510 "Parser.C"
     break;
 
   case 21: /* NoteDefBase: _KW_C  */
-#line 204 "mfpg_dsl.y"
+#line 206 "mfpg_dsl.y"
           { (yyval.notedefbase_) = new NoteDefBase_C(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1514 "Parser.C"
+#line 1516 "Parser.C"
     break;
 
   case 22: /* NoteDefBase: _KW_Cs  */
-#line 205 "mfpg_dsl.y"
+#line 207 "mfpg_dsl.y"
            { (yyval.notedefbase_) = new NoteDefBase_Cs(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1520 "Parser.C"
+#line 1522 "Parser.C"
     break;
 
   case 23: /* NoteDefBase: _KW_D  */
-#line 206 "mfpg_dsl.y"
+#line 208 "mfpg_dsl.y"
           { (yyval.notedefbase_) = new NoteDefBase_D(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1526 "Parser.C"
+#line 1528 "Parser.C"
     break;
 
   case 24: /* NoteDefBase: _KW_Ds  */
-#line 207 "mfpg_dsl.y"
+#line 209 "mfpg_dsl.y"
            { (yyval.notedefbase_) = new NoteDefBase_Ds(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1532 "Parser.C"
+#line 1534 "Parser.C"
     break;
 
   case 25: /* NoteDefBase: _KW_E  */
-#line 208 "mfpg_dsl.y"
+#line 210 "mfpg_dsl.y"
           { (yyval.notedefbase_) = new NoteDefBase_E(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1538 "Parser.C"
+#line 1540 "Parser.C"
     break;
 
   case 26: /* NoteDefBase: _KW_F  */
-#line 209 "mfpg_dsl.y"
+#line 211 "mfpg_dsl.y"
           { (yyval.notedefbase_) = new NoteDefBase_F(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1544 "Parser.C"
+#line 1546 "Parser.C"
     break;
 
   case 27: /* NoteDefBase: _KW_Fs  */
-#line 210 "mfpg_dsl.y"
+#line 212 "mfpg_dsl.y"
            { (yyval.notedefbase_) = new NoteDefBase_Fs(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1550 "Parser.C"
+#line 1552 "Parser.C"
     break;
 
   case 28: /* NoteDefBase: _KW_G  */
-#line 211 "mfpg_dsl.y"
+#line 213 "mfpg_dsl.y"
           { (yyval.notedefbase_) = new NoteDefBase_G(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1556 "Parser.C"
+#line 1558 "Parser.C"
     break;
 
   case 29: /* NoteDefBase: _KW_Gs  */
-#line 212 "mfpg_dsl.y"
+#line 214 "mfpg_dsl.y"
            { (yyval.notedefbase_) = new NoteDefBase_Gs(); result->notedefbase_ = (yyval.notedefbase_); }
-#line 1562 "Parser.C"
+#line 1564 "Parser.C"
     break;
 
   case 30: /* AttrType: _KW_i  */
-#line 214 "mfpg_dsl.y"
+#line 216 "mfpg_dsl.y"
                  { (yyval.attrtype_) = new AttrType_i(); result->attrtype_ = (yyval.attrtype_); }
-#line 1568 "Parser.C"
+#line 1570 "Parser.C"
     break;
 
   case 31: /* AttrType: _KW_d  */
-#line 215 "mfpg_dsl.y"
+#line 217 "mfpg_dsl.y"
           { (yyval.attrtype_) = new AttrType_d(); result->attrtype_ = (yyval.attrtype_); }
-#line 1574 "Parser.C"
+#line 1576 "Parser.C"
     break;
 
   case 32: /* AttrType: _KW_b  */
-#line 216 "mfpg_dsl.y"
+#line 218 "mfpg_dsl.y"
           { (yyval.attrtype_) = new AttrType_b(); result->attrtype_ = (yyval.attrtype_); }
-#line 1580 "Parser.C"
+#line 1582 "Parser.C"
     break;
 
   case 33: /* Act: ActionName _EQ CFun1 _COLON DFun1 _LPAREN Bool _RPAREN  */
-#line 218 "mfpg_dsl.y"
+#line 220 "mfpg_dsl.y"
                                                              { (yyval.act_) = new FunList((yyvsp[-7].actionname_), (yyvsp[-5].cfun_), (yyvsp[-3].dfun_), (yyvsp[-1].bool_)); result->act_ = (yyval.act_); }
-#line 1586 "Parser.C"
+#line 1588 "Parser.C"
     break;
 
   case 34: /* ActionName: _STRING_  */
-#line 220 "mfpg_dsl.y"
+#line 222 "mfpg_dsl.y"
                       { (yyval.actionname_) = new AName((yyvsp[0]._string)); result->actionname_ = (yyval.actionname_); }
-#line 1592 "Parser.C"
+#line 1594 "Parser.C"
     break;
 
   case 35: /* ListAct: Act  */
-#line 222 "mfpg_dsl.y"
+#line 224 "mfpg_dsl.y"
               { (yyval.listact_) = new ListAct(); (yyval.listact_)->push_back((yyvsp[0].act_)); result->listact_ = (yyval.listact_); }
-#line 1598 "Parser.C"
+#line 1600 "Parser.C"
     break;
 
   case 36: /* ListAct: Act _DMINUS ListAct  */
-#line 223 "mfpg_dsl.y"
+#line 225 "mfpg_dsl.y"
                         { (yyvsp[0].listact_)->push_back((yyvsp[-2].act_)); (yyval.listact_) = (yyvsp[0].listact_); result->listact_ = (yyval.listact_); }
-#line 1604 "Parser.C"
+#line 1606 "Parser.C"
     break;
 
   case 37: /* ListAct: %empty  */
-#line 224 "mfpg_dsl.y"
+#line 226 "mfpg_dsl.y"
                 { (yyval.listact_) = new ListAct(); result->listact_ = (yyval.listact_); }
-#line 1610 "Parser.C"
+#line 1612 "Parser.C"
     break;
 
   case 38: /* ListAct: Act _SEMI ListAct  */
-#line 225 "mfpg_dsl.y"
+#line 227 "mfpg_dsl.y"
                       { (yyvsp[0].listact_)->push_back((yyvsp[-2].act_)); (yyval.listact_) = (yyvsp[0].listact_); result->listact_ = (yyval.listact_); }
-#line 1616 "Parser.C"
+#line 1618 "Parser.C"
     break;
 
   case 39: /* Dep: _STRING_ _STRING_ Bool  */
-#line 227 "mfpg_dsl.y"
+#line 229 "mfpg_dsl.y"
                              { (yyval.dep_) = new ADeps((yyvsp[-2]._string), (yyvsp[-1]._string), (yyvsp[0].bool_)); result->dep_ = (yyval.dep_); }
-#line 1622 "Parser.C"
+#line 1624 "Parser.C"
     break;
 
   case 40: /* ListDep: Dep  */
-#line 229 "mfpg_dsl.y"
+#line 231 "mfpg_dsl.y"
               { (yyval.listdep_) = new ListDep(); (yyval.listdep_)->push_back((yyvsp[0].dep_)); result->listdep_ = (yyval.listdep_); }
-#line 1628 "Parser.C"
+#line 1630 "Parser.C"
     break;
 
   case 41: /* ListDep: Dep _COMMA ListDep  */
-#line 230 "mfpg_dsl.y"
+#line 232 "mfpg_dsl.y"
                        { (yyvsp[0].listdep_)->push_back((yyvsp[-2].dep_)); (yyval.listdep_) = (yyvsp[0].listdep_); result->listdep_ = (yyval.listdep_); }
-#line 1634 "Parser.C"
+#line 1636 "Parser.C"
     break;
 
   case 42: /* ListDep: %empty  */
-#line 231 "mfpg_dsl.y"
+#line 233 "mfpg_dsl.y"
                 { (yyval.listdep_) = new ListDep(); result->listdep_ = (yyval.listdep_); }
-#line 1640 "Parser.C"
+#line 1642 "Parser.C"
     break;
 
   case 43: /* ListDep: Dep _DOT ListDep  */
-#line 232 "mfpg_dsl.y"
+#line 234 "mfpg_dsl.y"
                      { (yyvsp[0].listdep_)->push_back((yyvsp[-2].dep_)); (yyval.listdep_) = (yyvsp[0].listdep_); result->listdep_ = (yyval.listdep_); }
-#line 1646 "Parser.C"
+#line 1648 "Parser.C"
     break;
 
   case 44: /* DFun: DFun1  */
-#line 234 "mfpg_dsl.y"
+#line 236 "mfpg_dsl.y"
              { (yyval.dfun_) = (yyvsp[0].dfun_); result->dfun_ = (yyval.dfun_); }
-#line 1652 "Parser.C"
+#line 1654 "Parser.C"
     break;
 
   case 45: /* DFun1: DFun2  */
-#line 236 "mfpg_dsl.y"
+#line 238 "mfpg_dsl.y"
               { (yyval.dfun_) = (yyvsp[0].dfun_); result->dfun_ = (yyval.dfun_); }
-#line 1658 "Parser.C"
+#line 1660 "Parser.C"
     break;
 
   case 46: /* DFun1: DFun1 Exp DFun2  */
-#line 237 "mfpg_dsl.y"
+#line 239 "mfpg_dsl.y"
                     { (yyval.dfun_) = new CombDist((yyvsp[-2].dfun_), (yyvsp[-1].exp_), (yyvsp[0].dfun_)); result->dfun_ = (yyval.dfun_); }
-#line 1664 "Parser.C"
+#line 1666 "Parser.C"
     break;
 
   case 47: /* DFun2: _LPAREN DFun _RPAREN  */
-#line 239 "mfpg_dsl.y"
+#line 241 "mfpg_dsl.y"
                              { (yyval.dfun_) = (yyvsp[-1].dfun_); result->dfun_ = (yyval.dfun_); }
-#line 1670 "Parser.C"
+#line 1672 "Parser.C"
     break;
 
   case 48: /* DFun2: Attr Exp Attr Scale Num  */
-#line 240 "mfpg_dsl.y"
+#line 242 "mfpg_dsl.y"
                             { (yyval.dfun_) = new ScaledDist((yyvsp[-4].attr_), (yyvsp[-3].exp_), (yyvsp[-2].attr_), (yyvsp[-1].scale_), (yyvsp[0].num_)); result->dfun_ = (yyval.dfun_); }
-#line 1676 "Parser.C"
+#line 1678 "Parser.C"
     break;
 
   case 49: /* DFun2: Attr Exp Attr  */
-#line 241 "mfpg_dsl.y"
+#line 243 "mfpg_dsl.y"
                   { (yyval.dfun_) = new DirectDist((yyvsp[-2].attr_), (yyvsp[-1].exp_), (yyvsp[0].attr_)); result->dfun_ = (yyval.dfun_); }
-#line 1682 "Parser.C"
+#line 1684 "Parser.C"
     break;
 
   case 50: /* DFun2: Num  */
-#line 242 "mfpg_dsl.y"
+#line 244 "mfpg_dsl.y"
         { (yyval.dfun_) = new ConstDist((yyvsp[0].num_)); result->dfun_ = (yyval.dfun_); }
-#line 1688 "Parser.C"
+#line 1690 "Parser.C"
     break;
 
   case 51: /* CFun: CFun1  */
-#line 244 "mfpg_dsl.y"
+#line 246 "mfpg_dsl.y"
              { (yyval.cfun_) = (yyvsp[0].cfun_); result->cfun_ = (yyval.cfun_); }
-#line 1694 "Parser.C"
+#line 1696 "Parser.C"
     break;
 
   case 52: /* CFun1: CFun2  */
-#line 246 "mfpg_dsl.y"
+#line 248 "mfpg_dsl.y"
               { (yyval.cfun_) = (yyvsp[0].cfun_); result->cfun_ = (yyval.cfun_); }
-#line 1700 "Parser.C"
+#line 1702 "Parser.C"
     break;
 
   case 53: /* CFun1: CFun1 BoolOp CFun2  */
-#line 247 "mfpg_dsl.y"
+#line 249 "mfpg_dsl.y"
                        { (yyval.cfun_) = new CombCond((yyvsp[-2].cfun_), (yyvsp[-1].boolop_), (yyvsp[0].cfun_)); result->cfun_ = (yyval.cfun_); }
-#line 1706 "Parser.C"
+#line 1708 "Parser.C"
     break;
 
   case 54: /* CFun2: _LPAREN CFun _RPAREN  */
-#line 249 "mfpg_dsl.y"
+#line 251 "mfpg_dsl.y"
                              { (yyval.cfun_) = (yyvsp[-1].cfun_); result->cfun_ = (yyval.cfun_); }
-#line 1712 "Parser.C"
+#line 1714 "Parser.C"
     break;
 
   case 55: /* CFun2: Attr Exp Attr CompOp Num  */
-#line 250 "mfpg_dsl.y"
-                             { (yyval.cfun_) = new CompCond((yyvsp[-4].attr_), (yyvsp[-3].exp_), (yyvsp[-2].attr_), (yyvsp[-1].compop_), (yyvsp[0].num_)); result->cfun_ = (yyval.cfun_); }
-#line 1718 "Parser.C"
-    break;
-
-  case 56: /* CFun2: Attr CompOp Num  */
-#line 251 "mfpg_dsl.y"
-                    { (yyval.cfun_) = new ValueCond((yyvsp[-2].attr_), (yyvsp[-1].compop_), (yyvsp[0].num_)); result->cfun_ = (yyval.cfun_); }
-#line 1724 "Parser.C"
-    break;
-
-  case 57: /* CFun2: Bool  */
 #line 252 "mfpg_dsl.y"
-         { (yyval.cfun_) = new BoolCond((yyvsp[0].bool_)); result->cfun_ = (yyval.cfun_); }
-#line 1730 "Parser.C"
+                             { (yyval.cfun_) = new CompCond((yyvsp[-4].attr_), (yyvsp[-3].exp_), (yyvsp[-2].attr_), (yyvsp[-1].compop_), (yyvsp[0].num_)); result->cfun_ = (yyval.cfun_); }
+#line 1720 "Parser.C"
     break;
 
-  case 58: /* CFun2: Attr  */
+  case 56: /* CFun2: _KW_this Attr CompOp Num  */
 #line 253 "mfpg_dsl.y"
-         { (yyval.cfun_) = new AttrCond((yyvsp[0].attr_)); result->cfun_ = (yyval.cfun_); }
-#line 1736 "Parser.C"
+                             { (yyval.cfun_) = new FrValueCond((yyvsp[-2].attr_), (yyvsp[-1].compop_), (yyvsp[0].num_)); result->cfun_ = (yyval.cfun_); }
+#line 1726 "Parser.C"
     break;
 
-  case 59: /* Attr: _STRING_  */
+  case 57: /* CFun2: _KW_to Attr CompOp Num  */
+#line 254 "mfpg_dsl.y"
+                           { (yyval.cfun_) = new ToValueCond((yyvsp[-2].attr_), (yyvsp[-1].compop_), (yyvsp[0].num_)); result->cfun_ = (yyval.cfun_); }
+#line 1732 "Parser.C"
+    break;
+
+  case 58: /* CFun2: Bool  */
 #line 255 "mfpg_dsl.y"
-                { (yyval.attr_) = new EAttr((yyvsp[0]._string)); result->attr_ = (yyval.attr_); }
-#line 1742 "Parser.C"
+         { (yyval.cfun_) = new BoolCond((yyvsp[0].bool_)); result->cfun_ = (yyval.cfun_); }
+#line 1738 "Parser.C"
     break;
 
-  case 60: /* CompOp: _DEQ  */
+  case 59: /* CFun2: _KW_this Attr  */
+#line 256 "mfpg_dsl.y"
+                  { (yyval.cfun_) = new FrAttrCond((yyvsp[0].attr_)); result->cfun_ = (yyval.cfun_); }
+#line 1744 "Parser.C"
+    break;
+
+  case 60: /* CFun2: _KW_to Attr  */
 #line 257 "mfpg_dsl.y"
-              { (yyval.compop_) = new Eq(); result->compop_ = (yyval.compop_); }
-#line 1748 "Parser.C"
+                { (yyval.cfun_) = new ToAttrCond((yyvsp[0].attr_)); result->cfun_ = (yyval.cfun_); }
+#line 1750 "Parser.C"
     break;
 
-  case 61: /* CompOp: _BANGEQ  */
-#line 258 "mfpg_dsl.y"
-            { (yyval.compop_) = new NEq(); result->compop_ = (yyval.compop_); }
-#line 1754 "Parser.C"
-    break;
-
-  case 62: /* CompOp: _GT  */
+  case 61: /* Attr: _STRING_  */
 #line 259 "mfpg_dsl.y"
-        { (yyval.compop_) = new Gt(); result->compop_ = (yyval.compop_); }
-#line 1760 "Parser.C"
+                { (yyval.attr_) = new EAttr((yyvsp[0]._string)); result->attr_ = (yyval.attr_); }
+#line 1756 "Parser.C"
     break;
 
-  case 63: /* CompOp: _LT  */
-#line 260 "mfpg_dsl.y"
-        { (yyval.compop_) = new Lt(); result->compop_ = (yyval.compop_); }
-#line 1766 "Parser.C"
-    break;
-
-  case 64: /* CompOp: _GTEQ  */
+  case 62: /* CompOp: _DEQ  */
 #line 261 "mfpg_dsl.y"
-          { (yyval.compop_) = new Gte(); result->compop_ = (yyval.compop_); }
-#line 1772 "Parser.C"
+              { (yyval.compop_) = new Eq(); result->compop_ = (yyval.compop_); }
+#line 1762 "Parser.C"
     break;
 
-  case 65: /* CompOp: _LDARROW  */
+  case 63: /* CompOp: _BANGEQ  */
 #line 262 "mfpg_dsl.y"
-             { (yyval.compop_) = new Lte(); result->compop_ = (yyval.compop_); }
-#line 1778 "Parser.C"
+            { (yyval.compop_) = new NEq(); result->compop_ = (yyval.compop_); }
+#line 1768 "Parser.C"
     break;
 
-  case 66: /* BoolOp: _DAMP  */
+  case 64: /* CompOp: _GT  */
+#line 263 "mfpg_dsl.y"
+        { (yyval.compop_) = new Gt(); result->compop_ = (yyval.compop_); }
+#line 1774 "Parser.C"
+    break;
+
+  case 65: /* CompOp: _LT  */
 #line 264 "mfpg_dsl.y"
-               { (yyval.boolop_) = new And(); result->boolop_ = (yyval.boolop_); }
-#line 1784 "Parser.C"
+        { (yyval.compop_) = new Lt(); result->compop_ = (yyval.compop_); }
+#line 1780 "Parser.C"
     break;
 
-  case 67: /* BoolOp: _DBAR  */
+  case 66: /* CompOp: _GTEQ  */
 #line 265 "mfpg_dsl.y"
-          { (yyval.boolop_) = new Or(); result->boolop_ = (yyval.boolop_); }
-#line 1790 "Parser.C"
+          { (yyval.compop_) = new Gte(); result->compop_ = (yyval.compop_); }
+#line 1786 "Parser.C"
     break;
 
-  case 68: /* Num: _INTEGER_  */
-#line 267 "mfpg_dsl.y"
-                { (yyval.num_) = new CInt((yyvsp[0]._int)); result->num_ = (yyval.num_); }
-#line 1796 "Parser.C"
+  case 67: /* CompOp: _LDARROW  */
+#line 266 "mfpg_dsl.y"
+             { (yyval.compop_) = new Lte(); result->compop_ = (yyval.compop_); }
+#line 1792 "Parser.C"
     break;
 
-  case 69: /* Num: _DOUBLE_  */
+  case 68: /* BoolOp: _DAMP  */
 #line 268 "mfpg_dsl.y"
-             { (yyval.num_) = new CDouble((yyvsp[0]._double)); result->num_ = (yyval.num_); }
-#line 1802 "Parser.C"
+               { (yyval.boolop_) = new And(); result->boolop_ = (yyval.boolop_); }
+#line 1798 "Parser.C"
     break;
 
-  case 70: /* Exp: _MINUS  */
-#line 270 "mfpg_dsl.y"
-             { (yyval.exp_) = new ESub(); result->exp_ = (yyval.exp_); }
-#line 1808 "Parser.C"
+  case 69: /* BoolOp: _DBAR  */
+#line 269 "mfpg_dsl.y"
+          { (yyval.boolop_) = new Or(); result->boolop_ = (yyval.boolop_); }
+#line 1804 "Parser.C"
     break;
 
-  case 71: /* Exp: _PLUS  */
+  case 70: /* Num: _INTEGER_  */
 #line 271 "mfpg_dsl.y"
-          { (yyval.exp_) = new EPlus(); result->exp_ = (yyval.exp_); }
-#line 1814 "Parser.C"
+                { (yyval.num_) = new CInt((yyvsp[0]._int)); result->num_ = (yyval.num_); }
+#line 1810 "Parser.C"
     break;
 
-  case 72: /* Scale: _STAR  */
-#line 273 "mfpg_dsl.y"
-              { (yyval.scale_) = new SMul(); result->scale_ = (yyval.scale_); }
-#line 1820 "Parser.C"
+  case 71: /* Num: _DOUBLE_  */
+#line 272 "mfpg_dsl.y"
+             { (yyval.num_) = new CDouble((yyvsp[0]._double)); result->num_ = (yyval.num_); }
+#line 1816 "Parser.C"
     break;
 
-  case 73: /* Bool: _KW_true  */
+  case 72: /* Exp: _MINUS  */
+#line 274 "mfpg_dsl.y"
+             { (yyval.exp_) = new ESub(); result->exp_ = (yyval.exp_); }
+#line 1822 "Parser.C"
+    break;
+
+  case 73: /* Exp: _PLUS  */
 #line 275 "mfpg_dsl.y"
+          { (yyval.exp_) = new EPlus(); result->exp_ = (yyval.exp_); }
+#line 1828 "Parser.C"
+    break;
+
+  case 74: /* Scale: _STAR  */
+#line 277 "mfpg_dsl.y"
+              { (yyval.scale_) = new SMul(); result->scale_ = (yyval.scale_); }
+#line 1834 "Parser.C"
+    break;
+
+  case 75: /* Bool: _KW_true  */
+#line 279 "mfpg_dsl.y"
                 { (yyval.bool_) = new VTrue(); result->bool_ = (yyval.bool_); }
-#line 1826 "Parser.C"
+#line 1840 "Parser.C"
     break;
 
-  case 74: /* Bool: _KW_false  */
-#line 276 "mfpg_dsl.y"
+  case 76: /* Bool: _KW_false  */
+#line 280 "mfpg_dsl.y"
               { (yyval.bool_) = new VFalse(); result->bool_ = (yyval.bool_); }
-#line 1832 "Parser.C"
+#line 1846 "Parser.C"
     break;
 
 
-#line 1836 "Parser.C"
+#line 1850 "Parser.C"
 
       default: break;
     }
@@ -2030,7 +2044,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 279 "mfpg_dsl.y"
+#line 283 "mfpg_dsl.y"
 
 
 

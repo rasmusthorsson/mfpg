@@ -345,13 +345,37 @@ void InstrumentBuilder::visitCompCond(CompCond *comp_cond)
 	}
 }
 
-void InstrumentBuilder::visitValueCond(ValueCond *value_cond)
+void InstrumentBuilder::visitFrValueCond(FrValueCond *fr_value_cond)
 {
 	ACCUMULATOR tmp_acc = acc;
-	if (value_cond->attr_) value_cond->attr_->accept(this);
+	if (fr_value_cond->attr_) fr_value_cond->attr_->accept(this);
 	std::string attr = str;
-	if (value_cond->compop_) value_cond->compop_->accept(this);
-	if (value_cond->num_) value_cond->num_->accept(this);
+	if (fr_value_cond->compop_) fr_value_cond->compop_->accept(this);
+	if (fr_value_cond->num_) fr_value_cond->num_->accept(this);
+	if (output == 'i') {
+		std::function<int_fun> comp_fun = i_fun;
+		int num = integer;
+		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
+			return (comp_fun(num, t1.getVal(attr).getI()));	
+		};
+		a_int.addCondFun(cfun, tmp_acc);
+	} else if (output == 'd') {
+		std::function<dub_fun> comp_fun = d_fun;
+		double num = dub;
+		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
+			return (comp_fun(num, t1.getVal(attr).getD()));	
+		};
+		a_dub.addCondFun(cfun, tmp_acc);
+	}
+}
+
+void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
+{
+	ACCUMULATOR tmp_acc = acc;
+	if (to_value_cond->attr_) to_value_cond->attr_->accept(this);
+	std::string attr = str;
+	if (to_value_cond->compop_) to_value_cond->compop_->accept(this);
+	if (to_value_cond->num_) to_value_cond->num_->accept(this);
 	if (output == 'i') {
 		std::function<int_fun> comp_fun = i_fun;
 		int num = integer;
@@ -384,13 +408,28 @@ void InstrumentBuilder::visitBoolCond(BoolCond *bool_cond)
 	}
 }
 
-void InstrumentBuilder::visitAttrCond(AttrCond *attr_cond)
+void InstrumentBuilder::visitFrAttrCond(FrAttrCond *fr_attr_cond)
 {
 	ACCUMULATOR tmp_acc = acc;
-	if (attr_cond->attr_) attr_cond->attr_->accept(this);
+	if (fr_attr_cond->attr_) fr_attr_cond->attr_->accept(this);
 	std::string attr = str;
 	std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
 		return t1.getVal(attr);
+	};
+	if (output == 'i') {
+		a_int.addCondFun(cfun, tmp_acc);
+	} else if (output == 'd') {
+		a_dub.addCondFun(cfun, tmp_acc);
+	}
+}
+
+void InstrumentBuilder::visitToAttrCond(ToAttrCond *to_attr_cond)
+{
+	ACCUMULATOR tmp_acc = acc;
+	if (to_attr_cond->attr_) to_attr_cond->attr_->accept(this);
+	std::string attr = str;
+	std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
+		return t2.getVal(attr);
 	};
 	if (output == 'i') {
 		a_int.addCondFun(cfun, tmp_acc);
@@ -513,9 +552,15 @@ void InstrumentBuilder::visitCDouble(CDouble *c_double)
 void InstrumentBuilder::visitESub(ESub *e_sub)
 {
 	acc = ACCUMULATOR::MINUS; //TODO Join these together
-	e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
-		return a - b;		
-	};
+	if (output == 'i') {
+		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
+			return abs((int)(a - b));		
+		};
+	} else if (output == 'd') {
+		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
+			return abs((double)(a - b));		
+		};
+	}
 }
 
 void InstrumentBuilder::visitEPlus(EPlus *e_plus)

@@ -1448,8 +1448,8 @@ CompCond *CompCond::clone() const
 
 
 
-/********************   ValueCond    ********************/
-ValueCond::ValueCond(Attr *p1, CompOp *p2, Num *p3)
+/********************   FrValueCond    ********************/
+FrValueCond::FrValueCond(Attr *p1, CompOp *p2, Num *p3)
 {
   attr_ = p1;
   compop_ = p2;
@@ -1457,7 +1457,7 @@ ValueCond::ValueCond(Attr *p1, CompOp *p2, Num *p3)
 
 }
 
-ValueCond::ValueCond(const ValueCond & other)
+FrValueCond::FrValueCond(const FrValueCond & other)
 {
   attr_ = other.attr_->clone();
   compop_ = other.compop_->clone();
@@ -1465,14 +1465,14 @@ ValueCond::ValueCond(const ValueCond & other)
 
 }
 
-ValueCond &ValueCond::operator=(const ValueCond & other)
+FrValueCond &FrValueCond::operator=(const FrValueCond & other)
 {
-  ValueCond tmp(other);
+  FrValueCond tmp(other);
   swap(tmp);
   return *this;
 }
 
-void ValueCond::swap(ValueCond & other)
+void FrValueCond::swap(FrValueCond & other)
 {
   std::swap(attr_, other.attr_);
   std::swap(compop_, other.compop_);
@@ -1480,7 +1480,7 @@ void ValueCond::swap(ValueCond & other)
 
 }
 
-ValueCond::~ValueCond()
+FrValueCond::~FrValueCond()
 {
   delete(attr_);
   delete(compop_);
@@ -1488,14 +1488,66 @@ ValueCond::~ValueCond()
 
 }
 
-void ValueCond::accept(Visitor *v)
+void FrValueCond::accept(Visitor *v)
 {
-  v->visitValueCond(this);
+  v->visitFrValueCond(this);
 }
 
-ValueCond *ValueCond::clone() const
+FrValueCond *FrValueCond::clone() const
 {
-  return new ValueCond(*this);
+  return new FrValueCond(*this);
+}
+
+
+
+/********************   ToValueCond    ********************/
+ToValueCond::ToValueCond(Attr *p1, CompOp *p2, Num *p3)
+{
+  attr_ = p1;
+  compop_ = p2;
+  num_ = p3;
+
+}
+
+ToValueCond::ToValueCond(const ToValueCond & other)
+{
+  attr_ = other.attr_->clone();
+  compop_ = other.compop_->clone();
+  num_ = other.num_->clone();
+
+}
+
+ToValueCond &ToValueCond::operator=(const ToValueCond & other)
+{
+  ToValueCond tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void ToValueCond::swap(ToValueCond & other)
+{
+  std::swap(attr_, other.attr_);
+  std::swap(compop_, other.compop_);
+  std::swap(num_, other.num_);
+
+}
+
+ToValueCond::~ToValueCond()
+{
+  delete(attr_);
+  delete(compop_);
+  delete(num_);
+
+}
+
+void ToValueCond::accept(Visitor *v)
+{
+  v->visitToValueCond(this);
+}
+
+ToValueCond *ToValueCond::clone() const
+{
+  return new ToValueCond(*this);
 }
 
 
@@ -1544,46 +1596,90 @@ BoolCond *BoolCond::clone() const
 
 
 
-/********************   AttrCond    ********************/
-AttrCond::AttrCond(Attr *p1)
+/********************   FrAttrCond    ********************/
+FrAttrCond::FrAttrCond(Attr *p1)
 {
   attr_ = p1;
 
 }
 
-AttrCond::AttrCond(const AttrCond & other)
+FrAttrCond::FrAttrCond(const FrAttrCond & other)
 {
   attr_ = other.attr_->clone();
 
 }
 
-AttrCond &AttrCond::operator=(const AttrCond & other)
+FrAttrCond &FrAttrCond::operator=(const FrAttrCond & other)
 {
-  AttrCond tmp(other);
+  FrAttrCond tmp(other);
   swap(tmp);
   return *this;
 }
 
-void AttrCond::swap(AttrCond & other)
+void FrAttrCond::swap(FrAttrCond & other)
 {
   std::swap(attr_, other.attr_);
 
 }
 
-AttrCond::~AttrCond()
+FrAttrCond::~FrAttrCond()
 {
   delete(attr_);
 
 }
 
-void AttrCond::accept(Visitor *v)
+void FrAttrCond::accept(Visitor *v)
 {
-  v->visitAttrCond(this);
+  v->visitFrAttrCond(this);
 }
 
-AttrCond *AttrCond::clone() const
+FrAttrCond *FrAttrCond::clone() const
 {
-  return new AttrCond(*this);
+  return new FrAttrCond(*this);
+}
+
+
+
+/********************   ToAttrCond    ********************/
+ToAttrCond::ToAttrCond(Attr *p1)
+{
+  attr_ = p1;
+
+}
+
+ToAttrCond::ToAttrCond(const ToAttrCond & other)
+{
+  attr_ = other.attr_->clone();
+
+}
+
+ToAttrCond &ToAttrCond::operator=(const ToAttrCond & other)
+{
+  ToAttrCond tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void ToAttrCond::swap(ToAttrCond & other)
+{
+  std::swap(attr_, other.attr_);
+
+}
+
+ToAttrCond::~ToAttrCond()
+{
+  delete(attr_);
+
+}
+
+void ToAttrCond::accept(Visitor *v)
+{
+  v->visitToAttrCond(this);
+}
+
+ToAttrCond *ToAttrCond::clone() const
+{
+  return new ToAttrCond(*this);
 }
 
 

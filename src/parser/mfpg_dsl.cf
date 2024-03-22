@@ -46,9 +46,11 @@ ConstDist.	DFun2 ::= Num ;
 
 CombCond.	CFun1 ::= CFun1 BoolOp CFun2 ;
 CompCond.	CFun2 ::= Attr Exp Attr CompOp Num ;
-ValueCond.	CFun2 ::= Attr CompOp Num ;
+FrValueCond.	CFun2 ::= "this" Attr CompOp Num ; 
+ToValueCond.	CFun2 ::= "to" Attr CompOp Num ; 
 BoolCond.	CFun2 ::= Bool ;
-AttrCond.	CFun2 ::= Attr ;
+FrAttrCond.	CFun2 ::= "this" Attr ;
+ToAttrCond.	CFun2 ::= "to" Attr ;
 
 EAttr.		Attr ::= String ;
 

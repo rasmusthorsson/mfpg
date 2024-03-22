@@ -97,13 +97,15 @@ extern int mfpg_dsl_debug;
     _KW_false = 298,               /* _KW_false  */
     _KW_i = 299,                   /* _KW_i  */
     _KW_int = 300,                 /* _KW_int  */
-    _KW_true = 301,                /* _KW_true  */
-    _LBRACE = 302,                 /* _LBRACE  */
-    _DBAR = 303,                   /* _DBAR  */
-    _RBRACE = 304,                 /* _RBRACE  */
-    _STRING_ = 305,                /* _STRING_  */
-    _INTEGER_ = 306,               /* _INTEGER_  */
-    _DOUBLE_ = 307                 /* _DOUBLE_  */
+    _KW_this = 301,                /* _KW_this  */
+    _KW_to = 302,                  /* _KW_to  */
+    _KW_true = 303,                /* _KW_true  */
+    _LBRACE = 304,                 /* _LBRACE  */
+    _DBAR = 305,                   /* _DBAR  */
+    _RBRACE = 306,                 /* _RBRACE  */
+    _STRING_ = 307,                /* _STRING_  */
+    _INTEGER_ = 308,               /* _INTEGER_  */
+    _DOUBLE_ = 309                 /* _DOUBLE_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -143,7 +145,7 @@ union YYSTYPE
   Scale* scale_;
   Bool* bool_;
 
-#line 147 "Bison.H"
+#line 149 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

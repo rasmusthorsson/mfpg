@@ -73,9 +73,11 @@ class DirectDist;
 class ConstDist;
 class CombCond;
 class CompCond;
-class ValueCond;
+class FrValueCond;
+class ToValueCond;
 class BoolCond;
-class AttrCond;
+class FrAttrCond;
+class ToAttrCond;
 class EAttr;
 class Eq;
 class NEq;
@@ -155,9 +157,11 @@ public:
   virtual void visitConstDist(ConstDist *p) = 0;
   virtual void visitCombCond(CombCond *p) = 0;
   virtual void visitCompCond(CompCond *p) = 0;
-  virtual void visitValueCond(ValueCond *p) = 0;
+  virtual void visitFrValueCond(FrValueCond *p) = 0;
+  virtual void visitToValueCond(ToValueCond *p) = 0;
   virtual void visitBoolCond(BoolCond *p) = 0;
-  virtual void visitAttrCond(AttrCond *p) = 0;
+  virtual void visitFrAttrCond(FrAttrCond *p) = 0;
+  virtual void visitToAttrCond(ToAttrCond *p) = 0;
   virtual void visitEAttr(EAttr *p) = 0;
   virtual void visitEq(Eq *p) = 0;
   virtual void visitNEq(NEq *p) = 0;
@@ -799,20 +803,36 @@ public:
   void swap(CompCond &);
 };
 
-class ValueCond : public CFun
+class FrValueCond : public CFun
 {
 public:
   Attr *attr_;
   CompOp *compop_;
   Num *num_;
 
-  ValueCond(const ValueCond &);
-  ValueCond &operator=(const ValueCond &);
-  ValueCond(Attr *p1, CompOp *p2, Num *p3);
-  ~ValueCond();
+  FrValueCond(const FrValueCond &);
+  FrValueCond &operator=(const FrValueCond &);
+  FrValueCond(Attr *p1, CompOp *p2, Num *p3);
+  ~FrValueCond();
   virtual void accept(Visitor *v);
-  virtual ValueCond *clone() const;
-  void swap(ValueCond &);
+  virtual FrValueCond *clone() const;
+  void swap(FrValueCond &);
+};
+
+class ToValueCond : public CFun
+{
+public:
+  Attr *attr_;
+  CompOp *compop_;
+  Num *num_;
+
+  ToValueCond(const ToValueCond &);
+  ToValueCond &operator=(const ToValueCond &);
+  ToValueCond(Attr *p1, CompOp *p2, Num *p3);
+  ~ToValueCond();
+  virtual void accept(Visitor *v);
+  virtual ToValueCond *clone() const;
+  void swap(ToValueCond &);
 };
 
 class BoolCond : public CFun
@@ -829,18 +849,32 @@ public:
   void swap(BoolCond &);
 };
 
-class AttrCond : public CFun
+class FrAttrCond : public CFun
 {
 public:
   Attr *attr_;
 
-  AttrCond(const AttrCond &);
-  AttrCond &operator=(const AttrCond &);
-  AttrCond(Attr *p1);
-  ~AttrCond();
+  FrAttrCond(const FrAttrCond &);
+  FrAttrCond &operator=(const FrAttrCond &);
+  FrAttrCond(Attr *p1);
+  ~FrAttrCond();
   virtual void accept(Visitor *v);
-  virtual AttrCond *clone() const;
-  void swap(AttrCond &);
+  virtual FrAttrCond *clone() const;
+  void swap(FrAttrCond &);
+};
+
+class ToAttrCond : public CFun
+{
+public:
+  Attr *attr_;
+
+  ToAttrCond(const ToAttrCond &);
+  ToAttrCond &operator=(const ToAttrCond &);
+  ToAttrCond(Attr *p1);
+  ~ToAttrCond();
+  virtual void accept(Visitor *v);
+  virtual ToAttrCond *clone() const;
+  void swap(ToAttrCond &);
 };
 
 class EAttr : public Attr

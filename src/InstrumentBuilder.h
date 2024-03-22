@@ -121,9 +121,11 @@ public:
 	void visitConstDist(ConstDist *p);
 	void visitCombCond(CombCond *p);
 	void visitCompCond(CompCond *p);
-	void visitValueCond(ValueCond *p);
+	void visitFrValueCond(FrValueCond *p);
+	void visitToValueCond(ToValueCond *p);
 	void visitBoolCond(BoolCond *p);
-	void visitAttrCond(AttrCond *p);
+	void visitFrAttrCond(FrAttrCond *p);
+	void visitToAttrCond(ToAttrCond *p);
 	void visitEAttr(EAttr *p);
 	void visitEq(Eq *p);
 	void visitNEq(NEq *p);

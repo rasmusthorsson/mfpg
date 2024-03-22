@@ -77,32 +77,6 @@ if(BUILD_TESTS)
   enable_testing()
 
   gtest_discover_tests(tests_mfpg)
-  #------------------ No longer needed? -----------------------------------#  
-  #  add_custom_command(
-  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_W.csv
-  #	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_W.csv 
-  #		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-  #  )
-  #  add_custom_command(
-  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_W_two.csv
-  #	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv 
-  #		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-  #  )
-  #  add_custom_command(
-  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F.csv
-  #	  COMMAND mfpr --csv --greedy -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv 
-  #		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
-  #  )
-  #  add_custom_command(
-  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv
-  #  	  COMMAND mfpr --csv --greedy -t 2 -o ${CMAKE_BINARY_DIR}/A_D_o_F_two.csv 
-  #		${CMAKE_SOURCE_DIR}/tests/cases/A_D_o_F.xml
-  #  )
-  #  add_custom_command(
-  #	  OUTPUT ${CMAKE_BINARY_DIR}/A_W_sps_two.csv
-  #	  COMMAND mfpr --csv --shortest-path=1 -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two.csv 
-  #		${CMAKE_SOURCE_DIR}/tests/cases/A_W.xml
-  #  )
 
   add_test(NAME A_W_one COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_one.cmake)
