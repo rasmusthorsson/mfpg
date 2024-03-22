@@ -89,6 +89,9 @@ if(BUILD_TESTS)
   add_test(NAME A_W_sps_two COMMAND ${CMAKE_COMMAND} -P 
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_sps_two.cmake)
 
+  add_test(NAME DSL_one COMMAND ${CMAKE_COMMAND} -P 
+	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_DSL_one.cmake)
+
   set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
   set_tests_properties(A_W_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
@@ -98,4 +101,7 @@ if(BUILD_TESTS)
   set_tests_properties(A_D_o_F_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
   set_tests_properties(A_W_sps_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  
+  
+  set_tests_properties(DSL_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 endif()
