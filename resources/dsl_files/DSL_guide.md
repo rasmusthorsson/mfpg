@@ -97,11 +97,11 @@ is __A_3__ and the **next** note is __G_3__ then an Action will consider (based 
 example definitions in the __Attributes__ section of this document) the transitions:
 
 Transition option 1:\
-/--------------------------- __A_3__ ----------------------\       /----------------------- __G_3__ ------------------\ \
+/------------------------ __A_3__ -----------------------\      /------------------------ __G_3__ -----------------------\ \
 String = 1, Finger = 1, Hand Position = 2 ----> String = 1, Finger = 1, Hand Position = 1
 
-Transition option 2:
-/---------------- __A_3__ --------------\       /----------------- __G_3__ -------------\
+Transition option 2: \
+/------------------------ __A_3__ -----------------------\      /------------------------ __G_3__ -----------------------\ \
 String = 1, Finger = 2, Hand Position = 1 ----> String = 1, Finger = 1, Hand Position = 1
 
 Note the different PNRs for the __A_3__ note.
