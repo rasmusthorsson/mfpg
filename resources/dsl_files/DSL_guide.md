@@ -96,8 +96,8 @@ note, and one PNR for the **next** note in the score, for example if the **curre
 is __A_3__ and the **next** note is __G_3__ then an Action will consider (based on our Attribute
 example definitions in the __Attributes__ section of this document) the transitions:
 
-Transition option 1:
-/--------------- __A_3__ ---------------\       /----------------- __G_3__ -------------\
+Transition option 1:\
+/--------------------------- __A_3__ ----------------------\       /----------------------- __G_3__ ------------------\ \
 String = 1, Finger = 1, Hand Position = 2 ----> String = 1, Finger = 1, Hand Position = 1
 
 Transition option 2:
