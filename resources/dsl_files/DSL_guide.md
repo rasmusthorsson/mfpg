@@ -3,19 +3,23 @@ This is a guide on how to write configuration files in the DSL format as defined
 __src/parser/mfpg_dsl.cf__, see that file for the full grammar.
 
 ## Parts
-An MFPG DSL file currently consists of five parts: Output, Attributes, Strings, Actions, Dependencies.
+A MFPG DSL file currently consists of five parts: Output, Attributes, Strings, Actions, and Dependencies.
 Each of these parts define some required configuration part the program will use to generate fingering
 positions, the parts are defined in the above order and separated by their respective names followed by a 
 colon, like so:
 
 Output: 
     (Output is defined here)
+
 Attributes: 
     (Attributes are defined here)
+
 Strings:
     (Strings are defined here)
+    
 Actions:
     (Actions are defined here)
+
 Dependencies:
     (Dependencies are defined here)
 
