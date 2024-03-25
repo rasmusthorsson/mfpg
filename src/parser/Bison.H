@@ -63,49 +63,46 @@ extern int mfpg_dsl_debug;
     _PLUS = 264,                   /* _PLUS  */
     _COMMA = 265,                  /* _COMMA  */
     _MINUS = 266,                  /* _MINUS  */
-    _DMINUS = 267,                 /* _DMINUS  */
-    _RARROW = 268,                 /* _RARROW  */
-    _DOT = 269,                    /* _DOT  */
-    _COLON = 270,                  /* _COLON  */
-    _DCOLON = 271,                 /* _DCOLON  */
-    _SEMI = 272,                   /* _SEMI  */
-    _LT = 273,                     /* _LT  */
-    _LDARROW = 274,                /* _LDARROW  */
-    _EQ = 275,                     /* _EQ  */
-    _DEQ = 276,                    /* _DEQ  */
-    _GT = 277,                     /* _GT  */
-    _GTEQ = 278,                   /* _GTEQ  */
-    _KW_A = 279,                   /* _KW_A  */
-    _KW_As = 280,                  /* _KW_As  */
-    _KW_B = 281,                   /* _KW_B  */
-    _KW_C = 282,                   /* _KW_C  */
-    _KW_Cs = 283,                  /* _KW_Cs  */
-    _KW_D = 284,                   /* _KW_D  */
-    _SYMB_6 = 285,                 /* _SYMB_6  */
-    _KW_Ds = 286,                  /* _KW_Ds  */
-    _KW_E = 287,                   /* _KW_E  */
-    _KW_F = 288,                   /* _KW_F  */
-    _KW_Fs = 289,                  /* _KW_Fs  */
-    _KW_G = 290,                   /* _KW_G  */
-    _KW_Gs = 291,                  /* _KW_Gs  */
-    _LBRACK = 292,                 /* _LBRACK  */
-    _RBRACK = 293,                 /* _RBRACK  */
-    _UNDERSCORE = 294,             /* _UNDERSCORE  */
-    _KW_b = 295,                   /* _KW_b  */
-    _KW_d = 296,                   /* _KW_d  */
-    _KW_double = 297,              /* _KW_double  */
-    _KW_false = 298,               /* _KW_false  */
-    _KW_i = 299,                   /* _KW_i  */
-    _KW_int = 300,                 /* _KW_int  */
-    _KW_this = 301,                /* _KW_this  */
-    _KW_to = 302,                  /* _KW_to  */
-    _KW_true = 303,                /* _KW_true  */
-    _LBRACE = 304,                 /* _LBRACE  */
-    _DBAR = 305,                   /* _DBAR  */
-    _RBRACE = 306,                 /* _RBRACE  */
-    _STRING_ = 307,                /* _STRING_  */
-    _INTEGER_ = 308,               /* _INTEGER_  */
-    _DOUBLE_ = 309                 /* _DOUBLE_  */
+    _RARROW = 267,                 /* _RARROW  */
+    _COLON = 268,                  /* _COLON  */
+    _SEMI = 269,                   /* _SEMI  */
+    _LT = 270,                     /* _LT  */
+    _LDARROW = 271,                /* _LDARROW  */
+    _EQ = 272,                     /* _EQ  */
+    _DEQ = 273,                    /* _DEQ  */
+    _GT = 274,                     /* _GT  */
+    _GTEQ = 275,                   /* _GTEQ  */
+    _KW_A = 276,                   /* _KW_A  */
+    _SYMB_3 = 277,                 /* _SYMB_3  */
+    _KW_As = 278,                  /* _KW_As  */
+    _SYMB_1 = 279,                 /* _SYMB_1  */
+    _KW_B = 280,                   /* _KW_B  */
+    _KW_C = 281,                   /* _KW_C  */
+    _KW_Cs = 282,                  /* _KW_Cs  */
+    _KW_D = 283,                   /* _KW_D  */
+    _SYMB_4 = 284,                 /* _SYMB_4  */
+    _KW_Ds = 285,                  /* _KW_Ds  */
+    _KW_E = 286,                   /* _KW_E  */
+    _KW_F = 287,                   /* _KW_F  */
+    _KW_Fs = 288,                  /* _KW_Fs  */
+    _KW_G = 289,                   /* _KW_G  */
+    _KW_Gs = 290,                  /* _KW_Gs  */
+    _SYMB_0 = 291,                 /* _SYMB_0  */
+    _SYMB_2 = 292,                 /* _SYMB_2  */
+    _UNDERSCORE = 293,             /* _UNDERSCORE  */
+    _KW_b = 294,                   /* _KW_b  */
+    _KW_d = 295,                   /* _KW_d  */
+    _KW_double = 296,              /* _KW_double  */
+    _KW_false = 297,               /* _KW_false  */
+    _KW_i = 298,                   /* _KW_i  */
+    _KW_int = 299,                 /* _KW_int  */
+    _KW_this = 300,                /* _KW_this  */
+    _KW_to = 301,                  /* _KW_to  */
+    _KW_true = 302,                /* _KW_true  */
+    _DBAR = 303,                   /* _DBAR  */
+    _STRING_ = 304,                /* _STRING_  */
+    _INTEGER_ = 305,               /* _INTEGER_  */
+    _DOUBLE_ = 306                 /* _DOUBLE_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -145,7 +142,7 @@ union YYSTYPE
   Scale* scale_;
   Bool* bool_;
 
-#line 149 "Bison.H"
+#line 146 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

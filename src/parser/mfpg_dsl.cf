@@ -1,4 +1,4 @@
-BInput.		Input ::= "(" Output ")" "[" [AttrDecl] "]" "{" [IStr] "}" [Act] "Deps:" [Dep] ;
+BInput.		Input ::= "Output:" Output "Attributes:" [AttrDecl] "Strings:" [IStr] "Actions:" [Act] "Dependencies:" [Dep] ;
 
 DOutput.	Output ::= "double";
 IOutput.	Output ::= "int";
@@ -10,7 +10,7 @@ terminator nonempty AttrDecl ";" ;
 
 StringDef.	IStr ::= SPos ":" NoteDef "->" NoteDef ;
 
-separator nonempty IStr "::" ;
+separator nonempty IStr "," ;
 terminator nonempty IStr ";" ;
 
 ISPos.		SPos ::= Integer ;
@@ -28,13 +28,13 @@ FunList. 	Act ::= ActionName "=" CFun1 ":" DFun1 "(" Bool ")" ;
 
 AName.		ActionName ::= String ;
 
-separator nonempty Act "--" ;
+separator nonempty Act "," ;
 terminator Act ";" ;
 
 ADeps.		Dep ::= String String Bool ;
 
 separator nonempty Dep "," ;
-terminator Dep "." ;
+terminator Dep ";" ;
 
 coercions DFun 2 ;
 coercions CFun 2 ;
