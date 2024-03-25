@@ -8,28 +8,23 @@ Each of these parts define some required configuration part the program will use
 positions, the parts are defined in the above order and separated by their respective names followed by a 
 colon, like so:
 
-Output: 
-    (Output is defined here)
-
-Attributes: 
-    (Attributes are defined here)
-
-Strings:
-    (Strings are defined here)
-    
-Actions:
-    (Actions are defined here)
-
-Dependencies:
-    (Dependencies are defined here)
+Output:\
+    (Output is defined here)\
+Attributes:\
+    (Attributes are defined here)\
+Strings:\
+    (Strings are defined here)\
+Actions:\
+    (Actions are defined here)\
+Dependencies:\
+    (Dependencies are defined here)\
 
 ### Output
 The Output is a single word defining what type the output of each Action should have. Currently the only
 supported types are __int__ and __double__, referring to whether the output is to be an integer
 (whole number such as 1, 5, 23 etc.) or a double (number with decimals such as 0.4672, 231.2, 23.36783 etc).
 
-For example:
-
+For example:\
 Output: int
 
 ### Attributes
@@ -49,49 +44,49 @@ For example, consider a configuration with three Attributes; String, Hand Positi
 consider a note, say __As_3__ on a violin. This __As_3__ note can be played in two ways (as defined by our
 attributes!):
 
-String = 1, Finger = 1, Hand Position = 2
+String = 1, Finger = 1, Hand Position = 2\
 String = 1, Finger = 2, Hand Position = 1
 
-Both of these combinations play the same note, but use different values for the Attributes. For a 
+Both of these combinations play the same note but use different values for the Attributes. For a 
 configuration we will call a combination of __all__ defined Attributes a __Physical Note Representation__
 (PNR), so in the above example the PNR type for the notes is the same, differing only in the values of the 
 Attributes. As described above, we do not need to define the values for all possible PNRs for all notes in 
 this part, but we must define what a PNR looks like for this configuration.
 
-Attributes:
-    (i) "String",
-    (i) "Finger",
-    (i) "Hand\_Position";
+Attributes:\
+    (i) "String" ,\
+    (i) "Finger" ,\
+    (i) "Hand\_Position" ;\
 
 (Note the commas separating the different Attribute definitions and the semi-colon which signifies the end
 of the Attributes definition.)
 
-We have then defined the PNR type for this example as: String, Finger, Hand\_Position, each Attribute having
-the type __i__.
-
 The character in the parantheses represents the type of the subsequent Attribute and can be __i__, __d__, 
-or __b__, representing __integer__, __double__ and __boolean__ respectively. integer and double are 
+or __b__, meaning __integer__, __double__ and __boolean__ respectively. integer and double are 
 defined as in the output, while boolean means a truth value, either true or false. Once the Attributes have 
 been defined in this part, neither the type of an Attribute or the name of an Attribute may be changed.
 
+We have then defined the PNR type for this example as: String, Finger, Hand\_Position, each Attribute having
+the type __i__.
+
 ### Strings
-As this software is designed for string instruments the strings must be defined for that instrument. To 
+As this software is designed for string instruments, strings must be defined for an instrument. To 
 define a string you define the number of that string (as an integer) and what range of notes can be played
 on that string:
 
-Strings:
-    1: C\_4 -> A\_6,
-    2: C\_5 -> Cs\_7,
-    3: G\_3 -> C\_5;
+Strings:\
+    1: C\_4 -> A\_6 ,\
+    2: C\_5 -> Cs\_7 ,\
+    3: G\_3 -> C\_5 ;\
 
 In the above, we define three strings, the first can play all notes between (inclusive) C\_4 and A\_6, the 
-second can play all notes between C\_5 and Cs\_7, and the third can play all notes between A\_3 and C\_5. 
+second can play all notes between C\_5 and Cs\_7, and the third can play all notes between G\_3 and C\_5. 
 You could also define these notes using the position of the notes relative to C\_0 (as position 0):
 
-Strings:
-    1: 48 -> 81,
-    2: 60 -> 85,
-    3: 43 -> 60;
+Strings:\
+    1: 48 -> 81 ,\
+    2: 60 -> 85 ,\
+    3: 43 -> 60 ;\
 
 Which represents the exact same strings as above.
 
