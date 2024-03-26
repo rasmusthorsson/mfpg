@@ -20,6 +20,7 @@
 #include "ExValException.h"
 #include "SPSolver.h"
 #include "InstrumentBuilder.h"
+
 #include "ParserError.H"
 #include "Parser.H"
 
@@ -40,8 +41,6 @@ extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
 int main (int argc, char *argv[]) {
-
-
 //-------------------------------- Input/Arguments -------------------------
 	cxxopts::Options options("mfpr");
 	options.positional_help("[optional args]").show_positional_help();
