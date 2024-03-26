@@ -339,7 +339,7 @@ in the beginning.
 
 (For verbosity sake I will only type out one of each of the functions and then list replacable parts below)
 
-__conditions__
+### Condition Functions
 
     "Attr1" + "Attr2" == Number
 Used to compare two combined attributes to some number.
@@ -360,7 +360,7 @@ or **double** attribute values.
     to "Attr1"
 same as above but for the _next_ PNR.
 
-__distance__
+### Distance Functions
 
     "Attr1" + "Attr2" * Number
 Combines the values of "Attr1" and "Attr2" and multiplies it by some number
