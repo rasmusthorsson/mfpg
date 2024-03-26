@@ -8,24 +8,25 @@ Each of these parts define some required configuration part the program will use
 positions, the parts are defined in the above order and separated by their respective names followed by a 
 colon, like so:
 
-    Output:\
-        (Output is defined here)\
-    Attributes:\
-    (Attributes are defined here)\
-    Strings:\
-        (Strings are defined here)\
-    Actions:\
-        (Actions are defined here)\
-    Dependencies:\
-        (Dependencies are defined here)\
+    Output:
+        (Output is defined here)
+    Attributes:
+        (Attributes are defined here)
+    Strings:
+        (Strings are defined here)
+    Actions:
+        (Actions are defined here)
+    Dependencies:
+        (Dependencies are defined here)
 
 ### Output
 The Output is a single word defining what type the output of each Action should have. Currently the only
-supported types are __int__ and __double__, referring to whether the output is to be an integer
-(whole number such as 1, 5, 23 etc.) or a double (number with decimals such as 0.4672, 231.2, 23.36783 etc).
+supported types are __int__ and __double__, referring to whether the output is to be an **integer**
+(whole number such as 1, 5, 23 etc.) or a **double** (number with decimals such as 0.4672, 231.2, 23.36783 
+etc).
 
 For example:\
-Output: int
+    Output: int
 
 ### Attributes
 An Attribute represents some physical aspect of a note, for example consider that for a bowed string 
@@ -54,10 +55,10 @@ configuration we will call a combination of __all__ defined Attributes a __Physi
 Attributes. As described above, we do not need to define the values for all possible PNRs for all notes in 
 this part, but we must define what a PNR looks like for this configuration.
 
-Attributes:\
-    (i) "String" ,\
-    (i) "Finger" ,\
-    (i) "Hand\_Position" ;\
+    Attributes:
+        (i) "String" ,
+        (i) "Finger" ,
+        (i) "Hand\_Position" ;
 
 (Note the commas separating the different Attribute definitions and the semi-colon which signifies the end
 of the Attributes definition.)
@@ -75,40 +76,43 @@ As this software is designed for string instruments, strings must be defined for
 define a string you define the number of that string (as an integer) and what range of notes can be played
 on that string:
 
-Strings:\
-    1: C\_4 -> A\_6 ,\
-    2: C\_5 -> Cs\_7 ,\
-    3: G\_3 -> C\_5 ;\
+    Strings:
+        1: C_4 -> A_6 ,
+        2: C_5 -> Cs_7 ,
+        3: G_3 -> C_5 ;
 
 In the above, we define three strings, the first can play all notes between (inclusive) C\_4 and A\_6, the 
 second can play all notes between C\_5 and Cs\_7, and the third can play all notes between G\_3 and C\_5. 
 You could also define these notes using the position of the notes relative to C\_0 (as position 0):
 
-Strings:\
-    1: 48 -> 81 ,\
-    2: 60 -> 85 ,\
-    3: 43 -> 60 ;\
+    Strings:
+        1: 48 -> 81 ,
+        2: 60 -> 85 ,
+        3: 43 -> 60 ;
 
 Which represents the exact same strings as above.
 
 ### Actions
 Each Action defines a calculation between two PNRs. The Action will consider one PNR for the **current** 
-note, and one PNR for the **next** note in the score, for example if the **current** note 
+note, and one PNR for the **next** note in the score. This will happen until all PNRs for the **current** 
+note have been compared to all PNRs of the **next** note. Let's look at an example: if the **current** note 
 is __A_3__ and the **next** note is __G_3__ then an Action will consider (based on our Attribute
 example definitions in the __Attributes__ section) the transitions:
 
 Transition option 1:\
-/------------------------- __A_3__ ------------------------\      /------------------------- __G_3__ ------------------------\ \
+/-------------------------- __A_3__ -------------------------\ /-------------------------- __G_3__ -------------------------\ \
 String = 1, Finger = 1, Hand Position = 2 ----> String = 1, Finger = 1, Hand Position = 1
 
 Transition option 2: \
-/------------------------- __A_3__ ------------------------\      /------------------------- __G_3__ ------------------------\ \
+/-------------------------- __A_3__ -------------------------\ /-------------------------- __G_3__ -------------------------\ \
 String = 1, Finger = 2, Hand Position = 1 ----> String = 1, Finger = 1, Hand Position = 1
 
-Note the different PNRs for the __A_3__ note.
+(The way these PNR values are calculated are not necessary to consider for this example, just assume
+that there are only 2 PNRs for __A_3__, the first ones in the transitions above, and one PNR for __G_3__,
+the second one in the transitions above.)
 
-Each action defined will calculate the __distance__ between the two physical representations of the notes
-for __both__ transition option 1 and transition option 2 individually. An action is defined using four 
+Each action defined will calculate the __distance__ between two PNRs of the **current** and the **next**
+note for _both_ transition option 1 and transition option 2 individually. An action is defined using four 
 different components: 
 First the name of the action, this name is the name used in the Dependencies section.
 
@@ -123,18 +127,23 @@ __distance__ function must correspond to the __output__ as defined in the first 
 The final part is a simple boolean which represents the default condition for the action. It dictates
 whether the Action should occur by default, or should only occur if the Dependencies dictate that it occurs.
 
+One can think of an action like this (numbers in parentheses correspond to the order of the parts described
+above):
+
+Action Name(1) = if __condition functions__(2) and __default condition__(4) then __distance functions__(3)
+
 As an example, consider the evaluation of Transition option 1. We might decide that we want to 
 apply a cost to switching which finger is currently being used to play a note (for bowed string instruments,
 commonly only one note is played at a time so only one finger is active at a time.), so we add an Action 
 to do so.
 
-"Finger\_Action" = ???
+    "Finger\_Action" = ???
 
 We must then decide what actually constitutes as a finger switch and define that as a __condition__
 function. We can conclude that if a finger switch occurs, then the values of the 
 Hand Position Attribute must be _different_ in the two PNRs:
 
-"Finger\_Action" = "Finger" - "Finger" > 0 ???
+    "Finger\_Action" = "Finger" - "Finger" > 0 ???
 
 (Note that whenever the subtraction operator is applied the absolute value function is implicitly applied to
 the result.)
@@ -150,7 +159,7 @@ A reasonable __distance__ could perhaps be defined as simply 1, this way we are 
 of 1 whenever we switch fingers used, but since it does not matter what finger we switch to we do not
 differentiate between finger swaps.
 
-"Finger\_Action" = "Finger" - "Finger" > 0 : 1 ??? 
+    "Finger\_Action" = "Finger" - "Finger" > 0 : 1 ??? 
 
 Note that the colon is used to mark the end of __condition__ function definitions and the beginning of
 __distance__ function definitions.
@@ -159,7 +168,7 @@ Finally, we need to decide whether or not this action should always be evaluated
 it should only be active if it gets activated by some other action via dependency (more on this in the next
 part). For this it makes sense that we should always evaluate this action:
 
-"Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true)
+    "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true)
 
 We are now done with the action, and if we then apply this action to Transition option 1 we get (in 
 pseudocode):
@@ -179,7 +188,7 @@ Therefore the distance between the PNRs in transition option 1 is lower than the
 transition option 2. However, we can also see that the PNRs differ in another way; the Hand Position 
 Attribute also changes, so it makes sense to perhaps add another action to measure that.
 
-"HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : ???
+    "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : ???
 
 Here we have defined a __condition__ function in the same way as we did with the finger action, since it
 is a good way to measure a change in Attribute values. We then want to define a __distance__ function for 
@@ -187,7 +196,7 @@ this action, but this time it would make sense to use the difference between Han
 __distance__ calculations in order to get an action that increases in __distance__ if the two hand positions
 are farther apart:
 
-"HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true)
+    "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true)
 
 Above we define the __distance__ function to be the difference in hand position + 1, to make it more 
 costly to swap hand position than it is to swap fingers.
@@ -232,9 +241,9 @@ functions, then we must add the separator (:) and then define all __distance__ f
 
 For completeness sake, this is how the Action section looks like for this example:
 
-Actions:
-    "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true) ,
-    "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true) ;
+    Actions:
+        "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true) ,
+        "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true) ;
 
 (Again, note the comma at the end of the first action and the semi-colon at the end of the final action, 
 these symbols are a necessity to separate actions and denote the final action.)
@@ -261,7 +270,7 @@ dependency can solve, in general it is easier to try to keep actions _simple_ an
 
 So, in order to create this new dependency, we will want to add a new action first:
 
-"Finger\_String\_Action" = "Finger" - "Finger" == 0 : 2 (false) ;
+    "Finger\_String\_Action" = "Finger" - "Finger" == 0 : 2 (false) ;
 
 In the above action, we say that if the finger does not change, we add 2 to the __distance__. This action 
 on its own does not solve our problem, we do not want this action to happen by default since it encapsulates 
@@ -269,22 +278,22 @@ the case where no finger or string change is made, which is why the action is _n
 default and instead must be _activated_ by some other function via dependency. We can accomplish our goal
 by adding a final fourth action:
 
-"String\_Activation\_Action" = "String" - "String" > 0 : 0 (true) ;
+    "String\_Activation\_Action" = "String" - "String" > 0 : 0 (true) ;
 
 Notice how the __distance__ function of this action is 0, it does not add any __distance__ cost on its own,
 it is solely used to determine whether or not a shift in strings has occurred. We then place this action
 definition at the top of our actions definition: 
 
-Actions:
-    "String\_Activation\_Action" = "String" - "String" > 0 : 0 (true) ,
-    "Finger\_String\_Action" = "Finger" - "Finger" == 0 : 2 (false) ,
-    "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true) ,
-    "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true) ;
+    Actions:
+        "String\_Activation\_Action" = "String" - "String" > 0 : 0 (true) ,
+        "Finger\_String\_Action" = "Finger" - "Finger" == 0 : 2 (false) ,
+        "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true) ,
+        "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true) ;
 
 And then we can define the dependency:
 
-Dependencies:
-    "String\_Activation\_Action" "Finger\_String\_Action" true ;
+    Dependencies:
+        "String\_Activation\_Action" "Finger\_String\_Action" true ;
 
 Let us then consider an example of a transition between the two PNRs:
 
@@ -299,22 +308,22 @@ created.
 
 The final DSL file in this example looks like this:
 
-Output: int
-Strings:
-    1: C\_4 -> A\_6 ,
-    2: C\_5 -> Cs\_7 ,
-    3: G\_3 -> C\_5 ;
-Attributes:
-    (i) "String",
-    (i) "Finger",
-    (i) "Hand\_Position";
-Actions:
-    "String\_Activation\_Action" = "String" - "String" > 0 : 0 (true) ,
-    "Finger\_String\_Action" = "Finger" - "Finger" == 0 : 2 (false) ,
-    "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true) ,
-    "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true) ;
-Dependencies:
-    "String\_Activation\_Action" "Finger\_String\_Action" true ;
+    Output: int
+    Strings:
+        1: C\_4 -> A\_6 ,
+        2: C\_5 -> Cs\_7 ,
+        3: G\_3 -> C\_5 ;
+    Attributes:
+        (i) "String",
+        (i) "Finger",
+        (i) "Hand\_Position";
+    Actions:
+        "String\_Activation\_Action" = "String" - "String" > 0 : 0 (true) ,
+        "Finger\_String\_Action" = "Finger" - "Finger" == 0 : 2 (false) ,
+        "Finger\_Action" = "Finger" - "Finger" > 0 : 1 (true) ,
+        "HP\_Action" = "Hand\_Position" - "Hand\_Position" > 0 : "Hand\_Position" - "Hand\_Position" + 1 (true) ;
+    Dependencies:
+        "String\_Activation\_Action" "Finger\_String\_Action" true ;
 
 Below is a list of all variations of __condition__ and __distance__ functions implemented followed by a
 brief explanation of the function purpose.
