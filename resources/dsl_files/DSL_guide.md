@@ -8,16 +8,16 @@ Each of these parts define some required configuration part the program will use
 positions, the parts are defined in the above order and separated by their respective names followed by a 
 colon, like so:
 
-Output:\
-    (Output is defined here)\
-Attributes:\
+    Output:\
+        (Output is defined here)\
+    Attributes:\
     (Attributes are defined here)\
-Strings:\
-    (Strings are defined here)\
-Actions:\
-    (Actions are defined here)\
-Dependencies:\
-    (Dependencies are defined here)\
+    Strings:\
+        (Strings are defined here)\
+    Actions:\
+        (Actions are defined here)\
+    Dependencies:\
+        (Dependencies are defined here)\
 
 ### Output
 The Output is a single word defining what type the output of each Action should have. Currently the only
@@ -28,13 +28,14 @@ For example:\
 Output: int
 
 ### Attributes
-An Attribute represents some physical aspect of a note, this could be many different things but for example
-on a bowed string instrument each note is played with a finger, thus Finger could be an Attribute. Another
-example Attribute could be the distance between the note being played and the bridge. Generally, notes can be
-played in more than one way, Attributes are used to specify the different physical ways of playing notes,
-one note will correspond to multiple different Attribute value combinations, but every note will have the
-same Attributes. In the above first example the same note can use different fingers depending on what 
-string it is played on, but every way to play that note will use some finger.
+An Attribute represents some physical aspect of a note, for example consider that for a bowed string 
+instrument a note can only be played by pressing one of four fingers on a string or in the case of an
+open string, pressing no finger on a string. Thus Finger could be an Attribute with 5 different values (0-4).
+Another example Attribute could be the distance between the note being played and the bridge. Generally, 
+notes can be played in more than one way, Attributes are used to specify the different physical ways of 
+playing notes, one note will correspond to multiple different Attribute value combinations, but every note 
+will have the same Attributes. In the above first example the same note can use different fingers depending 
+on what string it is played on, but every way to play that note will use some finger.
 
 The Attributes part defines what __variables__ may be used in later sections. If an Attribute is not defined
 in the Attributes part, that Attribute can not be used in the Actions or Dependencies parts. The Attributes
@@ -149,9 +150,10 @@ A reasonable __distance__ could perhaps be defined as simply 1, this way we are 
 of 1 whenever we switch fingers used, but since it does not matter what finger we switch to we do not
 differentiate between finger swaps.
 
-                  Separates __condition__ and __distance__ functions
-                                           v
 "Finger\_Action" = "Finger" - "Finger" > 0 : 1 ??? 
+
+Note that the colon is used to mark the end of __condition__ function definitions and the beginning of
+__distance__ function definitions.
 
 Finally, we need to decide whether or not this action should always be evaluated as a default, or if
 it should only be active if it gets activated by some other action via dependency (more on this in the next
