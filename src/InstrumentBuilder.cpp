@@ -277,14 +277,15 @@ void InstrumentBuilder::visitDirectDist(DirectDist *direct_dist)
 	if (direct_dist->attr_2) direct_dist->attr_2->accept(this);
 	std::string attr2 = str; 
 	if (direct_dist->exp_) direct_dist->exp_->accept(this);
+	std::function<exp_fun> current_e_fun = e_fun;
 	if (output == 'i') {
 		std::function<distfun_int> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> int {
-			return (abs ((int) e_fun(t1.getVal(attr1), t2.getVal(attr2))));	
+			return (abs ((int) current_e_fun(t1.getVal(attr1), t2.getVal(attr2))));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<distfun_dub> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> double {
-			return (abs ((double) e_fun(t1.getVal(attr1), t2.getVal(attr2))));	
+			return (abs ((double) current_e_fun(t1.getVal(attr1), t2.getVal(attr2))));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}

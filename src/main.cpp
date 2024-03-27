@@ -152,12 +152,14 @@ int main (int argc, char *argv[]) {
 		instrument_builder.visitInput(parse_tree);
 
 		output = instrument_builder.output;
+		std::cout << instrument_builder.int_set->actions.size();
 
 		if (output == 'i') {
 			violin_i = instrument_builder.i_inst;
 		} else if (output == 'd') {
 			violin_d = instrument_builder.d_inst;
 		}
+		
 		
 		TUPLESIZE = instrument_builder.attrs.size();
 		ATTRIBUTES = instrument_builder.attrs;
@@ -191,7 +193,6 @@ int main (int argc, char *argv[]) {
 			    );
 		return -1;
 	}
-
 //-------------------------- Graph building/solving -------------------------
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {

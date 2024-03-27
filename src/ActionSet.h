@@ -17,7 +17,6 @@ template <OutputViable OutputValue> class ActionSet {
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
-		std::vector<std::tuple<Action<OutputValue>, bool>> actions;
 		//Multimap of dependencies, the key is the dependent, the values
 		//are the dependency actions with the boolean adjustment as a tuple.
 		//For Example: "action1", {"action2", true} means that if action2 
@@ -30,6 +29,8 @@ template <OutputViable OutputValue> class ActionSet {
 		//Checks whether a specific action is part of the actionset via ID.
 		bool checkUnique(const Action<OutputValue>&);
 	public:
+			std::vector<std::tuple<Action<OutputValue>, bool>> actions;
+
 		ActionSet();
 		ActionSet(std::vector<std::tuple<Action<OutputValue>, bool>>);
 		ActionSet(Action<OutputValue>, bool);
