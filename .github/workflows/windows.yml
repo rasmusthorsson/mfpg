@@ -2,6 +2,8 @@ name: Windows
 
 on:
   pull_request:
+    branches: [ "feature-45-dynamically-linked-actions" ]
+  pull_request:
     branches: [ "master" ]
 
 jobs:

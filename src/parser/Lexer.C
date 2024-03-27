@@ -2050,8 +2050,6 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
     }
 
         b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
-		//b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
-
     
 	errno = oerrno;
 }
