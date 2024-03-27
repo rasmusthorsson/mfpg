@@ -2,6 +2,10 @@
     "files.associations": {
         "vector": "cpp",
         "xmemory": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "Lexer.C": "cpp",
+        "Parser.C": "cpp",
+        "Absyn.C": "cpp",
+        "Buffer.C": "cpp"
     }
 }

@@ -814,6 +814,8 @@ static void update_loc(YYLTYPE* loc, char* text)
 #define ESCAPED 5
 #define COMMENT 6
 
+#define YY_NO_UNISTD_H
+#include <io.h>
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
  * down here because we want the user's section 1 to have been scanned first.
@@ -1025,6 +1027,7 @@ static int input ( yyscan_t yyscanner );
 /* Default declaration of generated scanner - a define so the user can
  * easily add parameters.
  */
+
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
@@ -1414,7 +1417,7 @@ BEGIN ESCAPED;
 case 53:
 YY_RULE_SETUP
 #line 125 "mfpg_dsl.l"
-yylval->_string = LITERAL_BUFFER_HARVEST(); BEGIN INITIAL; return _STRING_;
+yylval->_string = LITERAL_BUFFER_HARVEST(); BEGIN INITIAL; return _STRING;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
@@ -2046,7 +2049,9 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
         b->yy_bs_column = 0;
     }
 
-        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+        b->yy_is_interactive = file ? (_isatty( fileno(file) ) > 0) : 0;
+		//b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+
     
 	errno = oerrno;
 }

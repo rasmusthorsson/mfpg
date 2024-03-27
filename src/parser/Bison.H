@@ -100,7 +100,7 @@ extern int mfpg_dsl_debug;
     _KW_to = 301,                  /* _KW_to  */
     _KW_true = 302,                /* _KW_true  */
     _DBAR = 303,                   /* _DBAR  */
-    _STRING_ = 304,                /* _STRING_  */
+    _STRING = 304,                /* _STRING_  */
     _INTEGER_ = 305,               /* _INTEGER_  */
     _DOUBLE_ = 306                 /* _DOUBLE_  */
   };

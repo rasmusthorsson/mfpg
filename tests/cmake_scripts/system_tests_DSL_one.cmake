@@ -37,12 +37,12 @@ execute_process(
 execute_process(
 	COMMAND ${CMAKE_COMMAND} -E compare_files --ignore-eol ${CMAKE_BINARY_DIR}/A_W_config_sps.csv ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv RESULT_VARIABLE A_W_sps_res)
 
-file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_config.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_W_config.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_W_config_sps.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_config.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_config.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_config_sps.csv)
 
 if (NOT A_D_o_F_res) 
 	if (NOT A_W_res)

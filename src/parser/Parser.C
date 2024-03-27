@@ -94,7 +94,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 extern YY_BUFFER_STATE mfpg_dsl__scan_string(const char *str, yyscan_t scanner);
 extern void mfpg_dsl__delete_buffer(YY_BUFFER_STATE buf, yyscan_t scanner);
 
-extern void mfpg_dsl_lex_destroy(yyscan_t scanner);
+extern int mfpg_dsl_lex_destroy(yyscan_t scanner);
 extern char* mfpg_dsl_get_text(yyscan_t scanner);
 
 extern yyscan_t mfpg_dsl__initialize_lexer(FILE * inp);
