@@ -1,3 +1,8 @@
+#ifdef _WIN32 
+#define YY_NO_UNISTD_H
+#include <io.h>
+#endif
+
 #line 2 "Lexer.C"
 
 #line 4 "Lexer.C"
