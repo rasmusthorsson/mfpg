@@ -89,20 +89,19 @@ extern int mfpg_dsl_debug;
     _KW_Gs = 290,                  /* _KW_Gs  */
     _SYMB_0 = 291,                 /* _SYMB_0  */
     _SYMB_2 = 292,                 /* _SYMB_2  */
-    _UNDERSCORE = 293,             /* _UNDERSCORE  */
-    _KW_b = 294,                   /* _KW_b  */
-    _KW_d = 295,                   /* _KW_d  */
-    _KW_double = 296,              /* _KW_double  */
-    _KW_false = 297,               /* _KW_false  */
-    _KW_i = 298,                   /* _KW_i  */
-    _KW_int = 299,                 /* _KW_int  */
-    _KW_this = 300,                /* _KW_this  */
-    _KW_to = 301,                  /* _KW_to  */
-    _KW_true = 302,                /* _KW_true  */
-    _DBAR = 303,                   /* _DBAR  */
-    _STRING = 304,                /* _STRING_  */
-    _INTEGER_ = 305,               /* _INTEGER_  */
-    _DOUBLE_ = 306                 /* _DOUBLE_  */
+    _KW_b = 293,                   /* _KW_b  */
+    _KW_d = 294,                   /* _KW_d  */
+    _KW_double = 295,              /* _KW_double  */
+    _KW_false = 296,               /* _KW_false  */
+    _KW_i = 297,                   /* _KW_i  */
+    _KW_int = 298,                 /* _KW_int  */
+    _KW_this = 299,                /* _KW_this  */
+    _KW_to = 300,                  /* _KW_to  */
+    _KW_true = 301,                /* _KW_true  */
+    _DBAR = 302,                   /* _DBAR  */
+    T_Identifier = 303,            /* T_Identifier  */
+    _INTEGER_ = 304,               /* _INTEGER_  */
+    _DOUBLE_ = 305                 /* _DOUBLE_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -142,7 +141,7 @@ union YYSTYPE
   Scale* scale_;
   Bool* bool_;
 
-#line 146 "Bison.H"
+#line 145 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1036,15 +1036,15 @@ FunList *FunList::clone() const
 
 
 /********************   AName    ********************/
-AName::AName(String p1)
+AName::AName(Identifier p1)
 {
-  string_ = p1;
+  identifier_ = p1;
 
 }
 
 AName::AName(const AName & other)
 {
-  string_ = other.string_;
+  identifier_ = other.identifier_;
 
 }
 
@@ -1057,7 +1057,7 @@ AName &AName::operator=(const AName & other)
 
 void AName::swap(AName & other)
 {
-  std::swap(string_, other.string_);
+  std::swap(identifier_, other.identifier_);
 
 }
 
@@ -1079,18 +1079,18 @@ AName *AName::clone() const
 
 
 /********************   ADeps    ********************/
-ADeps::ADeps(String p1, String p2, Bool *p3)
+ADeps::ADeps(Identifier p1, Identifier p2, Bool *p3)
 {
-  string_1 = p1;
-  string_2 = p2;
+  identifier_1 = p1;
+  identifier_2 = p2;
   bool_ = p3;
 
 }
 
 ADeps::ADeps(const ADeps & other)
 {
-  string_1 = other.string_1;
-  string_2 = other.string_2;
+  identifier_1 = other.identifier_1;
+  identifier_2 = other.identifier_2;
   bool_ = other.bool_->clone();
 
 }
@@ -1104,8 +1104,8 @@ ADeps &ADeps::operator=(const ADeps & other)
 
 void ADeps::swap(ADeps & other)
 {
-  std::swap(string_1, other.string_1);
-  std::swap(string_2, other.string_2);
+  std::swap(identifier_1, other.identifier_1);
+  std::swap(identifier_2, other.identifier_2);
   std::swap(bool_, other.bool_);
 
 }
@@ -1685,15 +1685,15 @@ ToAttrCond *ToAttrCond::clone() const
 
 
 /********************   EAttr    ********************/
-EAttr::EAttr(String p1)
+EAttr::EAttr(Identifier p1)
 {
-  string_ = p1;
+  identifier_ = p1;
 
 }
 
 EAttr::EAttr(const EAttr & other)
 {
-  string_ = other.string_;
+  identifier_ = other.identifier_;
 
 }
 
@@ -1706,7 +1706,7 @@ EAttr &EAttr::operator=(const EAttr & other)
 
 void EAttr::swap(EAttr & other)
 {
-  std::swap(string_, other.string_);
+  std::swap(identifier_, other.identifier_);
 
 }
 

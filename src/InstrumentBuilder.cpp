@@ -215,14 +215,14 @@ void InstrumentBuilder::visitFunList(FunList *fun_list)
 
 void InstrumentBuilder::visitAName(AName *a_name)
 {
-	visitString(a_name->string_);
+	visitIdentifier(a_name->identifier_);
 }
 
 void InstrumentBuilder::visitADeps(ADeps *a_deps)
 {
-	visitString(a_deps->string_1);
+	visitIdentifier(a_deps->identifier_1);
 	std::string dep1 = str;
-	visitString(a_deps->string_2);
+	visitIdentifier(a_deps->identifier_2);
 	std::string dep2 = str;
 	if (a_deps->bool_) a_deps->bool_->accept(this);
 	bool adj = boolean;
@@ -441,7 +441,7 @@ void InstrumentBuilder::visitToAttrCond(ToAttrCond *to_attr_cond)
 
 void InstrumentBuilder::visitEAttr(EAttr *e_attr)
 {
-	visitString(e_attr->string_);
+	visitIdentifier(e_attr->identifier_);
 }
 
 void InstrumentBuilder::visitEq(Eq *eq)
@@ -648,3 +648,11 @@ void InstrumentBuilder::visitIdent(Ident x)
 {
   /* Code for Ident Goes Here */
 }
+
+void InstrumentBuilder::visitIdentifier(Identifier x)
+{
+	std::string t(x);
+	str = t;
+  /* Code for Identifier Goes Here */
+}
+

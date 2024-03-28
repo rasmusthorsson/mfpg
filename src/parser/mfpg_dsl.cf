@@ -16,22 +16,24 @@ terminator nonempty IStr ";" ;
 ISPos.		SPos ::= Integer ;
 
 INote.		NoteDef ::= Integer ;
-NNote.		NoteDef ::= NoteDefBase "_" Integer ;
+NNote.		NoteDef ::= NoteDefBase " " Integer ;
 
 rules NoteDefBase ::= "A" | "As" | "B" | "C" | "Cs" | "D" | "Ds" | "E" | "F" | "Fs" | "G" | "Gs" ;
 rules AttrType ::= "i" | "d" | "b" ;
+
+token Identifier (letter (letter | '_')*) ;
 
 comment "//" ; 
 comment "/*" "*/" ; 
 
 FunList. 	Act ::= ActionName "=" CFun1 ":" DFun1 "(" Bool ")" ;
 
-AName.		ActionName ::= String ;
+AName.		ActionName ::= Identifier ;
 
 separator nonempty Act "," ;
 terminator Act ";" ;
 
-ADeps.		Dep ::= String String Bool ;
+ADeps.		Dep ::= Identifier Identifier Bool ;
 
 separator nonempty Dep "," ;
 terminator Dep ";" ;
@@ -52,7 +54,7 @@ BoolCond.	CFun2 ::= Bool ;
 FrAttrCond.	CFun2 ::= "this" Attr ;
 ToAttrCond.	CFun2 ::= "to" Attr ;
 
-EAttr.		Attr ::= String ;
+EAttr.		Attr ::= Identifier ;
 
 Eq.		CompOp ::= "==" ;
 NEq.		CompOp ::= "!=" ;

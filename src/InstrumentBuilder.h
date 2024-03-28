@@ -152,5 +152,6 @@ public:
 	void visitDouble(Double x);
 	void visitString(String x);
 	void visitIdent(Ident x);
+	void visitIdentifier(Identifier x);
 };
 #endif

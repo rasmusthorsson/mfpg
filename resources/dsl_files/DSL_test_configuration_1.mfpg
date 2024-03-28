@@ -4,31 +4,31 @@
 Output: int 
 
 Attributes:
-	(i) "STRING" ,
-	(i) "FINGER" ,
-	(i) "HAND_POS" ;
+	(i) STRING ,
+	(i) FINGER ,
+	(i) HAND_POS ;
 
 Strings:
-	1 : G_3 -> Gs_5 , 
-	2 : D_4 -> Ds_6 , 
-	3 : A_4 -> As_6 , 
-	4 : E_5 -> F_7 ;
+	1 : G 3 -> Gs 5 , 
+	2 : D 4 -> Ds 6 , 
+	3 : A 4 -> As 6 , 
+	4 : E 5 -> F 7 ;
 
 Actions:
-"REST_F" = this "STRING" == 0 && this "FINGER" == 0 && this "HAND_POS" == 0 : 0 (true) ,
-"REST_T" = to "STRING" == 0 && to "FINGER" == 0 && to "HAND_POS" == 0 : 0 (true) , 
-"HP" = "HAND_POS" - "HAND_POS" != 0 : "HAND_POS" - "HAND_POS" (true) ,
-"FI" = "FINGER" - "FINGER" != 0 : "FINGER" - "FINGER" (true) , 
-"ST_NR" = "STRING" - "STRING" >= 2 : "FINGER" - "FINGER" + 100 (true) , 
-"ST" = "STRING" - "STRING" > 0 : "STRING" - "STRING" (true) ;
+REST_F = this STRING == 0 && this FINGER == 0 && this HAND_POS == 0 : 0 (true) ,
+REST_T = to STRING == 0 && to FINGER == 0 && to HAND_POS == 0 : 0 (true) , 
+HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS (true) ,
+FI = FINGER - FINGER != 0 : FINGER - FINGER (true) , 
+ST_NR = STRING - STRING >= 2 : FINGER - FINGER + 100 (true) , 
+ST = STRING - STRING > 0 : STRING - STRING (true) ;
 
 Dependencies:
-"HP" "REST_F" false , 
-"FI" "REST_F" false ,
-"ST_NR" "REST_F" false ,
-"ST" "REST_F" false ,
-"HP" "REST_T" false , 
-"FI" "REST_T" false ,
-"ST_NR" "REST_T" false ,
-"ST" "REST_T" false ,
-"ST" "ST_NR" false ;
+HP REST_F false , 
+FI REST_F false ,
+ST_NR REST_F false ,
+ST REST_F false ,
+HP REST_T false , 
+FI REST_T false ,
+ST_NR REST_T false ,
+ST REST_T false ,
+ST ST_NR false ;

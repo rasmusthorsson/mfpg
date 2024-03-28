@@ -17,6 +17,7 @@ typedef std::string String;
 typedef std::string Ident;
 
 
+typedef std::string Identifier;
 
 
 /********************   Forward Declarations    ********************/
@@ -189,6 +190,7 @@ public:
   virtual void visitDouble(Double x) = 0;
   virtual void visitString(String x) = 0;
   virtual void visitIdent(Ident x) = 0;
+  virtual void visitIdentifier(Identifier x) = 0;
 
 };
 
@@ -678,11 +680,11 @@ public:
 class AName : public ActionName
 {
 public:
-  String string_;
+  Identifier identifier_;
 
   AName(const AName &);
   AName &operator=(const AName &);
-  AName(String p1);
+  AName(Identifier p1);
   ~AName();
   virtual void accept(Visitor *v);
   virtual AName *clone() const;
@@ -692,13 +694,13 @@ public:
 class ADeps : public Dep
 {
 public:
-  String string_1;
-  String string_2;
+  Identifier identifier_1;
+  Identifier identifier_2;
   Bool *bool_;
 
   ADeps(const ADeps &);
   ADeps &operator=(const ADeps &);
-  ADeps(String p1, String p2, Bool *p3);
+  ADeps(Identifier p1, Identifier p2, Bool *p3);
   ~ADeps();
   virtual void accept(Visitor *v);
   virtual ADeps *clone() const;
@@ -880,11 +882,11 @@ public:
 class EAttr : public Attr
 {
 public:
-  String string_;
+  Identifier identifier_;
 
   EAttr(const EAttr &);
   EAttr &operator=(const EAttr &);
-  EAttr(String p1);
+  EAttr(Identifier p1);
   ~EAttr();
   virtual void accept(Visitor *v);
   virtual EAttr *clone() const;
