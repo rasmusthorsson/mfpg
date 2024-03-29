@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-#ifdef _WIN32 
-#define YY_NO_UNISTD_H
-#include <io.h>
-#endif
-
-=======
 #ifdef _WIN32
 #include <io.h>
 #define YY_NO_UNISTD_H
@@ -13,7 +6,6 @@
 #define yylex_destroy 
 #define yylex_destroy_void mfpg_dsl_lex_destroy
 
->>>>>>> 6ea5074 (Testing automatic fix for void-int problem.)
 #line 2 "Lexer.C"
 
 #line 4 "Lexer.C"
