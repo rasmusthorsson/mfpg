@@ -11,10 +11,9 @@ BISON_OPTS=-t -pmfpg_dsl_ -Wcounterexamples
 
 OBJS= Absyn.o Buffer.o Lexer.o Parser.o Printer.o 
 
-.PHONY : clean distclean
+.PHONY : clean distclean windows-compat
 
-all : ActionTest
-
+all : ActionTest windows-compat
 clean :
 	rm -f *.o ActionTest mfpg_dsl.aux mfpg_dsl.log mfpg_dsl.pdf mfpg_dsl.dvi mfpg_dsl.ps mfpg_dsl Skeleton.* Test.* Printer.* mfpg_dsl.y mfpg_dsl.l
 
@@ -34,7 +33,7 @@ Absyn.o : Absyn.C Absyn.H
 Buffer.o : Buffer.C Buffer.H
 	${CC} ${CCFLAGS} -c Buffer.C
 
-Lexer.C : mfpg_dsl.l
+Lexer.C : mfpg_dsl.l 
 	${FLEX} ${FLEX_OPTS} -o Lexer.C mfpg_dsl.l
 
 Parser.C Bison.H : mfpg_dsl.y
@@ -54,25 +53,56 @@ Printer.o : Printer.C Printer.H Absyn.H
 Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CC} ${CCFLAGS} -Wno-unused-parameter -c Skeleton.C
 
-#ActionTest.o : Parser.H Printer.H Absyn.H
-#	${CC} ${CCFLAGS} -c ActionTest.cpp
+#Since the Lexer.C file uses 'isatty' which is used via "unistd.h". Since this file
+#is not available on windows we must include the "io.h" file for windows while
+#disabling the "unistd.h" file.
 
-#ActionBuilder.o : ActionBuilder.cpp ActionBuilder.h
-#	${CC} ${CCFLAGS} -c ActionBuilder.cpp
+#---------- Remove unistd and add io if windows ----------------
+define w
+#ifdef _WIN32
+#include <io.h>
+#define YY_NO_UNISTD_H
+#endif
+endef
 
-#------------- TEMPORARY -----------------
+#--------- newline --------------------------------------------
+define n
 
-#IString.o : ../IString.cpp
-#	${CC} ${CCFLAGS} -c ../IString.cpp
 
-#Action.o : ../Action.cpp
-#	${CC} ${CCFLAGS} -c ../Action.cpp
+endef
+define v
+void yylex_destroy_void (yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-#PhysAttrMap.o : ../PhysAttrMap.cpp
-#	${CC} ${CCFLAGS} -c ../PhysAttrMap.cpp
+    /* Pop the buffer stack, destroying each element. */
+	while(YY_CURRENT_BUFFER){
+		yy_delete_buffer( YY_CURRENT_BUFFER , yyscanner );
+		YY_CURRENT_BUFFER_LVALUE = NULL;
+		yypop_buffer_state(yyscanner);
+	}
 
-#ExValContainer.o : ../ExValContainer.cpp
-#	${CC} ${CCFLAGS} -c ../ExValContainer.cpp
+	/* Destroy the stack itself. */
+	yyfree(yyg->yy_buffer_stack , yyscanner);
+	yyg->yy_buffer_stack = NULL;
 
-#ExValException.o : ../ExValException.cpp
-#	${CC} ${CCFLAGS} -c ../ExValException.cpp
+    /* Destroy the start condition stack. */
+        yyfree( yyg->yy_start_stack , yyscanner );
+        yyg->yy_start_stack = NULL;
+
+    /* Reset the globals. This is important in a non-reentrant scanner so the next time
+     * yylex() is called, initialization will occur. */
+    yy_init_globals( yyscanner);
+
+    /* Destroy the main struct (reentrant only). */
+    yyfree ( yyscanner , yyscanner );
+    yyscanner = NULL;
+}
+endef
+define y
+#define yylex_destroy 
+#define yylex_destroy_void mfpg_dsl_lex_destroy
+endef
+#-------- File append ----------------------------------------
+windows-compat: 
+	$(file > Lexer.C,$w$n$n$y$n$n$(file < Lexer.C)$n$v)
