@@ -1,8 +1,6 @@
 name: Windows
 
 on:
-  push:
-    branches: [ "feature-45-dynamically-linked-actions" ]
   pull_request:
     branches: [ "master" ]
 
