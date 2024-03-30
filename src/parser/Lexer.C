@@ -2574,6 +2574,7 @@ yyscan_t initialize_lexer(FILE *inp)
   return scanner;
 }
 
+
 void yylex_destroy_void (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;

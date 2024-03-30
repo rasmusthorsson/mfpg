@@ -100,7 +100,7 @@ void yylex_destroy_void (yyscan_t yyscanner)
 }
 endef
 define y
-#define yylex_destroy 
+#define yylex_destroy mfpg_dsl_lex_destroy_int
 #define yylex_destroy_void mfpg_dsl_lex_destroy
 endef
 #-------- File append ----------------------------------------
