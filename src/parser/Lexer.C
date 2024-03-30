@@ -3,7 +3,7 @@
 #define YY_NO_UNISTD_H
 #endif
 
-#define yylex_destroy 
+#define yylex_destroy mfpg_dsl_lex_destroy_int
 #define yylex_destroy_void mfpg_dsl_lex_destroy
 
 #line 2 "Lexer.C"
@@ -2573,7 +2573,6 @@ yyscan_t initialize_lexer(FILE *inp)
   if (inp) yyrestart(inp, scanner);
   return scanner;
 }
-
 
 void yylex_destroy_void (yyscan_t yyscanner)
 {
