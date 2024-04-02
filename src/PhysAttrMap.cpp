@@ -33,6 +33,30 @@ PhysAttrMap::PhysAttrMap(std::initializer_list<std::pair<const std::string, ExVa
 		}
 	}
 }
+PhysAttrMap::PhysAttrMap(std::vector<std::pair<const std::string, ExValContainer>> vector) {
+	if (vector.size() != TUPLESIZE) {
+		std::vector<ExValContainer> ex_v;
+		for (auto pair : vector) {
+			ex_v.push_back(pair.second);
+		}
+		throw (ExValException("List size is not the same as TUPLESIZE.", ex_v));
+	}
+	for (auto pair : vector) {
+		int attr_index = 0;
+		for (; attr_index < ATTRIBUTES.size(); attr_index++) {
+			if (ATTRIBUTES[attr_index] == pair.first) {
+				break;
+			}
+		}
+		if (ATTRIBUTE_TYPES[attr_index] != pair.second.getType()) {
+			throw (ExValException("Attribute map is not consistent with attribute types.", std::vector<ExValContainer>({pair.second})));
+		}
+		auto inserted_val = attr_map.insert(pair);
+		if (!inserted_val.second) {
+			throw (ExValException("Attribute map already contains a value of this attribute type.", std::vector<ExValContainer>({pair.second})));
+		}
+	}
+}
 PhysAttrMap::PhysAttrMap(std::initializer_list<ExValContainer> list) {
 	if (list.size() != TUPLESIZE) {
 		std::vector<ExValContainer> ex_v;

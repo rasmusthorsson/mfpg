@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <ostream>
+#include <vector>
 
 #include "ExValContainer.h"
 
@@ -15,10 +16,11 @@ class PhysAttrMap {
 	public:
 		PhysAttrMap() {};
 		
+		PhysAttrMap(std::vector<std::pair<const std::string, ExValContainer>>);
 		//Constructor where you specify attribute names along with their values as a pair, must
 		//contain TUPLESIZE amount of attributes, must not contain duplicates. 
-		PhysAttrMap(std::initializer_list<std::pair<const std::string, ExValContainer>> list);
-		PhysAttrMap(std::initializer_list<ExValContainer> list);
+		PhysAttrMap(std::initializer_list<std::pair<const std::string, ExValContainer>>);
+		PhysAttrMap(std::initializer_list<ExValContainer>);
 
 		//Returns the ExValContainer of the corresponding mapped value of the string input.
 		const ExValContainer& getVal(std::string) const; 

@@ -10,6 +10,7 @@
 #include "NoteEnums.h"
 #include "NoteMapper.h"
 #include "BasicNoteMapper.h"
+#include "CSVNoteMapper.h"
 #include "ActionSet.h"
 #include "LayerList.h"
 #include "NoteList.h"
@@ -20,6 +21,7 @@
 #include "ExValException.h"
 #include "SPSolver.h"
 #include "InstrumentBuilder.h"
+#include "NoteMapperException.h"
 
 #include "ParserError.H"
 #include "Parser.H"
@@ -49,6 +51,7 @@ int main (int argc, char *argv[]) {
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
 		("shortest-path", "Use shortest path solver with optional optimizing levels.", cxxopts::value<int>()->implicit_value("0"))
+		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
@@ -152,14 +155,12 @@ int main (int argc, char *argv[]) {
 		instrument_builder.visitInput(parse_tree);
 
 		output = instrument_builder.output;
-		std::cout << instrument_builder.int_set->actions.size();
 
 		if (output == 'i') {
 			violin_i = instrument_builder.i_inst;
 		} else if (output == 'd') {
 			violin_d = instrument_builder.d_inst;
 		}
-		
 		
 		TUPLESIZE = instrument_builder.attrs.size();
 		ATTRIBUTES = instrument_builder.attrs;
@@ -180,7 +181,9 @@ int main (int argc, char *argv[]) {
 		tmp_v->makeIString(2, Note::D_4, Note::Ds_6);
 		tmp_v->makeIString(3, Note::A_4, Note::As_6);
 		tmp_v->makeIString(4, Note::E_5, Note::F_7);
+
 		violin_i = tmp_v;
+		
 		TUPLESIZE = 3;
 		ATTRIBUTE_TYPES = "iii";
 		ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
@@ -194,9 +197,21 @@ int main (int argc, char *argv[]) {
 		return -1;
 	}
 //-------------------------- Graph building/solving -------------------------
+	std::shared_ptr<NoteMapper> note_mapper;
+	if (result.count("notemapper")) {
+		std::string map_csv_path = result["notemapper"].as<std::string>();
+		try {
+			note_mapper = std::shared_ptr<NoteMapper>(new CSVNoteMapper(map_csv_path, violin_i->getIStrings()));
+		} catch (NoteMapperException e) {
+			mfpg_log::Log::verbose_out(log, 
+				e.what(), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		}
+	} else {
+		note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
+	}
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
-		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin_i->getIStrings()));
 		LayerList<Distance> list(note_list, note_mapper);
 	 	list.buildTransitions(violin_i->getActionSet());
 		//Interactive mode allows to explore the graph interactively, very basic, used for testing.
