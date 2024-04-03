@@ -32,12 +32,13 @@
 #include <memory>
 #include <string>
 
-
 using namespace noteenums;
 using namespace std;
 
+//TODO Add double outputs 
 using Distance = int;
 
+//Global variables used for synchronization and correctness checks
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
@@ -50,12 +51,12 @@ int main (int argc, char *argv[]) {
 		("score", "Input file in musicXML format.", cxxopts::value<std::string>())
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
-		("shortest-path", "Use shortest path solver with optional optimizing levels.", cxxopts::value<int>()->implicit_value("0"))
+		("shortest-path", "Use shortest path solver with optional optimizing levels (0, 1, 2).", cxxopts::value<int>()->implicit_value("0"))
 		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
-		("t,test", "Select test parameters.", cxxopts::value<int>())
-		("v,verbose", "Make output more verbose.", cxxopts::value<int>())
+		("t,test", "Select test parameters (1, 2).", cxxopts::value<int>())
+		("v,verbose", "Make output more verbose (0, 1, 2).", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
 		("d,dsl", "Use the DSL to specify strings, actions and attributes.", cxxopts::value<std::string>())
 		("interactive", "For interactive testing of layers.");
@@ -82,6 +83,7 @@ int main (int argc, char *argv[]) {
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
 
+//-------------------------- Read Score ---------------------------------
 	ifstream input_file;
 
 	if (result.count("score")) {
@@ -128,6 +130,8 @@ int main (int argc, char *argv[]) {
 	if (result.count("dsl")) {
 		char output = 'i';
 		InstrumentBuilder instrument_builder;
+
+		//------- Parse DSL file -----------
 		FILE *dsl_file;
 		auto dsl_path = result["dsl"].as<std::string>();
 		dsl_file = fopen(dsl_path.c_str(), "r");
@@ -143,6 +147,7 @@ int main (int argc, char *argv[]) {
 		
 		try {
 			parse_tree = pInput(dsl_file);
+		//Exception for if a parser fails to parse the DSL file.
 		} catch( parse_error &e) {
 			mfpg_log::Log::verbose_out(log, 
 				("ERROR: Could not parse DSL file: " + result["dsl"].as<string>() 
@@ -150,8 +155,10 @@ int main (int argc, char *argv[]) {
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		}
 		fclose(dsl_file);
-		
+
 		instrument_builder.visitInput(parse_tree);
+
+		//------- Collect outputs from builder --------
 
 		output = instrument_builder.output;
 
@@ -195,12 +202,16 @@ int main (int argc, char *argv[]) {
 			    );
 		return -1;
 	}
+
 //-------------------------- Graph building/solving -------------------------
 	std::shared_ptr<NoteMapper> note_mapper;
+	//if notemapper is used then an outside CSV notemapper file is used.
 	if (result.count("notemapper")) {
 		std::string map_csv_path = result["notemapper"].as<std::string>();
 		try {
 			note_mapper = std::shared_ptr<NoteMapper>(new CSVNoteMapper(map_csv_path, violin_i->getIStrings()));
+		//If the notemapper cannot parse the CSV file/if the CSV file does not contain the correct
+		//attributes.
 		} catch (NoteMapperException e) {
 			mfpg_log::Log::verbose_out(log, 
 				e.what(), 
@@ -209,10 +220,15 @@ int main (int argc, char *argv[]) {
 	} else {
 		note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
 	}
+
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
+		//Build the layerlist from the notelist and mapper.
 		LayerList<Distance> list(note_list, note_mapper);
+
+		//Build transitions between layers using the ActionSet
 	 	list.buildTransitions(violin_i->getActionSet());
+		
 		//Interactive mode allows to explore the graph interactively, very basic, used for testing.
 		if (result.count("interactive")) {
 			int row, column;
@@ -266,6 +282,8 @@ int main (int argc, char *argv[]) {
 				}
 			}
 		}
+
+		//Select solver
 		if (result.count("greedy")) {
 			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
 			mfpg_log::Log::verbose_out(log, 
@@ -284,12 +302,16 @@ int main (int argc, char *argv[]) {
 			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(2));
 		} 
 		try {
+			//Find path through layerlist
 			solver->solve(list);
+
+		//Exceptions for if the solver is unable to find a path through the graph
 		} catch (SolverException e) {
 			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
 				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
+		//Exception for if access to layer nodes is out of range
 		} catch (std::out_of_range e) {
 			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
@@ -314,17 +336,22 @@ int main (int argc, char *argv[]) {
 		}
 		return 1;
 	}
+	//Exception for if adding nodes to layers fail.
 	catch (NodeException e) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what() + "Failed note: " + e.failedNote().to_string() + 
 					    " Failed node: " + e.failedNode().to_string() + "\n",
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
+	//Exception for if there is a problem linking layers together.
 	} catch (LinkException<Distance> e) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what(),
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
+	
+	//Exception for failures of creating or accessing exclusive values from the physical representation
+	//maps.
 	} catch (ExValException e) {
 		std::string affected_tuples = "[";
 		int count = 1;
