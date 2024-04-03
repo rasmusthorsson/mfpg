@@ -62,7 +62,8 @@ As musical notes are too abstract to be used directly for any useful cost calcul
 for transitions, a notemapper is required to map the abstract notes to PNRs 
 of those notes. Since there are many different physical metrics which
 could be used to represent notes the notemapper will be definable by the user, but 
-basic notemappers will be supplied if the user has no need for anything specific.
+basic notemappers will be supplied if the user has no need for anything specific. These physical metrics
+are referred to as **Attributes**.
 
 Currently there are two notemappers, the basic notemapper hardcoded in the program, and the CSV notemapper.
 The CSV notemapper takes a CSV file in the format of a *Note,ATTRIBUTE1,ATTRIBUTE2,...* CSV file and
