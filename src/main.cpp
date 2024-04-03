@@ -44,7 +44,7 @@ extern std::vector<std::string> ATTRIBUTES;
 
 int main (int argc, char *argv[]) {
 //-------------------------------- Input/Arguments -------------------------
-	cxxopts::Options options("mfpr");
+	cxxopts::Options options("mfpg");
 	options.positional_help("[optional args]").show_positional_help();
 	options.add_options()
 		("score", "Input file in musicXML format.", cxxopts::value<std::string>())
@@ -71,7 +71,7 @@ int main (int argc, char *argv[]) {
 	}
 
 	if (result.count("version")) {
-		std::cout << "mfpr version: " << VERSION_MFPG << "\n";
+		std::cout << "mfpg version: " << VERSION_MFPG << "\n";
 		return 0;
 	}
 

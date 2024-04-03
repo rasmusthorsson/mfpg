@@ -1,11 +1,11 @@
 if (UNIX)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/mfpg)
 else(MSVC)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/Release/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/Release/mfpg)
 endif()
 
 execute_process(
-	COMMAND ${MFPR_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv --csv --greedy 
+	COMMAND ${MFPG_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F.csv --csv --greedy 
 		../tests/cases/A_D_o_F.xml)
 
 execute_process(
