@@ -1,7 +1,8 @@
 #include "SPSolver.h"
 #include "SolverException.h"
-#include <limits.h>
 #include "Log.h"
+
+#include <limits.h>
 
 template<typename Output>
 SPSolver<Output>::SPSolver(int opt) : opt_level(opt) {}

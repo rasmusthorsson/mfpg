@@ -5,18 +5,18 @@
 
 #include <map>
 #include <algorithm>
+#include <vector>
 
 //Class for a set of actions to be considered when calculating the transition between
 //two states, each action is considered individually for the state transition but 
 //is only executed if there are no dependencies preventing it from doing so (as 
 //defined by the user).
 template <OutputViable OutputValue> class ActionSet {
-	typedef OutputValue (*distfun) (PhysAttrMap, PhysAttrMap);
-	typedef bool (*condfun) (PhysAttrMap, PhysAttrMap);
+	typedef OutputValue (distfun) (PhysAttrMap, PhysAttrMap);
+	typedef bool (condfun) (PhysAttrMap, PhysAttrMap);
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
-		std::vector<std::tuple<Action<OutputValue>, bool>> actions;
 		//Multimap of dependencies, the key is the dependent, the values
 		//are the dependency actions with the boolean adjustment as a tuple.
 		//For Example: "action1", {"action2", true} means that if action2 
@@ -29,15 +29,25 @@ template <OutputViable OutputValue> class ActionSet {
 		//Checks whether a specific action is part of the actionset via ID.
 		bool checkUnique(const Action<OutputValue>&);
 	public:
+			std::vector<std::tuple<Action<OutputValue>, bool>> actions;
+
 		ActionSet();
 		ActionSet(std::vector<std::tuple<Action<OutputValue>, bool>>);
 		ActionSet(Action<OutputValue>, bool);
 		ActionSet(std::initializer_list<std::tuple<Action<OutputValue>, bool>>);
 		~ActionSet();
 		
+		//Adds an action to the action set.
+		void addAction(Action<OutputValue>, bool);
 		//Attempts to make a new action and add it to the actionsset, returns -1 if duplicate of 
 		//already existing action.
+		int makeAction(condfun, ACCUMULATOR, distfun, ACCUMULATOR, std::string, bool);
+		//Attempts to make a new action, using default set accumulator.
 		int makeAction(condfun, distfun, std::string, bool);
+		//Adds a condition function to an action.
+		void addCondToAction(condfun, ACCUMULATOR, std::string);
+		//Adds a distance function to an action.
+		void addDistToAction(distfun, ACCUMULATOR, std::string);
 		//Adds a dependency, if dependent then dependency is subjected to adjustment. returns
 		//-1 on failure to insert.
 		int addDependency(std::string, std::string, bool); 

@@ -33,7 +33,7 @@ namespace noteenums {
 	};
 
 	enum Duration {
-		Double, 
+		DoubleDur, 
 		Whole, 
 		Half, 
 		Quarter, 
@@ -51,6 +51,47 @@ namespace noteenums {
 		const std::string base = bases[static_cast<int>(n) % 12];
 		const std::string octave = std::to_string(static_cast<int>(n)/12);
 		return (base + "_" + octave);
+	}
+	inline Note from_string(std::string s) {
+		const std::vector<std::string> bases = {"C", "Cs", "D", "Ds", "E", "F", 
+							"Fs", "G", "Gs", "A", "As", "B"};
+		const std::vector<std::string> octaves {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
+		if (s == "REST") {
+			return Note::REST;
+		}
+		std::string base;
+		std::string temp;
+		for (int i = 0; i < s.size(); i++) {
+			if (s[i] == '_') {
+				base = temp;
+				temp = "";
+			} else {
+				temp.push_back(s[i]);		
+			}
+		}
+		int ret = -1;
+		for (int i = 0; i < bases.size(); i++) {
+			if (bases[i] == base) {
+				ret = i;	
+				break;
+			}
+		}
+		if (ret == -1) {
+			//TODO Exception? Other solution?
+			return Note::REST;
+		}
+		int oct = -1;
+		for (int i = 0; i < octaves.size(); i++) {
+			if (octaves[i] == temp) {
+				oct = i;
+			}
+		}
+		if (oct == -1) {
+			//TODO Exception? Other solution?
+			return Note::REST;
+		}
+		ret += 12 * oct;
+		return static_cast<Note>(ret);
 	}
 }
 

@@ -47,7 +47,7 @@ const Note MXConverter::ConvertNote(mx::api::NoteData& n) {
 const Duration MXConverter::ConvertDuration(mx::api::NoteData& n) {
 	switch(n.durationData.durationName) {
 		case mx::api::DurationName::breve:
-			return Duration::Double;
+			return Duration::DoubleDur;
 		case mx::api::DurationName::whole:
 			return Duration::Whole;
 		case mx::api::DurationName::half:

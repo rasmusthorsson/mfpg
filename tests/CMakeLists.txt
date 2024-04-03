@@ -19,3 +19,5 @@ target_include_directories(tests_mfpg
 	PRIVATE "${CMAKE_SOURCE_DIR}/deps/mx/Sourcecode/include/")
 target_include_directories(tests_mfpg 
 	PRIVATE "${CMAKE_SOURCE_DIR}/src")
+target_include_directories(tests_mfpg 
+	PRIVATE "${CMAKE_SOURCE_DIR}/src/parser")

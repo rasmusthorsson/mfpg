@@ -35,6 +35,11 @@ int Instrument<OutputValue>::makeIString(int pos, noteenums::Note start, noteenu
 
 
 template<OutputViable OutputValue>
+void Instrument<OutputValue>::addIString(IString s) {
+	strings.push_back(s);
+}
+
+template<OutputViable OutputValue>
 const std::shared_ptr<ActionSet<OutputValue>> Instrument<OutputValue>::getActionSet() const {
 	return action_set;
 }

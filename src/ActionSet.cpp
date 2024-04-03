@@ -63,14 +63,48 @@ ActionSet<OutputValue>::ActionSet(std::initializer_list<std::tuple<Action<Output
 template<OutputViable OutputValue>
 ActionSet<OutputValue>::~ActionSet() {};
 
+
+template<OutputViable OutputValue>
+void ActionSet<OutputValue>::addAction(Action<OutputValue> a, bool b) {
+	actions.push_back(std::tuple<Action<OutputValue>, bool>({a, b}));
+}
+
 template<OutputViable OutputValue>
 int ActionSet<OutputValue>::makeAction(condfun cf, distfun df, std::string name, bool _default) {
-	const Action<OutputValue> a(cf, df, name);
+	const Action<OutputValue> a(cf, ACCUMULATOR::OR, df, ACCUMULATOR::PLUS, name);
 	if (checkUnique(a)) {
 		actions.push_back(std::tuple<Action<OutputValue>, bool> {a, _default});
 		return 1;
 	}
 	return -1;
+}
+
+template<OutputViable OutputValue>
+int ActionSet<OutputValue>::makeAction(condfun cf, ACCUMULATOR ac, distfun df, ACCUMULATOR ad, std::string name, bool _default) {
+	const Action<OutputValue> a(cf, ac, df, ad, name);
+	if (checkUnique(a)) {
+		actions.push_back(std::tuple<Action<OutputValue>, bool> {a, _default});
+		return 1;
+	}
+	return -1;
+}
+
+template<OutputViable OutputValue>
+void ActionSet<OutputValue>::addCondToAction(condfun cf, ACCUMULATOR ac, std::string s) {
+	for (auto a : actions) {
+		if (std::get<0>(a).getID() == s) {
+			std::get<0>(a).addCondFun(cf, ac);	
+		}
+	}
+}
+
+template<OutputViable OutputValue>
+void ActionSet<OutputValue>::addDistToAction(distfun df, ACCUMULATOR ad, std::string s) {
+	for (auto a : actions) {
+		if (std::get<0>(a).getID() == s) {
+			std::get<0>(a).addDistFun(df, ad);
+		}
+	}
 }
 
 template<OutputViable OutputValue>

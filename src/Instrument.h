@@ -14,13 +14,14 @@ template <OutputViable OutputValue> class Instrument {
 		std::vector<IString> strings;
 		const std::shared_ptr<ActionSet<OutputValue>> action_set;
 	public:
-		Instrument() = delete;
+		Instrument() {};
 		Instrument(std::initializer_list<IString>);
 		Instrument(std::vector<IString>);
 		Instrument(std::vector<IString>, std::shared_ptr<ActionSet<OutputValue>>);
 		Instrument(std::shared_ptr<ActionSet<OutputValue>>);
 		~Instrument();
 
+		void addIString(IString);
 		//Builds a string and adds it to the vector, returns -1 if the string position is occupied.
 		int makeIString(int pos, noteenums::Note, noteenums::Note);
 		const std::shared_ptr<ActionSet<OutputValue>> getActionSet() const;

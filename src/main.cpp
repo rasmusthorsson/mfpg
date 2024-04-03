@@ -10,6 +10,7 @@
 #include "NoteEnums.h"
 #include "NoteMapper.h"
 #include "BasicNoteMapper.h"
+#include "CSVNoteMapper.h"
 #include "ActionSet.h"
 #include "LayerList.h"
 #include "NoteList.h"
@@ -19,11 +20,18 @@
 #include "PhysAttrMap.h"
 #include "ExValException.h"
 #include "SPSolver.h"
+#include "InstrumentBuilder.h"
+#include "NoteMapperException.h"
+
+#include "ParserError.H"
+#include "Parser.H"
 
 #include <iostream>
+#include <cstdio>
 #include <fstream>
 #include <memory>
 #include <string>
+
 
 using namespace noteenums;
 using namespace std;
@@ -35,11 +43,6 @@ extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
 int main (int argc, char *argv[]) {
-
-	TUPLESIZE = 3;
-	ATTRIBUTE_TYPES = "iii";
-	ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
-
 //-------------------------------- Input/Arguments -------------------------
 	cxxopts::Options options("mfpr");
 	options.positional_help("[optional args]").show_positional_help();
@@ -48,11 +51,13 @@ int main (int argc, char *argv[]) {
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
 		("shortest-path", "Use shortest path solver with optional optimizing levels.", cxxopts::value<int>()->implicit_value("0"))
+		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
 		("c,csv", "Structure output as CSV.")
 		("t,test", "Select test parameters.", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose.", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
+		("d,dsl", "Use the DSL to specify strings, actions and attributes.", cxxopts::value<std::string>())
 		("interactive", "For interactive testing of layers.");
 	options.parse_positional({"score"});
 
@@ -115,32 +120,100 @@ int main (int argc, char *argv[]) {
 	const NoteList note_list(score);
 
 //---------------------- Instrument creation ----------------------------
-	
-	std::shared_ptr<ActionSet<Distance>> action_set;
-	if (result.count("test")) {
+	//Patchwork solution until fixed output typing.	
+	std::shared_ptr<Instrument<int>> violin_i;
+	std::shared_ptr<Instrument<double>> violin_d;
+
+	//If the DSL is used.
+	if (result.count("dsl")) {
+		char output = 'i';
+		InstrumentBuilder instrument_builder;
+		FILE *dsl_file;
+		auto dsl_path = result["dsl"].as<std::string>();
+		dsl_file = fopen(dsl_path.c_str(), "r");
+		
+		if (!dsl_file) {
+			mfpg_log::Log::verbose_out(log, ("ERROR: Could not open file: " + 
+				result["dsl"].as<string>() + "\n"), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		}
+		
+		Input *parse_tree = NULL;
+		
+		try {
+			parse_tree = pInput(dsl_file);
+		} catch( parse_error &e) {
+			mfpg_log::Log::verbose_out(log, 
+				("ERROR: Could not parse DSL file: " + result["dsl"].as<string>() 
+				 	+ "\nParse error on line: " + to_string(e.getLine())), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		}
+		fclose(dsl_file);
+		//delete(dsl_file);
+		
+		instrument_builder.visitInput(parse_tree);
+
+		output = instrument_builder.output;
+
+		if (output == 'i') {
+			violin_i = instrument_builder.i_inst;
+		} else if (output == 'd') {
+			violin_d = instrument_builder.d_inst;
+		}
+		
+		TUPLESIZE = instrument_builder.attrs.size();
+		ATTRIBUTES = instrument_builder.attrs;
+		ATTRIBUTE_TYPES = instrument_builder.attrtypes;
+
+	//If the DSL is not used and test-configuration is used
+	} else if (result.count("test")) {
+		std::shared_ptr<ActionSet<int>> action_set(new ActionSet<int>());
 		if (result["test"].as<int>() == 1) {
 			action_set = configs::test_configuration_1();
-		} else if (result["test"].as<int>() == 2) { 
+		} else if (result["test"].as<int>() == 2) {
 			action_set = configs::test_configuration_2();
+		} else {
+			action_set = configs::test_configuration_1();
+		}
+		std::shared_ptr<Instrument<int>> tmp_v(new Instrument<int>(action_set));
+		tmp_v->makeIString(1, Note::G_3, Note::Gs_5);
+		tmp_v->makeIString(2, Note::D_4, Note::Ds_6);
+		tmp_v->makeIString(3, Note::A_4, Note::As_6);
+		tmp_v->makeIString(4, Note::E_5, Note::F_7);
+
+		violin_i = tmp_v;
+		
+		TUPLESIZE = 3;
+		ATTRIBUTE_TYPES = "iii";
+		ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
+
+	//Otherwise no instrument was defined.
+	} else {
+		mfpg_log::Log::verbose_out(std::cout,
+			    "No Instrument was defined, Aborting...\n",
+			    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS
+			    );
+		return -1;
+	}
+//-------------------------- Graph building/solving -------------------------
+	std::shared_ptr<NoteMapper> note_mapper;
+	if (result.count("notemapper")) {
+		std::string map_csv_path = result["notemapper"].as<std::string>();
+		try {
+			note_mapper = std::shared_ptr<NoteMapper>(new CSVNoteMapper(map_csv_path, violin_i->getIStrings()));
+		} catch (NoteMapperException e) {
+			mfpg_log::Log::verbose_out(log, 
+				e.what(), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		}
 	} else {
-		action_set = configs::test_configuration_1();
+		note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
 	}
-
-	Instrument<Distance> violin(action_set);
-	violin.makeIString(1, Note::G_3, Note::Gs_5);
-	violin.makeIString(2, Note::D_4, Note::Ds_6);
-	violin.makeIString(3, Note::A_4, Note::As_6);
-	violin.makeIString(4, Note::E_5, Note::F_7);
-
-
-//-------------------------- Graph building/solving -------------------------
 	std::shared_ptr<GraphSolver<Distance>> solver;
-	
 	try {
-		std::shared_ptr<NoteMapper> note_mapper(new BasicNoteMapper(violin.getIStrings()));
 		LayerList<Distance> list(note_list, note_mapper);
-	 	list.buildTransitions(violin.getActionSet());
+	 	list.buildTransitions(violin_i->getActionSet());
 		//Interactive mode allows to explore the graph interactively, very basic, used for testing.
 		if (result.count("interactive")) {
 			int row, column;
