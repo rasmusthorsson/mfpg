@@ -9,7 +9,7 @@ configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 option(BUILD_TESTS "Build tests" ON)
 
-project(mfpr VERSION ${VERSION_MFPG})
+project(mfpg VERSION ${VERSION_MFPG})
 
 #MX library is not compatible with g++-13.
 if (UNIX)
@@ -49,7 +49,7 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkExcept
 
 file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
 
-add_executable(mfpr ${SRC_BASE})
+add_executable(mfpg ${SRC_BASE})
 
 if(REBUILD_MX)
  FetchContent_Declare(

@@ -1,31 +1,31 @@
 if (UNIX)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/mfpg)
 else(MSVC)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/Release/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/Release/mfpg)
 endif()
 
 execute_process(
-	COMMAND ${MFPR_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F_config.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_D_o_F_config.csv --csv --greedy
 			../tests/cases/A_D_o_F.xml)
 
 execute_process(
-	COMMAND ${MFPR_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_W_config.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_W_config.csv --csv --greedy
 			../tests/cases/A_W.xml)
 
 execute_process(
-	COMMAND ${MFPR_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv --csv --greedy
 			../tests/cases/A_D_o_F.xml)
 
 execute_process(
-	COMMAND ${MFPR_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL.csv --csv --greedy
 			../tests/cases/A_W.xml)
 
 execute_process(
-	COMMAND ${MFPR_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv --csv --shortest-path=2
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv --csv --shortest-path=2
 			../tests/cases/A_W.xml)
 
 execute_process(
-	COMMAND ${MFPR_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_W_config_sps.csv --csv --shortest-path=2
+	COMMAND ${MFPG_PATH} -t 1 -o ${CMAKE_BINARY_DIR}/A_W_config_sps.csv --csv --shortest-path=2
 			../tests/cases/A_W.xml)
 
 execute_process(

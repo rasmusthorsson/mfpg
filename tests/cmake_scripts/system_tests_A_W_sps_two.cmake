@@ -1,15 +1,15 @@
 if (UNIX)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/mfpg)
 else(MSVC)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/Release/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/Release/mfpg)
 endif()
 
 execute_process(
-		COMMAND ${MFPR_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_one.csv --csv --shortest-path=0 
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_one.csv --csv --shortest-path=0 
 			../tests/cases/A_W.xml
 	       )
 execute_process(
-		COMMAND ${MFPR_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_two.csv --csv --shortest-path=2
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_two.csv --csv --shortest-path=2
 			../tests/cases/A_W.xml
 	       )
 execute_process(

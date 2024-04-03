@@ -1,11 +1,11 @@
 if (UNIX)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/mfpg)
 else(MSVC)
-	set(MFPR_PATH ${CMAKE_BINARY_DIR}/Release/mfpr)
+	set(MFPG_PATH ${CMAKE_BINARY_DIR}/Release/mfpg)
 endif()
 
 execute_process(
-	COMMAND ${MFPR_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/CSV_Basic.csv --csv --shortest-path=2 --notemapper=../resources/dsl_files/BasicNoteMapper.csv
+	COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/CSV_Basic.csv --csv --shortest-path=2 --notemapper=../resources/dsl_files/BasicNoteMapper.csv
 			../tests/cases/A_W.xml
 	       )
 execute_process(
