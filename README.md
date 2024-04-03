@@ -12,7 +12,7 @@ MusicXML parsing. Also uses the **cxxopts** library for parsing inputs and manag
 options (https://github.com/jarro2783/cxxopts). **gtest** is used for unit- and integration
 tests.
 
-**Note that this program is not yet ready for Release**
+**Note that this program is not yet ready for release**
 
 # Program Explanation
 
