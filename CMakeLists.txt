@@ -8,6 +8,7 @@ configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 option(BUILD_TESTS "Build tests" ON)
+option(BUILD_GUI "Build gui version" ON)
 
 project(mfpg VERSION ${VERSION_MFPG})
 
@@ -36,6 +37,7 @@ FetchContent_Declare(
 	GIT_TAG eb787304d67ec22f7c3a184ee8b4c481d04357fd
 )
 
+
 FetchContent_MakeAvailable(cxxopts)
 
 file (GLOB_RECURSE DSL src/parser/Absyn.C src/parser/Parser.C src/parser/Lexer.C src/parser/Buffer.C src/InstrumentBuilder.cpp)
@@ -47,9 +49,19 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkExcept
 	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp src/CSVNoteMapper.cpp 
 	src/NoteMapperException.cpp ${DSL})
 
-file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
+file(GLOB_RECURSE CLI_BASE src/main.cpp ${BASE})
 
-add_executable(mfpg ${SRC_BASE})
+add_executable(mfpg ${CLI_BASE})
+
+if (BUILD_GUI) 
+  file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp ${BASE})
+
+  add_executable(mfpg_gui ${GUI_BASE})   
+
+  find_package(wxWidgets REQUIRED COMPONENTS net core base)
+  include(${wxWidgets_USE_FILE})
+  target_link_libraries(mfpg_gui ${wxWidgets_LIBRARIES})
+endif()
 
 if(REBUILD_MX)
  FetchContent_Declare(
