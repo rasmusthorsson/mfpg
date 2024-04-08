@@ -4,11 +4,16 @@
 #include "wx/wx.h"
 #include "wx/choicebk.h"
 #include "wx/combobox.h"
+#include "wx/statbox.h"
 #include "Instrument.h"
 #include "NoteMapper.h"
 #include "BasicNoteMapper.h"
 #include "CSVNoteMapper.h"
 #include "Gui_Settings.h"
+#include "wx/filepicker.h"
+#include "wx/checkbox.h"
+#include "MFPG_Panel.h"
+#include "MFPG_Choicebook.h"
 
 using Distance = int;
 
@@ -25,25 +30,17 @@ class MFPG_Frame : public wxFrame {
 		void MenuDeleteConfig(wxCommandEvent&);
 		void MenuExit(wxCommandEvent&);
 		void MenuAbout(wxCommandEvent&);
+		void CBOOKChange(wxBookCtrlEvent&);
 		void CBNoteMapper(wxCommandEvent&);
+		void CBInstrument(wxCommandEvent&);
+		void CBActionSet(wxCommandEvent&);
+		void CBSolver(wxCommandEvent&);
+		void CHBSPSOpt1(wxCommandEvent&);
+		void CHBSPSOpt2(wxCommandEvent&);
 		
-		Settings notemapper = UNDEFINED;
-		Settings actionset = UNDEFINED;
-		Settings instrument = UNDEFINED;
-		Settings solver = UNDEFINED;
-
 		wxString score_path;
-		wxChoicebook *config_book;
-		wxPanel *config_panel;
-		wxComboBox *notemap_box;
+		MFPG_Choicebook *config_book;
+		MFPG_Panel *current_panel;
 };
 
-enum {
-	ID_MenuNewScore = 101,
-	ID_MenuNewConfig = 102,
-	ID_MenuSaveConfig = 103,
-	ID_MenuSaveAsConfig = 104,
-	ID_MenuDeleteConfig = 105,
-	ID_CBNoteMapper = 201,
-};
 #endif

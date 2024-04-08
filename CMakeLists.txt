@@ -37,7 +37,6 @@ FetchContent_Declare(
 	GIT_TAG eb787304d67ec22f7c3a184ee8b4c481d04357fd
 )
 
-
 FetchContent_MakeAvailable(cxxopts)
 
 file (GLOB_RECURSE DSL src/parser/Absyn.C src/parser/Parser.C src/parser/Lexer.C src/parser/Buffer.C src/InstrumentBuilder.cpp)
@@ -54,7 +53,8 @@ file(GLOB_RECURSE CLI_BASE src/main.cpp ${BASE})
 add_executable(mfpg ${CLI_BASE})
 
 if (BUILD_GUI) 
-  file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp ${BASE})
+  file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp src/gui/MFPG_Panel.cpp 
+	  src/gui/MFPG_Choicebook.cpp ${BASE})
 
   add_executable(mfpg_gui ${GUI_BASE})   
 
