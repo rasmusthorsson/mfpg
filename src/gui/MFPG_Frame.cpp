@@ -1,5 +1,4 @@
 #include "MFPG_Frame.h"
-#include "conf_cmake.h"
 #include <wx/docview.h>
 #include <wx/textctrl.h>
 #include <wx/choicebk.h>
@@ -9,6 +8,39 @@
 #include <wx/filepicker.h>
 #include <wx/checkbox.h>
 #include <wx/stattext.h>
+
+#include "mx/api/ScoreData.h"
+#include "mx/api/DocumentManager.h"
+
+#include "conf_cmake.h"
+#include "Log.h"
+
+#include <vector>
+#include <fstream>
+
+#include "NoteEnums.h"
+#include "NoteMapper.h"
+#include "BasicNoteMapper.h"
+#include "CSVNoteMapper.h"
+#include "ActionSet.h"
+#include "LayerList.h"
+#include "NoteList.h"
+#include "GraphSolver.h"
+#include "GreedySolver.h"
+#include "Instrument.h"
+#include "PhysAttrMap.h"
+#include "ExValException.h"
+#include "SPSolver.h"
+#include "InstrumentBuilder.h"
+#include "NoteMapperException.h"
+#include "configs.h"
+
+#include "ParserError.H"
+#include "Parser.H"
+
+extern int TUPLESIZE;
+extern std::string ATTRIBUTE_TYPES;
+extern std::vector<std::string> ATTRIBUTES;
 
 #define WIDTH 1280
 #define HEIGHT 900
@@ -67,9 +99,17 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_COMBOBOX(ID_CBInstrument, MFPG_Frame::CBInstrument)
 	EVT_COMBOBOX(ID_CBActionSet, MFPG_Frame::CBActionSet)
 	EVT_COMBOBOX(ID_CBSolver, MFPG_Frame::CBSolver)
+	EVT_COMBOBOX(ID_CBOutput, MFPG_Frame::CBOutput)
 
 	EVT_CHECKBOX(ID_CHBSPSOpt1, MFPG_Frame::CHBSPSOpt1)
 	EVT_CHECKBOX(ID_CHBSPSOpt2, MFPG_Frame::CHBSPSOpt2)
+	EVT_CHECKBOX(ID_CHBOutputToFile, MFPG_Frame::CHBOutputToFile)
+
+	EVT_FILEPICKER_CHANGED(ID_FPDSL, MFPG_Frame::FPDSL)
+	EVT_FILEPICKER_CHANGED(ID_FPCSVNoteMap, MFPG_Frame::FPCSVNoteMap)
+	EVT_FILEPICKER_CHANGED(ID_FPCSVOutput, MFPG_Frame::FPCSVOutput)
+
+	EVT_BUTTON(ID_BTGenerate, MFPG_Frame::BTGenerate)
 wxEND_EVENT_TABLE()
 
 void MFPG_Frame::MenuExit(wxCommandEvent& event) {
@@ -83,9 +123,13 @@ void MFPG_Frame::MenuAbout(wxCommandEvent& event) {
 void MFPG_Frame::MenuNewScore(wxCommandEvent& event) {
 	wxFileDialog *file_dialog = new wxFileDialog(this, _("Choose a musicXML file to open"), 
 			wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), 
-			wxFD_OPEN|wxFD_FILE_MUST_EXIST, wxDefaultPosition);
+			wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFLP_CHANGE_DIR, wxDefaultPosition);
 	if (file_dialog->ShowModal() == wxID_OK) {
 		score_path = file_dialog->GetPath();
+		for (auto s : config_book->getPanels()) {
+			s->file_name->SetLabel(score_path);
+			s->file_name->Refresh();
+		}
 	}
 }
 void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
@@ -98,10 +142,12 @@ void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 	input_dialog->SetTextValidator(config_names);
 	if (input_dialog->ShowModal() == wxID_OK) {
 		new_conf = input_dialog->GetValue();
+		MFPG_Panel *config_panel = new MFPG_Panel(config_book);
+		config_panel->file_name->SetLabel(score_path);
+		config_panel->file_name->Refresh();
+		config_book->AddPage(config_panel, new_conf, true, 0);
+		current_panel = config_panel;
 	}
-	MFPG_Panel *config_panel = new MFPG_Panel(config_book);
-	config_book->AddPage(config_panel, new_conf, true, 0);
-	current_panel = config_panel;
 }
 void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 		
@@ -234,5 +280,90 @@ void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
 		} else {
 			current_panel->solver = Settings::SOLVER_SPS;
 		}
+	}
+}
+void MFPG_Frame::CHBOutputToFile(wxCommandEvent& event) {
+	if (current_panel->output_to_file->IsChecked()) {
+		current_panel->output_file->Enable();
+		current_panel->output_to_file_setting = Settings::OUTPUT_TO_FILE;
+	} else {
+		current_panel->output_file->Disable();
+		current_panel->output_to_file_setting = Settings::UNDEFINED;
+	}
+}
+void MFPG_Frame::CBOutput(wxCommandEvent& event) {
+	if (current_panel->output_selection_box->GetCurrentSelection() == 0) {
+		current_panel->output = Settings::OUTPUT_TO_FILE;	
+	} else if (current_panel->output_selection_box->GetCurrentSelection() == 1) {
+		current_panel->output = Settings::DIRECT_OUTPUT;	
+	}
+}
+void MFPG_Frame::FPDSL(wxFileDirPickerEvent& event) {
+	instrument_dsl_file_path = current_panel->dsl_file->GetPath();
+}
+void MFPG_Frame::FPCSVNoteMap(wxFileDirPickerEvent& event) {
+	notemap_csv_file_path = current_panel->csv_file->GetPath();
+}
+void MFPG_Frame::FPCSVOutput(wxFileDirPickerEvent& event) {
+	output_file_path = current_panel->output_file->GetPath();	
+}
+void MFPG_Frame::BTGenerate(wxCommandEvent& event) {
+	Generate();
+}
+
+void MFPG_Frame::Generate() {
+	std::string score_path_;
+	score_path_ = score_path;
+	
+	using namespace mx::api;
+	auto& mgr = DocumentManager::getInstance();	
+	const auto documentID = mgr.createFromFile(score_path_);
+
+	const auto score = mgr.getData(documentID);
+	mgr.destroyDocument(documentID);
+	const NoteList note_list(score);
+
+	std::shared_ptr<Instrument<int>> violin_i;
+	InstrumentBuilder instrument_builder;
+	FILE *dsl_file;
+	dsl_file = fopen(instrument_dsl_file_path.c_str(), "r");
+	
+	Input *parse_tree = NULL;
+	parse_tree = pInput(dsl_file);
+	fclose(dsl_file);
+
+	instrument_builder.visitInput(parse_tree);
+	violin_i = instrument_builder.i_inst;
+
+	TUPLESIZE = instrument_builder.attrs.size();
+	ATTRIBUTES = instrument_builder.attrs;
+	ATTRIBUTE_TYPES = instrument_builder.attrtypes;
+	
+	std::string map_csv_path;
+	map_csv_path = notemap_csv_file_path;
+
+	std::shared_ptr<NoteMapper> note_mapper(new CSVNoteMapper(map_csv_path, violin_i->getIStrings()));
+
+	LayerList<int> list(note_list, note_mapper);
+
+	list.buildTransitions(violin_i->getActionSet());
+
+	std::shared_ptr<GraphSolver<int>> solver;
+	solver = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(3));
+
+	solver->solve(list);
+	
+	std::string csv_out_path;
+	csv_out_path = output_file_path;
+	std::ofstream out; 
+	out.open(csv_out_path, std::ofstream::binary);
+
+	configs::writeOutput(out, solver, true);
+	current_panel->output_text->Clear();
+	//TODO continue here
+	if (current_panel->output_text->LoadFile(output_file_path)) {
+		wxMessageBox(_("SUCCESS!"));
+	} else {
+		wxMessageBox(_("FAILURE!"));
 	}
 }

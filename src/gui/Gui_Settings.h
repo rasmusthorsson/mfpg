@@ -14,9 +14,17 @@ enum {
 	ID_CBInstrument = 302,
 	ID_CBActionSet = 303,	
 	ID_CBSolver = 304,
+	ID_CBOutput = 305,
 
 	ID_CHBSPSOpt1 = 401,
 	ID_CHBSPSOpt2 = 402,
+	ID_CHBOutputToFile = 403,
+
+	ID_FPDSL = 501,
+	ID_FPCSVNoteMap = 502,
+	ID_FPCSVOutput = 503,
+
+	ID_BTGenerate = 601,
 };
 
 enum Settings {
@@ -32,7 +40,10 @@ enum Settings {
 	SOLVER_SPS,
 	SOLVER_SPS_1,
 	SOLVER_SPS_2,
-	SOLVER_SPS_3
+	SOLVER_SPS_3,
+	CSV_OUTPUT,
+	DIRECT_OUTPUT,
+	OUTPUT_TO_FILE
 };
 
 #endif

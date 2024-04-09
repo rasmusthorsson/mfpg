@@ -21,6 +21,8 @@ class MFPG_Panel : public wxPanel {
 		Settings actionset = UNDEFINED;
 		Settings instrument = UNDEFINED;
 		Settings solver = UNDEFINED;
+		Settings output = UNDEFINED;
+		Settings output_to_file_setting = UNDEFINED;
 
 		wxStaticBox *notemap_area;
 		wxComboBox *notemap_box;
@@ -36,5 +38,16 @@ class MFPG_Panel : public wxPanel {
 		wxCheckBox *sps_opt_1;
 		wxCheckBox *sps_opt_2;
 
+		wxStaticBox *output_area;
+		wxTextCtrl *output_text;
+
+		wxStaticBox *output_settings_area;
+		wxComboBox *output_selection_box;
+		wxCheckBox *output_to_file;
+		wxFilePickerCtrl *output_file;
+
+		wxStaticBox *generation_area;
+		wxStaticText *file_name;
+		wxButton *generate;
 };
 #endif

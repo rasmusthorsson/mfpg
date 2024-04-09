@@ -84,39 +84,31 @@ int main (int argc, char *argv[]) {
 	}
 
 //-------------------------- Read Score ---------------------------------
-	ifstream input_file;
 
+	string score_path;
 	if (result.count("score")) {
-		auto file_path = result["score"].as<std::string>();
-		input_file.open(file_path);
+		score_path = result["score"].as<std::string>();
+		ifstream input_file;
+		input_file.open(score_path);
 		if (!input_file.is_open()) {
 			mfpg_log::Log::verbose_out(log, ("ERROR: Could not open file: " + 
 				result["score"].as<string>() + "\n"), 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
+		input_file.close();
 	} else {
 		mfpg_log::Log::verbose_out(log, ("ERROR: No musicXML file found, please supply a "
 			"musicXML file to process.\n"), mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
 
-	string buffer;
-	string sheet_music;
-	while (input_file) {
-		getline(input_file, buffer);
-		sheet_music = sheet_music + "\r\n" + buffer;
-	}
-	input_file.close();
 
 //------------------------- MX conversion --------------------------------
 
 	using namespace mx::api;
-
 	auto& mgr = DocumentManager::getInstance();
-
-	istringstream istr{sheet_music};
-	const auto documentID = mgr.createFromStream(istr);
+	const auto documentID = mgr.createFromFile(score_path);
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
 	const NoteList note_list(score);
@@ -221,6 +213,8 @@ int main (int argc, char *argv[]) {
 		note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
 	}
 
+	//TODO fix distance solver.
+	//TODO Fix opt levels and documentation.
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
 		//Build the layerlist from the notelist and mapper.

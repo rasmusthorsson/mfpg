@@ -37,8 +37,20 @@ class MFPG_Frame : public wxFrame {
 		void CBSolver(wxCommandEvent&);
 		void CHBSPSOpt1(wxCommandEvent&);
 		void CHBSPSOpt2(wxCommandEvent&);
+		void CHBOutputToFile(wxCommandEvent&);
+		void CBOutput(wxCommandEvent&);
+		void FPDSL(wxFileDirPickerEvent&);
+		void FPCSVNoteMap(wxFileDirPickerEvent&);
+		void FPCSVOutput(wxFileDirPickerEvent&);
+		void BTGenerate(wxCommandEvent&);
 		
+		void Generate();
+
 		wxString score_path;
+		wxString notemap_csv_file_path;
+		wxString instrument_dsl_file_path;
+		wxString output_file_path;
+
 		MFPG_Choicebook *config_book;
 		MFPG_Panel *current_panel;
 };
