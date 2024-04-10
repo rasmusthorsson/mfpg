@@ -1,45 +1,54 @@
 #ifndef MFPG_PANEL_H
 #define MFPG_PANEL_H
 
-#include "wx/wx.h"
 #include "wx/choicebk.h"
 #include "wx/combobox.h"
 #include "wx/statbox.h"
-#include "Instrument.h"
-#include "NoteMapper.h"
-#include "BasicNoteMapper.h"
-#include "CSVNoteMapper.h"
-#include "Gui_Settings.h"
+#include "wx/stattext.h"
 #include "wx/filepicker.h"
 #include "wx/checkbox.h"
+#include "wx/panel.h"
+#include "wx/msgdlg.h"
+
+#include "Gui_Settings.h"
 
 class MFPG_Panel : public wxPanel {
 	public:
 		MFPG_Panel(wxWindow*);
-		
-		Settings notemapper = UNDEFINED;
-		Settings actionset = UNDEFINED;
-		Settings instrument = UNDEFINED;
-		Settings solver = UNDEFINED;
-		Settings output = UNDEFINED;
-		Settings output_to_file_setting = UNDEFINED;
 
+		Settings ST_NOTEMAPPER = UNDEFINED;
+		Settings ST_ACTIONSET = UNDEFINED;
+		Settings ST_INSTRUMENT = UNDEFINED;
+		Settings ST_SOLVER = UNDEFINED;
+		Settings ST_OUTPUTTYPE = UNDEFINED;
+		Settings ST_OUTPUTTOFILE = UNDEFINED;
+
+		wxString FilePath_Notemap;
+		wxString FilePath_DSL;
+		wxString FilePath_Output;
+		
 		wxStaticBox *notemap_area;
 		wxComboBox *notemap_box;
-		wxFilePickerCtrl *csv_file;
+		wxFilePickerCtrl *notemap_filepicker;
 
 		wxStaticBox *instrument_area;
 		wxComboBox *instrument_box;
 		wxComboBox *actionset_box;
-		wxFilePickerCtrl *dsl_file;
+		wxFilePickerCtrl *dsl_filepicker;
 
 		wxStaticBox *solver_area;
 		wxComboBox *solver_box;
 		wxCheckBox *sps_opt_1;
 		wxCheckBox *sps_opt_2;
 
-		wxStaticBox *output_area;
+		wxStaticBox *files_area;
+		wxNotebook *files_book;
+		wxButton *save_file_button;
+		wxButton *save_as_file_button;
+		wxTextCtrl *dsl_text;
+		wxTextCtrl *notemapper_text;
 		wxTextCtrl *output_text;
+		wxMessageDialog *save_file_dialog;
 
 		wxStaticBox *output_settings_area;
 		wxComboBox *output_selection_box;
@@ -47,7 +56,7 @@ class MFPG_Panel : public wxPanel {
 		wxFilePickerCtrl *output_file;
 
 		wxStaticBox *generation_area;
-		wxStaticText *file_name;
-		wxButton *generate;
+		wxStaticText *score_selected_text;
+		wxButton *generate_button;
 };
 #endif

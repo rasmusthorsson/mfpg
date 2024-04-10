@@ -7,8 +7,10 @@ enum {
 	ID_MenuSaveConfig = 103,
 	ID_MenuSaveAsConfig = 104,
 	ID_MenuDeleteConfig = 105,
+	ID_MenuGuide = 106,
 
 	ID_CBOOKChange = 201,
+	ID_NBOOKChange = 202,
 
 	ID_CBNoteMapper = 301,
 	ID_CBInstrument = 302,
@@ -25,6 +27,8 @@ enum {
 	ID_FPCSVOutput = 503,
 
 	ID_BTGenerate = 601,
+	ID_BTSavetext = 602,
+	ID_BTSaveastext = 603,
 };
 
 enum Settings {
