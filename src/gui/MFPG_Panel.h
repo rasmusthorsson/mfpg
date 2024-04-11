@@ -16,6 +16,7 @@ class MFPG_Panel : public wxPanel {
 	public:
 		MFPG_Panel(wxWindow*);
 
+		Settings ST_DSL = UNDEFINED;
 		Settings ST_NOTEMAPPER = UNDEFINED;
 		Settings ST_ACTIONSET = UNDEFINED;
 		Settings ST_INSTRUMENT = UNDEFINED;
@@ -32,6 +33,7 @@ class MFPG_Panel : public wxPanel {
 		wxFilePickerCtrl *notemap_filepicker;
 
 		wxStaticBox *instrument_area;
+		wxComboBox *instrument_settings_box;
 		wxComboBox *instrument_box;
 		wxComboBox *actionset_box;
 		wxFilePickerCtrl *dsl_filepicker;
@@ -48,7 +50,6 @@ class MFPG_Panel : public wxPanel {
 		wxTextCtrl *dsl_text;
 		wxTextCtrl *notemapper_text;
 		wxTextCtrl *output_text;
-		wxMessageDialog *save_file_dialog;
 
 		wxStaticBox *output_settings_area;
 		wxComboBox *output_selection_box;

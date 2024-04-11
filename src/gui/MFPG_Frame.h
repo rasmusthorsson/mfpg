@@ -27,6 +27,7 @@ class MFPG_Frame : public wxFrame {
 		void CBOOKChange(wxBookCtrlEvent&);
 		void NBOOKChange(wxBookCtrlEvent&);
 		void CBNoteMapper(wxCommandEvent&);
+		void CBInstSettings(wxCommandEvent&);
 		void CBInstrument(wxCommandEvent&);
 		void CBActionSet(wxCommandEvent&);
 		void CBSolver(wxCommandEvent&);

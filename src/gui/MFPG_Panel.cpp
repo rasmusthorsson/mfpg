@@ -13,40 +13,49 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 //----------------------------------------------INSTRUMENT SETTINGS-------------------------------------
 	//Box: Area containing Instrument/Actionset settings
 	instrument_area = new wxStaticBox(this, wxID_ANY, "Instrument Settings", wxPoint(10, 30),
-		wxSize(400, 200), 0, wxStaticBoxNameStr);
-	//Text: Instrument:
-	wxStaticText *inst_text = new wxStaticText(instrument_area, wxID_ANY, "Instrument", wxPoint(20, 10),
-		wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INSTRUMENT_TEXT");
-	//Selection: Instrument
-	wxString inst_choices[] = {"Violin", "DSL File"};
-	instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), wxPoint(20, 35), 
-		wxSize(160, 40), 2, inst_choices, wxCB_READONLY, wxDefaultValidator, wxComboBoxNameStr);
-	//Text: ActionSet
-	wxStaticText *as_text = new wxStaticText(instrument_area, wxID_ANY, "Action Set", wxPoint(220, 10),
-		wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INSTRUMENT_TEXT");
-	//Selection: ActionSet
-	wxString actionset_choices[] = {"Test1", "Test2", "DSL File"};
-	actionset_box = new wxComboBox(instrument_area, ID_CBActionSet, _T("Test1"), wxPoint(220, 35),
-		wxSize(160, 40), 3, actionset_choices, wxCB_READONLY, wxDefaultValidator);
-	//Box: Area for DSL file selection
-	wxStaticBox *dsl_box = new wxStaticBox(instrument_area, wxID_ANY, "DSL File", wxPoint(20, 80),
-		wxSize(360, 80), 0, wxStaticBoxNameStr);
+		wxSize(400, 230), 0, wxStaticBoxNameStr);
+	//Selection: Instrument settings
+	wxString instrument_setting_choices[] = {"Presets", "DSL File"};
+	instrument_settings_box = new wxComboBox(instrument_area, ID_CBInstSettings, _T("Presets"), 
+		wxPoint(20, 10), wxSize(320, 40), 2, instrument_setting_choices, wxCB_READONLY, 
+		wxDefaultValidator);
+	ST_DSL = Settings::USE_PRESETS;
+	//Text: DSL File:
+	wxStaticText *dsl_file_text = new wxStaticText(instrument_area, wxID_ANY, "DSL File", 
+		wxPoint(20, 60), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "DSL_FILE_TEXT");
 	//File Selection: DSL
-	dsl_filepicker = new wxFilePickerCtrl(dsl_box, ID_FPDSL, wxEmptyString, wxFileSelectorPromptStr, 
-		_("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, 10), wxSize(320, 40), 
+	dsl_filepicker = new wxFilePickerCtrl(instrument_area, ID_FPDSL, wxEmptyString,
+		wxFileSelectorPromptStr, _("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, 75), wxSize(320, 40), 
 		wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR, wxDefaultValidator, 
 		wxFilePickerCtrlNameStr);
 	dsl_filepicker->Disable();
+	//Text: Instrument:
+	wxStaticText *inst_text = new wxStaticText(instrument_area, wxID_ANY, "Instrument Presets", 
+		wxPoint(20, 130), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INSTRUMENT_TEXT");
+	//Selection: Instrument
+	wxString inst_choices[] = {"Violin"};
+	instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), wxPoint(20, 150), 
+		wxSize(160, 40), 1, inst_choices, wxCB_READONLY, wxDefaultValidator, wxComboBoxNameStr);
+	ST_INSTRUMENT = Settings::INSTRUMENT_VIOLIN;
+	//Text: ActionSet
+	wxStaticText *as_text = new wxStaticText(instrument_area, wxID_ANY, "Action Set Presets", 
+		wxPoint(220, 130), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "ACTIONSET_TEXT");
+	//Selection: ActionSet
+	wxString actionset_choices[] = {"Test1", "Test2"};
+	actionset_box = new wxComboBox(instrument_area, ID_CBActionSet, _T("Test1"), wxPoint(220, 150),
+		wxSize(160, 40), 2, actionset_choices, wxCB_READONLY, wxDefaultValidator);
+	ST_ACTIONSET = Settings::ACTIONSET_T1;
 	
 
 //-----------------------------------------NOTE MAPPER SETTINGS----------------------------------------
 	//Box: Area for NoteMapper settings
-	notemap_area = new wxStaticBox(this, wxID_ANY, "Note Mapper", wxPoint(10, 240), wxSize(400, 200), 
+	notemap_area = new wxStaticBox(this, wxID_ANY, "Note Mapper", wxPoint(10, 270), wxSize(400, 200), 
 		0, wxStaticBoxNameStr);
 	//Selection: NoteMapper
 	wxString nm_choices[] = {"Basic", "CSV File"};
 	notemap_box = new wxComboBox(notemap_area, ID_CBNoteMapper, _T("Basic"), wxPoint(20, 20), 
 		wxSize(360, 40), 2, nm_choices, wxCB_READONLY, wxDefaultValidator, wxComboBoxNameStr);
+	ST_NOTEMAPPER = Settings::NOTEMAPPER_BASIC;
 	//Box: Area for CSV File selection
 	wxStaticBox *csv_box = new wxStaticBox(notemap_area, wxID_ANY, "CSV File", wxPoint(20, 80),
 		wxSize(360, 80), 0, wxStaticBoxNameStr);
@@ -60,7 +69,7 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 
 //-------------------------------------------SOLVER SETTINGS------------------------------------------
 	//Box: Area for Solver selection
-	solver_area = new wxStaticBox(this, wxID_ANY, "Solver", wxPoint(10, 450), wxSize(400, 260), 0, 
+	solver_area = new wxStaticBox(this, wxID_ANY, "Solver", wxPoint(10, 480), wxSize(400, 260), 0, 
 		wxStaticBoxNameStr);
 	//Selection: Solver
 	wxString solver_choices[] = {"Shortest Path", "Greedy"};
@@ -86,6 +95,7 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 		wxPoint(20, 160), wxSize(360, 20), 0, wxDefaultValidator, "OPT2");
 	sps_opt_1->SetValue(true);
 	sps_opt_2->SetValue(true);
+	ST_SOLVER = Settings::SOLVER_SPS_3;
 
 
 //-------------------------------------------FILES AREA-------------------------------------------
@@ -94,10 +104,10 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 		wxStaticBoxNameStr);
 	//Button: Save file
 	save_file_button = new wxButton(files_area, ID_BTSavetext, "Save File", wxPoint(100, 590), 
-		wxSize(80, 30), 0, wxDefaultValidator, "SAVETEXT_BUTTON");
+		wxSize(90, 30), 0, wxDefaultValidator, "SAVETEXT_BUTTON");
 	//Button: Save as file
 	save_as_file_button = new wxButton(files_area, ID_BTSaveastext, "Save as File", wxPoint(200, 590), 
-		wxSize(80, 30), 0, wxDefaultValidator, "SAVEASTEXT_BUTTON");
+		wxSize(90, 30), 0, wxDefaultValidator, "SAVEASTEXT_BUTTON");
 	//Book: Files book
 	files_book = new wxNotebook(files_area, ID_NBOOKChange, wxPoint(20, 20), wxSize(360, 560), 
 		wxNB_TOP, "FILES_BOOK");
@@ -117,10 +127,6 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 	files_book->AddPage(notemapper_text, "Notemap", false, -1);
 	files_book->AddPage(dsl_text, "DSL", false, -1);
 
-	//TODO MOVE THIS TO SAVEBUTTON IN THE SAME WAY SAVEASBUTTON WAS MADE
-	//Dialog: Save File Question
-	save_file_dialog = new wxMessageDialog(files_area, "Save File?", "Save Confirmation", 
-			wxYES_NO|wxCENTRE|wxICON_QUESTION|wxSTAY_ON_TOP, wxPoint(150, 150));
 
 //-----------------------------------------OUTPUT SETTINGS------------------------------------------
 	//Box: Area for Output settings
@@ -133,10 +139,12 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 	wxString output_choices[] = {"CSV Output", "Direct Output"};
 	output_selection_box = new wxComboBox(output_settings_area, ID_CBOutput, _T("CSV Output"), 
 		wxPoint(20, 35), wxSize(160, 40), 2, output_choices, wxCB_READONLY, wxDefaultValidator);
+	ST_OUTPUTTYPE = Settings::CSV_OUTPUT;
 	//Checkbox: Output to file
 	output_to_file = new wxCheckBox(output_settings_area, ID_CHBOutputToFile, "Output to file",  
 		wxPoint(220, 45), wxSize(180, 20), 0, wxDefaultValidator, "OUTPUT_TO_FILE");
 	output_to_file->SetValue(true);
+	ST_OUTPUTTOFILE = Settings::OUTPUT_TO_FILE;
 	//Text: Output File:
 	wxStaticBox *output_file_box = new wxStaticBox(output_settings_area, wxID_ANY, "Output File", 
 		wxPoint(20, 80), wxSize(360, 80), 0, wxStaticBoxNameStr);

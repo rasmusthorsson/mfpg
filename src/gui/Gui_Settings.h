@@ -13,10 +13,11 @@ enum {
 	ID_NBOOKChange = 202,
 
 	ID_CBNoteMapper = 301,
-	ID_CBInstrument = 302,
-	ID_CBActionSet = 303,	
-	ID_CBSolver = 304,
-	ID_CBOutput = 305,
+	ID_CBInstSettings = 302,
+	ID_CBInstrument = 303,
+	ID_CBActionSet = 304,	
+	ID_CBSolver = 305,
+	ID_CBOutput = 306,
 
 	ID_CHBSPSOpt1 = 401,
 	ID_CHBSPSOpt2 = 402,
@@ -36,10 +37,8 @@ enum Settings {
 	NOTEMAPPER_BASIC,
 	NOTEMAPPER_CSV,
 	INSTRUMENT_VIOLIN,
-	INSTRUMENT_DSL,
 	ACTIONSET_T1,
 	ACTIONSET_T2,
-	ACTIONSET_DSL,
 	SOLVER_GREEDY,
 	SOLVER_SPS,
 	SOLVER_SPS_1,
@@ -47,7 +46,9 @@ enum Settings {
 	SOLVER_SPS_3,
 	CSV_OUTPUT,
 	DIRECT_OUTPUT,
-	OUTPUT_TO_FILE
+	OUTPUT_TO_FILE,
+	USE_DSL,
+	USE_PRESETS
 };
 
 #endif

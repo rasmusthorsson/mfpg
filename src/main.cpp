@@ -215,6 +215,7 @@ int main (int argc, char *argv[]) {
 
 	//TODO fix distance solver.
 	//TODO Fix opt levels and documentation.
+	//TODO catch exceptions as refs
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
 		//Build the layerlist from the notelist and mapper.
@@ -295,24 +296,8 @@ int main (int argc, char *argv[]) {
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(2));
 		} 
-		try {
-			//Find path through layerlist
-			solver->solve(list);
-
-		//Exceptions for if the solver is unable to find a path through the graph
-		} catch (SolverException e) {
-			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
-				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
-				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-			return -1;
-		//Exception for if access to layer nodes is out of range
-		} catch (std::out_of_range e) {
-			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
-					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-			return -1;
-		}
-
-		//------------------------------ Output ----------------------------------
+		solver->solve(list);
+//------------------------------ Output ----------------------------------
 		if (result.count("output")) {
 			auto out_file = result["output"].as<std::string>();
 			ofstream out;
@@ -361,5 +346,17 @@ int main (int argc, char *argv[]) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what() + "\nAffected Tuples: " + affected_tuples + "\n",
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-	}
+	} catch (SolverException e) {
+			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
+				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		//Exception for if access to layer nodes is out of range
+		} catch (std::out_of_range e) {
+			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		}
+
+
 }
