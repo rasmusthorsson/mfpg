@@ -4,20 +4,22 @@
 #include "wx/wx.h"
 #include "wx/choicebk.h"
 #include "wx/filepicker.h"
+#include "wx/xml/xml.h"
 
-#include "MFPG_Panel.h"
 #include "MFPG_Choicebook.h"
 
 using Distance = int;
 
 class MFPG_Frame : public wxFrame {
 	private:
+		void Generate();
 		const wxString config_chars = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-");
 		DECLARE_EVENT_TABLE()
 	public:
 		MFPG_Frame();
 		void MenuNewScore(wxCommandEvent&);
 		void MenuNewConfig(wxCommandEvent&);
+		void MenuLoadConfig(wxCommandEvent&);
 		void MenuSaveConfig(wxCommandEvent&);
 		void MenuSaveAsConfig(wxCommandEvent&);
 		void MenuDeleteConfig(wxCommandEvent&);
@@ -41,10 +43,10 @@ class MFPG_Frame : public wxFrame {
 		void BTGenerate(wxCommandEvent&);
 		void BTSavetext(wxCommandEvent&);
 		void BTSaveastext(wxCommandEvent&);
-		
-		void Generate();
+		void BTClearInfo(wxCommandEvent&);
 
 		wxString score_path;
+		wxString configs_path;
 
 		MFPG_Choicebook *config_book;
 		MFPG_Panel *current_panel;

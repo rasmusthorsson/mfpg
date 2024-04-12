@@ -3,16 +3,9 @@
 
 #include "wx/wx.h"
 #include "wx/choicebk.h"
-#include "wx/combobox.h"
-#include "wx/statbox.h"
-#include "Instrument.h"
-#include "NoteMapper.h"
-#include "BasicNoteMapper.h"
-#include "CSVNoteMapper.h"
-#include "Gui_Settings.h"
-#include "wx/filepicker.h"
-#include "wx/checkbox.h"
+
 #include "MFPG_Panel.h"
+
 #include <vector>
 
 class MFPG_Choicebook : public wxChoicebook {

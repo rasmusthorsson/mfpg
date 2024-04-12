@@ -11,6 +11,8 @@
 #include <wx/checkbox.h>
 #include <wx/stattext.h>
 #include <wx/msgdlg.h>
+#include <wx/xml/xml.h>
+#include <wx/stdpaths.h>
 
 #include "mx/api/DocumentManager.h"
 
@@ -41,6 +43,15 @@ extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
 
+inline char sep()
+{
+#ifdef _WIN32
+    return '\\';
+#else
+    return '/';
+#endif
+}
+
 #define WIDTH 1280
 #define HEIGHT 900
 
@@ -59,6 +70,8 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	wxMenu *menuConfig = new wxMenu;
 	menuConfig->Append(ID_MenuNewConfig, "&New Config");
 	menuConfig->AppendSeparator();
+	menuConfig->Append(ID_MenuLoadConfig, "&Load Config");
+	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveConfig, "&Save Config");
 	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveAsConfig, "&Save Config As");
@@ -76,6 +89,17 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	std::string status("MFPG -- Version: ");
 	status += VERSION_MFPG;
 	SetStatusText(status);
+
+	//wxString configs_dir(wxStandardPaths::Get().GetConfigDir());
+	configs_path = wxGetCwd();
+	//configs_path.append(sep());
+	//configs_path.append("MFPG_Configs");
+	configs_path.append(sep());
+	configs_path.append(".mfpg_configs.xml");
+	wxXmlDocument configs_file;
+	if (!configs_file.Load(configs_path)) {
+		wxMessageBox("Could not find config file (.mfpg_configs.xml) in current directory.");
+	}
 	
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
 	MFPG_Panel *config_panel = new MFPG_Panel(config_book);
@@ -90,6 +114,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuGuide, MFPG_Frame::MenuGuide)
 	EVT_MENU(ID_MenuNewScore, MFPG_Frame::MenuNewScore)
 	EVT_MENU(ID_MenuNewConfig, MFPG_Frame::MenuNewConfig)
+	EVT_MENU(ID_MenuLoadConfig, MFPG_Frame::MenuLoadConfig)
 	EVT_MENU(ID_MenuSaveConfig, MFPG_Frame::MenuSaveConfig)
 	EVT_MENU(ID_MenuSaveAsConfig, MFPG_Frame::MenuSaveAsConfig)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
@@ -115,6 +140,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(ID_BTGenerate, MFPG_Frame::BTGenerate)
 	EVT_BUTTON(ID_BTSavetext, MFPG_Frame::BTSavetext)
 	EVT_BUTTON(ID_BTSaveastext, MFPG_Frame::BTSaveastext)
+	EVT_BUTTON(ID_BTClearInfo, MFPG_Frame::BTClearInfo)
 wxEND_EVENT_TABLE()
 
 void MFPG_Frame::MenuExit(wxCommandEvent& event) {
@@ -130,8 +156,8 @@ void MFPG_Frame::MenuAbout(wxCommandEvent& event) {
 }
 void MFPG_Frame::MenuNewScore(wxCommandEvent& event) {
 	wxFileDialog *file_dialog = new wxFileDialog(this, _("Choose a musicXML file to open"), 
-			wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), 
-			wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFLP_CHANGE_DIR, wxDefaultPosition);
+		wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), 
+		wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFLP_CHANGE_DIR, wxDefaultPosition);
 	if (file_dialog->ShowModal() == wxID_OK) {
 		score_path = file_dialog->GetPath();
 		for (auto s : config_book->getPanels()) {
@@ -142,12 +168,13 @@ void MFPG_Frame::MenuNewScore(wxCommandEvent& event) {
 }
 void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 	wxString new_conf;
-	wxTextEntryDialog *input_dialog = new wxTextEntryDialog(this, _("Config Name"), 
-			_("New Config"), wxEmptyString, wxTextEntryDialogStyle, wxDefaultPosition);
+	wxTextEntryDialog *input_dialog = new wxTextEntryDialog(this, _("Config Name"), _("New Config"), 
+		wxEmptyString, wxTextEntryDialogStyle, wxDefaultPosition);
 	input_dialog->SetMaxLength(16);
 	wxTextValidator config_names(wxFILTER_INCLUDE_CHAR_LIST);
 	config_names.SetCharIncludes(config_chars);
 	input_dialog->SetTextValidator(config_names);
+
 	if (input_dialog->ShowModal() == wxID_OK) {
 		new_conf = input_dialog->GetValue();
 		MFPG_Panel *config_panel = new MFPG_Panel(config_book);
@@ -157,8 +184,60 @@ void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 		current_panel = config_panel;
 	}
 }
-void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
+void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
 	wxMessageBox("NOT IMPLEMENTED");
+}
+void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
+	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
+	wxXmlDocument config_file;
+	config_file.Load(configs_path);
+	wxXmlNode *config = config_file.GetRoot()->GetChildren()->GetChildren();
+	while (config) {
+		wxString c = config->GetAttribute("name", wxEmptyString);
+		if (c == conf_name) {	
+			break;	
+		} else {
+			config = config->GetNext();
+		}
+	}
+	if (!config) {
+		wxMessageBox("Could not find config by that name.");
+	}
+	wxXmlNode *option = config->GetChildren();
+	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT_SETTING));
+	option = option->GetNext();
+	if (!current_panel->FilePath_DSL) {
+		option->GetChildren()->SetContent("NONE");
+	} else {
+		option->GetChildren()->SetContent(current_panel->FilePath_DSL);
+	}
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_ACTIONSET));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_NOTEMAPPER));
+	option = option->GetNext();
+	if (!current_panel->FilePath_Notemap) {
+		option->GetChildren()->SetContent("NONE");
+	} else {
+		option->GetChildren()->SetContent(current_panel->FilePath_Notemap);
+	}
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_SOLVER));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_OPT));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTYPE));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTOFILE));
+	option = option->GetNext();
+	if (!current_panel->FilePath_Output) {
+		option->GetChildren()->SetContent("NONE");
+	} else {
+		option->GetChildren()->SetContent(current_panel->FilePath_Output);
+	}
+	config_file.Save(configs_path);
 }
 void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 	wxMessageBox("NOT IMPLEMENTED");
@@ -199,13 +278,13 @@ void MFPG_Frame::CBNoteMapper(wxCommandEvent& event) {
 void MFPG_Frame::CBInstSettings(wxCommandEvent& event) {
 	switch (current_panel->instrument_settings_box->GetCurrentSelection()) {
 		case 0:
-			current_panel->ST_DSL = Settings::USE_PRESETS;
+			current_panel->ST_INSTRUMENT_SETTING = Settings::USE_PRESETS;
 			current_panel->instrument_box->Enable();
 			current_panel->actionset_box->Enable();
 			current_panel->dsl_filepicker->Disable();
 			break;
 		case 1:
-			current_panel->ST_DSL = Settings::USE_DSL;
+			current_panel->ST_INSTRUMENT_SETTING = Settings::USE_DSL;
 			current_panel->instrument_box->Disable();
 			current_panel->actionset_box->Disable();
 			current_panel->dsl_filepicker->Enable();
@@ -274,9 +353,9 @@ void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
 			}
 		}
 		if (current_panel->sps_opt_2->IsChecked()) {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS_3;
+			current_panel->ST_OPT = Settings::OPT_3;
 		} else {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS_1;
+			current_panel->ST_OPT = Settings::OPT_1;
 		}
 	} else {
 		for (auto c : current_panel->solver_area->GetChildren()) {
@@ -285,9 +364,9 @@ void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
 			}
 		}
 		if (current_panel->sps_opt_2->IsChecked()) {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS_2;
+			current_panel->ST_OPT = Settings::OPT_2;
 		} else {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS;
+			current_panel->ST_OPT = Settings::OPT_0;
 		}
 	}
 }
@@ -299,9 +378,9 @@ void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
 			}
 		}
 		if (current_panel->sps_opt_1->IsChecked()) {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS_3;
+			current_panel->ST_OPT = Settings::OPT_3;
 		} else {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS_2;
+			current_panel->ST_OPT = Settings::OPT_2;
 		}
 	} else {
 		for (auto c : current_panel->solver_area->GetChildren()) {
@@ -310,9 +389,9 @@ void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
 			}
 		}
 		if (current_panel->sps_opt_1->IsChecked()) {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS_1;
+			current_panel->ST_OPT = Settings::OPT_1;
 		} else {
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS;
+			current_panel->ST_OPT = Settings::OPT_0;
 		}
 	}
 }
@@ -386,7 +465,6 @@ void MFPG_Frame::BTSaveastext(wxCommandEvent& event) {
 			break;
 	}
 	if (save_as_dialog.ShowModal() == wxID_OK) {
-		wxMessageBox(save_as_dialog.GetPath());
 		current_panel->output_text->SaveFile(save_as_dialog.GetPath());
 	}
 }
@@ -432,11 +510,15 @@ void MFPG_Frame::BTSavetext(wxCommandEvent& event) {
 			break;
 	}
 }
+void MFPG_Frame::BTClearInfo(wxCommandEvent& event) {
+	current_panel->information_text->Clear();
+}
 void MFPG_Frame::BTGenerate(wxCommandEvent& event) {
 	Generate();
 }
 
 void MFPG_Frame::Generate() {
+	wxStreamToTextRedirector redirect(current_panel->information_text);
 	std::string score_path_;
 	score_path_ = score_path;
 	if (!score_path) {
@@ -459,16 +541,17 @@ void MFPG_Frame::Generate() {
 
 	char output_type = 'i';
 	
-	if (current_panel->ST_DSL == Settings::USE_DSL) {
+	if (current_panel->ST_INSTRUMENT_SETTING == Settings::USE_DSL) {
 		FILE *dsl_filepicker;	
 		dsl_filepicker = fopen((current_panel->FilePath_DSL).c_str(), "r");
 		Input *parse_tree = NULL;
 		try {
 			parse_tree = pInput(dsl_filepicker);
 		} catch (parse_error &e) {
-			std::string error = "DSL Parse error on line: ";
-			error += std::to_string(e.getLine());
-			wxMessageBox(error);
+			std::string e_msg = "DSL Parse error on line: ";
+			e_msg += std::to_string(e.getLine());
+			std::cout << e_msg << "\n";
+			wxMessageBox(e_msg);
 			return;
 		}
 		fclose(dsl_filepicker);
@@ -476,21 +559,23 @@ void MFPG_Frame::Generate() {
 		instrument_builder.visitInput(parse_tree);
 		
 		output_type = instrument_builder.output;
+
 		TUPLESIZE = instrument_builder.attrs.size();
 		ATTRIBUTES = instrument_builder.attrs;
 		ATTRIBUTE_TYPES = instrument_builder.attrtypes;
+
 		if (output_type == 'i') {
 			violin_i = instrument_builder.i_inst;
 		} else if (output_type == 'd') {
 			violin_d = instrument_builder.d_inst;
 		}
-
-		
 	} else {
 		TUPLESIZE = 3;
 		ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
 		ATTRIBUTE_TYPES = "iii";
+
 		std::shared_ptr<ActionSet<int>> as_i;
+
 		switch (current_panel->ST_ACTIONSET) {
 			case Settings::ACTIONSET_T1:
 				as_i = configs::test_configuration_1();
@@ -548,6 +633,7 @@ void MFPG_Frame::Generate() {
 				return;
 		}
 	} catch (NoteMapperException &e) {
+		std::cout << e.what() << "\n";
 		wxMessageBox(e.what());
 		return;
 	}
@@ -564,12 +650,15 @@ void MFPG_Frame::Generate() {
 	} catch (NodeException &e) {
 		std::string e_msg = e.what() + "Failed note: " + e.failedNote().to_string() + 
 			" Failed node: " + e.failedNode().to_string();
+		std::cout << e_msg << "\n";
 		wxMessageBox(e_msg);
 		return;
 	} catch (LinkException<int> &e) {
+		std::cout << e.what() << "\n";
 		wxMessageBox(e.what());
 		return;
 	} catch (LinkException<double> &e) {
+		std::cout << e.what() << "\n";
 		wxMessageBox(e.what());
 		return;
 	} catch (ExValException &e) {
@@ -585,6 +674,7 @@ void MFPG_Frame::Generate() {
 			count++;
 		}
 		std::string e_msg = e.what() + "\nAffected Tuples: " + affected_tuples;
+		std::cout << e_msg << "\n";
 		wxMessageBox(e_msg);
 		return;
 	}
@@ -600,20 +690,31 @@ void MFPG_Frame::Generate() {
 			}
 			break;
 		case Settings::SOLVER_SPS:
-			solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(0));
-			solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(0));
-			break;
-		case Settings::SOLVER_SPS_1:
-			solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(1));
-			solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(1));
-			break;
-		case Settings::SOLVER_SPS_2:
-			solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(2));
-			solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(2));
-			break;
-		case Settings::SOLVER_SPS_3:
-			solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(3));
-			solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(3));
+			switch (current_panel->ST_OPT) {
+				case Settings::OPT_0:
+					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(0));
+					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(0));
+					break;
+				case Settings::OPT_1:
+					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(1));
+					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(1));
+					break;
+				case Settings::OPT_2:
+					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(2));
+					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(2));
+					break;
+				case Settings::OPT_3:
+					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(3));
+					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(3));
+					break;
+				case Settings::UNDEFINED:
+					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(0));
+					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(0));
+					break;
+				default:
+					wxMessageBox("IMPOSSIBLE PROGRAM FLOW");
+					return;
+			}
 			break;
 		case Settings::UNDEFINED:
 			wxMessageBox("Could not find solver, Aborting...");
@@ -632,15 +733,15 @@ void MFPG_Frame::Generate() {
 	} catch (SolverException &e) {
 		std::string e_msg = e.what() + "\nFailed to find layer path: " + 
 			configs::to_string(e.getLayer()) + " -> " + configs::to_string(e.getLayer() + 1);
+		std::cout << e_msg << "\n";
 		wxMessageBox(e_msg);
 		return;
 	} catch (std::out_of_range &e) {
 		std::string e_msg = std::string(e.what());
+		std::cout << e_msg << "\n";
 		wxMessageBox(e_msg);
 		return;
 	}
-
-	
 	if (current_panel->ST_OUTPUTTOFILE) {
 		std::string csv_out_path;
 		std::ofstream out; 

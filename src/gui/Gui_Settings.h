@@ -1,13 +1,16 @@
 #ifndef MFPG_GUI_SETTINGS_H
 #define MFPG_GUI_SETTINGS_H
 
+#include <string>
+
 enum {
 	ID_MenuNewScore = 101,
 	ID_MenuNewConfig = 102,
-	ID_MenuSaveConfig = 103,
-	ID_MenuSaveAsConfig = 104,
-	ID_MenuDeleteConfig = 105,
-	ID_MenuGuide = 106,
+	ID_MenuLoadConfig = 103,
+	ID_MenuSaveConfig = 104,
+	ID_MenuSaveAsConfig = 105,
+	ID_MenuDeleteConfig = 106,
+	ID_MenuGuide = 107,
 
 	ID_CBOOKChange = 201,
 	ID_NBOOKChange = 202,
@@ -30,25 +33,23 @@ enum {
 	ID_BTGenerate = 601,
 	ID_BTSavetext = 602,
 	ID_BTSaveastext = 603,
+	ID_BTClearInfo = 604
 };
 
 enum Settings {
-	UNDEFINED,
-	NOTEMAPPER_BASIC,
-	NOTEMAPPER_CSV,
-	INSTRUMENT_VIOLIN,
-	ACTIONSET_T1,
-	ACTIONSET_T2,
-	SOLVER_GREEDY,
-	SOLVER_SPS,
-	SOLVER_SPS_1,
-	SOLVER_SPS_2,
-	SOLVER_SPS_3,
-	CSV_OUTPUT,
-	DIRECT_OUTPUT,
-	OUTPUT_TO_FILE,
-	USE_DSL,
-	USE_PRESETS
+#define X(a) a,
+#include "settings.def"
+#undef X
+	SettingsCount
 };
+
+char const* const Settings_str[] {
+#define X(a) #a,
+#include "settings.def"
+#undef X
+	0
+};
+
+std::string _S(enum Settings s);
 
 #endif

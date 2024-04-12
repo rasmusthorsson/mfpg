@@ -54,11 +54,11 @@ add_executable(mfpg ${CLI_BASE})
 
 if (BUILD_GUI) 
   file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp src/gui/MFPG_Panel.cpp 
-	  src/gui/MFPG_Choicebook.cpp ${BASE})
+	  src/gui/MFPG_Choicebook.cpp src/gui/Gui_Settings.cpp ${BASE})
 
   add_executable(mfpg_gui ${GUI_BASE})   
 
-  find_package(wxWidgets REQUIRED COMPONENTS net core base)
+  find_package(wxWidgets REQUIRED COMPONENTS net core base xml)
   include(${wxWidgets_USE_FILE})
   target_link_libraries(mfpg_gui ${wxWidgets_LIBRARIES})
 endif()
