@@ -19,5 +19,6 @@ class MFPG_Choicebook : public wxChoicebook {
 		std::vector<MFPG_Panel*> getPanels() {
 			return panels;
 		}
+		void removePanel(const wxString);
 };
 #endif

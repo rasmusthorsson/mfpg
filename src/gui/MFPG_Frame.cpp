@@ -70,8 +70,6 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	wxMenu *menuConfig = new wxMenu;
 	menuConfig->Append(ID_MenuNewConfig, "&New Config");
 	menuConfig->AppendSeparator();
-	menuConfig->Append(ID_MenuLoadConfig, "&Load Config");
-	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveConfig, "&Save Config");
 	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveAsConfig, "&Save Config As");
@@ -102,10 +100,41 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	}
 	
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
-	MFPG_Panel *config_panel = new MFPG_Panel(config_book);
-	
-	current_panel = config_panel;
-	config_book->AddPage(config_panel, _T("Config1"), true, 0);
+	wxXmlNode *c = configs_file.GetRoot()->GetChildren()->GetChildren();
+	while (c) {
+		MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
+		current_panel = config_panel;
+		config_book->AddPage(config_panel, c->GetAttribute("name", wxEmptyString), true, 0);
+		wxXmlNode *option = c->GetChildren();
+		SetInstSettings(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		if (!(option->GetNodeContent() == "NONE")) {
+			SelectDSLFile(std::string(option->GetNodeContent()));
+		}
+		option = option->GetNext();
+		SetInstrument(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		SetActionSet(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		SetNoteMapper(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		if (!(option->GetNodeContent() == "NONE")) {
+			SelectNoteMapFile(std::string(option->GetNodeContent()));
+		}
+		option = option->GetNext();
+		SetSolver(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		SetOpt(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		SetOutput(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		SetOutputToFile(S_(std::string(option->GetNodeContent())));
+		option = option->GetNext();
+		if (!(option->GetNodeContent() == "NONE")) {
+			SelectOutputFile(std::string(option->GetNodeContent()));
+		}
+		c = c->GetNext();
+	}
 }
 
 wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
@@ -114,7 +143,6 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuGuide, MFPG_Frame::MenuGuide)
 	EVT_MENU(ID_MenuNewScore, MFPG_Frame::MenuNewScore)
 	EVT_MENU(ID_MenuNewConfig, MFPG_Frame::MenuNewConfig)
-	EVT_MENU(ID_MenuLoadConfig, MFPG_Frame::MenuLoadConfig)
 	EVT_MENU(ID_MenuSaveConfig, MFPG_Frame::MenuSaveConfig)
 	EVT_MENU(ID_MenuSaveAsConfig, MFPG_Frame::MenuSaveAsConfig)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
@@ -184,9 +212,6 @@ void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 		current_panel = config_panel;
 	}
 }
-void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
-	wxMessageBox("NOT IMPLEMENTED");
-}
 void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
 	wxXmlDocument config_file;
@@ -201,7 +226,77 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 		}
 	}
 	if (!config) {
-		wxMessageBox("Could not find config by that name.");
+		config = NewConfig(conf_name);
+	}
+	wxXmlNode *option = config->GetChildren();
+	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT_SETTING));
+	option = option->GetNext();
+	if (!current_panel->FilePath_DSL) {
+		option->GetChildren()->SetContent("NONE");
+	} else {
+		option->GetChildren()->SetContent(current_panel->FilePath_DSL);
+	}
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_ACTIONSET));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_NOTEMAPPER));
+	option = option->GetNext();
+	if (!current_panel->FilePath_Notemap) {
+		option->GetChildren()->SetContent("NONE");
+	} else {
+		option->GetChildren()->SetContent(current_panel->FilePath_Notemap);
+	}
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_SOLVER));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_OPT));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTYPE));
+	option = option->GetNext();
+	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTOFILE));
+	option = option->GetNext();
+	if (!current_panel->FilePath_Output) {
+		option->GetChildren()->SetContent("NONE");
+	} else {
+		option->GetChildren()->SetContent(current_panel->FilePath_Output);
+	}
+	config_file.GetRoot()->GetChildren()->AddChild(config);
+	config_file.Save(configs_path);
+}
+void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
+	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
+	wxXmlDocument config_file;
+	config_file.Load(configs_path);
+	wxXmlNode *config = config_file.GetRoot()->GetChildren()->GetChildren();
+	wxTextEntryDialog select_name(NULL, "Input Config name to save as", "Save Config as", conf_name, 
+		wxTextEntryDialogStyle, wxDefaultPosition);
+	if (select_name.ShowModal() == wxID_OK) {
+		conf_name = select_name.GetValue();
+	} else {
+		return;
+	}
+	while (config) {
+		wxString c = config->GetAttribute("name", wxEmptyString);
+		if (c == conf_name) {	
+			break;	
+		} else {
+			config = config->GetNext();
+		}
+	}
+	wxMessageDialog save_as_dialog(NULL, "Config already exists, overwrite existing config?",
+		"Overwrite Config?", wxSTAY_ON_TOP|wxYES_NO|wxICON_QUESTION, wxDefaultPosition);
+	if (config) {
+		if (save_as_dialog.ShowModal() == wxID_YES) {	
+
+		} else {
+			return;
+		}
+	} else {
+		config = NewConfig(conf_name);
+		config_file.GetRoot()->GetChildren()->AddChild(config);
+		config_file.Save(configs_path);
 	}
 	wxXmlNode *option = config->GetChildren();
 	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT_SETTING));
@@ -239,11 +334,118 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	}
 	config_file.Save(configs_path);
 }
-void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
-	wxMessageBox("NOT IMPLEMENTED");
+wxXmlNode *MFPG_Frame::NewConfig(wxString conf_name) {
+	wxXmlAttribute *c = new wxXmlAttribute("name", conf_name);
+	wxXmlNode *config = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "config", wxEmptyString,
+		c, NULL, -1);
+	
+	wxXmlNode *i_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "instrument_settings", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *i_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"USE_PRESETS", NULL, NULL, -1);
+	i_s->AddChild(i_s_c);
+	config->AddChild(i_s);
+	
+	wxXmlNode *d_f = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "dsl_file", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *d_f_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"NONE", NULL, NULL, -1);
+	d_f->AddChild(d_f_c);
+	config->AddChild(d_f);
+
+	wxXmlNode *i = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "instrument", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *i_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"INSTRUMENT_VIOLIN", NULL, NULL, -1);
+	i->AddChild(i_c);
+	config->AddChild(i);
+	
+	wxXmlNode *a_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "actionset", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *a_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"ACTIONSET_T1", NULL, NULL, -1);
+	a_s->AddChild(a_s_c);
+	config->AddChild(a_s);
+	
+	wxXmlNode *n_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "notemapper_settings", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *n_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"NOTEMAPPER_BASIC", NULL, NULL, -1);
+	n_s->AddChild(n_s_c);
+	config->AddChild(n_s);
+	
+	wxXmlNode *n_f = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "notemapper_file", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *n_f_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"NONE", NULL, NULL, -1);
+	n_f->AddChild(n_f_c);
+	config->AddChild(n_f);
+	
+	wxXmlNode *s_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "solver_settings", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *s_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"SOLVER_SPS", NULL, NULL, -1);
+	s_s->AddChild(s_s_c);
+	config->AddChild(s_s);
+	
+	wxXmlNode *s_o = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "solver_opt", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *s_o_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"OPT_3", NULL, NULL, -1);
+	s_o->AddChild(s_o_c);
+	config->AddChild(s_o);
+	
+	wxXmlNode *o_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "output_settings", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *o_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"CSV_OUTPUT", NULL, NULL, -1);
+	o_s->AddChild(o_s_c);
+	config->AddChild(o_s);
+
+	wxXmlNode *o_t = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "output_to_file", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *o_t_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"OUTPUT_TO_FILE", NULL, NULL, -1);
+	o_t->AddChild(o_t_c);
+	config->AddChild(o_t);
+
+	wxXmlNode *o_f = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "output_file", 
+		wxEmptyString, NULL, NULL, -1);
+	wxXmlNode *o_f_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
+		"NONE", NULL, NULL, -1);
+	o_f->AddChild(o_f_c);
+	config->AddChild(o_f);
+
+	return config;
 }
 void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
-	wxMessageBox("NOT IMPLEMENTED");
+	wxXmlDocument conf;
+	conf.Load(configs_path);
+	std::vector<wxString> config_names;
+	wxXmlNode *config = conf.GetRoot()->GetChildren()->GetChildren();
+	while (config) {
+		config_names.push_back(config->GetAttribute("name", wxEmptyString));
+		config = config->GetNext();
+	}
+	wxSingleChoiceDialog dialog(NULL, "Select Config to delete.", "Delete Config", config_names.size(),
+		&config_names[0], NULL, wxCHOICEDLG_STYLE, wxDefaultPosition);
+	if (dialog.ShowModal() == wxID_OK) {
+		wxXmlNode *removed_node = conf.GetRoot()->GetChildren()->GetChildren();
+		while (removed_node) {
+			if (removed_node->GetAttribute("name", wxEmptyString) == 
+									dialog.GetStringSelection()) {
+				conf.GetRoot()->GetChildren()->RemoveChild(removed_node);
+				conf.Save(configs_path);
+				//TODO Delete config from book
+				return;
+			} else {
+				removed_node = removed_node->GetNext();
+			}
+		}
+		wxMessageBox("Selected config was not present in the config file.");
+	} else {
+		return;
+	}
 }
 void MFPG_Frame::CBOOKChange(wxBookCtrlEvent& event) {
 	current_panel = config_book->getCurrentPanel();
@@ -260,76 +462,156 @@ void MFPG_Frame::NBOOKChange(wxBookCtrlEvent& event) {
 void MFPG_Frame::CBNoteMapper(wxCommandEvent& event) {
 	switch (current_panel->notemap_box->GetCurrentSelection()) {
 		case 0:
-			current_panel->notemap_filepicker->Disable();
-			current_panel->notemapper_text->Disable();
-			current_panel->ST_NOTEMAPPER = Settings::NOTEMAPPER_BASIC;
+			SetNoteMapper(NOTEMAPPER_BASIC);
 			break;
 		case 1:
-			current_panel->notemap_filepicker->Enable();
-			current_panel->notemapper_text->Enable();
-			current_panel->ST_NOTEMAPPER = Settings::NOTEMAPPER_CSV;
+			SetNoteMapper(NOTEMAPPER_CSV);
 			break;
 		default:
-			current_panel->ST_NOTEMAPPER = Settings::UNDEFINED;
+			SetNoteMapper(UNDEFINED);
 			wxMessageBox("UNDEFINED NOTEMAPPER");
 			break;
 	}
 }
+void MFPG_Frame::SetNoteMapper(Settings s) {
+	switch (s) {
+		case NOTEMAPPER_BASIC:
+			current_panel->notemap_filepicker->Disable();
+			current_panel->notemapper_text->Disable();
+			current_panel->ST_NOTEMAPPER = NOTEMAPPER_BASIC;
+			current_panel->notemap_box->SetSelection(0);
+			break;
+		case NOTEMAPPER_CSV:
+			current_panel->notemap_filepicker->Enable();
+			current_panel->notemapper_text->Enable();
+			current_panel->ST_NOTEMAPPER = NOTEMAPPER_CSV;
+			current_panel->notemap_box->SetSelection(1);
+			break;
+		default:
+			current_panel->ST_NOTEMAPPER = UNDEFINED;
+			current_panel->notemap_box->SetSelection(-1);
+			break;
+	}
+}
+
 void MFPG_Frame::CBInstSettings(wxCommandEvent& event) {
 	switch (current_panel->instrument_settings_box->GetCurrentSelection()) {
 		case 0:
-			current_panel->ST_INSTRUMENT_SETTING = Settings::USE_PRESETS;
+			SetInstSettings(USE_PRESETS);
+			break;
+		case 1:
+			SetInstSettings(USE_DSL);
+			break;
+		default:
+			SetInstSettings(UNDEFINED);
+			wxMessageBox("UNDEFINED INSTRUMENT SETTING");
+			break;
+	}
+}
+void MFPG_Frame::SetInstSettings(Settings s) {
+	switch (s) {
+		case USE_PRESETS:
+			current_panel->ST_INSTRUMENT_SETTING = USE_PRESETS;
+			current_panel->instrument_settings_box->SetSelection(0);
 			current_panel->instrument_box->Enable();
 			current_panel->actionset_box->Enable();
 			current_panel->dsl_filepicker->Disable();
 			break;
-		case 1:
-			current_panel->ST_INSTRUMENT_SETTING = Settings::USE_DSL;
+		case USE_DSL:
+			current_panel->instrument_settings_box->SetSelection(1);
+			current_panel->ST_INSTRUMENT_SETTING = USE_DSL;
 			current_panel->instrument_box->Disable();
 			current_panel->actionset_box->Disable();
 			current_panel->dsl_filepicker->Enable();
 			break;
+		default:
+			current_panel->instrument_settings_box->SetSelection(-1);
+			current_panel->ST_INSTRUMENT_SETTING = UNDEFINED;
+			break;
 	}
-}
+} 
 void MFPG_Frame::CBInstrument(wxCommandEvent& event) {
 	switch (current_panel->instrument_box->GetCurrentSelection()) {
 		case 0:
-			current_panel->ST_INSTRUMENT = Settings::INSTRUMENT_VIOLIN;
+			SetInstrument(INSTRUMENT_VIOLIN);
+		default:
+			SetInstrument(UNDEFINED);
+			wxMessageBox("UNDEFINED INSTRUMENT");
+	}
+}
+void MFPG_Frame::SetInstrument(Settings s) {
+	switch (s) {
+		case INSTRUMENT_VIOLIN:
+			current_panel->instrument_box->SetSelection(0);
+			current_panel->ST_INSTRUMENT = INSTRUMENT_VIOLIN;
 			break;
 		default:
-			current_panel->ST_INSTRUMENT = Settings::UNDEFINED;
-			wxMessageBox("UNDEFINED INSTRUMENT");
+			current_panel->instrument_box->SetSelection(-1);
+			current_panel->ST_INSTRUMENT = UNDEFINED;
 			break;
 	}
 }
 void MFPG_Frame::CBActionSet(wxCommandEvent& event) {
 	switch (current_panel->actionset_box->GetCurrentSelection()) {
 		case 0:
-			current_panel->ST_ACTIONSET = Settings::ACTIONSET_T1;
+			SetActionSet(ACTIONSET_T1);
 			break;
 		case 1:
-			current_panel->ST_ACTIONSET = Settings::ACTIONSET_T2;
+			SetActionSet(ACTIONSET_T2);
 			break;
 		default:
-			current_panel->ST_ACTIONSET = Settings::UNDEFINED;
+			SetActionSet(UNDEFINED);
 			wxMessageBox("UNDEFINED NOTEMAPPER");
+			break;
+	}
+}
+void MFPG_Frame::SetActionSet(Settings s) {
+	switch (s) {
+		case ACTIONSET_T1:	
+			current_panel->actionset_box->SetSelection(0);
+			current_panel->ST_ACTIONSET = ACTIONSET_T1;
+			break;
+		case ACTIONSET_T2:	
+			current_panel->actionset_box->SetSelection(1);
+			current_panel->ST_ACTIONSET = ACTIONSET_T2;
+			break;
+		case UNDEFINED:	
+			current_panel->actionset_box->SetSelection(-1);
+			current_panel->ST_ACTIONSET = UNDEFINED;
 			break;
 	}
 }
 void MFPG_Frame::CBSolver(wxCommandEvent& event) {
 	switch (current_panel->solver_box->GetCurrentSelection()) {
 		case 0:
+			SetSolver(SOLVER_SPS);
+			break;
+		case 1:
+			SetSolver(SOLVER_GREEDY);
+			break;
+		default:
+			SetSolver(UNDEFINED);
+			wxMessageBox("UNDEFINED NOTEMAPPER");
+			break;
+	}
+}
+void MFPG_Frame::SetSolver(Settings s) {
+	switch (s) {
+		case SOLVER_SPS:
 			for (auto c : current_panel->solver_area->GetChildren()) {
-				if ((c->GetName() == "OPT1_TEXT" && current_panel->sps_opt_1->IsChecked()) ||
-				     (c->GetName() == "OPT2_TEXT" && current_panel->sps_opt_2->IsChecked())) {
+				if ((c->GetName() == "OPT1_TEXT" && 
+						current_panel->sps_opt_1->IsChecked()) || 
+				   (c->GetName() == "OPT2_TEXT" && 
+				    		current_panel->sps_opt_2->IsChecked())) {
 					c->Enable();
 				}
 			}
 			current_panel->sps_opt_1->Enable();
 			current_panel->sps_opt_2->Enable();
-			current_panel->ST_SOLVER = Settings::SOLVER_SPS;
+			current_panel->solver_box->SetSelection(0);
+			current_panel->ST_SOLVER = SOLVER_SPS;
 			break;
-		case 1:
+		case SOLVER_GREEDY:
 			for (auto c : current_panel->solver_area->GetChildren()) {
 				if (c->GetName() == "OPT1_TEXT" || c->GetName() == "OPT2_TEXT") {
 					c->Disable();
@@ -337,104 +619,191 @@ void MFPG_Frame::CBSolver(wxCommandEvent& event) {
 			}
 			current_panel->sps_opt_1->Disable();
 			current_panel->sps_opt_2->Disable();
-			current_panel->ST_SOLVER = Settings::SOLVER_GREEDY;
+			current_panel->solver_box->SetSelection(1);
+			current_panel->ST_SOLVER = SOLVER_GREEDY;
 			break;
 		default:
-			current_panel->ST_SOLVER = Settings::UNDEFINED;
-			wxMessageBox("UNDEFINED NOTEMAPPER");
+			current_panel->solver_box->SetSelection(-1);
+			current_panel->ST_SOLVER = UNDEFINED;
 			break;
 	}
 }
 void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
 	if (current_panel->sps_opt_1->IsChecked()) {
-		for (auto c : current_panel->solver_area->GetChildren()) {
-			if (c->GetName() == "OPT1_TEXT") {
-				c->Enable();
-			}
-		}
 		if (current_panel->sps_opt_2->IsChecked()) {
-			current_panel->ST_OPT = Settings::OPT_3;
+			SetOpt(OPT_3);
 		} else {
-			current_panel->ST_OPT = Settings::OPT_1;
+			SetOpt(OPT_1);
 		}
 	} else {
-		for (auto c : current_panel->solver_area->GetChildren()) {
-			if (c->GetName() == "OPT1_TEXT") {
-				c->Disable();
-			}
-		}
 		if (current_panel->sps_opt_2->IsChecked()) {
-			current_panel->ST_OPT = Settings::OPT_2;
+			SetOpt(OPT_2);
 		} else {
-			current_panel->ST_OPT = Settings::OPT_0;
+			SetOpt(OPT_0);
 		}
 	}
 }
 void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
 	if (current_panel->sps_opt_2->IsChecked()) {
-		for (auto c : current_panel->solver_area->GetChildren()) {
-			if (c->GetName() == "OPT2_TEXT") {
-				c->Enable();
-			}
-		}
 		if (current_panel->sps_opt_1->IsChecked()) {
-			current_panel->ST_OPT = Settings::OPT_3;
+			SetOpt(OPT_3);
 		} else {
-			current_panel->ST_OPT = Settings::OPT_2;
+			SetOpt(OPT_2);
 		}
 	} else {
-		for (auto c : current_panel->solver_area->GetChildren()) {
-			if (c->GetName() == "OPT2_TEXT") {
-				c->Disable();
-			}
-		}
 		if (current_panel->sps_opt_1->IsChecked()) {
-			current_panel->ST_OPT = Settings::OPT_1;
+			SetOpt(OPT_1);
 		} else {
-			current_panel->ST_OPT = Settings::OPT_0;
+			SetOpt(OPT_0);
 		}
+	}
+}
+void MFPG_Frame::SetOpt(Settings s) {
+	switch (s) {
+		case OPT_0:
+			current_panel->sps_opt_1->SetValue(false);
+			current_panel->sps_opt_2->SetValue(false);
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT1_TEXT") {
+					c->Disable();
+				}
+			}
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT2_TEXT") {
+					c->Disable();
+				}
+			}
+			current_panel->ST_OPT = OPT_0;
+			break;
+		case OPT_1:
+			current_panel->sps_opt_1->SetValue(true);
+			current_panel->sps_opt_2->SetValue(false);
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT1_TEXT") {
+					c->Enable();
+				}
+			}
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT2_TEXT") {
+					c->Disable();
+				}
+			}
+			current_panel->ST_OPT = OPT_1;
+			break;
+		case OPT_2:
+			current_panel->sps_opt_1->SetValue(false);
+			current_panel->sps_opt_2->SetValue(true);
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT1_TEXT") {
+					c->Disable();
+				}
+			}
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT2_TEXT") {
+					c->Enable();
+				}
+			}
+			current_panel->ST_OPT = OPT_2;
+			break;
+		case OPT_3:
+			current_panel->sps_opt_1->SetValue(true);
+			current_panel->sps_opt_2->SetValue(true);
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT1_TEXT") {
+					c->Enable();
+				}
+			}
+			for (auto c : current_panel->solver_area->GetChildren()) {
+				if (c->GetName() == "OPT2_TEXT") {
+					c->Enable();
+				}
+			}
+			current_panel->ST_OPT = OPT_3;
+			break;
+		default:
+			current_panel->sps_opt_1->SetValue(false);
+			current_panel->sps_opt_2->SetValue(false);
+			current_panel->ST_OPT = UNDEFINED;
+			break;
 	}
 }
 void MFPG_Frame::CHBOutputToFile(wxCommandEvent& event) {
 	if (current_panel->output_to_file->IsChecked()) {
-		current_panel->output_file->Enable();
-		current_panel->FilePath_Output = current_panel->output_file->GetPath();
-		current_panel->output_text->Enable();
-		current_panel->ST_OUTPUTTOFILE = Settings::OUTPUT_TO_FILE;
+		SetOutputToFile(OUTPUT_TO_FILE);
 	} else {
-		current_panel->output_file->Disable();
-		current_panel->output_text->Disable();
-		current_panel->FilePath_Output = "";
-		current_panel->ST_OUTPUTTOFILE = Settings::UNDEFINED;
+		SetOutputToFile(UNDEFINED);
+	}
+}
+void MFPG_Frame::SetOutputToFile(Settings s) {
+	switch (s) {
+		case OUTPUT_TO_FILE:
+			current_panel->output_file->Enable();
+			current_panel->output_text->Enable();
+			current_panel->output_to_file->SetValue(true);
+			current_panel->ST_OUTPUTTOFILE = OUTPUT_TO_FILE;
+			break;
+		default:
+			current_panel->output_file->Disable();
+			current_panel->output_text->Disable();
+			current_panel->output_to_file->SetValue(false);
+			current_panel->ST_OUTPUTTOFILE = UNDEFINED;
+			break;
 	}
 }
 void MFPG_Frame::CBOutput(wxCommandEvent& event) {
 	switch (current_panel->output_selection_box->GetCurrentSelection()) {
 		case 0:
-			current_panel->ST_OUTPUTTYPE = Settings::CSV_OUTPUT;	
+			SetOutput(CSV_OUTPUT);
 			break;
 		case 1:
-			current_panel->ST_OUTPUTTYPE = Settings::DIRECT_OUTPUT;	
+			SetOutput(DIRECT_OUTPUT);
 			break;
 		default:
-			current_panel->ST_OUTPUTTYPE = Settings::UNDEFINED;	
+			SetOutput(UNDEFINED);
 			wxMessageBox("OUTPUT TYPE UNDEFINED");
 			break;
-
+	}
+}
+void MFPG_Frame::SetOutput(Settings s) {
+	switch (s) {
+		case CSV_OUTPUT:
+			current_panel->output_selection_box->SetSelection(0);
+			current_panel->ST_OUTPUTTYPE = CSV_OUTPUT;	
+			break;
+		case DIRECT_OUTPUT:
+			current_panel->output_selection_box->SetSelection(1);
+			current_panel->ST_OUTPUTTYPE = DIRECT_OUTPUT;	
+			break;
+		default:
+			current_panel->output_selection_box->SetSelection(-1);
+			current_panel->ST_OUTPUTTYPE = UNDEFINED;	
+			break;
 	}
 }
 void MFPG_Frame::FPDSL(wxFileDirPickerEvent& event) {
-	current_panel->FilePath_DSL = current_panel->dsl_filepicker->GetPath();
+	SelectDSLFile(current_panel->dsl_filepicker->GetPath());
+}
+void MFPG_Frame::SelectDSLFile(wxString path) {
+	current_panel->FilePath_DSL = path;
+	current_panel->dsl_filepicker->SetPath(current_panel->FilePath_DSL);
 	current_panel->dsl_text->Enable();
 	current_panel->dsl_text->LoadFile(current_panel->FilePath_DSL);
 }
 void MFPG_Frame::FPCSVNoteMap(wxFileDirPickerEvent& event) {
-	current_panel->FilePath_Notemap = current_panel->notemap_filepicker->GetPath();
+	SelectNoteMapFile(current_panel->notemap_filepicker->GetPath());
+}
+void MFPG_Frame::SelectNoteMapFile(wxString path) {
+	current_panel->FilePath_Notemap = path;
+	current_panel->notemap_filepicker->SetPath(current_panel->FilePath_Notemap);
 	current_panel->notemapper_text->Enable();
 	current_panel->notemapper_text->LoadFile(current_panel->FilePath_Notemap);
 }
 void MFPG_Frame::FPCSVOutput(wxFileDirPickerEvent& event) {
-	current_panel->FilePath_Output = current_panel->output_file->GetPath();	
+	SelectOutputFile(current_panel->output_file->GetPath());
+}
+void MFPG_Frame::SelectOutputFile(wxString path) {
+	current_panel->FilePath_Output = path;
+	current_panel->output_file->SetPath(current_panel->FilePath_Output);
 	current_panel->output_text->Enable();
 	current_panel->output_text->LoadFile(current_panel->FilePath_Output);
 }

@@ -10,3 +10,15 @@ bool MFPG_Choicebook::AddPage(MFPG_Panel* page, const wxString &text, bool selec
 MFPG_Panel *MFPG_Choicebook::getCurrentPanel() {
 	return panels[GetSelection()];	
 }
+
+void MFPG_Choicebook::removePanel(const wxString name) {
+	int page = 0;
+	for (auto p = panels.begin(); p != panels.end(); p++) {
+		if ((*p)->GetName() == name) {
+			DeletePage(page);
+			panels.erase(p);
+			return;
+		}
+		page++;
+	}
+}

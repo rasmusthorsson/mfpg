@@ -62,7 +62,7 @@ class MFPG_Panel : public wxPanel {
 		wxStaticBox *output_settings_area;
 		wxComboBox *output_selection_box;
 		wxCheckBox *output_to_file;
-		wxFilePickerCtrl *output_file;
+		wxFilePickerCtrl *output_file;//TODO fix
 
 		//Generation button
 		wxStaticBox *generation_area;

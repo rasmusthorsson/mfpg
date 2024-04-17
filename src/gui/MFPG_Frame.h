@@ -50,6 +50,21 @@ class MFPG_Frame : public wxFrame {
 
 		MFPG_Choicebook *config_book;
 		MFPG_Panel *current_panel;
+
+		void SetNoteMapper(Settings);
+		void SetInstSettings(Settings);
+		void SetInstrument(Settings);
+		void SetActionSet(Settings);
+		void SetSolver(Settings);
+		void SetOpt(Settings);
+		void SetOutputToFile(Settings);
+		void SetOutput(Settings);
+
+		void SelectDSLFile(wxString);
+		void SelectNoteMapFile(wxString);
+		void SelectOutputFile(wxString);
+
+		wxXmlNode *NewConfig(wxString);
 };
 
 #endif

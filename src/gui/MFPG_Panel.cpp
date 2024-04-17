@@ -180,3 +180,4 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 	clear_info_button = new wxButton(information_area, ID_BTClearInfo, "Clear Info", wxPoint(20, 170),
 		wxSize(80, 30), 0, wxDefaultValidator, "CLEAR_INFO_BUTTON");
 }
+

@@ -6,11 +6,10 @@
 enum {
 	ID_MenuNewScore = 101,
 	ID_MenuNewConfig = 102,
-	ID_MenuLoadConfig = 103,
-	ID_MenuSaveConfig = 104,
-	ID_MenuSaveAsConfig = 105,
-	ID_MenuDeleteConfig = 106,
-	ID_MenuGuide = 107,
+	ID_MenuSaveConfig = 103,
+	ID_MenuSaveAsConfig = 104,
+	ID_MenuDeleteConfig = 105,
+	ID_MenuGuide = 106,
 
 	ID_CBOOKChange = 201,
 	ID_NBOOKChange = 202,
@@ -43,13 +42,20 @@ enum Settings {
 	SettingsCount
 };
 
+Settings const Settings_enums[] {
+#define X(a) a,
+#include "settings.def"
+#undef X
+};
+
 char const* const Settings_str[] {
 #define X(a) #a,
 #include "settings.def"
 #undef X
-	0
+	"SettingsCount"
 };
 
-std::string _S(enum Settings s);
+std::string _S(enum Settings);
+Settings S_(const std::string);
 
 #endif
