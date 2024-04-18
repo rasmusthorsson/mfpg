@@ -70,11 +70,13 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	wxMenu *menuConfig = new wxMenu;
 	menuConfig->Append(ID_MenuNewConfig, "&New Config");
 	menuConfig->AppendSeparator();
+	menuConfig->Append(ID_MenuLoadConfig, "&Load Config");
+	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveConfig, "&Save Config");
 	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveAsConfig, "&Save Config As");
 	menuConfig->AppendSeparator();
-	menuConfig->Append(ID_MenuDeleteConfig, "&Delete Config");
+	menuConfig->Append(ID_MenuDeleteConfig, "&Delete Saved Config");
 
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, "&File");
@@ -100,41 +102,18 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	}
 	
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
-	wxXmlNode *c = configs_file.GetRoot()->GetChildren()->GetChildren();
-	while (c) {
-		MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
-		current_panel = config_panel;
-		config_book->AddPage(config_panel, c->GetAttribute("name", wxEmptyString), true, 0);
-		wxXmlNode *option = c->GetChildren();
-		SetInstSettings(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		if (!(option->GetNodeContent() == "NONE")) {
-			SelectDSLFile(std::string(option->GetNodeContent()));
+	wxMessageDialog load_all_confs(NULL, "Load all saved configs?", "Config Load", 
+		wxYES_NO|wxCENTRE|wxICON_QUESTION|wxSTAY_ON_TOP, wxDefaultPosition);
+	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
+	current_panel = config_panel;
+	config_book->AddPage(config_panel, "UnnamedConfig", true, 0);
+	if (load_all_confs.ShowModal() == wxID_YES) {
+		wxXmlNode *c = configs_file.GetRoot()->GetChildren()->GetChildren();
+		while (c) {
+			LoadConfig(c->GetAttribute("name", wxEmptyString));
+			c = c->GetNext();
 		}
-		option = option->GetNext();
-		SetInstrument(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		SetActionSet(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		SetNoteMapper(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		if (!(option->GetNodeContent() == "NONE")) {
-			SelectNoteMapFile(std::string(option->GetNodeContent()));
-		}
-		option = option->GetNext();
-		SetSolver(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		SetOpt(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		SetOutput(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		SetOutputToFile(S_(std::string(option->GetNodeContent())));
-		option = option->GetNext();
-		if (!(option->GetNodeContent() == "NONE")) {
-			SelectOutputFile(std::string(option->GetNodeContent()));
-		}
-		c = c->GetNext();
-	}
+	} 
 }
 
 wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
@@ -143,6 +122,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuGuide, MFPG_Frame::MenuGuide)
 	EVT_MENU(ID_MenuNewScore, MFPG_Frame::MenuNewScore)
 	EVT_MENU(ID_MenuNewConfig, MFPG_Frame::MenuNewConfig)
+	EVT_MENU(ID_MenuLoadConfig, MFPG_Frame::MenuLoadConfig)
 	EVT_MENU(ID_MenuSaveConfig, MFPG_Frame::MenuSaveConfig)
 	EVT_MENU(ID_MenuSaveAsConfig, MFPG_Frame::MenuSaveAsConfig)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
@@ -212,6 +192,80 @@ void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 		current_panel = config_panel;
 	}
 }
+void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
+	wxXmlDocument conf;
+	conf.Load(configs_path);
+	std::vector<wxString> config_names;
+	wxXmlNode *config = conf.GetRoot()->GetChildren()->GetChildren();
+	while (config) {
+		config_names.push_back(config->GetAttribute("name", wxEmptyString));
+		config = config->GetNext();
+	}
+	wxSingleChoiceDialog dialog(NULL, "Select Config to load.", "Load Config", config_names.size(),
+		&config_names[0], NULL, wxCHOICEDLG_STYLE, wxDefaultPosition);
+	wxXmlNode *loaded_config = conf.GetRoot()->GetChildren()->GetChildren();
+	if (dialog.ShowModal() == wxID_OK) {
+		while (loaded_config) {
+			if (loaded_config->GetAttribute("name", wxEmptyString) == 
+									dialog.GetStringSelection()) {
+				LoadConfig(dialog.GetStringSelection());
+				return;
+			} else {
+				loaded_config = loaded_config->GetNext();
+			}
+		}
+		wxMessageBox("Selected config was not present in the config file.");
+	} else {
+		return;
+	}
+}
+void MFPG_Frame::LoadConfig(wxString name) {
+	wxXmlDocument configs_file;
+	configs_file.Load(configs_path);
+	wxXmlNode *node = configs_file.GetRoot()->GetChildren()->GetChildren();
+	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
+	current_panel = config_panel;
+	config_book->AddPage(config_panel, name, true, 0);
+	while (node) {
+		if (name == node->GetAttribute("name", wxEmptyString)) {
+			break;
+		} else {
+			node = node->GetNext();
+		}
+	}
+	if (!node) {
+		wxMessageBox("Could not find a Config by that name");
+		return;
+	}
+	node = node->GetChildren();
+	SetInstSettings(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	if (!(node->GetNodeContent() == "NONE")) {
+		SelectDSLFile(std::string(node->GetNodeContent()));
+	}
+	node = node->GetNext();
+	SetInstrument(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	SetActionSet(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	SetNoteMapper(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	if (!(node->GetNodeContent() == "NONE")) {
+		SelectNoteMapFile(std::string(node->GetNodeContent()));
+	}
+	node = node->GetNext();
+	SetSolver(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	SetOpt(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	SetOutput(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	SetOutputToFile(S_(std::string(node->GetNodeContent())));
+	node = node->GetNext();
+	if (!(node->GetNodeContent() == "NONE")) {
+		SelectOutputFile(std::string(node->GetNodeContent()));
+	}
+}
 void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
 	wxXmlDocument config_file;
@@ -264,6 +318,7 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	}
 	config_file.GetRoot()->GetChildren()->AddChild(config);
 	config_file.Save(configs_path);
+	delete(config);
 }
 void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
@@ -333,6 +388,7 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 		option->GetChildren()->SetContent(current_panel->FilePath_Output);
 	}
 	config_file.Save(configs_path);
+	delete(config);
 }
 wxXmlNode *MFPG_Frame::NewConfig(wxString conf_name) {
 	wxXmlAttribute *c = new wxXmlAttribute("name", conf_name);
@@ -427,7 +483,7 @@ void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
 		config_names.push_back(config->GetAttribute("name", wxEmptyString));
 		config = config->GetNext();
 	}
-	wxSingleChoiceDialog dialog(NULL, "Select Config to delete.", "Delete Config", config_names.size(),
+	wxSingleChoiceDialog dialog(NULL, "Select saved Config to delete.", "Delete Saved Config", config_names.size(),
 		&config_names[0], NULL, wxCHOICEDLG_STYLE, wxDefaultPosition);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxXmlNode *removed_node = conf.GetRoot()->GetChildren()->GetChildren();
@@ -436,7 +492,6 @@ void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
 									dialog.GetStringSelection()) {
 				conf.GetRoot()->GetChildren()->RemoveChild(removed_node);
 				conf.Save(configs_path);
-				//TODO Delete config from book
 				return;
 			} else {
 				removed_node = removed_node->GetNext();

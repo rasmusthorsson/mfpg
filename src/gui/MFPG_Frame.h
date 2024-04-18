@@ -64,7 +64,9 @@ class MFPG_Frame : public wxFrame {
 		void SelectNoteMapFile(wxString);
 		void SelectOutputFile(wxString);
 
+		//New config must be attached to existing document or explicitly deleted
 		wxXmlNode *NewConfig(wxString);
+		void LoadConfig(wxString);
 };
 
 #endif

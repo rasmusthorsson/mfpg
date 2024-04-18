@@ -6,10 +6,11 @@
 enum {
 	ID_MenuNewScore = 101,
 	ID_MenuNewConfig = 102,
-	ID_MenuSaveConfig = 103,
-	ID_MenuSaveAsConfig = 104,
-	ID_MenuDeleteConfig = 105,
-	ID_MenuGuide = 106,
+	ID_MenuLoadConfig = 103,
+	ID_MenuSaveConfig = 104,
+	ID_MenuSaveAsConfig = 105,
+	ID_MenuDeleteConfig = 106,
+	ID_MenuGuide = 107,
 
 	ID_CBOOKChange = 201,
 	ID_NBOOKChange = 202,
