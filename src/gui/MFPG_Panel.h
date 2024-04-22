@@ -16,6 +16,7 @@ class MFPG_Panel : public wxPanel {
 	public:
 		MFPG_Panel(wxWindow*);
 
+
 		//Settings for when the program is run, set during GUI selection
 		Settings ST_INSTRUMENT_SETTING = UNDEFINED;
 		Settings ST_NOTEMAPPER = UNDEFINED;
@@ -30,6 +31,10 @@ class MFPG_Panel : public wxPanel {
 		wxString FilePath_Notemap;
 		wxString FilePath_DSL;
 		wxString FilePath_Output;
+		
+		//Other
+		wxStaticText *score_selected_text;
+		wxButton *remove_config_button;
 	
 		//Notemap settings
 		wxStaticBox *notemap_area;
@@ -62,11 +67,10 @@ class MFPG_Panel : public wxPanel {
 		wxStaticBox *output_settings_area;
 		wxComboBox *output_selection_box;
 		wxCheckBox *output_to_file;
-		wxFilePickerCtrl *output_file;//TODO fix
+		wxFilePickerCtrl *output_filepicker;
 
 		//Generation button
 		wxStaticBox *generation_area;
-		wxStaticText *score_selected_text;
 		wxButton *generate_button;
 
 		//Output information

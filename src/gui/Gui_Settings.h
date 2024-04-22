@@ -33,7 +33,8 @@ enum {
 	ID_BTGenerate = 601,
 	ID_BTSavetext = 602,
 	ID_BTSaveastext = 603,
-	ID_BTClearInfo = 604
+	ID_BTClearInfo = 604,
+	ID_BTRemoveConfig = 605
 };
 
 enum Settings {

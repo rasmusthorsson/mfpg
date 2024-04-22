@@ -8,15 +8,32 @@
 
 #include "MFPG_Choicebook.h"
 
+#define INSTRUMENT_SETTINGS_CONF "instrument_settings"
+#define DSL_FILE_CONF "dsl_file"
+#define INSTRUMENT_CONF "instrument"
+#define ACTIONSET_CONF "actionset"
+#define NOTEMAPPER_SETTINGS_CONF "notemapper_settings"
+#define NOTEMAPPER_FILE_CONF "notemapper_file"
+#define SOLVER_SETTINGS_CONF "solver_settings"
+#define SOLVER_OPT_CONF "solver_opt"
+#define OUTPUT_SETTINGS_CONF "output_settings"
+#define OUTPUT_TO_FILE_CONF "output_to_file"
+#define OUTPUT_FILE_CONF "output_file"
+#define CONFIG_NAME_CONF "name"
+
 using Distance = int;
 
 class MFPG_Frame : public wxFrame {
 	private:
+		//Main generation of output
 		void Generate();
+		//Allowed characters for config names
 		const wxString config_chars = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-");
 		DECLARE_EVENT_TABLE()
 	public:
 		MFPG_Frame();
+
+		//Interactive objects in the GUI
 		void MenuNewScore(wxCommandEvent&);
 		void MenuNewConfig(wxCommandEvent&);
 		void MenuLoadConfig(wxCommandEvent&);
@@ -40,6 +57,7 @@ class MFPG_Frame : public wxFrame {
 		void FPDSL(wxFileDirPickerEvent&);
 		void FPCSVNoteMap(wxFileDirPickerEvent&);
 		void FPCSVOutput(wxFileDirPickerEvent&);
+		void BTRemoveConfig(wxCommandEvent&);
 		void BTGenerate(wxCommandEvent&);
 		void BTSavetext(wxCommandEvent&);
 		void BTSaveastext(wxCommandEvent&);
@@ -51,6 +69,8 @@ class MFPG_Frame : public wxFrame {
 		MFPG_Choicebook *config_book;
 		MFPG_Panel *current_panel;
 
+		//Functions to allow setting the settings while also activating the correct buttons
+		//in the gui from inside the code.
 		void SetNoteMapper(Settings);
 		void SetInstSettings(Settings);
 		void SetInstrument(Settings);

@@ -1,11 +1,14 @@
 #include "MFPG_Panel.h"
 
 MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
+//------------------------------------------------REMOVE_CONFIG----------------------------------------
+	remove_config_button = new wxButton(this, ID_BTRemoveConfig, "Remove Config", wxPoint(25, 2),
+		wxSize(120, 25), 0, wxDefaultValidator, "REMOVE_CONFIG_BUTTON");
 //------------------------------------------------SELECTED SCORE---------------------------------------
 	//Text: Selected Score:
 	wxStaticText *score_selected_text_title = new wxStaticText(this, wxID_ANY, "Selected Score:",
 		wxPoint(300, 5), wxSize(130, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "FILE_NAME_TITLE");
-	//Text: [Path of selected score]
+	//Text: Path of selected score
 	score_selected_text = new wxStaticText(this, wxID_ANY, "", wxPoint(430, 5), wxSize(200, 20), 
 		wxALIGN_LEFT|wxST_ELLIPSIZE_START, "FILE_NAME");
 
@@ -114,7 +117,7 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 		wxNB_TOP, "FILES_BOOK");
 	//File Contents: Output File
 	output_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(20, 10), wxSize(320, 520), 
-		wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator, "OUTPUT_TEXT");
+		wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY, wxDefaultValidator, "OUTPUT_TEXT");
 	output_text->Disable();
 	//File Contents: NoteMapper File
 	notemapper_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(20, 10), wxSize(320, 520), 
@@ -150,7 +153,7 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 	wxStaticBox *output_file_box = new wxStaticBox(output_settings_area, wxID_ANY, "Output File", 
 		wxPoint(20, 80), wxSize(360, 80), 0, wxStaticBoxNameStr);
 	//File Selection: Output
-	output_file = new wxFilePickerCtrl(output_file_box, ID_FPCSVOutput, wxEmptyString, 
+	output_filepicker = new wxFilePickerCtrl(output_file_box, ID_FPCSVOutput, wxEmptyString, 
 		wxFileSelectorPromptStr, wxFileSelectorDefaultWildcardStr, wxPoint(20, 10), wxSize(320, 40), 
 		wxFLP_SAVE|wxFLP_USE_TEXTCTRL|wxFLP_OVERWRITE_PROMPT|wxFLP_CHANGE_DIR, wxDefaultValidator, 
 		wxFilePickerCtrlNameStr);

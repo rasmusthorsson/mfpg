@@ -11,14 +11,19 @@ MFPG_Panel *MFPG_Choicebook::getCurrentPanel() {
 	return panels[GetSelection()];	
 }
 
-void MFPG_Choicebook::removePanel(const wxString name) {
-	int page = 0;
-	for (auto p = panels.begin(); p != panels.end(); p++) {
-		if ((*p)->GetName() == name) {
-			DeletePage(page);
-			panels.erase(p);
-			return;
+std::vector<MFPG_Panel*> MFPG_Choicebook::getPanels() {
+	return panels;
+}
+
+void MFPG_Choicebook::DeletePageAndPanel() {
+	size_t page_nr = FindPage(GetCurrentPage());
+	int count = 0;
+	for (auto p_itr = panels.begin(); p_itr != panels.end(); p_itr++) {
+		if (count == page_nr) {
+			panels.erase(p_itr);
+			DeletePage(page_nr);
+			break;
 		}
-		page++;
+		count++;
 	}
 }

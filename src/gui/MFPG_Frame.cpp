@@ -96,24 +96,44 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	//configs_path.append("MFPG_Configs");
 	configs_path.append(sep());
 	configs_path.append(".mfpg_configs.xml");
-	wxXmlDocument configs_file;
-	if (!configs_file.Load(configs_path)) {
-		wxMessageBox("Could not find config file (.mfpg_configs.xml) in current directory.");
-	}
-	
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
-	wxMessageDialog load_all_confs(NULL, "Load all saved configs?", "Config Load", 
-		wxYES_NO|wxCENTRE|wxICON_QUESTION|wxSTAY_ON_TOP, wxDefaultPosition);
 	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
 	current_panel = config_panel;
 	config_book->AddPage(config_panel, "UnnamedConfig", true, 0);
-	if (load_all_confs.ShowModal() == wxID_YES) {
-		wxXmlNode *c = configs_file.GetRoot()->GetChildren()->GetChildren();
-		while (c) {
-			LoadConfig(c->GetAttribute("name", wxEmptyString));
-			c = c->GetNext();
+	
+	wxXmlDocument configs_file;
+	if (!configs_file.Load(configs_path)) {
+		wxMessageDialog new_conf_file_q(NULL, "Unable to locate a config file (.mfpg_configs.xml) in the current directory. Would you like to create a new MFPG Config file for saving and loading configurations? The file will be created in the current directory under the name \".mfpg_configs.xml\"", 
+			"Create a new MFPG Config file?", wxYES_NO|wxCENTRE|wxICON_QUESTION|wxSTAY_ON_TOP,
+			wxDefaultPosition);
+		if (new_conf_file_q.ShowModal() == wxID_YES) {
+			std::ofstream new_file;
+			new_file.open(configs_path);
+			new_file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			new_file << "<root>\n";
+			new_file << "  <configs>\n";
+			new_file << "  </configs>\n";
+			new_file << "</root>\n";
+		} else {
+			menuConfig->Enable(ID_MenuLoadConfig, false);
+			menuConfig->Enable(ID_MenuSaveConfig, false);
+			menuConfig->Enable(ID_MenuSaveAsConfig, false);
+			menuConfig->Enable(ID_MenuDeleteConfig, false);
 		}
-	} 
+		//TODO Add message dialog asking if file should be created
+	} else {
+		wxMessageDialog load_all_confs(NULL, "Load all saved configs?", "Config Load", 
+			wxYES_NO|wxCENTRE|wxICON_QUESTION|wxSTAY_ON_TOP, wxDefaultPosition);
+		if (load_all_confs.ShowModal() == wxID_YES) {
+			wxXmlNode *c = configs_file.GetRoot()->GetChildren()->GetChildren();
+			while (c) {
+				LoadConfig(c->GetAttribute(CONFIG_NAME_CONF, wxEmptyString));
+				c = c->GetNext();
+			}
+		} 
+	}
+	
+	//Load all configs?
 }
 
 wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
@@ -149,6 +169,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(ID_BTSavetext, MFPG_Frame::BTSavetext)
 	EVT_BUTTON(ID_BTSaveastext, MFPG_Frame::BTSaveastext)
 	EVT_BUTTON(ID_BTClearInfo, MFPG_Frame::BTClearInfo)
+	EVT_BUTTON(ID_BTRemoveConfig, MFPG_Frame::BTRemoveConfig)
 wxEND_EVENT_TABLE()
 
 void MFPG_Frame::MenuExit(wxCommandEvent& event) {
@@ -165,7 +186,7 @@ void MFPG_Frame::MenuAbout(wxCommandEvent& event) {
 void MFPG_Frame::MenuNewScore(wxCommandEvent& event) {
 	wxFileDialog *file_dialog = new wxFileDialog(this, _("Choose a musicXML file to open"), 
 		wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), 
-		wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFLP_CHANGE_DIR, wxDefaultPosition);
+		wxFD_OPEN|wxFD_FILE_MUST_EXIST, wxDefaultPosition);
 	if (file_dialog->ShowModal() == wxID_OK) {
 		score_path = file_dialog->GetPath();
 		for (auto s : config_book->getPanels()) {
@@ -198,7 +219,7 @@ void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
 	std::vector<wxString> config_names;
 	wxXmlNode *config = conf.GetRoot()->GetChildren()->GetChildren();
 	while (config) {
-		config_names.push_back(config->GetAttribute("name", wxEmptyString));
+		config_names.push_back(config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString));
 		config = config->GetNext();
 	}
 	wxSingleChoiceDialog dialog(NULL, "Select Config to load.", "Load Config", config_names.size(),
@@ -206,7 +227,7 @@ void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
 	wxXmlNode *loaded_config = conf.GetRoot()->GetChildren()->GetChildren();
 	if (dialog.ShowModal() == wxID_OK) {
 		while (loaded_config) {
-			if (loaded_config->GetAttribute("name", wxEmptyString) == 
+			if (loaded_config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString) == 
 									dialog.GetStringSelection()) {
 				LoadConfig(dialog.GetStringSelection());
 				return;
@@ -215,56 +236,61 @@ void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
 			}
 		}
 		wxMessageBox("Selected config was not present in the config file.");
-	} else {
-		return;
 	}
 }
 void MFPG_Frame::LoadConfig(wxString name) {
 	wxXmlDocument configs_file;
 	configs_file.Load(configs_path);
-	wxXmlNode *node = configs_file.GetRoot()->GetChildren()->GetChildren();
-	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
-	current_panel = config_panel;
-	config_book->AddPage(config_panel, name, true, 0);
-	while (node) {
-		if (name == node->GetAttribute("name", wxEmptyString)) {
+
+	wxXmlNode *config = configs_file.GetRoot()->GetChildren()->GetChildren();
+	MFPG_Panel *new_config_panel = new MFPG_Panel(config_book);	
+	current_panel = new_config_panel;
+	config_book->AddPage(new_config_panel, name, true, 0);
+
+	while (config) {
+		if (name == config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString)) {
 			break;
 		} else {
-			node = node->GetNext();
+			config = config->GetNext();
 		}
 	}
-	if (!node) {
+	if (!config) {
 		wxMessageBox("Could not find a Config by that name");
 		return;
 	}
-	node = node->GetChildren();
-	SetInstSettings(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	if (!(node->GetNodeContent() == "NONE")) {
-		SelectDSLFile(std::string(node->GetNodeContent()));
+
+	SetInstSettings(S_(std::string(config->GetAttribute(INSTRUMENT_SETTINGS_CONF, wxEmptyString))));
+	
+	SetInstrument(S_(std::string(config->GetAttribute(INSTRUMENT_CONF, wxEmptyString))));
+	
+	SetActionSet(S_(std::string(config->GetAttribute(ACTIONSET_CONF, wxEmptyString))));
+	
+	SetNoteMapper(S_(std::string(config->GetAttribute(NOTEMAPPER_SETTINGS_CONF, wxEmptyString))));
+	
+	SetSolver(S_(std::string(config->GetAttribute(SOLVER_SETTINGS_CONF, wxEmptyString))));
+	
+	SetOpt(S_(std::string(config->GetAttribute(SOLVER_OPT_CONF, wxEmptyString))));
+	
+	SetOutput(S_(std::string(config->GetAttribute(OUTPUT_SETTINGS_CONF, wxEmptyString))));
+	
+	SetOutputToFile(S_(std::string(config->GetAttribute(OUTPUT_TO_FILE_CONF, wxEmptyString))));
+
+	if (config->GetAttribute(DSL_FILE_CONF, wxEmptyString) == "NONE") {
+		SelectDSLFile("");	
+	} else {
+		SelectDSLFile(std::string(config->GetAttribute(DSL_FILE_CONF, wxEmptyString)));
 	}
-	node = node->GetNext();
-	SetInstrument(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	SetActionSet(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	SetNoteMapper(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	if (!(node->GetNodeContent() == "NONE")) {
-		SelectNoteMapFile(std::string(node->GetNodeContent()));
+	if (config->GetAttribute(NOTEMAPPER_FILE_CONF, wxEmptyString) == "NONE") {
+		SelectNoteMapFile("");	
+	} else {
+		SelectNoteMapFile(std::string(config->GetAttribute(NOTEMAPPER_FILE_CONF, wxEmptyString)));
 	}
-	node = node->GetNext();
-	SetSolver(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	SetOpt(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	SetOutput(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	SetOutputToFile(S_(std::string(node->GetNodeContent())));
-	node = node->GetNext();
-	if (!(node->GetNodeContent() == "NONE")) {
-		SelectOutputFile(std::string(node->GetNodeContent()));
+	if (config->GetAttribute(OUTPUT_FILE_CONF, wxEmptyString) == "NONE") {
+		SelectOutputFile("");	
+	} else {
+		SelectOutputFile(std::string(config->GetAttribute(OUTPUT_FILE_CONF, wxEmptyString)));
 	}
+
 }
 void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
@@ -272,7 +298,7 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	config_file.Load(configs_path);
 	wxXmlNode *config = config_file.GetRoot()->GetChildren()->GetChildren();
 	while (config) {
-		wxString c = config->GetAttribute("name", wxEmptyString);
+		wxString c = config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString);
 		if (c == conf_name) {	
 			break;	
 		} else {
@@ -282,58 +308,60 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	if (!config) {
 		config = NewConfig(conf_name);
 	}
-	wxXmlNode *option = config->GetChildren();
-	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT_SETTING));
-	option = option->GetNext();
+	std::string dsl_file = "NONE";
 	if (!current_panel->FilePath_DSL) {
-		option->GetChildren()->SetContent("NONE");
 	} else {
-		option->GetChildren()->SetContent(current_panel->FilePath_DSL);
+		dsl_file = current_panel->FilePath_DSL;
 	}
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_ACTIONSET));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_NOTEMAPPER));
-	option = option->GetNext();
+	std::string notemapper_file = "NONE";
 	if (!current_panel->FilePath_Notemap) {
-		option->GetChildren()->SetContent("NONE");
 	} else {
-		option->GetChildren()->SetContent(current_panel->FilePath_Notemap);
+		notemapper_file = current_panel->FilePath_Notemap;
 	}
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_SOLVER));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_OPT));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTYPE));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTOFILE));
-	option = option->GetNext();
+	std::string output_file = "NONE";
 	if (!current_panel->FilePath_Output) {
-		option->GetChildren()->SetContent("NONE");
 	} else {
-		option->GetChildren()->SetContent(current_panel->FilePath_Output);
+		output_file = current_panel->FilePath_Output;
 	}
-	config_file.GetRoot()->GetChildren()->AddChild(config);
+	std::vector<std::pair<std::string, std::string>> config_attrs({
+			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
+			{DSL_FILE_CONF, dsl_file},
+			{INSTRUMENT_CONF, _S(current_panel->ST_INSTRUMENT)},
+			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
+			{NOTEMAPPER_SETTINGS_CONF, _S(current_panel->ST_NOTEMAPPER)},
+			{NOTEMAPPER_FILE_CONF, notemapper_file},
+			{SOLVER_SETTINGS_CONF, _S(current_panel->ST_SOLVER)},
+			{SOLVER_OPT_CONF, _S(current_panel->ST_OPT)},
+			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
+			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
+			{OUTPUT_FILE_CONF, output_file}
+			});
+	wxXmlAttribute *attr = config->GetAttributes();
+	while (attr) {
+		for (int i = 0; i < config_attrs.size(); i++) {
+			if (attr->GetName() == config_attrs[i].first) {
+				attr->SetValue(config_attrs[i].second);	
+				break;
+			}
+		}
+		attr = attr->GetNext();
+	}
 	config_file.Save(configs_path);
-	delete(config);
 }
 void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
-	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
+	wxString conf_name;
 	wxXmlDocument config_file;
 	config_file.Load(configs_path);
 	wxXmlNode *config = config_file.GetRoot()->GetChildren()->GetChildren();
-	wxTextEntryDialog select_name(NULL, "Input Config name to save as", "Save Config as", conf_name, 
-		wxTextEntryDialogStyle, wxDefaultPosition);
+	wxTextEntryDialog select_name(NULL, "Input Config name to save as", "Save Config as", 
+		wxEmptyString, wxTextEntryDialogStyle, wxDefaultPosition);
 	if (select_name.ShowModal() == wxID_OK) {
 		conf_name = select_name.GetValue();
 	} else {
 		return;
 	}
 	while (config) {
-		wxString c = config->GetAttribute("name", wxEmptyString);
+		wxString c = config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString);
 		if (c == conf_name) {	
 			break;	
 		} else {
@@ -353,125 +381,69 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 		config_file.GetRoot()->GetChildren()->AddChild(config);
 		config_file.Save(configs_path);
 	}
-	wxXmlNode *option = config->GetChildren();
-	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT_SETTING));
-	option = option->GetNext();
+	std::string dsl_file = "NONE";
 	if (!current_panel->FilePath_DSL) {
-		option->GetChildren()->SetContent("NONE");
 	} else {
-		option->GetChildren()->SetContent(current_panel->FilePath_DSL);
+		dsl_file = current_panel->FilePath_DSL;
 	}
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_INSTRUMENT));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_ACTIONSET));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_NOTEMAPPER));
-	option = option->GetNext();
+	std::string notemapper_file = "NONE";
 	if (!current_panel->FilePath_Notemap) {
-		option->GetChildren()->SetContent("NONE");
 	} else {
-		option->GetChildren()->SetContent(current_panel->FilePath_Notemap);
+		notemapper_file = current_panel->FilePath_Notemap;
 	}
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_SOLVER));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_OPT));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTYPE));
-	option = option->GetNext();
-	option->GetChildren()->SetContent(_S(current_panel->ST_OUTPUTTOFILE));
-	option = option->GetNext();
+	std::string output_file = "NONE";
 	if (!current_panel->FilePath_Output) {
-		option->GetChildren()->SetContent("NONE");
 	} else {
-		option->GetChildren()->SetContent(current_panel->FilePath_Output);
+		output_file = current_panel->FilePath_Output;
+	}
+	std::vector<std::pair<std::string, std::string>> config_attrs({
+			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
+			{DSL_FILE_CONF, dsl_file},
+			{INSTRUMENT_CONF, _S(current_panel->ST_INSTRUMENT)},
+			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
+			{NOTEMAPPER_SETTINGS_CONF, _S(current_panel->ST_NOTEMAPPER)},
+			{NOTEMAPPER_FILE_CONF, notemapper_file},
+			{SOLVER_SETTINGS_CONF, _S(current_panel->ST_SOLVER)},
+			{SOLVER_OPT_CONF, _S(current_panel->ST_OPT)},
+			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
+			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
+			{OUTPUT_FILE_CONF, output_file}
+			});
+	wxXmlAttribute *attr = config->GetAttributes();
+	while (attr) {
+		for (int i = 0; i < config_attrs.size(); i++) {
+			if (attr->GetName() == config_attrs[i].first) {
+				attr->SetValue(config_attrs[i].second);	
+				break;
+			}
+		}
+		attr = attr->GetNext();
 	}
 	config_file.Save(configs_path);
-	delete(config);
 }
 wxXmlNode *MFPG_Frame::NewConfig(wxString conf_name) {
 	wxXmlAttribute *c = new wxXmlAttribute("name", conf_name);
 	wxXmlNode *config = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "config", wxEmptyString,
 		c, NULL, -1);
 	
-	wxXmlNode *i_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "instrument_settings", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *i_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"USE_PRESETS", NULL, NULL, -1);
-	i_s->AddChild(i_s_c);
-	config->AddChild(i_s);
-	
-	wxXmlNode *d_f = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "dsl_file", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *d_f_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"NONE", NULL, NULL, -1);
-	d_f->AddChild(d_f_c);
-	config->AddChild(d_f);
+	std::vector<std::pair<std::string, std::string>> config_settings({
+			{INSTRUMENT_SETTINGS_CONF, "USE_PRESETS"},
+			{DSL_FILE_CONF, "NONE"},
+			{INSTRUMENT_CONF, "INSTRUMENT_VIOLIN"},
+			{ACTIONSET_CONF, "ACTIONSET_T1"},
+			{NOTEMAPPER_SETTINGS_CONF, "NOTEMAPPER_BASIC"},
+			{NOTEMAPPER_FILE_CONF, "NONE"},
+			{SOLVER_SETTINGS_CONF, "SOLVER_SPS"},
+			{SOLVER_OPT_CONF, "OPT_3"},
+			{OUTPUT_SETTINGS_CONF, "CSV_OUTPUT"},
+			{OUTPUT_TO_FILE_CONF, "OUTPUT_TO_FILE"},
+			{OUTPUT_FILE_CONF, "NONE"}
+			});
 
-	wxXmlNode *i = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "instrument", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *i_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"INSTRUMENT_VIOLIN", NULL, NULL, -1);
-	i->AddChild(i_c);
-	config->AddChild(i);
-	
-	wxXmlNode *a_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "actionset", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *a_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"ACTIONSET_T1", NULL, NULL, -1);
-	a_s->AddChild(a_s_c);
-	config->AddChild(a_s);
-	
-	wxXmlNode *n_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "notemapper_settings", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *n_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"NOTEMAPPER_BASIC", NULL, NULL, -1);
-	n_s->AddChild(n_s_c);
-	config->AddChild(n_s);
-	
-	wxXmlNode *n_f = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "notemapper_file", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *n_f_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"NONE", NULL, NULL, -1);
-	n_f->AddChild(n_f_c);
-	config->AddChild(n_f);
-	
-	wxXmlNode *s_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "solver_settings", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *s_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"SOLVER_SPS", NULL, NULL, -1);
-	s_s->AddChild(s_s_c);
-	config->AddChild(s_s);
-	
-	wxXmlNode *s_o = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "solver_opt", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *s_o_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"OPT_3", NULL, NULL, -1);
-	s_o->AddChild(s_o_c);
-	config->AddChild(s_o);
-	
-	wxXmlNode *o_s = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "output_settings", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *o_s_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"CSV_OUTPUT", NULL, NULL, -1);
-	o_s->AddChild(o_s_c);
-	config->AddChild(o_s);
-
-	wxXmlNode *o_t = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "output_to_file", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *o_t_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"OUTPUT_TO_FILE", NULL, NULL, -1);
-	o_t->AddChild(o_t_c);
-	config->AddChild(o_t);
-
-	wxXmlNode *o_f = new wxXmlNode(NULL, wxXML_ELEMENT_NODE, "output_file", 
-		wxEmptyString, NULL, NULL, -1);
-	wxXmlNode *o_f_c = new wxXmlNode(NULL, wxXML_TEXT_NODE, wxEmptyString, 
-		"NONE", NULL, NULL, -1);
-	o_f->AddChild(o_f_c);
-	config->AddChild(o_f);
-
+	for (auto p : config_settings) {
+		wxXmlAttribute *settings_attr = new wxXmlAttribute(p.first, p.second);
+		config->AddAttribute(settings_attr);
+	}
 	return config;
 }
 void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
@@ -480,7 +452,7 @@ void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
 	std::vector<wxString> config_names;
 	wxXmlNode *config = conf.GetRoot()->GetChildren()->GetChildren();
 	while (config) {
-		config_names.push_back(config->GetAttribute("name", wxEmptyString));
+		config_names.push_back(config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString));
 		config = config->GetNext();
 	}
 	wxSingleChoiceDialog dialog(NULL, "Select saved Config to delete.", "Delete Saved Config", config_names.size(),
@@ -488,7 +460,7 @@ void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
 	if (dialog.ShowModal() == wxID_OK) {
 		wxXmlNode *removed_node = conf.GetRoot()->GetChildren()->GetChildren();
 		while (removed_node) {
-			if (removed_node->GetAttribute("name", wxEmptyString) == 
+			if (removed_node->GetAttribute(CONFIG_NAME_CONF, wxEmptyString) == 
 									dialog.GetStringSelection()) {
 				conf.GetRoot()->GetChildren()->RemoveChild(removed_node);
 				conf.Save(configs_path);
@@ -792,14 +764,14 @@ void MFPG_Frame::CHBOutputToFile(wxCommandEvent& event) {
 void MFPG_Frame::SetOutputToFile(Settings s) {
 	switch (s) {
 		case OUTPUT_TO_FILE:
-			current_panel->output_file->Enable();
+			current_panel->output_filepicker->Enable();
 			current_panel->output_text->Enable();
 			current_panel->output_to_file->SetValue(true);
 			current_panel->ST_OUTPUTTOFILE = OUTPUT_TO_FILE;
 			break;
 		default:
-			current_panel->output_file->Disable();
-			current_panel->output_text->Disable();
+			current_panel->output_filepicker->Disable();
+			current_panel->output_text->Enable();
 			current_panel->output_to_file->SetValue(false);
 			current_panel->ST_OUTPUTTOFILE = UNDEFINED;
 			break;
@@ -840,27 +812,36 @@ void MFPG_Frame::FPDSL(wxFileDirPickerEvent& event) {
 }
 void MFPG_Frame::SelectDSLFile(wxString path) {
 	current_panel->FilePath_DSL = path;
-	current_panel->dsl_filepicker->SetPath(current_panel->FilePath_DSL);
+	if (!path) {
+	} else {
+		current_panel->dsl_filepicker->SetPath(current_panel->FilePath_DSL);
+		current_panel->dsl_text->LoadFile(current_panel->FilePath_DSL);
+	}
 	current_panel->dsl_text->Enable();
-	current_panel->dsl_text->LoadFile(current_panel->FilePath_DSL);
 }
 void MFPG_Frame::FPCSVNoteMap(wxFileDirPickerEvent& event) {
 	SelectNoteMapFile(current_panel->notemap_filepicker->GetPath());
 }
 void MFPG_Frame::SelectNoteMapFile(wxString path) {
 	current_panel->FilePath_Notemap = path;
-	current_panel->notemap_filepicker->SetPath(current_panel->FilePath_Notemap);
+	if (!path) {
+	} else {
+		current_panel->notemap_filepicker->SetPath(current_panel->FilePath_Notemap);
+		current_panel->notemapper_text->LoadFile(current_panel->FilePath_Notemap);
+	}
 	current_panel->notemapper_text->Enable();
-	current_panel->notemapper_text->LoadFile(current_panel->FilePath_Notemap);
 }
 void MFPG_Frame::FPCSVOutput(wxFileDirPickerEvent& event) {
-	SelectOutputFile(current_panel->output_file->GetPath());
+	SelectOutputFile(current_panel->output_filepicker->GetPath());
 }
 void MFPG_Frame::SelectOutputFile(wxString path) {
 	current_panel->FilePath_Output = path;
-	current_panel->output_file->SetPath(current_panel->FilePath_Output);
+	if (!path) {
+	} else {
+		current_panel->output_filepicker->SetPath(current_panel->FilePath_Output);
+		current_panel->output_text->LoadFile(current_panel->FilePath_Output);
+	}
 	current_panel->output_text->Enable();
-	current_panel->output_text->LoadFile(current_panel->FilePath_Output);
 }
 void MFPG_Frame::BTSaveastext(wxCommandEvent& event) {
 	wxFileDialog save_as_dialog(NULL, wxFileSelectorPromptStr, wxEmptyString, wxEmptyString, 
@@ -934,6 +915,14 @@ void MFPG_Frame::BTSavetext(wxCommandEvent& event) {
 			break;
 	}
 }
+void MFPG_Frame::BTRemoveConfig(wxCommandEvent& event) {
+	wxMessageDialog q(NULL, "Remove Config?", "Remove Config from menu?", wxYES_NO|wxICON_QUESTION,
+		wxDefaultPosition);
+	if (q.ShowModal() == wxID_YES) {
+		config_book->DeletePageAndPanel();
+		config_book->Refresh();
+	}
+}
 void MFPG_Frame::BTClearInfo(wxCommandEvent& event) {
 	current_panel->information_text->Clear();
 }
@@ -965,13 +954,14 @@ void MFPG_Frame::Generate() {
 
 	char output_type = 'i';
 	
-	if (current_panel->ST_INSTRUMENT_SETTING == Settings::USE_DSL) {
+	if (current_panel->ST_INSTRUMENT_SETTING == USE_DSL) {
 		FILE *dsl_filepicker;	
 		dsl_filepicker = fopen((current_panel->FilePath_DSL).c_str(), "r");
 		Input *parse_tree = NULL;
 		try {
 			parse_tree = pInput(dsl_filepicker);
 		} catch (parse_error &e) {
+			delete(parse_tree);
 			std::string e_msg = "DSL Parse error on line: ";
 			e_msg += std::to_string(e.getLine());
 			std::cout << e_msg << "\n";
@@ -993,6 +983,7 @@ void MFPG_Frame::Generate() {
 		} else if (output_type == 'd') {
 			violin_d = instrument_builder.d_inst;
 		}
+		delete(parse_tree);
 	} else {
 		TUPLESIZE = 3;
 		ATTRIBUTES = {"STRING", "FINGER", "HAND_POS"};
@@ -1001,13 +992,13 @@ void MFPG_Frame::Generate() {
 		std::shared_ptr<ActionSet<int>> as_i;
 
 		switch (current_panel->ST_ACTIONSET) {
-			case Settings::ACTIONSET_T1:
+			case ACTIONSET_T1:
 				as_i = configs::test_configuration_1();
 				break;
-			case Settings::ACTIONSET_T2:
+			case ACTIONSET_T2:
 				as_i = configs::test_configuration_2();
 				break;
-			case Settings::UNDEFINED:
+			case UNDEFINED:
 				wxMessageBox("Could not find ActionSet, Aborting...");
 				return;
 			default:
@@ -1015,14 +1006,14 @@ void MFPG_Frame::Generate() {
 				return;
 		}
 		switch (current_panel->ST_INSTRUMENT) {
-			case Settings::INSTRUMENT_VIOLIN:
+			case INSTRUMENT_VIOLIN:
 				violin_i = std::shared_ptr<Instrument<int>>(new Instrument<int>(as_i));
 				violin_i->makeIString(1, Note::G_3, Note::Gs_5);
 				violin_i->makeIString(2, Note::D_4, Note::Ds_6);
 				violin_i->makeIString(3, Note::A_4, Note::As_6);
 				violin_i->makeIString(4, Note::E_5, Note::F_7);
 				break;
-			case Settings::UNDEFINED:
+			case UNDEFINED:
 				wxMessageBox("Could not find Instrument, Aborting...");
 				return;
 			default:
@@ -1034,14 +1025,14 @@ void MFPG_Frame::Generate() {
 	try {
 		std::string map_csv_path;
 		switch (current_panel->ST_NOTEMAPPER) {
-			case Settings::NOTEMAPPER_BASIC:
+			case NOTEMAPPER_BASIC:
 				if (output_type == 'i') {
 					note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
 				} else if (output_type == 'd') {
 					note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_d->getIStrings()));
 				}
 				break;
-			case Settings::NOTEMAPPER_CSV:
+			case NOTEMAPPER_CSV:
 				map_csv_path = current_panel->FilePath_Notemap;
 				if (output_type == 'i') {
 					note_mapper = std::shared_ptr<NoteMapper>(new CSVNoteMapper(map_csv_path, violin_i->getIStrings()));
@@ -1049,7 +1040,7 @@ void MFPG_Frame::Generate() {
 					note_mapper = std::shared_ptr<NoteMapper>(new CSVNoteMapper(map_csv_path, violin_d->getIStrings()));
 				}
 				break;
-			case Settings::UNDEFINED:
+			case UNDEFINED:
 				wxMessageBox("No Notemapper was defined, Aborting...");
 				return;
 			default:
@@ -1106,32 +1097,32 @@ void MFPG_Frame::Generate() {
 	std::shared_ptr<GraphSolver<int>> solver_i;
 	std::shared_ptr<GraphSolver<double>> solver_d;
 	switch (current_panel->ST_SOLVER) {
-		case Settings::SOLVER_GREEDY:
+		case SOLVER_GREEDY:
 			solver_i = std::shared_ptr<GraphSolver<int>>(new GreedySolver());
 			if (output_type == 'd') {
 				wxMessageBox("Greedy Solver is not implemented for double outputs.");
 				return;
 			}
 			break;
-		case Settings::SOLVER_SPS:
+		case SOLVER_SPS:
 			switch (current_panel->ST_OPT) {
-				case Settings::OPT_0:
+				case OPT_0:
 					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(0));
 					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(0));
 					break;
-				case Settings::OPT_1:
+				case OPT_1:
 					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(1));
 					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(1));
 					break;
-				case Settings::OPT_2:
+				case OPT_2:
 					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(2));
 					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(2));
 					break;
-				case Settings::OPT_3:
+				case OPT_3:
 					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(3));
 					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(3));
 					break;
-				case Settings::UNDEFINED:
+				case UNDEFINED:
 					solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(0));
 					solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(0));
 					break;
@@ -1140,7 +1131,7 @@ void MFPG_Frame::Generate() {
 					return;
 			}
 			break;
-		case Settings::UNDEFINED:
+		case UNDEFINED:
 			wxMessageBox("Could not find solver, Aborting...");
 			return;
 		default:
@@ -1166,40 +1157,45 @@ void MFPG_Frame::Generate() {
 		wxMessageBox(e_msg);
 		return;
 	}
+	bool use_csv = false;
+	switch (current_panel->ST_OUTPUTTYPE) {
+		case CSV_OUTPUT:
+			use_csv = true;
+			break;
+		case DIRECT_OUTPUT:
+			use_csv = false;
+			break;
+		case UNDEFINED:
+			use_csv = false;
+			break;
+		default:
+			wxMessageBox("IMPOSSIBLE PROGRAM FLOW");
+			return;
+	}
+	current_panel->output_text->Clear();
 	if (current_panel->ST_OUTPUTTOFILE) {
-		std::string csv_out_path;
+		std::string out_path;
 		std::ofstream out; 
 		if (!current_panel->FilePath_Output) {
 			wxMessageBox("No Output file selected");
 			return;
 		}
-		csv_out_path = current_panel->FilePath_Output;
-		out.open(csv_out_path, std::ofstream::binary);
-		bool use_csv = false;
-		switch (current_panel->ST_OUTPUTTYPE) {
-			case Settings::CSV_OUTPUT:
-				use_csv = true;
-				break;
-			case Settings::DIRECT_OUTPUT:
-				use_csv = false;
-				break;
-			case Settings::UNDEFINED:
-				use_csv = false;
-				break;
-			default:
-				wxMessageBox("IMPOSSIBLE PROGRAM FLOW");
-				return;
-		}
+		out_path = current_panel->FilePath_Output;
+		out.open(out_path, std::ofstream::binary);
 		if (output_type == 'i') {
 			configs::writeOutput(out, solver_i, use_csv);
 		} else if (output_type == 'd') {
 			configs::writeOutput(out, solver_d, use_csv);
-			return;
 		}
 		out.close();
+		current_panel->output_text->LoadFile(current_panel->FilePath_Output);
 	} else {
-		wxMessageBox("Currently output must be written to a file.");
-		return;
+		std::ostream *to_out = new std::ostream{nullptr};
+		wxStreamToTextRedirector out_redirect(current_panel->output_text, to_out);
+		if (output_type == 'i') {
+			configs::writeOutput(*to_out, solver_i, use_csv);
+		} else if (output_type == 'd') {
+			configs::writeOutput(*to_out, solver_d, use_csv);
+		}
 	}
-	current_panel->output_text->LoadFile(current_panel->FilePath_Output);
 }

@@ -16,9 +16,7 @@ class MFPG_Choicebook : public wxChoicebook {
 		
 		bool AddPage(MFPG_Panel*, const wxString&, bool, int);
 		MFPG_Panel *getCurrentPanel();
-		std::vector<MFPG_Panel*> getPanels() {
-			return panels;
-		}
-		void removePanel(const wxString);
+		std::vector<MFPG_Panel*> getPanels();
+		void DeletePageAndPanel();
 };
 #endif
