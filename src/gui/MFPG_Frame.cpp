@@ -1,3 +1,4 @@
+#include "mx/api/ScoreData.h"
 #include "MFPG_Frame.h"
 
 #include <stdexcept>
@@ -38,6 +39,7 @@
 
 #include "Parser.H"
 #include "ParserError.H"
+#include "wx/xrc/xmlres.h"
 
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
@@ -89,7 +91,6 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	std::string status("MFPG -- Version: ");
 	status += VERSION_MFPG;
 	SetStatusText(status);
-
 	//wxString configs_dir(wxStandardPaths::Get().GetConfigDir());
 	configs_path = wxGetCwd();
 	//configs_path.append(sep());
@@ -98,6 +99,10 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	configs_path.append(".mfpg_configs.xml");
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
 	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
+#ifdef XRC
+	wxXmlResource::Get()->LoadPanel(config_panel, nullptr, "MFPG_Panel_XRC");
+	config_panel->InitPanel();
+#endif
 	current_panel = config_panel;
 	config_book->AddPage(config_panel, "UnnamedConfig", true, 0);
 	
@@ -108,7 +113,7 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 			wxDefaultPosition);
 		if (new_conf_file_q.ShowModal() == wxID_YES) {
 			std::ofstream new_file;
-			new_file.open(configs_path);
+			new_file.open(configs_path.mb_str());
 			new_file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 			new_file << "<root>\n";
 			new_file << "  <configs>\n";
@@ -136,6 +141,7 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	//Load all configs?
 }
 
+
 wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(wxID_EXIT, MFPG_Frame::MenuExit)
 	EVT_MENU(wxID_ABOUT, MFPG_Frame::MenuAbout)
@@ -148,6 +154,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
 
 	EVT_CHOICEBOOK_PAGE_CHANGED(ID_CBOOKChange, MFPG_Frame::CBOOKChange)
+#ifndef XRC
 	EVT_NOTEBOOK_PAGE_CHANGED(ID_NBOOKChange, MFPG_Frame::NBOOKChange)
 
 	EVT_COMBOBOX(ID_CBNoteMapper, MFPG_Frame::CBNoteMapper)
@@ -165,11 +172,35 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_FILEPICKER_CHANGED(ID_FPCSVNoteMap, MFPG_Frame::FPCSVNoteMap)
 	EVT_FILEPICKER_CHANGED(ID_FPCSVOutput, MFPG_Frame::FPCSVOutput)
 
-	EVT_BUTTON(ID_BTGenerate, MFPG_Frame::BTGenerate)
+	EVT_BUTTON(ID_BTGenerate), MFPG_Frame::BTGenerate)
 	EVT_BUTTON(ID_BTSavetext, MFPG_Frame::BTSavetext)
 	EVT_BUTTON(ID_BTSaveastext, MFPG_Frame::BTSaveastext)
 	EVT_BUTTON(ID_BTClearInfo, MFPG_Frame::BTClearInfo)
 	EVT_BUTTON(ID_BTRemoveConfig, MFPG_Frame::BTRemoveConfig)
+#else
+	EVT_NOTEBOOK_PAGE_CHANGED(XRCID("ID_NBOOKChange"), MFPG_Frame::NBOOKChange)
+
+	EVT_COMBOBOX(XRCID("ID_CBNoteMapper"), MFPG_Frame::CBNoteMapper)
+	EVT_COMBOBOX(XRCID("ID_CBInstSettings"), MFPG_Frame::CBInstSettings)
+	EVT_COMBOBOX(XRCID("ID_CBInstrument"), MFPG_Frame::CBInstrument)
+	EVT_COMBOBOX(XRCID("ID_CBActionSet"), MFPG_Frame::CBActionSet)
+	EVT_COMBOBOX(XRCID("ID_CBSolver"), MFPG_Frame::CBSolver)
+	EVT_COMBOBOX(XRCID("ID_CBOutput"), MFPG_Frame::CBOutput)
+
+	EVT_CHECKBOX(XRCID("ID_CHBSPSOpt1"), MFPG_Frame::CHBSPSOpt1)
+	EVT_CHECKBOX(XRCID("ID_CHBSPSOpt2"), MFPG_Frame::CHBSPSOpt2)
+	EVT_CHECKBOX(XRCID("ID_CHBOutputToFile"), MFPG_Frame::CHBOutputToFile)
+
+	EVT_FILEPICKER_CHANGED(XRCID("ID_FPDSL"), MFPG_Frame::FPDSL)
+	EVT_FILEPICKER_CHANGED(XRCID("ID_FPCSVNoteMap"), MFPG_Frame::FPCSVNoteMap)
+	EVT_FILEPICKER_CHANGED(XRCID("ID_FPCSVOutput"), MFPG_Frame::FPCSVOutput)
+
+	EVT_BUTTON(XRCID("ID_BTGenerate"), MFPG_Frame::BTGenerate)
+	EVT_BUTTON(XRCID("ID_BTSavetext"), MFPG_Frame::BTSavetext)
+	EVT_BUTTON(XRCID("ID_BTSaveastext"), MFPG_Frame::BTSaveastext)
+	EVT_BUTTON(XRCID("ID_BTClearInfo"), MFPG_Frame::BTClearInfo)
+	EVT_BUTTON(XRCID("ID_BTRemoveConfig"), MFPG_Frame::BTRemoveConfig)
+#endif
 wxEND_EVENT_TABLE()
 
 void MFPG_Frame::MenuExit(wxCommandEvent& event) {
@@ -244,6 +275,10 @@ void MFPG_Frame::LoadConfig(wxString name) {
 
 	wxXmlNode *config = configs_file.GetRoot()->GetChildren()->GetChildren();
 	MFPG_Panel *new_config_panel = new MFPG_Panel(config_book);	
+#ifdef XRC
+	wxXmlResource::Get()->LoadPanel(new_config_panel, nullptr, "MFPG_Panel_XRC");
+	new_config_panel->InitPanel();
+#endif
 	current_panel = new_config_panel;
 	config_book->AddPage(new_config_panel, name, true, 0);
 
@@ -478,13 +513,9 @@ void MFPG_Frame::CBOOKChange(wxBookCtrlEvent& event) {
 	current_panel = config_book->getCurrentPanel();
 }
 void MFPG_Frame::NBOOKChange(wxBookCtrlEvent& event) {
-	if (current_panel->files_book->GetCurrentPage()->GetName() == "OUTPUT_TEXT") {
-		current_panel->save_file_button->Enable();
-	} else if (current_panel->files_book->GetCurrentPage()->GetName() == "NOTEMAPPER_TEXT") {
-		current_panel->save_file_button->Enable();
-	} else if (current_panel->files_book->GetCurrentPage()->GetName() == "DSL_TEXT") {
-		current_panel->save_file_button->Enable();
-	} 
+	if (current_panel == NULL) {
+		return;
+	}
 }	
 void MFPG_Frame::CBNoteMapper(wxCommandEvent& event) {
 	switch (current_panel->notemap_box->GetCurrentSelection()) {
@@ -517,6 +548,7 @@ void MFPG_Frame::SetNoteMapper(Settings s) {
 		default:
 			current_panel->ST_NOTEMAPPER = UNDEFINED;
 			current_panel->notemap_box->SetSelection(-1);
+			current_panel->notemapper_text->Disable();
 			break;
 	}
 }
@@ -543,6 +575,7 @@ void MFPG_Frame::SetInstSettings(Settings s) {
 			current_panel->instrument_box->Enable();
 			current_panel->actionset_box->Enable();
 			current_panel->dsl_filepicker->Disable();
+			current_panel->dsl_text->Disable();
 			break;
 		case USE_DSL:
 			current_panel->instrument_settings_box->SetSelection(1);
@@ -550,10 +583,12 @@ void MFPG_Frame::SetInstSettings(Settings s) {
 			current_panel->instrument_box->Disable();
 			current_panel->actionset_box->Disable();
 			current_panel->dsl_filepicker->Enable();
+			current_panel->dsl_text->Enable();
 			break;
 		default:
 			current_panel->instrument_settings_box->SetSelection(-1);
 			current_panel->ST_INSTRUMENT_SETTING = UNDEFINED;
+			current_panel->dsl_text->Disable();
 			break;
 	}
 } 
@@ -771,7 +806,7 @@ void MFPG_Frame::SetOutputToFile(Settings s) {
 			break;
 		default:
 			current_panel->output_filepicker->Disable();
-			current_panel->output_text->Enable();
+			current_panel->output_text->Disable();
 			current_panel->output_to_file->SetValue(false);
 			current_panel->ST_OUTPUTTOFILE = UNDEFINED;
 			break;
@@ -817,7 +852,6 @@ void MFPG_Frame::SelectDSLFile(wxString path) {
 		current_panel->dsl_filepicker->SetPath(current_panel->FilePath_DSL);
 		current_panel->dsl_text->LoadFile(current_panel->FilePath_DSL);
 	}
-	current_panel->dsl_text->Enable();
 }
 void MFPG_Frame::FPCSVNoteMap(wxFileDirPickerEvent& event) {
 	SelectNoteMapFile(current_panel->notemap_filepicker->GetPath());
@@ -829,7 +863,6 @@ void MFPG_Frame::SelectNoteMapFile(wxString path) {
 		current_panel->notemap_filepicker->SetPath(current_panel->FilePath_Notemap);
 		current_panel->notemapper_text->LoadFile(current_panel->FilePath_Notemap);
 	}
-	current_panel->notemapper_text->Enable();
 }
 void MFPG_Frame::FPCSVOutput(wxFileDirPickerEvent& event) {
 	SelectOutputFile(current_panel->output_filepicker->GetPath());
@@ -841,7 +874,6 @@ void MFPG_Frame::SelectOutputFile(wxString path) {
 		current_panel->output_filepicker->SetPath(current_panel->FilePath_Output);
 		current_panel->output_text->LoadFile(current_panel->FilePath_Output);
 	}
-	current_panel->output_text->Enable();
 }
 void MFPG_Frame::BTSaveastext(wxCommandEvent& event) {
 	wxFileDialog save_as_dialog(NULL, wxFileSelectorPromptStr, wxEmptyString, wxEmptyString, 
@@ -927,6 +959,7 @@ void MFPG_Frame::BTClearInfo(wxCommandEvent& event) {
 	current_panel->information_text->Clear();
 }
 void MFPG_Frame::BTGenerate(wxCommandEvent& event) {
+
 	Generate();
 }
 
@@ -955,11 +988,15 @@ void MFPG_Frame::Generate() {
 	char output_type = 'i';
 	
 	if (current_panel->ST_INSTRUMENT_SETTING == USE_DSL) {
-		FILE *dsl_filepicker;	
-		dsl_filepicker = fopen((current_panel->FilePath_DSL).c_str(), "r");
+		FILE *dsl_file;	
+		dsl_file = fopen((current_panel->FilePath_DSL).c_str(), "r");
+		if (dsl_file == nullptr) {
+			wxMessageBox("Could not open DSL file.");
+			return;
+		}
 		Input *parse_tree = NULL;
 		try {
-			parse_tree = pInput(dsl_filepicker);
+			parse_tree = pInput(dsl_file);
 		} catch (parse_error &e) {
 			delete(parse_tree);
 			std::string e_msg = "DSL Parse error on line: ";
@@ -968,7 +1005,7 @@ void MFPG_Frame::Generate() {
 			wxMessageBox(e_msg);
 			return;
 		}
-		fclose(dsl_filepicker);
+		fclose(dsl_file);
 
 		instrument_builder.visitInput(parse_tree);
 		

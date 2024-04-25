@@ -32,7 +32,7 @@ target_include_directories(mfpg
 	PRIVATE "${CMAKE_SOURCE_DIR}/src/parser/")
 if (BUILD_GUI)
   target_include_directories(mfpg_gui
-  	  PRIVATE "${CMAKE_SOURCE_DIR}/deps/mx/Sourcecode/include/")
+  	PRIVATE "${CMAKE_SOURCE_DIR}/deps/mx/Sourcecode/include/")
   target_include_directories(mfpg_gui 
 	  PRIVATE "${CMAKE_SOURCE_DIR}/src/parser/")
   target_include_directories(mfpg_gui 

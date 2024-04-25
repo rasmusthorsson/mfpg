@@ -21,3 +21,4 @@ src/parser/Printer.*
 src/parser/mfpg_dsl.l
 src/parser/mfpg_dsl.y
 src/parser/ActionTest
+resources/xrc/MFPG_XRC.wxui

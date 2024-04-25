@@ -55,17 +55,23 @@ add_executable(mfpg ${CLI_BASE})
 if (BUILD_GUI) 
   file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp src/gui/MFPG_Panel.cpp 
 	  src/gui/MFPG_Choicebook.cpp src/gui/Gui_Settings.cpp ${BASE})
+  if(MSVC)
+    set(wxWidgets_ROOT_DIR ${WXW_ROOT_DIR})
+    set(wxWidgets_LIB_DIR ${WXW_LIB_DIR})
+    set(wxWidgets_CONFIGURATION "mswc")
+  endif()
 
-  add_executable(mfpg_gui ${GUI_BASE})   
-
-  find_package(wxWidgets REQUIRED COMPONENTS net core base xml)
+  set(wxWidgets_USE_STATIC ON)
+  add_executable(mfpg_gui WIN32 ${GUI_BASE})
+  find_package(wxWidgets CONFIG REQUIRED) 
+  find_package(wxWidgets COMPONENTS core base xrc xml html aui)
   include(${wxWidgets_USE_FILE})
   target_link_libraries(mfpg_gui ${wxWidgets_LIBRARIES})
-endif()
+endif() 
 
-if(REBUILD_MX)
+if(REBUILD_MX)  
  FetchContent_Declare(
-        mx
+  mx
 	GIT_REPOSITORY https://github.com/webern/mx.git
 	GIT_TAG c6144d229d9c976833b80de0d25e2636acf7f323
  )

@@ -8,6 +8,7 @@
 
 #include <vector>
 
+
 class MFPG_Choicebook : public wxChoicebook {
 	private:
 		std::vector<MFPG_Panel*> panels;

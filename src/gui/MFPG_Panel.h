@@ -12,10 +12,20 @@
 
 #include "Gui_Settings.h"
 
+#define XRC
+
+
+#ifndef XRC
+#define STATIC_BOX wxStaticBox
+#else
+#define STATIC_BOX wxStaticBoxSizer
+#endif
+
 class MFPG_Panel : public wxPanel {
 	public:
 		MFPG_Panel(wxWindow*);
 
+		void InitPanel();
 
 		//Settings for when the program is run, set during GUI selection
 		Settings ST_INSTRUMENT_SETTING = UNDEFINED;
@@ -37,12 +47,12 @@ class MFPG_Panel : public wxPanel {
 		wxButton *remove_config_button;
 	
 		//Notemap settings
-		wxStaticBox *notemap_area;
+		STATIC_BOX *notemap_area;
 		wxComboBox *notemap_box;
 		wxFilePickerCtrl *notemap_filepicker;
 
 		//Instrument settings
-		wxStaticBox *instrument_area;
+		STATIC_BOX *instrument_area;
 		wxComboBox *instrument_settings_box;
 		wxComboBox *instrument_box;
 		wxComboBox *actionset_box;
@@ -55,7 +65,7 @@ class MFPG_Panel : public wxPanel {
 		wxCheckBox *sps_opt_2;
 
 		//Open files
-		wxStaticBox *files_area;
+		STATIC_BOX *files_area;
 		wxNotebook *files_book;
 		wxButton *save_file_button;
 		wxButton *save_as_file_button;
@@ -64,17 +74,17 @@ class MFPG_Panel : public wxPanel {
 		wxTextCtrl *output_text;
 
 		//Output settings
-		wxStaticBox *output_settings_area;
+		STATIC_BOX *output_settings_area;
 		wxComboBox *output_selection_box;
 		wxCheckBox *output_to_file;
 		wxFilePickerCtrl *output_filepicker;
 
 		//Generation button
-		wxStaticBox *generation_area;
+		STATIC_BOX *generation_area;
 		wxButton *generate_button;
 
 		//Output information
-		wxStaticBox *information_area;
+		STATIC_BOX *information_area;
 		wxTextCtrl *information_text;
 		wxButton *clear_info_button;
 };
