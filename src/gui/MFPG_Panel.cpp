@@ -1,9 +1,6 @@
 #include "MFPG_Panel.h"
 #include "wx/xrc/xmlres.h"
 
-//PROBLEM: XRCCTRL on staticboxsizer asserts against superclass staticbox 
-
-
 void MFPG_Panel::InitPanel() {
 #ifdef XRC
 	remove_config_button = XRCCTRL(*this, "ID_BTRemoveConfig", wxButton);
@@ -24,10 +21,10 @@ void MFPG_Panel::InitPanel() {
 	notemap_box->SetSelection(0);
 	ST_NOTEMAPPER = NOTEMAPPER_BASIC;
 	notemap_filepicker = XRCCTRL(*this, "ID_FPCSV", wxFilePickerCtrl);
-#ifdef SIZER
+#ifdef STATICBOXSIZER
 	solver_area = XRCCTRL(*this, "SolverBox", wxStaticBoxSizer)->GetStaticBox();
 #else
-	solver_area = XRCCTRL(*this, "SolverBox", STATIC_BOX);
+	solver_area = XRCCTRL(*this, "SolverBox", wxStaticBox);
 #endif
 	solver_box = XRCCTRL(*this, "ID_CBSolver", wxComboBox);
 	solver_box->SetSelection(0);
