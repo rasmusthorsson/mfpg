@@ -48,10 +48,10 @@ jobs:
 
       - name: Build MFPG
         run: >
-          cmake --build mfpg/mfpg_build-64 --config Release 
+          cmake --build mfpg_build-64 --config Release 
 
       - name: Test MFPG
-        working-directory: mfpg/mfpg_build-64
+        working-directory: mfpg_build-64
         run: >
           ctest
           --output-on-failure
