@@ -41,6 +41,6 @@ jobs:
       - name: Configure MFPG
         run: >
           cmake mfpg 
-          -DWXW_ROOT_DIR="C:\\Program Files\\wxWidgets"
-          -DWXW_LIB_DIR="C:\\Program Files\\wxWidgets\\lib"
+          -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
+          -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib"
           -B mfpg_build-64
