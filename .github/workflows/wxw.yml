@@ -45,3 +45,14 @@ jobs:
           -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
           -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
           -B mfpg_build-64
+
+      - name: Build MFPG
+        run: >
+          cmake --build mfpg/mfpg_build-64 --config Release 
+
+      - name: Test MFPG
+        working-directory: mfpg/mfpg_build-64
+        run: >
+          ctest
+          --output-on-failure
+          --build-config Release
