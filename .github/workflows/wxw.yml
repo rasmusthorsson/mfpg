@@ -1,6 +1,5 @@
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   build-windows:
@@ -16,6 +15,6 @@ jobs:
 
       - name: Configure WX 64-bit
         run: |
-          cmake /WxWidgets --config Release -B build-64
+          cmake /WxWidgets -B build-64
 
         
