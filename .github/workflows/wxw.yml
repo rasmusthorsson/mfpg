@@ -43,4 +43,5 @@ jobs:
           cmake mfpg 
           -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
           -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib"
+          -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
           -B mfpg_build-64
