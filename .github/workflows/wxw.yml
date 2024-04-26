@@ -30,7 +30,7 @@ jobs:
 
       - name: Build WX 64-bit
         run: >
-          cmake --build build-64 --target Release 
+          cmake --build build-64 
 
       - name: Checkout MFPG
         uses: actions/checkout@v3
