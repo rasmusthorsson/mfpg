@@ -13,8 +13,17 @@ jobs:
           path: wxWidgets
           submodules: 'true'
 
+      - name: Cache WX
+        id: cache-wx
+        uses: actions/cache@v3
+        with:
+          path: wxWidgets/lib
+          key: wx-3.2-4-build-lib-${{ runner.os }}-3264bit-static-staticrt-${{ hashFiles('wxWidgets/lib/config.log') }}
+          restore-keys: |
+            wx-3.2-4-build-lib-${{ runner.os }}-3264bit-static-staticrt-
+
       - name: Configure WX 64-bit
         run: |
-          cmake /WxWidgets -B build-64
+          cmake WxWidgets -B build-64
 
         
