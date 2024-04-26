@@ -30,7 +30,7 @@ jobs:
 
       - name: Build WX 64-bit
         run: >
-          cmake --build build-64 
+          cmake --build build-64 --target install 
 
       - name: Checkout MFPG
         uses: actions/checkout@v3
@@ -41,6 +41,6 @@ jobs:
       - name: Configure MFPG
         run: >
           cmake mfpg 
-          -DWXW_ROOT_DIR="build-64/Release/wxWidgets"
-          -DWXW_LIB_DIR="build-64/Release/wxWidgets/lib"
+          -DWXW_ROOT_DIR="C:/Program Files/wxWidgets"
+          -DWXW_LIB_DIR="C:/Program Files/wxWidgets/lib"
           -B mfpg_build-64
