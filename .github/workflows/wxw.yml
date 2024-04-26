@@ -1,0 +1,20 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout WX
+        uses: actions/checkout@v3
+        with:
+          repository: WxWidgets/WxWidgets
+          ref: v3.2.4
+          path: wxWidgets
+          submodules: 'true'
+
+      - name: Configure WX 64-bit
+        run: |
+          cmake /WxWidgets --config Release -B build-64
+
+        
