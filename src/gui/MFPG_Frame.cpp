@@ -98,13 +98,15 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	configs_path.append(sep());
 	configs_path.append(".mfpg_configs.xml");
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
-	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
 #ifdef XRC
-	wxXmlResource::Get()->LoadPanel(config_panel, nullptr, "MFPG_Panel_XRC");
-	config_panel->InitPanel();
+	MFPG_Panel *config_panel = new MFPG_Panel();	
+	wxXmlResource::Get()->LoadPanel(config_panel, config_book, "MFPG_Panel_XRC");
+#else
+	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
 #endif
+	config_panel->InitPanel();
 	current_panel = config_panel;
-	config_book->AddPage(config_panel, "UnnamedConfig", true, 0);
+	config_book->AddPage(config_panel, "UnnamedConfig", true, -1);
 	
 	wxXmlDocument configs_file;
 	if (!configs_file.Load(configs_path)) {
@@ -125,7 +127,6 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 			menuConfig->Enable(ID_MenuSaveAsConfig, false);
 			menuConfig->Enable(ID_MenuDeleteConfig, false);
 		}
-		//TODO Add message dialog asking if file should be created
 	} else {
 		wxMessageDialog load_all_confs(NULL, "Load all saved configs?", "Config Load", 
 			wxYES_NO|wxCENTRE|wxICON_QUESTION|wxSTAY_ON_TOP, wxDefaultPosition);
@@ -137,8 +138,6 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 			}
 		} 
 	}
-	
-	//Load all configs?
 }
 
 
@@ -172,7 +171,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_FILEPICKER_CHANGED(ID_FPCSVNoteMap, MFPG_Frame::FPCSVNoteMap)
 	EVT_FILEPICKER_CHANGED(ID_FPCSVOutput, MFPG_Frame::FPCSVOutput)
 
-	EVT_BUTTON(ID_BTGenerate), MFPG_Frame::BTGenerate)
+	EVT_BUTTON(ID_BTGenerate, MFPG_Frame::BTGenerate)
 	EVT_BUTTON(ID_BTSavetext, MFPG_Frame::BTSavetext)
 	EVT_BUTTON(ID_BTSaveastext, MFPG_Frame::BTSaveastext)
 	EVT_BUTTON(ID_BTClearInfo, MFPG_Frame::BTClearInfo)
@@ -274,11 +273,13 @@ void MFPG_Frame::LoadConfig(wxString name) {
 	configs_file.Load(configs_path);
 
 	wxXmlNode *config = configs_file.GetRoot()->GetChildren()->GetChildren();
-	MFPG_Panel *new_config_panel = new MFPG_Panel(config_book);	
 #ifdef XRC
-	wxXmlResource::Get()->LoadPanel(new_config_panel, nullptr, "MFPG_Panel_XRC");
-	new_config_panel->InitPanel();
+	MFPG_Panel *new_config_panel = new MFPG_Panel();	
+	wxXmlResource::Get()->LoadPanel(new_config_panel, config_book, "MFPG_Panel_XRC");
+#else
+	MFPG_Panel *new_config_panel = new MFPG_Panel(config_book);	
 #endif
+	new_config_panel->InitPanel();
 	current_panel = new_config_panel;
 	config_book->AddPage(new_config_panel, name, true, 0);
 

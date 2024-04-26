@@ -1,11 +1,14 @@
 #include "MFPG_Panel.h"
 #include "wx/xrc/xmlres.h"
 
-void MFPG_Panel::InitPanel() {
+//PROBLEM: XRCCTRL on staticboxsizer asserts against superclass staticbox 
 
+
+void MFPG_Panel::InitPanel() {
+#ifdef XRC
 	remove_config_button = XRCCTRL(*this, "ID_BTRemoveConfig", wxButton);
 	score_selected_text = XRCCTRL(*this, "SelectedScore", wxStaticText);
-	instrument_area = XRCCTRL(*this, "InstrumentBox", wxStaticBoxSizer);
+	instrument_area = XRCCTRL(*this, "InstrumentBox", STATIC_BOX);
 	instrument_settings_box = XRCCTRL(*this, "ID_CBInstSettings", wxComboBox);
 	instrument_settings_box->SetSelection(0);
 	dsl_filepicker = XRCCTRL(*this, "ID_FPDSL", wxFilePickerCtrl);
@@ -16,19 +19,23 @@ void MFPG_Panel::InitPanel() {
 	actionset_box = XRCCTRL(*this, "ID_CBActionSet", wxComboBox);
 	actionset_box->SetSelection(0);
 	ST_ACTIONSET = ACTIONSET_T1;
-	notemap_area = XRCCTRL(*this, "NoteMapperBox", wxStaticBoxSizer);
+	notemap_area = XRCCTRL(*this, "NoteMapperBox", STATIC_BOX);
 	notemap_box = XRCCTRL(*this, "ID_CBNoteMapper", wxComboBox);
 	notemap_box->SetSelection(0);
 	ST_NOTEMAPPER = NOTEMAPPER_BASIC;
 	notemap_filepicker = XRCCTRL(*this, "ID_FPCSV", wxFilePickerCtrl);
+#ifdef SIZER
 	solver_area = XRCCTRL(*this, "SolverBox", wxStaticBoxSizer)->GetStaticBox();
+#else
+	solver_area = XRCCTRL(*this, "SolverBox", STATIC_BOX);
+#endif
 	solver_box = XRCCTRL(*this, "ID_CBSolver", wxComboBox);
 	solver_box->SetSelection(0);
 	ST_SOLVER = SOLVER_SPS;
 	sps_opt_1 = XRCCTRL(*this, "ID_CHBSPSOpt1", wxCheckBox);
 	sps_opt_2 = XRCCTRL(*this, "ID_CHBSPSOpt2", wxCheckBox);
 	ST_OPT = OPT_3;
-	files_area = XRCCTRL(*this, "FilesBox", wxStaticBoxSizer);
+	files_area = XRCCTRL(*this, "FilesBox", STATIC_BOX);
 	files_book = XRCCTRL(*this, "ID_NBOOKChange", wxNotebook);
 	save_file_button = XRCCTRL(*this, "ID_BTSavetext", wxButton);
 	save_as_file_button = XRCCTRL(*this, "ID_BTSaveastext", wxButton);
@@ -43,11 +50,11 @@ void MFPG_Panel::InitPanel() {
 			wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator, "DSL_TEXT");
 	dsl_text->Disable();
 
-	files_book->AddPage(output_text, "Output", true, 0);
-	files_book->AddPage(notemapper_text, "Notemap", false, 1);
-	files_book->AddPage(dsl_text, "DSL", false, 2);
+	files_book->AddPage(output_text, "Output", true, -1);
+	files_book->AddPage(notemapper_text, "Notemap", false, -1);
+	files_book->AddPage(dsl_text, "DSL", false, -1);
 
-	output_settings_area = XRCCTRL(*this, "OutputBox", wxStaticBoxSizer);
+	output_settings_area = XRCCTRL(*this, "OutputBox", STATIC_BOX);
 	output_selection_box = XRCCTRL(*this, "ID_CBOutput", wxComboBox);
 	output_selection_box->SetSelection(0);
 	ST_OUTPUTTYPE = CSV_OUTPUT;
@@ -55,23 +62,19 @@ void MFPG_Panel::InitPanel() {
 	ST_OUTPUTTOFILE = OUTPUT_TO_FILE;
 	output_filepicker = XRCCTRL(*this, "ID_FPCSVOutput", wxFilePickerCtrl);
 
-	generation_area = XRCCTRL(*this, "GenerationBox", wxStaticBoxSizer);
+	generation_area = XRCCTRL(*this, "GenerationBox", STATIC_BOX);
 	generate_button = XRCCTRL(*this, "ID_BTGenerate", wxButton);
 
-	information_area = XRCCTRL(*this, "InformationBox", wxStaticBoxSizer);
+	information_area = XRCCTRL(*this, "InformationBox", STATIC_BOX);
 	information_text = XRCCTRL(*this, "InformationText", wxTextCtrl);
 	clear_info_button = XRCCTRL(*this, "ID_BTClearInfo", wxButton);
-}
-
-MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
-
+#else
 //------------------------------------------------REMOVE_CONFIG----------------------------------------
-#ifndef XRC
 	remove_config_button = new wxButton(this, ID_BTRemoveConfig, "Remove Config", wxPoint(25, 2),
 		wxSize(120, 25), 0, wxDefaultValidator, "REMOVE_CONFIG_BUTTON");
 //------------------------------------------------SELECTED SCORE---------------------------------------
 	//Text: Selected Score:
-	wxStaticText *score_selected_text_title = new wxStaticText(this, wxID_ANY, "Selected Score:";
+	wxStaticText *score_selected_text_title = new wxStaticText(this, wxID_ANY, "Selected Score:",
 		wxPoint(300, 5), wxSize(130, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "FILE_NAME_TITLE");
 	//Text: Path of selected score
 	score_selected_text = new wxStaticText(this, wxID_ANY, "", wxPoint(430, 5), wxSize(200, 20), 
@@ -191,9 +194,9 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 	dsl_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(20, 10), wxSize(320, 520), 
 			wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator, "DSL_TEXT");
 	dsl_text->Disable();
-//	files_book->AddPage(output_text, "Output", true, 1);
-	files_book->AddPage(notemapper_text, "Notemap", false, 2);
-	files_book->AddPage(dsl_text, "DSL", false, 3);
+	files_book->AddPage(output_text, "Output", true, -1);
+	files_book->AddPage(notemapper_text, "Notemap", false, -1);
+	files_book->AddPage(dsl_text, "DSL", false, -1);
 
 //-----------------------------------------OUTPUT SETTINGS------------------------------------------
 	//Box: Area for Output settings
@@ -246,5 +249,12 @@ MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
 	clear_info_button = new wxButton(information_area, ID_BTClearInfo, "Clear Info", wxPoint(20, 170),
 		wxSize(80, 30), 0, wxDefaultValidator, "CLEAR_INFO_BUTTON");
 #endif
+}
+
+MFPG_Panel::MFPG_Panel() : wxPanel() {
+}
+
+MFPG_Panel::MFPG_Panel(wxWindow* window) : wxPanel(window) {
+
 }
 

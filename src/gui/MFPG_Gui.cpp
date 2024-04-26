@@ -8,7 +8,7 @@ wxIMPLEMENT_APP(MFPG_Gui);
  
 bool MFPG_Gui::OnInit() {
 	wxXmlResource::Get()->InitAllHandlers();
-	wxXmlResource::Get()->Load("../../resources/xrc/resources.xrc");
+	wxXmlResource::Get()->Load("../resources/xrc/resources.xrc");
 	MFPG_Frame *frame = new MFPG_Frame();
 	frame->Show(true);
 	return true;

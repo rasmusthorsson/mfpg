@@ -14,16 +14,17 @@
 
 #define XRC
 
-
 #ifndef XRC
 #define STATIC_BOX wxStaticBox
 #else
-#define STATIC_BOX wxStaticBoxSizer
+#define STATIC_BOX wxStaticBox
+//#define STATIC_BOX wxStaticBoxSizer
 #endif
 
 class MFPG_Panel : public wxPanel {
 	public:
 		MFPG_Panel(wxWindow*);
+		MFPG_Panel();
 
 		void InitPanel();
 
