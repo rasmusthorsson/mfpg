@@ -21,7 +21,7 @@ class MFPG_Panel : public wxPanel {
 		MFPG_Panel(wxWindow*);
 		MFPG_Panel();
 
-		void InitPanel();
+		void InitPanel(bool);
 
 		//Settings for when the program is run, set during GUI selection
 		Settings ST_INSTRUMENT_SETTING = UNDEFINED;

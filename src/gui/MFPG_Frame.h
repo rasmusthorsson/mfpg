@@ -30,8 +30,9 @@ class MFPG_Frame : public wxFrame {
 		//Allowed characters for config names
 		const wxString config_chars = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-");
 		DECLARE_EVENT_TABLE()
+		bool use_xrc;
 	public:
-		MFPG_Frame();
+		MFPG_Frame(bool);
 
 		//Interactive objects in the GUI
 		void MenuNewScore(wxCommandEvent&);

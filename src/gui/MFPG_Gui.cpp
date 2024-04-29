@@ -2,19 +2,31 @@
 #include "MFPG_Frame.h"
 #include "wx/xrc/xmlres.h"
 #include "wx/xrc/xh_panel.h"
+#include "fstream"
 
 wxIMPLEMENT_APP(MFPG_Gui);
- 
-#ifdef WIN32
-	#define XRC_RESOURCE_FILE "../../resources/xrc/resources.xrc"
-#else
-	#define XRC_RESOURCE_FILE "../resources/xrc/resources.xrc"
-#endif
 
 bool MFPG_Gui::OnInit() {
-	wxXmlResource::Get()->InitAllHandlers();
-	wxXmlResource::Get()->Load(XRC_RESOURCE_FILE);
-	MFPG_Frame *frame = new MFPG_Frame();
+	std::vector<std::string> xrc_locations({
+			"../../resources/xrc/resources.xrc",
+			"../resources/xrc/resources.xrc",
+			"resources.xrc"
+			});
+	std::ifstream xrc_stream;
+	MFPG_Frame *frame;
+	for (auto s : xrc_locations) {
+		xrc_stream.open(s);
+		if (xrc_stream.is_open()) {
+			xrc_stream.close();
+			wxXmlResource::Get()->InitAllHandlers();
+			wxXmlResource::Get()->Load(s);
+			frame = new MFPG_Frame(true);
+			frame->Show(true);
+			return true;
+		}
+	}
+	wxMessageBox("Could not find any XRC file, defaulting to basic layout...");
+	frame = new MFPG_Frame(false);
 	frame->Show(true);
 	return true;
 }

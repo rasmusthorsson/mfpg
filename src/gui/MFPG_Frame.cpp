@@ -57,8 +57,8 @@ inline char sep()
 #define WIDTH 1280
 #define HEIGHT 900
 
-MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition, wxSize(WIDTH, HEIGHT),
-		wxDEFAULT_FRAME_STYLE, wxFrameNameStr) {
+MFPG_Frame::MFPG_Frame(bool _use_xrc) : use_xrc(_use_xrc), wxFrame(nullptr, wxID_ANY, "MFPG", 
+		wxDefaultPosition, wxSize(WIDTH, HEIGHT), wxDEFAULT_FRAME_STYLE, wxFrameNameStr) {
 	wxMenu *menuFile = new wxMenu;
 
 	menuFile->Append(ID_MenuNewScore, "&Select Score","");
@@ -98,13 +98,14 @@ MFPG_Frame::MFPG_Frame() : wxFrame(nullptr, wxID_ANY, "MFPG", wxDefaultPosition,
 	configs_path.append(sep());
 	configs_path.append(".mfpg_configs.xml");
 	config_book = new MFPG_Choicebook(this, ID_CBOOKChange);
-#ifdef XRC
-	MFPG_Panel *config_panel = new MFPG_Panel();	
-	wxXmlResource::Get()->LoadPanel(config_panel, config_book, "MFPG_Panel_XRC");
-#else
-	MFPG_Panel *config_panel = new MFPG_Panel(config_book);	
-#endif
-	config_panel->InitPanel();
+	MFPG_Panel *config_panel;
+	if (use_xrc) {
+		config_panel = new MFPG_Panel();	
+		wxXmlResource::Get()->LoadPanel(config_panel, config_book, "MFPG_Panel_XRC");
+	} else {
+		config_panel = new MFPG_Panel(config_book);	
+	}
+	config_panel->InitPanel(use_xrc);
 	current_panel = config_panel;
 	config_book->AddPage(config_panel, "UnnamedConfig", true, -1);
 	
@@ -153,7 +154,6 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
 
 	EVT_CHOICEBOOK_PAGE_CHANGED(ID_CBOOKChange, MFPG_Frame::CBOOKChange)
-#ifndef XRC
 	EVT_NOTEBOOK_PAGE_CHANGED(ID_NBOOKChange, MFPG_Frame::NBOOKChange)
 
 	EVT_COMBOBOX(ID_CBNoteMapper, MFPG_Frame::CBNoteMapper)
@@ -176,7 +176,6 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(ID_BTSaveastext, MFPG_Frame::BTSaveastext)
 	EVT_BUTTON(ID_BTClearInfo, MFPG_Frame::BTClearInfo)
 	EVT_BUTTON(ID_BTRemoveConfig, MFPG_Frame::BTRemoveConfig)
-#else
 	EVT_NOTEBOOK_PAGE_CHANGED(XRCID("ID_NBOOKChange"), MFPG_Frame::NBOOKChange)
 
 	EVT_COMBOBOX(XRCID("ID_CBNoteMapper"), MFPG_Frame::CBNoteMapper)
@@ -199,7 +198,6 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(XRCID("ID_BTSaveastext"), MFPG_Frame::BTSaveastext)
 	EVT_BUTTON(XRCID("ID_BTClearInfo"), MFPG_Frame::BTClearInfo)
 	EVT_BUTTON(XRCID("ID_BTRemoveConfig"), MFPG_Frame::BTRemoveConfig)
-#endif
 wxEND_EVENT_TABLE()
 
 void MFPG_Frame::MenuExit(wxCommandEvent& event) {
@@ -274,13 +272,14 @@ void MFPG_Frame::LoadConfig(wxString name) {
 	configs_file.Load(configs_path);
 
 	wxXmlNode *config = configs_file.GetRoot()->GetChildren()->GetChildren();
-#ifdef XRC
-	MFPG_Panel *new_config_panel = new MFPG_Panel();	
-	wxXmlResource::Get()->LoadPanel(new_config_panel, config_book, "MFPG_Panel_XRC");
-#else
-	MFPG_Panel *new_config_panel = new MFPG_Panel(config_book);	
-#endif
-	new_config_panel->InitPanel();
+	MFPG_Panel *new_config_panel;
+	if (use_xrc) {
+		new_config_panel = new MFPG_Panel();	
+		wxXmlResource::Get()->LoadPanel(new_config_panel, config_book, "MFPG_Panel_XRC");
+	} else {
+		new_config_panel = new MFPG_Panel(config_book);	
+	}
+	new_config_panel->InitPanel(use_xrc);
 	current_panel = new_config_panel;
 	config_book->AddPage(new_config_panel, name, true, 0);
 
