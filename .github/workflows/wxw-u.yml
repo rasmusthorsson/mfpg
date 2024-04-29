@@ -15,23 +15,18 @@ jobs:
           sudo apt-get install libgtk-3-dev
           sudo apt-get install libwxgtk3.0-gtk3-0v5
           sudo apt-get install libwxgtk3.0-gtk3-dev
-     
-      - name: Checkout WX
+
+      - name: Checkout MFPG
         uses: actions/checkout@v3
         with:
-          repository: WxWidgets/WxWidgets
-          ref: v3.2.4
-          path: wxWidgets
+          path: mfpg
           submodules: 'true'
 
-      - name: Configure Ubuntu
+      - name: Configure MFPG
         run: >
-          cmake wxWidgets
-          -DwxBUILD_SHARED=off
-          -B build-64
-      
-      - name: Build WX Ubuntu
-        run: > 
-          cmake --build build-64 --target install --config Release
+          cmake mfpg -B mfpg_build-64
 
+      - name: Build MFPG
+        run: >
+          cmake --build mfpg_build-64 --config Release 
 
