@@ -13,12 +13,10 @@ jobs:
           path: wxWidgets
           submodules: 'true'
 
-      - name: Update
-        run: >
-          sudo apt-get update
       - name: Configure WX 64-bit
         run: >
           cmake WxWidgets
+          -A x64
           -DwxBUILD_SHARED=OFF
           -B build-64
 
