@@ -12,6 +12,7 @@ jobs:
       
       - name: Get GTK
         run: |
+          sudo apt-get install libwxgtk3.0-gtk3-0v5
           sudo apt-get install libwxgtk3.0-gtk3-dev
      
       - name: Checkout WX
