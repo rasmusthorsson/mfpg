@@ -4,7 +4,7 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps: 
       - name: Update apt
         run: >
@@ -12,6 +12,7 @@ jobs:
       
       - name: Get GTK
         run: |
+          sudo apt-cache search libwxgt*
           sudo apt-get install libwxgtk3.2-dev
           sudo apt-get install libwxgtk3.2-dbg
      
