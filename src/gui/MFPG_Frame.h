@@ -1,13 +1,12 @@
 #ifndef MFPG_FRAME_H
 #define MFPG_FRAME_H
+#include "MFPG_Choicebook.h"
 
 #include "wx/wx.h"
-#include "wx/choicebk.h"
 #include "wx/filepicker.h"
 #include "wx/xml/xml.h"
 
-#include "MFPG_Choicebook.h"
-
+//Definitions of XML attribute names
 #define INSTRUMENT_SETTINGS_CONF "instrument_settings"
 #define DSL_FILE_CONF "dsl_file"
 #define INSTRUMENT_CONF "instrument"
@@ -29,12 +28,15 @@ class MFPG_Frame : public wxFrame {
 		void Generate();
 		//Allowed characters for config names
 		const wxString config_chars = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-");
+		//Must declare event table
 		DECLARE_EVENT_TABLE()
+		//If XRC file is used or if static structure definitions are used
 		bool use_xrc;
 	public:
 		MFPG_Frame(bool);
 
-		//Interactive objects in the GUI
+		//Interactive structures in the GUI
+		//Menu
 		void MenuNewScore(wxCommandEvent&);
 		void MenuNewConfig(wxCommandEvent&);
 		void MenuLoadConfig(wxCommandEvent&);
@@ -44,30 +46,38 @@ class MFPG_Frame : public wxFrame {
 		void MenuExit(wxCommandEvent&);
 		void MenuAbout(wxCommandEvent&);
 		void MenuGuide(wxCommandEvent&);
+		//Books
 		void CBOOKChange(wxBookCtrlEvent&);
 		void NBOOKChange(wxBookCtrlEvent&);
+		//Choiceboxes
 		void CBNoteMapper(wxCommandEvent&);
 		void CBInstSettings(wxCommandEvent&);
 		void CBInstrument(wxCommandEvent&);
 		void CBActionSet(wxCommandEvent&);
 		void CBSolver(wxCommandEvent&);
+		void CBOutput(wxCommandEvent&);
+		//Checkboxes
 		void CHBSPSOpt1(wxCommandEvent&);
 		void CHBSPSOpt2(wxCommandEvent&);
 		void CHBOutputToFile(wxCommandEvent&);
-		void CBOutput(wxCommandEvent&);
+		//Filepickers
 		void FPDSL(wxFileDirPickerEvent&);
 		void FPCSVNoteMap(wxFileDirPickerEvent&);
 		void FPCSVOutput(wxFileDirPickerEvent&);
+		//Buttons
 		void BTRemoveConfig(wxCommandEvent&);
 		void BTGenerate(wxCommandEvent&);
 		void BTSavetext(wxCommandEvent&);
 		void BTSaveastext(wxCommandEvent&);
 		void BTClearInfo(wxCommandEvent&);
 
+		//Programwide paths
 		wxString score_path;
 		wxString configs_path;
 
+		//Frame book
 		MFPG_Choicebook *config_book;
+		//Keeping track of which panel is currently active
 		MFPG_Panel *current_panel;
 
 		//Functions to allow setting the settings while also activating the correct buttons
@@ -89,5 +99,4 @@ class MFPG_Frame : public wxFrame {
 		wxXmlNode *NewConfig(wxString);
 		void LoadConfig(wxString);
 };
-
 #endif

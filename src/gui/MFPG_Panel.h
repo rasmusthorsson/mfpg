@@ -1,6 +1,8 @@
 #ifndef MFPG_PANEL_H
 #define MFPG_PANEL_H
 
+#include "Gui_Settings.h"
+
 #include "wx/choicebk.h"
 #include "wx/combobox.h"
 #include "wx/statbox.h"
@@ -10,10 +12,6 @@
 #include "wx/panel.h"
 #include "wx/msgdlg.h"
 
-#include "Gui_Settings.h"
-
-#define XRC
-
 #define STATIC_BOX wxStaticBox
 
 class MFPG_Panel : public wxPanel {
@@ -21,6 +19,8 @@ class MFPG_Panel : public wxPanel {
 		MFPG_Panel(wxWindow*);
 		MFPG_Panel();
 
+		//Inits the components of the panel, boolean for whether to use an XRC file or static
+		//structures.
 		void InitPanel(bool);
 
 		//Settings for when the program is run, set during GUI selection
@@ -84,6 +84,4 @@ class MFPG_Panel : public wxPanel {
 		wxTextCtrl *information_text;
 		wxButton *clear_info_button;
 };
-
-
 #endif

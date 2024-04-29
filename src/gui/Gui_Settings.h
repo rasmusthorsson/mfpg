@@ -3,6 +3,7 @@
 
 #include <string>
 
+//Enum for events
 enum {
 	ID_MenuNewScore = 101,
 	ID_MenuNewConfig = 102,
@@ -37,6 +38,8 @@ enum {
 	ID_BTRemoveConfig = 605
 };
 
+//Enums and arrays used for converting settings in the string format in the XML configs file to Enums in 
+//the code.
 enum Settings {
 #define X(a) a,
 #include "settings.def"
@@ -57,7 +60,10 @@ char const* const Settings_str[] {
 	"SettingsCount"
 };
 
+//Setting to string conversion
 std::string _S(enum Settings);
+
+//String to setting conversion
 Settings S_(const std::string);
 
 #endif
