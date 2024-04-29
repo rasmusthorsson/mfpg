@@ -16,7 +16,7 @@ jobs:
       - name: Configure WX 64-bit
         run: >
           cmake WxWidgets
-          -A x64
+          -A WIN32
           -DwxBUILD_SHARED=OFF
           -B build-64
 
@@ -30,20 +30,12 @@ jobs:
           path: mfpg
           submodules: 'true'
 
-            #      - name: Configure MFPG
-            #        run: >
-            #          cmake mfpg 
-            #          -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
-            #          -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
-            #          -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
-            #          -B mfpg_build-64
       - name: Configure MFPG
         run: >
           cmake mfpg 
-          -A x64
-          -DWXW_ROOT_DIR="C:/Program Files/wxWidgets"
-          -DWXW_LIB_DIR="C:/Program Files/wxWidgets/lib/vc_x64_lib"
-          -DWXW_INC_DIR="C:/Program Files/wxWidgets/include"
+          -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
+          -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
+          -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
           -B mfpg_build-64
 
       - name: Build MFPG
