@@ -76,7 +76,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		wxStaticText *score_selected_text_title = new wxStaticText(this, wxID_ANY, "Selected Score:",
 			wxPoint(300, 5), wxSize(130, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "FILE_NAME_TITLE");
 		//Text: Path of selected score
-		score_selected_text = new wxStaticText(this, wxID_ANY, "", wxPoint(430, 5), wxSize(200, 20), 
+		score_selected_text = new wxStaticText(this, wxID_ANY, "", wxPoint(430, 5), wxSize(200, 30), 
 			wxALIGN_LEFT|wxST_ELLIPSIZE_START, "FILE_NAME");
 
 
@@ -87,32 +87,32 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Selection: Instrument settings
 		wxString instrument_setting_choices[] = {"Presets", "DSL File"};
 		instrument_settings_box = new wxComboBox(instrument_area, ID_CBInstSettings, _T("Presets"), 
-			wxPoint(20, 10), wxSize(320, 40), 2, instrument_setting_choices, wxCB_READONLY, 
+			wxPoint(20, 30), wxSize(320, 40), 2, instrument_setting_choices, wxCB_READONLY, 
 			wxDefaultValidator);
 		ST_INSTRUMENT_SETTING = Settings::USE_PRESETS;
 		//Text: DSL File:
 		wxStaticBox *dsl_box = new wxStaticBox(instrument_area, wxID_ANY, "DSL File", 
-			wxPoint(20, 60), wxSize(360, 80), 0, wxStaticBoxNameStr);
+			wxPoint(20, 70), wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: DSL
 		dsl_filepicker = new wxFilePickerCtrl(dsl_box, ID_FPDSL, wxEmptyString,
-			wxFileSelectorPromptStr, _("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, 10), wxSize(320, 40), 
+			wxFileSelectorPromptStr, _("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, 20), wxSize(320, 40), 
 			wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR, wxDefaultValidator, 
 			wxFilePickerCtrlNameStr);
 		dsl_filepicker->Disable();
 		//Text: Instrument:
 		wxStaticText *inst_text = new wxStaticText(instrument_area, wxID_ANY, "Instrument Presets", 
-			wxPoint(20, 150), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INSTRUMENT_TEXT");
+			wxPoint(20, 160), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INSTRUMENT_TEXT");
 		//Selection: Instrument
 		wxString inst_choices[] = {"Violin"};
-		instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), wxPoint(20, 170), 
+		instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), wxPoint(20, 180), 
 			wxSize(160, 40), 1, inst_choices, wxCB_READONLY, wxDefaultValidator, wxComboBoxNameStr);
 		ST_INSTRUMENT = Settings::INSTRUMENT_VIOLIN;
 		//Text: ActionSet
 		wxStaticText *as_text = new wxStaticText(instrument_area, wxID_ANY, "Action Set Presets", 
-			wxPoint(220, 150), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "ACTIONSET_TEXT");
+			wxPoint(220, 160), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "ACTIONSET_TEXT");
 		//Selection: ActionSet
 		wxString actionset_choices[] = {"Test1", "Test2"};
-		actionset_box = new wxComboBox(instrument_area, ID_CBActionSet, _T("Test1"), wxPoint(220, 170),
+		actionset_box = new wxComboBox(instrument_area, ID_CBActionSet, _T("Test1"), wxPoint(220, 180),
 			wxSize(160, 40), 2, actionset_choices, wxCB_READONLY, wxDefaultValidator);
 		ST_ACTIONSET = Settings::ACTIONSET_T1;
 
@@ -123,7 +123,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			0, wxStaticBoxNameStr);
 		//Selection: NoteMapper
 		wxString nm_choices[] = {"Basic", "CSV File"};
-		notemap_box = new wxComboBox(notemap_area, ID_CBNoteMapper, _T("Basic"), wxPoint(20, 20), 
+		notemap_box = new wxComboBox(notemap_area, ID_CBNoteMapper, _T("Basic"), wxPoint(20, 30), 
 			wxSize(360, 40), 2, nm_choices, wxCB_READONLY, wxDefaultValidator, wxComboBoxNameStr);
 		ST_NOTEMAPPER = Settings::NOTEMAPPER_BASIC;
 		//Box: Area for CSV File selection
@@ -131,7 +131,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: NoteMapper CSV
 		notemap_filepicker = new wxFilePickerCtrl(csv_box, ID_FPCSVNoteMap, wxEmptyString, 
-			wxFileSelectorPromptStr,_("CSV Files (*.csv)|*.csv"), wxPoint(20, 10), wxSize(320, 40), 
+			wxFileSelectorPromptStr,_("CSV Files (*.csv)|*.csv"), wxPoint(20, 20), wxSize(320, 40), 
 			wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR, wxDefaultValidator, 
 			wxFilePickerCtrlNameStr);
 		notemap_filepicker->Disable();
@@ -143,7 +143,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxStaticBoxNameStr);
 		//Selection: Solver
 		wxString solver_choices[] = {"Shortest Path", "Greedy"};
-		solver_box = new wxComboBox(solver_area, ID_CBSolver, _T("Shortest Path"), wxPoint(20, 20), 
+		solver_box = new wxComboBox(solver_area, ID_CBSolver, _T("Shortest Path"), wxPoint(20, 30), 
 			wxSize(360, 40), 2, solver_choices, wxCB_READONLY, wxDefaultValidator);
 		//Text: Opt 1 Label
 		wxStaticText *opt1_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 110),
@@ -203,11 +203,11 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxSize(400, 200), 0, wxStaticBoxNameStr);
 		//Text: Output Type:
 		wxStaticText *output_selection_text = new wxStaticText(output_settings_area, wxID_ANY, "Output Type",
-			wxPoint(20, 10), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OUTPUT_SELECTION_TEXT");
+			wxPoint(20, 20), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OUTPUT_SELECTION_TEXT");
 		//Selection: Output Type
 		wxString output_choices[] = {"CSV Output", "Direct Output"};
 		output_selection_box = new wxComboBox(output_settings_area, ID_CBOutput, _T("CSV Output"), 
-			wxPoint(20, 35), wxSize(160, 40), 2, output_choices, wxCB_READONLY, wxDefaultValidator);
+			wxPoint(20, 45), wxSize(160, 40), 2, output_choices, wxCB_READONLY, wxDefaultValidator);
 		ST_OUTPUTTYPE = Settings::CSV_OUTPUT;
 		//Checkbox: Output to file
 		output_to_file = new wxCheckBox(output_settings_area, ID_CHBOutputToFile, "Output to file",  
@@ -219,7 +219,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxPoint(20, 80), wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: Output
 		output_filepicker = new wxFilePickerCtrl(output_file_box, ID_FPCSVOutput, wxEmptyString, 
-			wxFileSelectorPromptStr, wxFileSelectorDefaultWildcardStr, wxPoint(20, 10), wxSize(320, 40), 
+			wxFileSelectorPromptStr, wxFileSelectorDefaultWildcardStr, wxPoint(20, 20), wxSize(320, 40), 
 			wxFLP_SAVE|wxFLP_USE_TEXTCTRL|wxFLP_OVERWRITE_PROMPT|wxFLP_CHANGE_DIR, wxDefaultValidator, 
 			wxFilePickerCtrlNameStr);
 
@@ -227,25 +227,25 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 	//------------------------------------------GENERATION-------------------------------------------
 		//Box: Area for Generation
 		generation_area = new wxStaticBox(this, wxID_ANY, "Output Generation", wxPoint(950, 250),
-			wxSize(200, 100), 0, wxStaticBoxNameStr);
+			wxSize(200, 90), 0, wxStaticBoxNameStr);
 		//Button: Generate
-		generate_button = new wxButton(generation_area, ID_BTGenerate, "Generate", wxPoint(50, 10),
+		generate_button = new wxButton(generation_area, ID_BTGenerate, "Generate", wxPoint(50, 20),
 			wxSize(100, 50), 0, wxDefaultValidator, "GENERATE_BUTTON");
 
 
 	//----------------------------------------INFORMATION--------------------------------------------
 		//Box: Area for Info
-		information_area = new wxStaticBox(this, wxID_ANY, "Information", wxPoint(850, 370), 
+		information_area = new wxStaticBox(this, wxID_ANY, "Information", wxPoint(850, 360), 
 			wxSize(400, 230), 0, "INFORMATION_BOX");
 		//Text: Output Info:
 		wxStaticText *output_info_text = new wxStaticText(information_area, wxID_ANY, "Output Info", 
 			wxPoint(20, 20), wxSize(160, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INFO_OUT_TEXT");
 		//Contents: std::cout
-		information_text = new wxTextCtrl(information_area, wxID_ANY, "", wxPoint(20, 40), wxSize(360, 120),
+		information_text = new wxTextCtrl(information_area, wxID_ANY, "", wxPoint(20, 50), wxSize(360, 120),
 			wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY, wxDefaultValidator, 
 			"INFORMATION_TEXT");
 		//Button: Clear Info
-		clear_info_button = new wxButton(information_area, ID_BTClearInfo, "Clear Info", wxPoint(20, 170),
+		clear_info_button = new wxButton(information_area, ID_BTClearInfo, "Clear Info", wxPoint(20, 180),
 			wxSize(80, 30), 0, wxDefaultValidator, "CLEAR_INFO_BUTTON");
 	}
 }

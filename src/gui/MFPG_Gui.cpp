@@ -13,7 +13,7 @@ bool MFPG_Gui::OnInit() {
 			"resources.xrc"
 			});
 	std::ifstream xrc_stream;
-	MFPG_Frame *frame;
+	MFPG_Frame *frame;/*
 	for (auto s : xrc_locations) {
 		xrc_stream.open(s);
 		if (xrc_stream.is_open()) {
@@ -26,6 +26,7 @@ bool MFPG_Gui::OnInit() {
 		}
 	}
 	wxMessageBox("Could not find any XRC file, defaulting to basic layout...");
+	*/
 	frame = new MFPG_Frame(false);
 	frame->Show(true);
 	return true;
