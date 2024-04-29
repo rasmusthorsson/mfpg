@@ -15,7 +15,7 @@ jobs:
 
       - name: Configure WX 64-bit
         run: >
-          cmake WxWidgets
+          cmake wxWidgets
           -DwxBUILD_SHARED=OFF
           -B build-64
 
