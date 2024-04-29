@@ -1,0 +1,27 @@
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WX
+        uses: actions/checkout@v3
+        with:
+          repository: WxWidgets/WxWidgets
+          ref: v3.2.4
+          path: wxWidgets
+          submodules: 'true'
+
+      - name: Configure Ubuntu
+        run: >
+          cmake WxWidgets
+          -DwxBUILD_SHARED=off
+          -B build-64
+      
+      - name: Build WX Ubuntu
+        run: > 
+          cmake --build build-64 --target install --config Release
+
+

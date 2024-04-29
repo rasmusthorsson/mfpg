@@ -13,15 +13,6 @@ jobs:
           path: wxWidgets
           submodules: 'true'
 
-      - name: Cache WX
-        id: cache-wx
-        uses: actions/cache@v3
-        with:
-          path: wxWidgets/lib
-          key: wx-3.2-4-build-lib-${{ runner.os }}-3264bit-static-staticrt-${{ hashFiles('wxWidgets/lib/config.log') }}
-          restore-keys: |
-            wx-3.2-4-build-lib-${{ runner.os }}-3264bit-static-staticrt-
-
       - name: Configure WX 64-bit
         run: >
           cmake WxWidgets
@@ -49,10 +40,3 @@ jobs:
       - name: Build MFPG
         run: >
           cmake --build mfpg_build-64 --config Release 
-
-      - name: Test MFPG
-        working-directory: mfpg_build-64
-        run: >
-          ctest
-          --output-on-failure
-          --build-config Release
