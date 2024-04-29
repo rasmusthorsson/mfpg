@@ -252,8 +252,9 @@ void MFPG_Frame::MenuLoadConfig(wxCommandEvent& event) {
 		config_names.push_back(config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString));
 		config = config->GetNext();
 	}
+	void** c = NULL;
 	wxSingleChoiceDialog dialog(NULL, "Select Config to load.", "Load Config", config_names.size(),
-		&config_names[0], NULL, wxCHOICEDLG_STYLE, wxDefaultPosition);
+		&config_names[0], c, wxCHOICEDLG_STYLE, wxDefaultPosition);
 	wxXmlNode *loaded_config = conf.GetRoot()->GetChildren()->GetChildren();
 	if (dialog.ShowModal() == wxID_OK) {
 		while (loaded_config) {
@@ -491,8 +492,9 @@ void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
 		config_names.push_back(config->GetAttribute(CONFIG_NAME_CONF, wxEmptyString));
 		config = config->GetNext();
 	}
-	wxSingleChoiceDialog dialog(NULL, "Select saved Config to delete.", "Delete Saved Config", config_names.size(),
-		&config_names[0], NULL, wxCHOICEDLG_STYLE, wxDefaultPosition);
+	void** c = NULL;
+	wxSingleChoiceDialog dialog(NULL, "Select saved Config to delete.", "Delete Saved Config", 
+		config_names.size(), &config_names[0], c, wxCHOICEDLG_STYLE, wxDefaultPosition);
 	if (dialog.ShowModal() == wxID_OK) {
 		wxXmlNode *removed_node = conf.GetRoot()->GetChildren()->GetChildren();
 		while (removed_node) {
