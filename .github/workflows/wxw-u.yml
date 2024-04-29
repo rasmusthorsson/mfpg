@@ -5,14 +5,13 @@ on:
 jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
-    steps:
-      
+    steps: 
       - name: Get GTK
         run: |
           sudo apt-get install libwxgtk3.2-dev
           sudo apt-get install libwxgtk3.2-dbg
      
-     - name: Checkout WX
+      - name: Checkout WX
         uses: actions/checkout@v3
         with:
           repository: WxWidgets/WxWidgets
