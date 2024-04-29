@@ -13,6 +13,9 @@ jobs:
           path: wxWidgets
           submodules: 'true'
 
+      - name: Update
+        run: >
+          sudo apt-get update
       - name: Configure WX 64-bit
         run: >
           cmake WxWidgets
