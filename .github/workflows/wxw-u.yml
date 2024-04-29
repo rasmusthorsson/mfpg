@@ -10,6 +10,9 @@ jobs:
         run: |
           sudo apt-get install libwxgtk3.2-dev
           sudo apt-get install libwxgtk3.2-dbg
+      - name: Update apt
+        run: >
+          sudo apt-get update
      
       - name: Checkout WX
         uses: actions/checkout@v3
