@@ -17,7 +17,6 @@ jobs:
       - name: Configure WX 64-bit
         run: >
           cmake WxWidgets
-          -A WIN32
           -DwxBUILD_SHARED=OFF
           -B build-64
 
@@ -44,7 +43,7 @@ jobs:
           cmake --build mfpg_build-64 --config Release 
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: mfpg-x64-gui
           path: mfpg_build-64/Release/mfpg_gui.exe
