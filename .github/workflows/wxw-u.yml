@@ -16,7 +16,7 @@ jobs:
 
       - name: Configure Ubuntu
         run: >
-          cmake WxWidgets
+          cmake wxWidgets
           -DwxBUILD_SHARED=off
           -B build-64
       
