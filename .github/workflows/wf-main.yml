@@ -28,14 +28,58 @@ jobs:
         runs-on: ${{ inputs.os }}
         steps:
             - uses: actions/checkout@v3
+              with:
+                path: mfpg
+                submodules: 'true'
 
             - name: Set reusable strings
               id: strings
               shell: bash
               run: |
                 echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-            
-            - name: Configure CMake
+
+            #Building WX on windows takes some time, cache when possible
+            - name: Cache WX x86 Windows
+              if: ${{ input.os }} == windows-latest
+              id: cache-wx-x86
+              uses: actions/cache@v3
+              with:
+                path: C:/Program Files (x86)/wxWidgets
+                key: wx-build-3.2.4-windows-x86
+                restore-keys: |
+                  wx-build-3.2.4-windows-x86
+
+            - name: Checkout WX Windows
+              if: ${{ input.os }} == windows-latest && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              uses: actions/checkout@v3
+              with:
+                repository: WxWidgets/WxWidgets
+                ref: v3.2.4
+                path: ${{ github.workspace }}/wxWidgets
+                submodules: 'true'
+
+            - name: Configure WX x86 Windows
+              if: ${{ input.os }} == windows-latest && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              run: >
+                cmake ${{ github.workspace  }}/WxWidgets
+                -DwxBUILD_SHARED=OFF
+                -B ${{ github.workspace }}/wx-build-windows-x86
+
+            - name: Build WX x86 Windows
+              if: ${{ input.os }} == windows-latest && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              run: > 
+                cmake --build ${{ github.workspace }}/wx-build-windows-x86 
+                --target install --config Release 
+
+            #On ubuntu we get the packages through apt.
+            - name: Get GTK Ubuntu
+              if: ${{ input.os }} == ubuntu-latest
+              run: |
+                sudo apt-get install libgtk-3-dev
+                sudo apt-get install libwxgtk3.0-gtk3-0v5
+                sudo apt-get install libwxgtk3.0-gtk3-dev
+
+            - name: Configure MFPG
               run: >
                 cmake -B ${{ steps.strings.outputs.build-output-dir }}
                 -DCMAKE_CXX_COMPILER=${{ inputs.cxx-compiler }}
@@ -43,16 +87,27 @@ jobs:
                 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
                 -DREBUILD_MX=${{ inputs.mx-rebuild }}
                 -DBUILD_TESTS=${{ inputs.build-tests }}
+                -A x64
+                -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
+                -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
+                -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
                 -S ${{ github.workspace }}
                 
-            - name: Build
+            - name: Build MFPG
               run: > 
                 cmake 
                 --build ${{ steps.strings.outputs.build-output-dir }} 
                 --config ${{ inputs.build-type }}
-            - name: Test
+
+            - name: Test MFPG
               working-directory: ${{ steps.strings.outputs.build-output-dir }}
               run: >
                 ctest 
                 --output-on-failure
                 --build-config ${{ inputs.build-type }}
+
+            - name: Upload GUI Artifact
+              uses: actions/upload-artifact@v4
+              with: 
+                name: mfpg-gui
+                path: {{ steps.strings.outputs.build-output-dir }}/mfpg_gui.exe
