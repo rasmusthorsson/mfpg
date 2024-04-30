@@ -3,7 +3,6 @@ name: Windows
 on:
   pull_request:
     branches: [ "master" ]
-  push:
 
 jobs:
   windows-build-test:

@@ -3,6 +3,7 @@ name: Ubuntu
 on:
   pull_request:
     branches: [ "master" ]
+  push:
 
 jobs:
   ubuntu-build-test:
