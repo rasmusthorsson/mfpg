@@ -40,11 +40,13 @@ jobs:
           cmake --build ${{ github.workspace }}/wx-build-windows-x86 
           --target install --config Release 
 
-    uses: ./.github/workflows/wf-main.yml
-    with: 
-      os: windows-latest
-      c-compiler: cl
-      cxx-compiler: cl
-      mx-rebuild: false
-      build-tests: true
-      build-type: Release
+      - name: Windows MFPG
+        working-directory: {{ github.workspace  }}/mfpg/mfpg
+        uses: ./.github/workflows/wf-main.yml
+        with: 
+          os: windows-latest
+          c-compiler: cl
+          cxx-compiler: cl
+          mx-rebuild: false
+          build-tests: true
+          build-type: Release
