@@ -6,19 +6,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - name: Checkout WX
-        uses: actions/checkout@v3
-        with:
-          repository: WxWidgets/WxWidgets
-          ref: v3.2.4
-          path: wxWidgets
-          submodules: 'true'
 
-      - name: Configure WX
-        run: >
-          cmake WxWidgets
-          -DwxBUILD_SHARED=OFF
-          -B wx-build
 
       - name: Cache WX
         id: cache-wx
@@ -28,6 +16,20 @@ jobs:
           key: wx-build-3.2.4-windows-${{ hashFiles('wx-build/config.log') }}
           restore-keys: |
             wx-build-3.2.4-windows-
+      
+      - name: Checkout WX
+        uses: actions/checkout@v3
+        with:
+          repository: WxWidgets/WxWidgets
+          ref: v3.2.4
+          path: wxWidgets
+          submodules: 'true'
+      
+      - name: Configure WX
+        run: >
+          cmake WxWidgets
+          -DwxBUILD_SHARED=OFF
+          -B wx-build
 
       - name: Build WX
         if: steps.cache-wx.outputs.cache-hit != 'true'
