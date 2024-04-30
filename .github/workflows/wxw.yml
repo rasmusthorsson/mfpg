@@ -18,6 +18,7 @@ jobs:
             wx-build-3.2.4-windows-
       
       - name: Checkout WX
+        if: steps.cache-wx.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: WxWidgets/WxWidgets
@@ -26,6 +27,7 @@ jobs:
           submodules: 'true'
       
       - name: Configure WX
+        if: steps.cache-wx.outputs.cache-hit != 'true'
         run: >
           cmake WxWidgets
           -DwxBUILD_SHARED=OFF
