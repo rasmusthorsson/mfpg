@@ -87,7 +87,7 @@
 												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 												<object class="wxFilePickerCtrl" name="ID_FPDSL">
-													<wildcard>"MFPG Files (*.mfpg)|*.mfpg"</wildcard>
+													<wildcard>*.mfpg</wildcard>
 													<style>wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR</style>
 													<enabled>0</enabled>
 												</object>
@@ -181,7 +181,7 @@
 												<border>5</border>
 												<minsize>150,-1d</minsize>
 												<object class="wxFilePickerCtrl" name="ID_FPCSV">
-													<wildcard>"CSV Files (*.csv)|*.csv"</wildcard>
+													<wildcard>*.csv</wildcard>
 													<style>wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR</style>
 													<enabled>0</enabled>
 												</object>
