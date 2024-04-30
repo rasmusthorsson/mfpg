@@ -40,7 +40,7 @@ jobs:
 
             #Building WX on windows takes some time, cache when possible
             - name: Cache WX x86 Windows
-              if: ${{ inputs.os }} == windows-latest
+              if: ${{ inputs.os }} == 'windows-latest'
               id: cache-wx-x86
               uses: actions/cache@v3
               with:
@@ -50,7 +50,7 @@ jobs:
                   wx-build-3.2.4-windows-x86
 
             - name: Checkout WX Windows
-              if: ${{ inputs.os }} == windows-latest && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              if: ${{ inputs.os }} == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
               uses: actions/checkout@v3
               with:
                 repository: WxWidgets/WxWidgets
@@ -59,21 +59,21 @@ jobs:
                 submodules: 'true'
 
             - name: Configure WX x86 Windows
-              if: ${{ inputs.os }} == windows-latest && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              if: ${{ inputs.os }} == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
               run: >
                 cmake ${{ github.workspace  }}/WxWidgets
                 -DwxBUILD_SHARED=OFF
                 -B ${{ github.workspace }}/wx-build-windows-x86
 
             - name: Build WX x86 Windows
-              if: ${{ inputs.os }} == windows-latest && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              if: ${{ inputs.os }} == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
               run: > 
                 cmake --build ${{ github.workspace }}/wx-build-windows-x86 
                 --target install --config Release 
 
             #On ubuntu we get the packages through apt.
             - name: Get GTK Ubuntu
-              if: ${{ inputs.os }} == ubuntu-latest
+              if: ${{ inputs.os }} == 'ubuntu-latest'
               run: |
                 sudo apt-get install libgtk-3-dev
                 sudo apt-get install libwxgtk3.0-gtk3-0v5
