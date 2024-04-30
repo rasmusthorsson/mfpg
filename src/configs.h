@@ -17,8 +17,51 @@ std::vector<std::string> ATTRIBUTES;
 
 namespace configs {
 	using namespace std;
+	
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<double>> solver, bool csv) {
+		int count = 1;
+		double total_cost = 0;
+		if (csv) {
+			out << "note number, note, string, finger, hp, cost, "
+				"combinations\r\n";
+			for (auto sol : solver->getSolution()) {
+				out << count << ","
+					<< get<0>(sol).getNote() << ","
+					<< get<0>(sol).getState().to_string_csv()
+					<< get<1>(sol) << ","
+					<< get<0>(sol).getLayerList().getElem().getSize() 
+					<< "\r\n";
+				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
+			}
+		} else {
+			for (auto sol : solver->getSolution()) {
+				out << "Note number: " << count << "\n";
+				out << "Note: " << get<0>(sol).getNote() << "\n";
+				out 
+					<< get<0>(sol).getState().to_string() 
+					<< "\n"
+					<< "Distance of transition: " << get<1>(sol) 
+					<< "\n"
+					<< "Amount of possible fingerings: " 
+					<< get<0>(sol).getLayerList().getElem().getSize() 
+					<< "\n"
+					<< "------------------------------------" 
+					<< "\n";
+				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
+			}
+		}
+		mfpg_log::Log::verbose_out(std::cout,
+				   "Total cost of the path: " + to_string(total_cost) + "\n",
+				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
+	}
 
-	void writeOutput(ostream& out, shared_ptr<GraphSolver<Distance>> solver, bool csv) {
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<int>> solver, bool csv) {
 		int count = 1;
 		int total_cost = 0;
 		if (csv) {

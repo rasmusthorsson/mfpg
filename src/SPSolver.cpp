@@ -5,7 +5,15 @@
 #include <limits.h>
 
 template<typename Output>
-SPSolver<Output>::SPSolver(int opt) : opt_level(opt) {}
+SPSolver<Output>::SPSolver(int opt) {
+	if (opt < 0) {
+		opt_level = 0;
+	} else if (opt > 3) {
+		opt_level = 3;
+	} else {
+		opt_level = opt;
+	}
+}
 
 template<typename Output>
 SPSolver<Output>::SPSolver() : opt_level(0) {}
@@ -25,8 +33,9 @@ void SPSolver<Output>::removeNode(std::map<int, std::vector<int>>& unvisited,
 					throw (SolverException(std::string("Failed to erase empty layer from unvisited."), current_node.first));
 				}
 				//If every node in layer has been visited, then all previous layers
-				//can be safely invalidated. (opt_level 1).
-				if (opt_level >= 1) {
+				//can be safely invalidated. (opt_level 1). We also apply this optimization
+				//if both optimizations are selected.
+				if (opt_level == 1 || opt_level == 3) {
 					for (int i = 0; i < current_node.first; i++) {
 						unvisited.erase(i);
 					}
@@ -125,8 +134,8 @@ void SPSolver<Output>::solve(LayerList<Output>& list) {
 		//If current node is in the last layer it is a target and has no neighbors.
 		if (current_node.first < dist.size() - 1) { 
 			calculateNB(list, unvisited, current_node, dist, prev);
-		//Opt level less than 2 if all targets should be explored.
-		} else if (opt_level >= 2) {
+		//If opt level is two we apply this optimization, if 3 we apply both.
+		} else if (opt_level == 2 || opt_level == 3) {
 			//if we reach a target we have a solution.
 			break;
 		}

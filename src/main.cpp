@@ -84,39 +84,31 @@ int main (int argc, char *argv[]) {
 	}
 
 //-------------------------- Read Score ---------------------------------
-	ifstream input_file;
 
+	string score_path;
 	if (result.count("score")) {
-		auto file_path = result["score"].as<std::string>();
-		input_file.open(file_path);
+		score_path = result["score"].as<std::string>();
+		ifstream input_file;
+		input_file.open(score_path);
 		if (!input_file.is_open()) {
 			mfpg_log::Log::verbose_out(log, ("ERROR: Could not open file: " + 
 				result["score"].as<string>() + "\n"), 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		}
+		input_file.close();
 	} else {
 		mfpg_log::Log::verbose_out(log, ("ERROR: No musicXML file found, please supply a "
 			"musicXML file to process.\n"), mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
 
-	string buffer;
-	string sheet_music;
-	while (input_file) {
-		getline(input_file, buffer);
-		sheet_music = sheet_music + "\r\n" + buffer;
-	}
-	input_file.close();
 
 //------------------------- MX conversion --------------------------------
 
 	using namespace mx::api;
-
 	auto& mgr = DocumentManager::getInstance();
-
-	istringstream istr{sheet_music};
-	const auto documentID = mgr.createFromStream(istr);
+	const auto documentID = mgr.createFromFile(score_path);
 	const auto score = mgr.getData(documentID);
 	mgr.destroyDocument(documentID);
 	const NoteList note_list(score);
@@ -221,6 +213,9 @@ int main (int argc, char *argv[]) {
 		note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
 	}
 
+	//TODO fix distance solver.
+	//TODO Fix opt levels and documentation.
+	//TODO catch exceptions as refs
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
 		//Build the layerlist from the notelist and mapper.
@@ -301,24 +296,8 @@ int main (int argc, char *argv[]) {
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(2));
 		} 
-		try {
-			//Find path through layerlist
-			solver->solve(list);
-
-		//Exceptions for if the solver is unable to find a path through the graph
-		} catch (SolverException e) {
-			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
-				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
-				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-			return -1;
-		//Exception for if access to layer nodes is out of range
-		} catch (std::out_of_range e) {
-			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
-					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-			return -1;
-		}
-
-		//------------------------------ Output ----------------------------------
+		solver->solve(list);
+//------------------------------ Output ----------------------------------
 		if (result.count("output")) {
 			auto out_file = result["output"].as<std::string>();
 			ofstream out;
@@ -367,5 +346,17 @@ int main (int argc, char *argv[]) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what() + "\nAffected Tuples: " + affected_tuples + "\n",
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-	}
+	} catch (SolverException e) {
+			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
+				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		//Exception for if access to layer nodes is out of range
+		} catch (std::out_of_range e) {
+			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+			return -1;
+		}
+
+
 }

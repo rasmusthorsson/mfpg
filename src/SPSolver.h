@@ -24,8 +24,11 @@ template<class Output> class SPSolver : public virtual GraphSolver<Output> {
 		SPSolver(int); 
 		SPSolver(); 
 		~SPSolver();
-
 		void solve(LayerList<Output>&) override;
 
+};
+enum {
+	OPT_LAYER_INVALIDATION = 1,
+	OPT_STOP_ON_SOLUTION = 2
 };
 #endif

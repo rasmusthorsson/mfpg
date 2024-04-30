@@ -8,6 +8,7 @@ configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 option(BUILD_TESTS "Build tests" ON)
+option(BUILD_GUI "Build gui version" ON)
 
 project(mfpg VERSION ${VERSION_MFPG})
 
@@ -47,13 +48,37 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkExcept
 	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp src/CSVNoteMapper.cpp 
 	src/NoteMapperException.cpp ${DSL})
 
-file(GLOB_RECURSE SRC_BASE src/main.cpp ${BASE})
+file(GLOB_RECURSE CLI_BASE src/main.cpp ${BASE})
 
-add_executable(mfpg ${SRC_BASE})
+add_executable(mfpg ${CLI_BASE})
 
-if(REBUILD_MX)
+if (BUILD_GUI) 
+  file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp src/gui/MFPG_Panel.cpp 
+	  src/gui/MFPG_Choicebook.cpp src/gui/Gui_Settings.cpp ${BASE})
+  if(MSVC)
+	set(wxWidgets_ROOT_DIR ${WXW_ROOT_DIR})
+	set(wxWidgets_LIB_DIR ${WXW_LIB_DIR})
+	set(wxWidgets_LIBRARIES ${WXW_LIB_DIR})
+	set(wxWidgets_INCLUDE_DIRS ${WXW_INC_DIR})
+	set(wxWidgets_CONFIGURATION "mswc")
+	set(wxWidgets_USE_STATIC ON)
+	add_executable(mfpg_gui WIN32 ${GUI_BASE})
+	find_package(wxWidgets CONFIG REQUIRED) 
+	find_package(wxWidgets COMPONENTS core base xrc xml html aui)
+	include(${wxWidgets_USE_FILE})
+	target_link_libraries(mfpg_gui ${wxWidgets_LIBRARIES})
+  else()
+	add_executable(mfpg_gui ${GUI_BASE})
+	find_package(wxWidgets COMPONENTS core base xrc xml html aui)
+	include(${wxWidgets_USE_FILE})
+	target_link_libraries(mfpg_gui ${wxWidgets_LIBRARIES})
+  endif()
+
+endif() 
+
+if(REBUILD_MX)  
  FetchContent_Declare(
-        mx
+  mx
 	GIT_REPOSITORY https://github.com/webern/mx.git
 	GIT_TAG c6144d229d9c976833b80de0d25e2636acf7f323
  )

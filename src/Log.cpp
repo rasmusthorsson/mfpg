@@ -7,4 +7,5 @@ void mfpg_log::Log::verbose_out(std::ostream& out, std::string s, VERBOSE_LEVEL 
 	if (v <= VERBOSE) {
 		out << s;
 	}
-}	
+}
+

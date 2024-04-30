@@ -1,0 +1,410 @@
+<?xml version="1.0"?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="MFPG_Panel_XRC">
+		<style>wxTAB_TRAVERSAL</style>
+		<object class="wxFlexGridSizer" name="MainGrid">
+			<rows>2</rows>
+			<cols>1</cols>
+			<vgap>0</vgap>
+			<hgap>0</hgap>
+			<flexibledirection>wxBOTH</flexibledirection>
+			<nonflexiblegrowmode>wxFLEX_GROWMODE_SPECIFIED</nonflexiblegrowmode>
+			<object class="sizeritem">
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<object class="wxBoxSizer" name="ConfigSettings">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer" name="BookwideSettings">
+							<orient>wxVERTICAL</orient>
+							<label>Global Settings</label>
+							<object class="sizeritem">
+								<flag>wxALL</flag>
+								<border>5</border>
+								<object class="wxButton" name="ID_BTRemoveConfig">
+									<label>Remove Config</label>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALL|wxALIGN_CENTER</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="SelectedScoreText">
+							<label>Selected Score:</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALL|wxALIGN_CENTER</flag>
+						<border>5</border>
+						<object class="wxStaticText" name="SelectedScore">
+							<label>none</label>
+							<wrap>-1</wrap>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<flag>wxALL</flag>
+				<border>5</border>
+				<object class="wxBoxSizer" name="MainColumns">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxBoxSizer" name="OptionColumn">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<flag>wxALL|wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer" name="InstrumentBox">
+									<orient>wxVERTICAL</orient>
+									<label>Instrument Settings</label>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxComboBox" name="ID_CBInstSettings">
+											<content>
+												<item>Presets</item>
+												<item>DSL File</item>
+											</content>
+											<value>"Presets"</value>
+											<style>wxCB_READONLY</style>
+											<size>50,-1d</size>
+											<!--You cannot use selection_string for the selection in XRC.-->
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxStaticBoxSizer" name="DSL_Box">
+											<orient>wxVERTICAL</orient>
+											<label>DSL File</label>
+											<object class="sizeritem">
+												<flag>wxALL|wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxFilePickerCtrl" name="ID_FPDSL">
+													<wildcard>"MFPG Files (*.mfpg)|*.mfpg"</wildcard>
+													<style>wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR</style>
+													<enabled>0</enabled>
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxGridSizer" name="Presets">
+											<rows>2</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<object class="sizeritem">
+												<flag>wxALL|wxALIGN_CENTER</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Instrument">
+													<label>Instrument</label>
+													<wrap>-1</wrap>
+													<style>wxALIGN_LEFT|wxST_ELLIPSIZE_END</style>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL|wxALIGN_CENTER</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="ActionSet">
+													<label>Actionset</label>
+													<wrap>-1</wrap>
+													<style>wxALIGN_RIGHT|wxST_ELLIPSIZE_END</style>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL|wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxComboBox" name="ID_CBInstrument">
+													<content>
+														<item>Violin</item>
+													</content>
+													<value>"Violin"</value>
+													<style>wxCB_READONLY</style>
+													<size>50,-1d</size>
+													<!--You cannot use selection_string for the selection in XRC.-->
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL|wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxComboBox" name="ID_CBActionSet">
+													<content>
+														<item>Test1</item>
+														<item>Test2</item>
+													</content>
+													<value>"Test1"</value>
+													<style>wxCB_READONLY</style>
+													<size>50,-1d</size>
+													<!--You cannot use selection_string for the selection in XRC.-->
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<flag>wxALL|wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer" name="NoteMapperBox">
+									<orient>wxVERTICAL</orient>
+									<label>Notemapper Settings</label>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxComboBox" name="ID_CBNoteMapper">
+											<content>
+												<item>BasicNoteMapper</item>
+												<item>CSV File</item>
+											</content>
+											<value>"BasicNoteMapper"</value>
+											<style>wxCB_READONLY</style>
+											<!--You cannot use selection_string for the selection in XRC.-->
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxStaticBoxSizer" name="CSV_Box">
+											<orient>wxVERTICAL</orient>
+											<label>CSV File</label>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<minsize>150,-1d</minsize>
+												<object class="wxFilePickerCtrl" name="ID_FPCSV">
+													<wildcard>"CSV Files (*.csv)|*.csv"</wildcard>
+													<style>wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR</style>
+													<enabled>0</enabled>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<flag>wxALL|wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer" name="SolverBox">
+									<orient>wxVERTICAL</orient>
+									<label>Solver Settings</label>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxComboBox" name="ID_CBSolver">
+											<content>
+												<item>Shortest Path</item>
+												<item>Greedy</item>
+											</content>
+											<value>"Shortest Path"</value>
+											<style>wxCB_READONLY</style>
+											<!--You cannot use selection_string for the selection in XRC.-->
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxBoxSizer" name="OptColumn">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxCheckBox" name="ID_CHBSPSOpt1">
+													<label>Shortest Path Optimization 1</label>
+													<checked>1</checked>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="OPT1_TEXT">
+													<label>Invalidates previous layers if a layer has been completely been visited.</label>
+													<wrap>200</wrap>
+													<style>wxALIGN_LEFT|wxST_ELLIPSIZE_END</style>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxCheckBox" name="ID_CHBSPSOpt2">
+													<label>Shortest Path Optimization 2</label>
+													<checked>1</checked>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="OPT2_TEXT">
+													<label>Stops solving after finding one solution.</label>
+													<wrap>200</wrap>
+													<style>wxALIGN_LEFT|wxST_ELLIPSIZE_END</style>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxStaticBoxSizer" name="FilesBox">
+							<orient>wxVERTICAL</orient>
+							<label>Files</label>
+							<object class="sizeritem">
+								<flag>wxALL</flag>
+								<border>5</border>
+								<object class="wxNotebook" name="ID_NBOOKChange" />
+							</object>
+							<object class="sizeritem">
+								<flag>wxALL</flag>
+								<border>5</border>
+								<object class="wxBoxSizer" name="SaveButtonRow">
+									<orient>wxHORIZONTAL</orient>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_BTSaveastext">
+											<label>Save File as</label>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_BTSavetext">
+											<label>Save File</label>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<flag>wxALL</flag>
+						<border>5</border>
+						<object class="wxBoxSizer" name="OutputColumn">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<flag>wxALL</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer" name="OutputBox">
+									<orient>wxVERTICAL</orient>
+									<label>Output</label>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxStaticText" name="OutputTypeText">
+											<label>Output Type</label>
+											<wrap>-1</wrap>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxBoxSizer" name="OutputTypeRow">
+											<orient>wxHORIZONTAL</orient>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxComboBox" name="ID_CBOutput">
+													<content>
+														<item>CSV Output</item>
+														<item>Direct Output</item>
+													</content>
+													<value>"CSV Output"</value>
+													<style>wxCB_READONLY</style>
+													<!--You cannot use selection_string for the selection in XRC.-->
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxALL|wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxCheckBox" name="ID_CHBOutputToFile">
+													<label>Output To File</label>
+													<checked>1</checked>
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxStaticBoxSizer" name="OutputFileBox">
+											<orient>wxVERTICAL</orient>
+											<label>Output File</label>
+											<object class="sizeritem">
+												<flag>wxALL</flag>
+												<border>5</border>
+												<minsize>150,-1d</minsize>
+												<object class="wxFilePickerCtrl" name="ID_FPCSVOutput">
+													<style>wxFLP_USE_TEXTCTRL|wxFLP_SAVE|wxFLP_OVERWRITE_PROMPT|wxFLP_CHANGE_DIR</style>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<flag>wxALL|wxEXPAND</flag>
+								<border>5</border>
+								<minsize>130,-1d</minsize>
+								<object class="wxStaticBoxSizer" name="GenerationBox">
+									<orient>wxVERTICAL</orient>
+									<minsize>130,-1d</minsize>
+									<label>Generation</label>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_BTGenerate">
+											<label>Generate</label>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<flag>wxALL|wxALIGN_LEFT</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer" name="InformationBox">
+									<orient>wxVERTICAL</orient>
+									<label>Information</label>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxStaticText" name="OutputInfo">
+											<label>Output Info</label>
+											<wrap>-1</wrap>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<minsize>165,70d</minsize>
+										<object class="wxTextCtrl" name="InformationText">
+											<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_LEFT|wxTE_DONTWRAP</style>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL</flag>
+										<border>5</border>
+										<object class="wxButton" name="ID_BTClearInfo">
+											<label>Clear Info</label>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

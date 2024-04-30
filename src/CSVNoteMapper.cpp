@@ -56,6 +56,8 @@ CSVNoteMapper::CSVNoteMapper(std::string fp, const std::vector<IString>& list) {
 		if (csv_columns.size() > 0) {
 			throw (NoteMapperException("Not every Attibute declared is named in the CSV note mapper file."));
 		}
+	} else {
+		throw (NoteMapperException("Could not open CSV File"));
 	}
 	noteenums::Note note;
 	//For the rest of the lines.

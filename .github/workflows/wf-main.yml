@@ -27,31 +27,74 @@ jobs:
     build:
         runs-on: ${{ inputs.os }}
         steps:
-            - uses: actions/checkout@v3
 
-            - name: Set reusable strings
-              id: strings
-              shell: bash
-              run: |
-                echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-            
-            - name: Configure CMake
+            #Building WX on windows takes some time, cache when possible
+            - name: Cache WX x86 Windows
+              if: inputs.os == 'windows-latest'
+              id: cache-wx-x86
+              uses: actions/cache@v3
+              with:
+                path: C:/Program Files (x86)/wxWidgets
+                key: wx-build-3.2.4-windows-x86
+                restore-keys: |
+                  wx-build-3.2.4-windows-x86
+
+            - name: Checkout WX Windows
+              if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              uses: actions/checkout@v3
+              with:
+                repository: WxWidgets/WxWidgets
+                ref: v3.2.4
+                path: ${{ github.workspace }}/wxWidgets
+                submodules: 'true'
+
+            - name: Configure WX x86 Windows
+              if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
               run: >
-                cmake -B ${{ steps.strings.outputs.build-output-dir }}
+                cmake ${{ github.workspace  }}/WxWidgets
+                -DwxBUILD_SHARED=OFF
+                -B ${{ github.workspace }}/wx-build-windows-x86
+
+            - name: Build WX x86 Windows
+              if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
+              run: > 
+                cmake --build ${{ github.workspace }}/wx-build-windows-x86 
+                --target install --config Release 
+
+            #On ubuntu we get the packages through apt.
+            - name: Get GTK Ubuntu
+              if: inputs.os == 'ubuntu-latest'
+              run: |
+                sudo apt-get install libgtk-3-dev
+                sudo apt-get install libwxgtk3.0-gtk3-0v5
+                sudo apt-get install libwxgtk3.0-gtk3-dev
+            
+            - uses: actions/checkout@v3
+              with:
+                path: mfpg
+                submodules: 'true'
+
+            - name: Configure MFPG
+              run: >
+                cmake mfpg
+                -B mfpg/mfpg_build
                 -DCMAKE_CXX_COMPILER=${{ inputs.cxx-compiler }}
                 -DCMAKE_C_COMPILER=${{ inputs.c-compiler }}
                 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
                 -DREBUILD_MX=${{ inputs.mx-rebuild }}
                 -DBUILD_TESTS=${{ inputs.build-tests }}
-                -S ${{ github.workspace }}
+                -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
+                -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
+                -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
                 
-            - name: Build
+            - name: Build MFPG
               run: > 
                 cmake 
-                --build ${{ steps.strings.outputs.build-output-dir }} 
+                --build mfpg/mfpg_build 
                 --config ${{ inputs.build-type }}
-            - name: Test
-              working-directory: ${{ steps.strings.outputs.build-output-dir }}
+
+            - name: Test MFPG
+              working-directory: mfpg/mfpg_build
               run: >
                 ctest 
                 --output-on-failure
