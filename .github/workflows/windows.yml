@@ -6,7 +6,7 @@ on:
   push:
 
 jobs:
-  windows-build-test:
+  get-wx-windows:
     runs-on: windows-latest
     steps:
       - name: Cache WX x86 Windows
@@ -39,15 +39,13 @@ jobs:
         run: > 
           cmake --build ${{ github.workspace }}/wx-build-windows-x86 
           --target install --config Release 
-
-      - uses: actions/checkout@v3
-
-      - name: Windows MFPG
-        uses: ./.github/workflows/wf-main.yml
-        with: 
-          os: windows-latest
-          c-compiler: cl
-          cxx-compiler: cl
-          mx-rebuild: false
-          build-tests: true
-          build-type: Release
+  run-mfpg:
+    needs: get-wx-windows
+    uses: ./.github/workflows/wf-main.yml
+    with: 
+      os: windows-latest
+      c-compiler: cl
+      cxx-compiler: cl
+      mx-rebuild: false
+      build-tests: true
+      build-type: Release
