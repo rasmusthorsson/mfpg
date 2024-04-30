@@ -14,15 +14,25 @@ jobs:
           path: wxWidgets
           submodules: 'true'
 
-      - name: Configure WX 64-bit
+      - name: Configure WX
         run: >
           cmake WxWidgets
           -DwxBUILD_SHARED=OFF
-          -B build-64
+          -B wx-build
 
-      - name: Build WX 64-bit
+      - name: Cache WX
+        id: cache-wx
+        uses: actions/cache@v3
+        with:
+          path: wx-build
+          key: wx-build-3.2.4-windows-${{ hashFiles('wx-build/config.log') }}
+          restore-keys: |
+            wx-build-3.2.4-windows-
+
+      - name: Build WX
+        if: steps.cache-wx.outputs.cache-hit != 'true'
         run: >
-          cmake --build build-64 --target install --config Release 
+          cmake --build wx-build --target install --config Release 
 
       - name: Checkout MFPG
         uses: actions/checkout@v3
@@ -36,14 +46,14 @@ jobs:
           -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
           -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
           -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
-          -B mfpg_build-64
+          -B mfpg_build
 
       - name: Build MFPG
         run: >
-          cmake --build mfpg_build-64 --config Release 
+          cmake --build mfpg_build --config Release 
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mfpg-x64-gui
-          path: mfpg_build-64/Release/mfpg_gui.exe
+          name: mfpg-gui
+          path: mfpg_wx-build/Release/mfpg_gui.exe
