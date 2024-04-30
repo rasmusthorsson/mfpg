@@ -95,7 +95,7 @@ jobs:
                 --config ${{ inputs.build-type }}
 
             - name: Test MFPG
-              working-directory: ${{ github.workspace/mfpg_build }}
+              working-directory: ${{ github.workspace }}/mfpg_build
               run: >
                 ctest 
                 --output-on-failure
