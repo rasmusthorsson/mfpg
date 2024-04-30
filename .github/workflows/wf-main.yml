@@ -28,39 +28,6 @@ jobs:
         runs-on: ${{ inputs.os }}
         steps:
 
-            #Building WX on windows takes some time, cache when possible
-            - name: Cache WX x86 Windows
-              if: inputs.os == 'windows-latest'
-              id: cache-wx-x86
-              uses: actions/cache@v3
-              with:
-                path: C:/Program Files (x86)/wxWidgets
-                key: wx-build-3.2.4-windows-x86
-                restore-keys: |
-                  wx-build-3.2.4-windows-x86
-
-            - name: Checkout WX Windows
-              if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
-              uses: actions/checkout@v3
-              with:
-                repository: WxWidgets/WxWidgets
-                ref: v3.2.4
-                path: ${{ github.workspace }}/wxWidgets
-                submodules: 'true'
-
-            - name: Configure WX x86 Windows
-              if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
-              run: >
-                cmake ${{ github.workspace  }}/WxWidgets
-                -DwxBUILD_SHARED=OFF
-                -B ${{ github.workspace }}/wx-build-windows-x86
-
-            - name: Build WX x86 Windows
-              if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cacher-hit != 'true'
-              run: > 
-                cmake --build ${{ github.workspace }}/wx-build-windows-x86 
-                --target install --config Release 
-
             #On ubuntu we get the packages through apt.
             - name: Get GTK Ubuntu
               if: inputs.os == 'ubuntu-latest'
