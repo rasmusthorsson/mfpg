@@ -24,7 +24,7 @@ jobs:
         id: cache-wx
         uses: actions/cache@v3
         with:
-          path: wx-build
+          path: C:/Program Files (x86)/wxWidgets
           key: wx-build-3.2.4-windows-${{ hashFiles('wx-build/config.log') }}
           restore-keys: |
             wx-build-3.2.4-windows-
