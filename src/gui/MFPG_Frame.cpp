@@ -507,12 +507,12 @@ void MFPG_Frame::MenuDeleteConfig(wxCommandEvent& event) {
 	wxSingleChoiceDialog dialog(NULL, "Select saved Config to delete.", "Delete Saved Config", 
 		config_names.size(), &config_names[0], c, wxCHOICEDLG_STYLE, wxDefaultPosition);
 	if (dialog.ShowModal() == wxID_OK) {
-		wxXmlNode *removed_node = conf.GetRoot()->GetChildren()->GetChildren();
+		wxXmlNode *removed_node = conf_doc.GetRoot()->GetChildren()->GetChildren();
 		while (removed_node) {
 			if (removed_node->GetAttribute(CONFIG_NAME_CONF, wxEmptyString) == 
 									dialog.GetStringSelection()) {
-				conf.GetRoot()->GetChildren()->RemoveChild(removed_node);
-				conf.Save(configs_path);
+				conf_doc.GetRoot()->GetChildren()->RemoveChild(removed_node);
+				conf_doc.Save(configs_path);
 				return;
 			} else {
 				removed_node = removed_node->GetNext();
@@ -695,7 +695,7 @@ void MFPG_Frame::SetSolver(Settings s) {
 		case SOLVER_GREEDY:
 			for (auto text : current_panel->solver_area->GetChildren()) {
 				if (text->GetName() == "OPT1_TEXT" || text->GetName() == "OPT2_TEXT") {
-					c->Disable();
+					text->Disable();
 				}
 			}
 			current_panel->sps_opt_1->Disable();
