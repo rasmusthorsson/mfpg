@@ -41,7 +41,7 @@ jobs:
           --target install --config Release 
 
       - name: Windows MFPG
-        working-directory: {{ github.workspace  }}/mfpg/mfpg
+        working-directory: ${{ github.workspace  }}/mfpg/mfpg
         uses: ./.github/workflows/wf-main.yml
         with: 
           os: windows-latest
