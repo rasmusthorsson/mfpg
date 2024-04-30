@@ -71,13 +71,13 @@ jobs:
             
             - uses: actions/checkout@v3
               with:
-                path: ${{ github.workspace }}/mfpg
+                path: ${{ github.workspace }}
                 submodules: 'true'
 
             - name: Configure MFPG
               run: >
                 cmake ${{ github.workspace }}/mfpg
-                -B ${{ github.workspace }}/mfpg_build
+                -B ${{ github.workspace }}/mfpg/mfpg_build
                 -DCMAKE_CXX_COMPILER=${{ inputs.cxx-compiler }}
                 -DCMAKE_C_COMPILER=${{ inputs.c-compiler }}
                 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
@@ -90,11 +90,11 @@ jobs:
             - name: Build MFPG
               run: > 
                 cmake 
-                --build ${{ github.workspace }}/mfpg_build 
+                --build ${{ github.workspace }}/mfpg/mfpg_build 
                 --config ${{ inputs.build-type }}
 
             - name: Test MFPG
-              working-directory: ${{ github.workspace }}/mfpg_build
+              working-directory: ${{ github.workspace }}/mfpg/mfpg_build
               run: >
                 ctest 
                 --output-on-failure
