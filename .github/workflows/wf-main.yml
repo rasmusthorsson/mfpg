@@ -27,16 +27,6 @@ jobs:
     build:
         runs-on: ${{ inputs.os }}
         steps:
-            - uses: actions/checkout@v3
-              with:
-                path: mfpg
-                submodules: 'true'
-
-            - name: Set reusable strings
-              id: strings
-              shell: bash
-              run: |
-                echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
             #Building WX on windows takes some time, cache when possible
             - name: Cache WX x86 Windows
@@ -78,10 +68,16 @@ jobs:
                 sudo apt-get install libgtk-3-dev
                 sudo apt-get install libwxgtk3.0-gtk3-0v5
                 sudo apt-get install libwxgtk3.0-gtk3-dev
+            
+            - uses: actions/checkout@v3
+              with:
+                path: ${{ github.workspace }}/mfpg
+                submodules: 'true'
 
             - name: Configure MFPG
               run: >
-                cmake -B ${{ steps.strings.outputs.build-output-dir }}
+                cmake ${{ github.workspace }}/mfpg
+                -B ${{ github.workspace }}/mfpg_build
                 -DCMAKE_CXX_COMPILER=${{ inputs.cxx-compiler }}
                 -DCMAKE_C_COMPILER=${{ inputs.c-compiler }}
                 -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
@@ -91,23 +87,16 @@ jobs:
                 -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
                 -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
                 -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
-                -S ${{ github.workspace }}
                 
             - name: Build MFPG
               run: > 
                 cmake 
-                --build ${{ steps.strings.outputs.build-output-dir }} 
+                --build ${{ github.workspace }}/mfpg_build 
                 --config ${{ inputs.build-type }}
 
             - name: Test MFPG
-              working-directory: ${{ steps.strings.outputs.build-output-dir }}
+              working-directory: ${{ github.workspace/mfpg_build }}
               run: >
                 ctest 
                 --output-on-failure
                 --build-config ${{ inputs.build-type }}
-
-            - name: Upload GUI Artifact
-              uses: actions/upload-artifact@v4
-              with: 
-                name: mfpg-gui
-                path: ${{ steps.strings.outputs.build-output-dir }}/mfpg_gui.exe
