@@ -1,14 +1,11 @@
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
     steps: 
-      - name: Update apt
-        run: >
-          sudo apt-get update
-      
       - name: Get GTK
         run: |
           sudo apt-get install libgtk-3-dev

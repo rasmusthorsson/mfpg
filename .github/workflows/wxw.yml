@@ -1,24 +1,21 @@
 on:
   workflow_dispatch:
-  push:
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-
-
-      - name: Cache WX
-        id: cache-wx
+      - name: Cache WX x86
+        id: cache-wx-x86
         uses: actions/cache@v3
         with:
           path: C:/Program Files (x86)/wxWidgets
-          key: wx-build-3.2.4-windows-${{ hashFiles('wx-build/config.log') }}
+          key: wx-build-3.2.4-windows-x86-${{ hashFiles('wx-build-x86/config.log') }}
           restore-keys: |
-            wx-build-3.2.4-windows-
+            wx-build-3.2.4-windows-x86-
       
       - name: Checkout WX
-        if: steps.cache-wx.outputs.cache-hit != 'true'
+        if: steps.cache-wx86.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
         with:
           repository: WxWidgets/WxWidgets
@@ -26,15 +23,15 @@ jobs:
           path: wxWidgets
           submodules: 'true'
       
-      - name: Configure WX
-        if: steps.cache-wx.outputs.cache-hit != 'true'
+      - name: Configure WX x86
+        if: steps.cache-wx86.outputs.cache-hit != 'true'
         run: >
           cmake WxWidgets
           -DwxBUILD_SHARED=OFF
           -B wx-build
 
-      - name: Build WX
-        if: steps.cache-wx.outputs.cache-hit != 'true'
+      - name: Build WX x86
+        if: steps.cache-wx86.outputs.cache-hit != 'true'
         run: >
           cmake --build wx-build --target install --config Release 
 
@@ -47,6 +44,7 @@ jobs:
       - name: Configure MFPG
         run: >
           cmake mfpg 
+          -A x64
           -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
           -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
           -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
