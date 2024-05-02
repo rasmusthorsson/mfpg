@@ -1,9 +1,110 @@
 <!doctype html>
+<style>
+.topbar {
+  background-color: #f0f0f0;
+  border: 5px solid #000000;
+  height: 54px;
+}
+.topbar img {
+  float: left;
+  border: 4px solid #ddd;
+  width: 45px;
+  height: 45px;
+  background-color: #000000;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 10%;
+  height: 100%;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  border: 2px solid #0f0f0f;
+  background-color: #f9f9f9;
+  min-width: 100%;
+  top: 110%;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0, 2);
+  padding: 0px 0px;
+  z-index: 1;
+}
+.dropbtn {
+  float: left;
+  background-color: #ffffff;
+  color: gray;
+  padding: 0px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.dropdown-content a {
+  color: black;
+  border: 1px solid #000000;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover{
+  background-color: #f1f1f1;
+}
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #3f3f3f;
+}
+.show{
+  display:block;
+}
+</style>
+<script>
+function dropHomeMenu() {
+  document.getElementById("home").classList.toggle("show");
+}
+function dropGuidesMenu() {
+  document.getElementById("guides").classList.toggle("show");
+}
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
 <html>
   <head>
     <title>MFPG Webpage</title>
   </head>
   <body>
+    <div class="topbar">
+      <img src="Icon.png">
+      <div class="dropdown">
+        <button onclick="dropHomeMenu()" class="dropbtn">
+          Home &#11183
+        </button>
+        <div id="home" class="dropdown-content">
+          <a href="#">Link 1</a>
+          <a href="#">Link 2</a>
+          <a href="#">Link 3</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          Guides &#11183
+        </button>
+        <div id="guides" class="dropdown-content">
+          <a href="#">Link 1</a>
+          <a href="#">Link 2</a>
+          <a href="#">Link 3</a>
+        </div>
+      </div>
+    </div>
     <p>This is the index file <a href="guide.html">Link to Guide</a> 
     </p>
     <img src="Layers.png" alt="Program" width = "800" height="400">
