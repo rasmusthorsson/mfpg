@@ -1,0 +1,170 @@
+.topbar {
+  display: block;
+  position: fixed;
+  background-color: #e5e5ff;
+  border: 5px solid #909090;
+  height: 54px;
+  width: 98.3%;
+  z-index: 2;
+  top: 0px;
+  left: 0px;
+}
+.topbar img {
+  float: left;
+  display: inline-block;
+  border: 4px solid #ddd;
+  width: 45px;
+  height: 45px;
+  background-color: #000000;
+}
+.menu {
+  float: left;
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  width: 25%;
+  z-index: 1;
+}
+.dropbtn {
+  border-radius: 15px;
+  background-color: #efffef;
+  color: #212121;
+  padding: 0px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  font-family: serif;
+}
+.btn {
+  border-radius: 15px;
+  background-color: #efffef;
+  color: #212121;
+  padding: 0px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  font-family: serif;
+}
+.dropdown-menu {
+  float: left;
+  border-radius: 25px;
+  display: none;
+  border: 1px solid black;
+  background-color: #e6e6f6; 
+  color: black;
+  padding: 10px 20px;
+  z-index: 0;
+}
+.dropdown-content {
+  float: left;
+  position: relative;
+  padding: 8px 20px;
+}
+.dropdown-text {
+  float: left;
+  position: relative;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  padding: 3px 0px;
+  font-size: 18px;
+  display: block;
+  height: 30px;
+  width: 100%;
+  font-family: serif;
+}
+.dropdown-content a {
+  float: left;
+  position: relative;
+  color: black;
+  padding: 6px 0px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  width: 100%;
+  font-family: Georgia, ui-rounded, monospace;
+}
+.dropdown-content a:hover {
+}
+.dropbtn:hover {
+  background-color: #cfcfcf;
+}
+.btn:hover {
+  background-color: #cfcfcf;
+}
+.show {
+  display: block;
+}
+.quickbar {
+  position: fixed;
+  text-align: center;
+  background-color: #d1d1f1;
+  border: 5px solid #414141;
+  height: 80px;
+  width: 98.3%;
+  top: 64px;
+  left: 0px;
+  z-index: 1;
+}
+.quickbar-text {
+  display: block;
+  position: relative;
+  padding: 4px 0px;
+  color: black;
+  text-align: center;
+  font-size: 28px;
+  z-index: 0;
+}
+.quickbar a {
+  text-decoration: none;
+  position: relative;
+  color black;
+  font-size: 15px;
+  padding: 12px 26px;
+  height: 100%;
+  color: #424242;
+  font-family: "Gill Sans Extrabold", ui-rounded, monospace;
+}
+.guidepage-index {
+  position: fixed;
+  display: block;
+  background-color: #f1f1f1;
+  min-height: 300px;
+  width: 150px;
+  border-right: 1px solid #515151;
+  border-left: 5px solid #515151;
+  padding: 5px 12px;
+  top: 154px;
+  left: 0;
+  height: 100%;
+  z-index: 4;
+}
+.guidepage {
+  position: absolute;
+  display: block; 
+  background-color: #ffffff;
+  top: 160px;
+  left: 200px;
+  width: 75%;
+}
+.pagetitle {
+  position: relative;
+  color: black;
+  font-size: 30px;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  font-family: Georgia, serif;
+  width: 100%;
+}
+.guidepage-text {
+  position: relative;
+  display: block; 
+  width: 100%;
+  height: 100%;
+}

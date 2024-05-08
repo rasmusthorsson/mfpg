@@ -1,0 +1,97 @@
+<p><img src="https://github.com/rasmusthorsson/mfpg/actions/workflows/ubuntu.yml/badge.svg" alt="ubuntu">
+<img src="https://github.com/rasmusthorsson/mfpg/actions/workflows/windows.yml/badge.svg" alt="windows"></p>
+<h1>Music Fingering Position Generator</h1>
+<p>A personal project with the goal of creating software to automically construct a 
+fingering position sequence for a given	music score (for a single bowed string 
+instrument currently). By using user defined preferences and instrument definitions 
+the software should be able to give a good base of fingering positions when fed a sheet 
+music MusicXML file. Uses the <strong>mx</strong> library (found at <a href="https://github.com/webern/mx">https://github.com/webern/mx</a>) for 
+MusicXML parsing. Also uses the <strong>cxxopts</strong> library for parsing inputs and managing
+options (<a href="https://github.com/jarro2783/cxxopts">https://github.com/jarro2783/cxxopts</a>). <strong>gtest</strong> is used for unit- and integration
+tests.</p>
+<p><strong>Note that this program is not yet ready for release</strong></p>
+<h1>Program Explanation</h1>
+<p>The program works by constructing a <em>layered</em> weighted DAG and running a shortest path 
+algorithm on it.</p>
+<h2>Graphical Representation</h2>
+<p>Below is an image of how the graph is represented in the program.</p>
+<p><img src="resources/docs/Layers.png" alt="Program graph." title="Program graph"></p>
+<p>The Physical Note Representation (<strong>PNR</strong>) (Called <em>Node Tuples</em> in the above image) 
+in the layers represent the nodes in the graph and the costs in the 
+transition matrix represent the weights on the edges between PNRs in adjacent layers.
+The edges are defined as going between the PNR that is the <em>n&#39;th</em> PNR in the current 
+layer (by index) and the PNR that is the <em>m&#39;th</em> PNR in the layer of the next 
+LayerList (again by index). The cost in the transition matrix for that transition is 
+then found at row <em>n</em>, column <em>m</em>.</p>
+<h2>Program Structure</h2>
+<p>The program takes a musicXML score as input which is parsed by the mx library. The 
+structure created by the mx library is then converted to a <em>notelist</em> of simplified 
+notes. An <em>instrument</em> is then constructed by defining <em>strings</em> and <em>actions</em>, a <em>notemapper</em> 
+is also built which defines all possible PNR for the defined instruments strings for all 
+possible notes. The notelist is then combined with the notemapper to generate a <em>linked 
+list of layers</em>, where each layer represents one note in the notelist and contains all
+physical ways to play that note (PNRs). The actions are then used in combination with the
+layerlist to calculate the cost of each transition between the PNRs 
+in connected layers. Once the costs have been calculated a shortest path solver is 
+used to find the shortest path through the graph, which results in the <em>best</em> way
+to play the score according to the action setup.</p>
+<h2>User Inputs</h2>
+<p>The user will need to select and/or supply a few different input arguments to the program.</p>
+<h3>Music Score</h3>
+<p>First and foremost the user must supply the score they are intending to play. Currently tests only exist for
+scores with one voice and only MusicXML files are accepted. In the future further formats will be supported.</p>
+<h3>Note Mapper</h3>
+<p>As musical notes are too abstract to be used directly for any useful cost calculations
+for transitions, a notemapper is required to map the abstract notes to PNRs 
+of those notes. Since there are many different physical metrics which
+could be used to represent notes the notemapper will be definable by the user, but 
+basic notemappers will be supplied if the user has no need for anything specific. These physical metrics
+are referred to as <strong>Attributes</strong>.</p>
+<p>Currently there are two notemappers, the basic notemapper hardcoded in the program, and the CSV notemapper.
+The CSV notemapper takes a CSV file in the format of a <em>Note,ATTRIBUTE1,ATTRIBUTE2,...</em> CSV file and
+directly constructs a notemapper using that CSV file. There is a smaller program in the 
+<em>resources/csv_note_map_builder/</em> directory which can be used to generate the basic notemapper but in CSV
+format. This program can be altered to add various attributes <em>without</em> having to recompile the MFPG program
+or add new structures to the MFPG program directly, since this smaller generator program simply generates
+CSV files, which can be used as input to MFPG.</p>
+<p>In the future a more comprehensive CSV file containing 
+a large amount of different attributes will be available and the user will be able to select attributes out
+of that CSV file to use if they do not want/can not construct their own notemapper using the smaller 
+CSV notemapper generator program.</p>
+<h3>Instrument</h3>
+<p>In order to generate fingering positions an <em>instrument</em> must be defined. An instrument consists of two
+components: Strings and an ActionSet. To define an instrument you use the DSL (See the DSL_Guide.md file
+for a guide on how this is done in detail.).</p>
+<h4>Strings</h4>
+<p>Strings can be considered close to their physical counterparts (Strings as in Strings of an Instrument), and
+are defined with a string position (first string, second string, third string, etc.), and the playable notes
+on that string. Playable notes can be defined using a range of notes, for example the D-String on a violin 
+can play the notes <em>D_4</em> to <em>Ds_6</em> and is the second string on the instrument, thus we define that string 
+as <em>(2, D_4, Ds_6)</em>.</p>
+<h4>Action Set</h4>
+<p>To calculate costs of transitions between PNRs of notes an action set must
+be defined. This set will consist of smaller constraints and the cost of the transition
+if those constraints are fulfilled. An action could be defined such that if the first note is played on 
+<em>String 1</em>, and the second note is played on <em>String 2</em> the cost could increase by 1 for example.</p>
+<p>The actions are to be defined in order of when they are checked, they can also be defined as 
+either occurring by default or only occurring if some other specific action has
+occurred. This means actions can also have dependencies defined between eachother, 
+with some actions disabling later actions if they do occur. </p>
+<p>For a complete description of actions, see the DSL guide file.</p>
+<h2>Program options and arguments</h2>
+<p>Below is a list of the possible program options arguments.</p>
+<ul>
+<li><strong>score</strong>: The input file, must be an XML file in the form of musicXML, implicitly the last argument of the program and must be supplied.</li>
+<li><strong>--version</strong>: Check compiled version of MFPG.</li>
+<li><strong>-h</strong> or <strong>--help</strong>: Outputs all options.</li>
+<li><strong>-c</strong> or <strong>--csv</strong>: direct the program to output the results in a CSV format.</li>
+<li><strong>-v integer</strong> or <strong>--verbose=integer</strong>: Sets verbosity to different levels, 0 is silent, 1 is errors, 2 is everything.</li>
+<li><strong>--greedy</strong>: Directs the program to use the greedy solver instead of a shortest path solver, this is primarily used for testing.</li>
+<li><strong>shortest-path=integer</strong>: Sets the solver to be the shortest path solver with an optimization level. 0 is no optimization, 1 is invalidation of all previous layers on complete visitation of a layer, and 2 is stop when one solution has been found (and 1).</li>
+<li><strong>-o filepath</strong> or <strong>--output=filepath</strong>: Directs the program to write the output to filepath.</li>
+<li><strong>-d dsl_file</strong> or <strong>--dsl=dsl_file</strong>: Use an instrument defined in the DSL_file instead of the default one.</li>
+<li><strong>-t integer</strong> or <strong>--test=integer</strong>: Use a test configuration (1 or 2), these are two instrument configurations hardcoded into the program and used to test various parts.</li>
+<li><strong>-n notemapper_csv_file</strong> or <strong>--notemapper=notemapper_csv_file</strong>: Directs the program to use the CSVNoteMapper using the notemapper_csv_file supplied as the notemapper instead of the hardcoded one.</li>
+<li><strong>--interactive</strong>: Rudimentary interactive mode which is used to explore transitions of a constructed layerlist. Primarily used for debugging.</li>
+</ul>
+

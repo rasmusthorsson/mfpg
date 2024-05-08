@@ -1,0 +1,104 @@
+<!doctype html>
+<script>
+function dropGuidesMenu() {
+  document.getElementById("guides").classList.toggle("show");
+}
+function dropLinksMenu() {
+  document.getElementById("links").classList.toggle("show");
+}
+function dropInfoMenu() {
+  document.getElementById("info").classList.toggle("show");
+}
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-menu");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button class="btn">
+          Home
+        </button>
+      </div>
+      <div class="menu">
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          Guides &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="guiguide">GUI</a>
+            <a href="cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="dslguide">DSL</a>
+            <a href="notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="#">Simple Example</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          Links &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          Info &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+        </div>
+      </div>
+
+    </div>
+    <div class="quickbar">
+      <div class="quickbar-text">
+        Guides
+      </div>
+        <a href="guiguide" class=quicklink>GUI</a>
+        <a href="cliguide" class=quicklink>CLI</a>
+        <a href="dslguide" class=quicklink>DSL</a>
+        <a href="notemapbuilder" class=quicklink>Notemap Builder</a>
+        <a href="#" class=quicklink>Simple Example</a>
+    </div>
+    <div class="guidepage-index">
+      Hello
+    </div>
+    <div class="guidepage">
+      <div class="pagetitle">
+        Title
+      </div>
+      <div class="guidepage-text">
+        <object width="100%" height="700px" data="html_guides/DSL_Guide.html" type="text/html"></object>
+      </div>
+    </div>
+  </body>
+</html>
