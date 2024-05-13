@@ -49,6 +49,9 @@
   height: 100%;
   font-family: serif;
 }
+.btn a {
+  color: yellow;
+}
 .dropdown-menu {
   float: left;
   border-radius: 25px;
@@ -135,14 +138,46 @@
   display: block;
   background-color: #f1f1f1;
   min-height: 300px;
-  width: 150px;
+  width: 170px;
   border-right: 1px solid #515151;
   border-left: 5px solid #515151;
-  padding: 5px 12px;
+  box-sizing: border-box;
+  padding: 12px 20px;
   top: 154px;
   left: 0;
   height: 100%;
   z-index: 4;
+}
+.guidepage-index a {
+  color: blue;
+  position: relative;
+  font-size: 15px;
+  top: 10px;
+  display: block;
+  width: 100%;
+}
+.guidepage-index a.inner {
+  color: blue;
+  position: relative;
+  left: 15px;
+  top: 12px;
+  font-size: 12px;
+  display: block;
+  width: 100%;
+}
+.guidepage-index a.inner-inner {
+  color: blue;
+  position: relative;
+  left: 30px;
+  font-size: 12px;
+  top: 5px;
+  display: block;
+  width: 100%;
+}
+a.anchor {
+  position: relative; 
+  top: -200px;
+  visibility: hidden;
 }
 .guidepage {
   position: absolute;
@@ -152,10 +187,14 @@
   left: 200px;
   width: 75%;
 }
+.guidepage p {
+  font-family: Georgia, sans-serif;
+}
 .pagetitle {
   position: relative;
   color: black;
   font-size: 30px;
+  background-color: #e9e9e9;
   text-decoration: none;
   text-align: center;
   display: block;

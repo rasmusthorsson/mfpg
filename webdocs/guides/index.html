@@ -1,5 +1,5 @@
 <!doctype html>
-<link rel="stylesheet" type="text/css" href="styles.css">
+<link rel="stylesheet" type="text/css" href="../styles.css">
 <script>
 function dropGuidesMenu() {
   document.getElementById("guides").classList.toggle("show");
@@ -32,7 +32,7 @@ window.onclick = function(event) {
     <div class="topbar">
       <div class="menu">
         <button class="btn">
-          <a href="/index.html">Home</a>
+          Home
         </button>
       </div>
       <div class="menu">
@@ -77,6 +77,64 @@ window.onclick = function(event) {
         </button>
         <div id="info" div class="dropdown-menu">
         </div>
+      </div>
+
+    </div>
+    <div class="quickbar">
+      <div class="quickbar-text">
+        Guides
+      </div>
+        <a href="guiguide" class="quicklink">GUI</a>
+        <a href="cliguide" class="quicklink">CLI</a>
+        <a href="dslguide" class="quicklink">DSL</a>
+        <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
+        <a href="examples" class="quicklink">Examples</a>
+    </div>
+    <div class="guidepage-index">
+      Hello
+    </div>
+    <div class="guidepage">
+      <div class="guidepage-text">
+        <h1>
+          Available Guides
+        </h1>
+        <h2 id="ggh">
+          GUI Guide
+        </h2>
+        <p>
+          The <a href="guiguide">GUI Guide</a> gives a brief overview of the different 
+          GUI components and how to use them.
+        </p>
+        <h2>
+          CLI Guide
+        </h2>
+        <p>
+          The <a href="cliguide">CLI Guide</a> gives a brief overview of how to use 
+          the commandline interface and the various available options.
+        </p>
+        <h2>
+          DSL Guide
+        </h2>
+        <p>
+          The <a href="dslguide">DSL Guide</a> describes how to define MFPG DSL files.
+          A DSL file is an important component to customize fingering position 
+          generation.
+        </p>
+        <h2>
+          Notemap Builder Guide
+        </h2>
+        <p>
+          The <a href="notemapbuilderguide">Notemap Builder Guide</a> shows a few
+          small examples of how to define your attribute value calculations. These
+          attribute values are required for any attribute used in the DSL file.
+        </p>
+        <h2>
+          Examples
+        </h2>
+        <p>
+          The <a href="examples">Examples Guide</a> shows a few examples of how to
+          use the program as a whole.
+        </p>
       </div>
     </div>
   </body>
