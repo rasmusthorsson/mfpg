@@ -1,28 +1,6 @@
 <!doctype html>
-<link rel="stylesheet" type="text/css" href="../styles.css">
-<script>
-function dropGuidesMenu() {
-  document.getElementById("guides").classList.toggle("show");
-}
-function dropLinksMenu() {
-  document.getElementById("links").classList.toggle("show");
-}
-function dropInfoMenu() {
-  document.getElementById("info").classList.toggle("show");
-}
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-menu");
-    var i;
-    for (i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
-  }
-}
-</script>
+<link rel="stylesheet" type="text/css" href="/styles.css">
+<script type="text/javascript" src="/scripts.js"></script>
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
@@ -32,7 +10,7 @@ window.onclick = function(event) {
     <div class="topbar">
       <div class="menu">
         <button class="btn">
-          Home
+          <a href="/">Home</a>
         </button>
       </div>
       <div class="menu">
@@ -58,7 +36,7 @@ window.onclick = function(event) {
             <div class="dropdown-text">
               Tutorials
             </div> 
-            <a href="#">Simple Example</a>
+            <a href="examples">Examples</a>
           </div>
         </div>
       </div>
@@ -68,6 +46,12 @@ window.onclick = function(event) {
           Links &#11183
         </button>
         <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
         </div>
       </div>
       
@@ -76,6 +60,12 @@ window.onclick = function(event) {
           Info &#11183
         </button>
         <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Patch Notes
+            </div>
+            <a href="/patch-notes/">Patch Notes</a>
+          </div>
         </div>
       </div>
 
@@ -88,7 +78,7 @@ window.onclick = function(event) {
         <a href="cliguide" class=quicklink>CLI</a>
         <a href="dslguide" class=quicklink>DSL</a>
         <a href="notemapbuilder" class=quicklink>Notemap Builder</a>
-        <a href="#" class=quicklink>Simple Example</a>
+        <a href="examples" class=quicklink>Examples</a>
     </div>
     <div class="guidepage-index">
       <a href="#Parts">Parts</a>
@@ -109,13 +99,14 @@ window.onclick = function(event) {
         <h1>DSL Guide</h1>
         <p>This is a guide on how to write configuration files in the DSL format as defined in 
         <strong>src/parser/mfpg_dsl.cf</strong>, see that file for the full grammar.</p>
-        <h2>Parts</h2>
         <a class="anchor" id="Parts"></a>
+        <h2>Parts</h2>
         <p>A MFPG DSL file currently consists of five parts: <strong>Output</strong>, <strong>Attributes</strong>, <strong>Strings</strong>, <strong>Actions</strong>, and 
         <strong>Dependencies</strong>. Each of these parts define some required configuration part the program will use to 
         generate fingering positions, the parts are defined in the above order and separated by their respective 
         names followed by a colon:</p>
-        <pre><code>Output:
+        <pre><code>
+        Output:
             (Output is defined here)
         Attributes:
             (Attributes are defined here)
@@ -126,15 +117,19 @@ window.onclick = function(event) {
         Dependencies:
             (Dependencies are defined here)
         </code></pre>
-        <h3>Output</h3>
         <a class="anchor" id="Output"></a>
+        <h3>Output</h3>
         <p>The Output is a single word defining what type of output all Actions should have. Currently the only
         supported types are <strong>int</strong> and <strong>double</strong>, referring to whether the output is to be an <strong>integer</strong>
         (whole number such as 1, 5, 23 etc.) or a <strong>double</strong> (number with decimals such as 0.4672, 231.2, 23.36783 
         etc).</p>
-        <p>For example:<br>    Output: int</p>
-        <h3>Attributes</h3>
+        <p>For example:<br> 
+        <pre><code>
+        Output: int
+        </code></pre>
+        </p>
         <a class="anchor" id="Attributes"></a>
+        <h3>Attributes</h3>
         <p>An Attribute represents some physical aspect of a note, for example consider that for a bowed string 
         instrument a note can only be played by pressing one of four fingers on a string or in the case of an
         open string, pressing no finger on a string and then bowing that string. Thus Finger could be an Attribute 
@@ -156,7 +151,8 @@ window.onclick = function(event) {
         (PNR), so in the above example the PNR type for the notes is the same, differing only in the values of the 
         Attributes. As described above, we do not need to define the values for all possible PNRs for all notes in 
         this part, but we must define what a PNR looks like for this configuration.</p>
-        <pre><code>Attributes:
+        <pre><code>
+        Attributes:
             (i) &quot;String&quot; ,
             (i) &quot;Finger&quot; ,
             (i) &quot;Hand_Position&quot; ;
@@ -170,13 +166,14 @@ window.onclick = function(event) {
         in later parts.</p>
         <p>We have then defined the PNR type for this example as: String, Finger, and Hand_Position, each Attribute 
         having the type <strong>i</strong>.
-        </p>
-        <h3>Strings</h3>
+        </p>
         <a class="anchor" id="Strings"></a>
+        <h3>Strings</h3>
         <p>As this software is designed for string instruments, strings must be defined for an instrument to exist. To 
         define a string you define the number of that string (as an integer) and what range of notes can be played
         on that string:</p>
-        <pre><code>Strings:
+        <pre><code>
+        Strings:
             1: C_4 -&gt; A_6 ,
             2: C_5 -&gt; Cs_7 ,
             3: G_3 -&gt; C_5 ;
@@ -185,14 +182,15 @@ window.onclick = function(event) {
         (inclusive) C_4 and A_6, the second can play all notes between C_5 and Cs_7, and the third can play all 
         notes between G_3 and C_5. You could also define these notes using the position of the notes relative to 
         C_0 (as position 0):</p>
-        <pre><code>Strings:
+        <pre><code>
+        Strings:
             1: 48 -&gt; 81 ,
             2: 60 -&gt; 85 ,
             3: 43 -&gt; 60 ;
         </code></pre>
         <p>Which represents the exact same strings as above.</p>
-        <h3>Actions</h3>
         <a class="anchor" id="Actions"></a>
+        <h3>Actions</h3>
         <p>Each Action defines a comparison of two PNRs. The Action will consider one PNR for the 
         <strong>current</strong> note, and one PNR for the <strong>next</strong> note in the score. This will happen until all PNRs for the 
         <strong>current</strong> note have been compared to all PNRs of the <strong>next</strong> note. Let&#39;s look at an example: if the 
@@ -295,7 +293,8 @@ window.onclick = function(event) {
         is no way to mix <strong>condition</strong> and <strong>distance</strong> functions, first we must define all <strong>condition</strong> 
         functions, then we must add the separator (:) and then define all <strong>distance</strong> functions.</p>
         <p>For completeness sake, this is how the Action section looks like for this example:</p>
-        <pre><code>Actions:
+        <pre><code>
+        Actions:
             &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
             &quot;HP_Action&quot; = &quot;Hand_Position&quot; - &quot;Hand_Position&quot; &gt; 0 : &quot;Hand_Position&quot; - &quot;Hand_Position&quot; + 1 (true) ;
         </code></pre>
@@ -329,14 +328,16 @@ window.onclick = function(event) {
         if we <em>also</em> switch strings. One could also imagine us adding another <strong>condition</strong> function which checks
         whether we switched strings and finger at the same time, but because we already have an action which checks
         this we can just define a dependency between the actions.</p>
-        <pre><code>Actions:
+        <pre><code>
+        Actions:
             &quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ,
             &quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ,
             &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
             &quot;HP_Action&quot; = &quot;Hand_Position&quot; - &quot;Hand_Position&quot; &gt; 0 : &quot;Hand_Position&quot; - &quot;Hand_Position&quot; + 1 (true) ;
         </code></pre>
         <p>We can now define our dependency.</p>
-        <pre><code>Dependencies:
+        <pre><code>
+        Dependencies:
             &quot;String_Action&quot; &quot;Finger_String_Action&quot; true ;
         </code></pre>
         <p>The dependency above states that:</p>
@@ -356,7 +357,8 @@ window.onclick = function(event) {
         action that checks whether either of the PNRs are rests and applies no cost regardless, and then we define 
         dependencies which disable all other actions if the rest action was triggered.</p>
         <p>Our final DSL configuration file looks like this:</p>
-        <pre><code>Output: int
+        <pre><code>
+        Output: int
         Strings:
             1: C_4 -&gt; A_6 ,
             2: C_5 -&gt; Cs_7 ,
@@ -373,14 +375,14 @@ window.onclick = function(event) {
         Dependencies:
             &quot;String_Action&quot; &quot;Finger_String_Action&quot; true ;
         </code></pre>
-        <h2>Brief Syntax Overview</h2>
         <a class="anchor" id="Syntax"></a>
+        <h2>Brief Syntax Overview</h2>
         <p>Below is a list of all variations of <strong>condition</strong> and <strong>distance</strong> functions implemented followed by a
         brief explanation of the function purpose. For a more concise view, check out the grammar file referenced
         in the beginning.</p>
         <p>(For verbosity sake I will only type out one of each of the functions and then list replacable parts below)</p>
-        <h3>Condition Functions</h3>
         <a class="anchor" id="Conditions"></a>
+        <h3>Condition Functions</h3>
         <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot; == Number
         </code></pre>
         <p>Used to compare two combined attributes to some number.</p>
@@ -400,8 +402,8 @@ window.onclick = function(event) {
         <pre><code>to &quot;Attr1&quot;
         </code></pre>
         <p>same as above but for the <em>next</em> PNR.</p>
-        <h3>Distance Functions</h3>
         <a class="anchor" id="Distance"></a>
+        <h3>Distance Functions</h3>
         <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot; * Number
         </code></pre>
         <p>Combines the values of &quot;Attr1&quot; and &quot;Attr2&quot; and multiplies it by some number</p>

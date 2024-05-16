@@ -92,8 +92,7 @@ that can take some time to do.).
 
 In this case you could look at sample values of distances between full steps of notes
 on the same string and define how the distance decreases as you get
-closer to the bridge as a function of the note location on the string (i.e, the finger
- + the hand position attribute values).
+closer to the bridge as a function of the note location on the string (i.e, the finger + the hand position attribute values).
 
 ## Implementing new Attribute definitions
 

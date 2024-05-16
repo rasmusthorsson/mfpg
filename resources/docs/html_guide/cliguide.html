@@ -1,0 +1,24 @@
+<h1>CLI Guide</h1>
+<p>The Command-Line Interface (<strong>CLI</strong>) is an interface to use MFPG via a terminal or 
+text-based interface.</p>
+<h2>Usage</h2>
+<p>Usage might vary depending on operating system.</p>
+<h3>Linux</h3>
+<p>Download or compile the binary and use bash to run it with arguments of your choice.</p>
+<h3>Windows</h3>
+<p>To be implemented</p>
+<h2>Available Options</h2>
+<ul>
+<li><strong>score</strong>: The input file, must be an XML file in the form of musicXML, implicitly the last argument of the program and must be supplied.</li>
+<li><strong>--version</strong>: Check compiled version of MFPG.</li>
+<li><strong>-h</strong> or <strong>--help</strong>: Outputs all options.</li>
+<li><strong>-c</strong> or <strong>--csv</strong>: direct the program to output the results in a CSV format.</li>
+<li><strong>-v integer</strong> or <strong>--verbose=integer</strong>: Sets verbosity to different levels, 0 is silent, 1 is errors, 2 is everything.</li>
+<li><strong>--greedy</strong>: Directs the program to use the greedy solver instead of a shortest path solver, this is primarily used for testing.</li>
+<li><strong>shortest-path=integer</strong>: Sets the solver to be the shortest path solver with an optimization level. 0 is no optimization, 1 is invalidation of all previous layers on complete visitation of a layer, and 2 is stop when one solution has been found (and 1).</li>
+<li><strong>-o filepath</strong> or <strong>--output=filepath</strong>: Directs the program to write the output to filepath.</li>
+<li><strong>-d dsl_file</strong> or <strong>--dsl=dsl_file</strong>: Use an instrument defined in the DSL_file instead of the default one.</li>
+<li><strong>-t integer</strong> or <strong>--test=integer</strong>: Use a test configuration (1 or 2), these are two instrument configurations hardcoded into the program and used to test various parts.</li>
+<li><strong>-n notemapper_csv_file</strong> or <strong>--notemapper=notemapper_csv_file</strong>: Directs the program to use the CSVNoteMapper using the notemapper_csv_file supplied as the notemapper instead of the hardcoded one.</li>
+<li><strong>--interactive</strong>: Rudimentary interactive mode which is used to explore transitions of a constructed layerlist. Primarily used for debugging.</li>
+</ul>

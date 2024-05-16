@@ -1,28 +1,6 @@
 <!doctype html>
-<link rel="stylesheet" type="text/css" href="../styles.css">
-<script>
-function dropGuidesMenu() {
-  document.getElementById("guides").classList.toggle("show");
-}
-function dropLinksMenu() {
-  document.getElementById("links").classList.toggle("show");
-}
-function dropInfoMenu() {
-  document.getElementById("info").classList.toggle("show");
-}
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-menu");
-    var i;
-    for (i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
-  }
-}
-</script>
+<link rel="stylesheet" type="text/css" href="/styles.css">
+<script type="text/javascript" src="/scripts.js"></script>
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
@@ -32,7 +10,7 @@ window.onclick = function(event) {
     <div class="topbar">
       <div class="menu">
         <button class="btn">
-          Home
+          <a href="/">Home</a>
         </button>
       </div>
       <div class="menu">
@@ -68,6 +46,12 @@ window.onclick = function(event) {
           Links &#11183
         </button>
         <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
         </div>
       </div>
       
@@ -76,6 +60,12 @@ window.onclick = function(event) {
           Info &#11183
         </button>
         <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Patch Notes
+            </div>
+            <a href="/patch-notes/">Patch Notes</a>
+          </div>
         </div>
       </div>
 

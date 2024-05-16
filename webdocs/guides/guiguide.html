@@ -1,0 +1,253 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href="/styles.css">
+<script type="text/javascript" src="/scripts.js"></script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button class="btn">
+          <a href="/">Home</a>
+        </button>
+      </div>
+      <div class="menu">
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          Guides &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="guiguide">GUI</a>
+            <a href="cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="dslguide">DSL</a>
+            <a href="notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="examples">Examples</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          Links &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          Info &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Patch Notes
+            </div>
+            <a href="/patch-notes/">Patch Notes</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quickbar">
+      <div class="quickbar-text">
+        Guides
+      </div>
+        <a href="guiguide" class="quicklink">GUI</a>
+        <a href="cliguide" class="quicklink">CLI</a>
+        <a href="dslguide" class="quicklink">DSL</a>
+        <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
+        <a href="examples" class="quicklink">Examples</a>
+    </div>
+    <div class="guidepage-index">
+      <a href="#Overview">Overview</a>
+      <a href="#Top Menu" class="inner">Top Menu</a>
+      <a href="#Config" class="inner">Config</a>
+      <a href="#Global" class="inner">Global</a>
+      <a href="#Instrument" class="inner">Instrument</a>
+      <a href="#Notemapper" class="inner">Notemapper</a>
+      <a href="#Solver" class="inner">Solver</a>
+      <a href="#Files" class="inner">Files</a>
+      <a href="#Output" class="inner">Output</a>
+      <a href="#Generation" class="inner">Generation</a>
+      <a href="#Information" class="inner">Information</a>
+    </div>
+    <div class="guidepage">
+      <div class="pagetitle">
+        A Guide on how to use the graphical interface for MFPG
+      </div>
+      <div class="guidepage-text">
+        <h1>GUI Guide</h1>
+        <p>This is a short guide on what the different components in the GUI do.</p>
+        <a class="anchor" id="Overview"></a>
+        <h2>Overview</h2>
+        <p>Here is a full view of the MFPG Gui.</p>
+        <p align="left">
+            <img style="border:2px solid #737373" width="600" height="600" src="../images/MFPG_GUI_full.png">
+        </p>
+
+        <a class="anchor" id="Top Menu"></a>
+        <h2>Top Menu</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_topmenu.png">
+        </p>
+
+        <p>The top menu has 3 submenus:</p>
+        <ul>
+        <li><p>File	</p>
+        <p>  The file menu is used for selecting the target score. Currently this can only
+          be done by locally storing the score and importing it directly to the program.</p>
+        </li>
+        <li><p>Help</p>
+        <p>  The help menu provides direction to helpful resources such as guides and tutorials.</p>
+        </li>
+        <li><p>Configs</p>
+        <p>  The configs menu allows for saving, loading, deleting, and creating new configs. The program uses a hidden file called <strong>.mfpg_configs.xml</strong> to store
+          configs in XML format. If no such file is found these options will be
+          disabled.</p>
+        </li>
+        </ul>
+        <a class="anchor" id="Config"></a>
+        <h2>Config Selector</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" width="600" src="../images/MFPG_GUI_config.png">
+        </p>
+
+        <p>The config selector selects between currently imported configurations. This is not the
+        same as the <em>configs</em> submenu in the previous section, as it does not save nor load 
+        configs from a file but instead temporarily stores configs until program exit. </p>
+        <a class="anchor" id="Global"></a>
+        <h2>Global Settings</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_globals.png">
+        </p>
+
+        <p>This section is for selections which do not depend on configurations. The <em>Remove 
+        Config</em> button deletes the temporary current config, but does not delete it from the
+        permanent storage in the config storage file. The selected score label shows which
+        score is currently selected.</p>
+        <a class="anchor" id="Instrument"></a>
+        <h2>Instrument Settings</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_instrument.png">
+        </p>
+
+        <p>Here we determine the instrument specifications. This can be done by using <em>presets</em> 
+        or by loading the instrument and actionset from a DSL (domain specific language) file. 
+        The presets are hardcoded values and currently there are not many presets available. 
+        Therefore it is recommended to use the DSL (for information on how to do this, see the
+        DSL guide.) for most purposes currently. This is done by importing a <strong>.mfpg</strong> DSL
+        file into the program using the DSL file selector. </p>
+        <p>Only the violin is available as an 
+        instrument preset so far, while the actionset presets are simple actionsets 
+        primarily used for testing. The implementation of these actionsets can be found in
+        the GitHub repo in the <strong>src/configs.h</strong> file.</p>
+        <a class="anchor" id="Notemapper"></a>
+        <h2>Notemapper Settings</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_notemapper.png">
+        </p>
+
+        <p>The notemapper selection is limited to the hardcoded basic notemapper, which has the 
+        three basic attributes mapped (Finger, String, and Hand Position) for a standard
+        violin. The CSV Notemapper option requires importing a CSV file. This CSV file can 
+        either be a premade one (the GitHub repo has a standard CSV notemap file which 
+        contains a few different attributes.), or constructed using the CSV file constructor,
+        although the second option requires some work as well as some programming (see the
+        CSV Builder guide for more information regarding this approach).</p>
+        <a class="anchor" id="Solver"></a>
+        <h2>Solver Settings</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_solver.png">
+        </p>
+
+        <p>The solver section is more focused on output accuracy and efficiency. The Shortest
+        Path solver gives an accurate output based on the entire score. The greedy solver 
+        selects the easiest path based on the easiest next step. This means that the shortest
+        path solver is the solver that should be used unless there is a specific reason to
+        use the greedy solver. </p>
+        <p>The checkboxes are efficiency optimizations to the shortest
+        path solver allow for faster solutions. This will in general not be a problem since 
+        the solver will often times be fast enough without these optimizations, but for some
+        extreme cases they might improve performance noticably. In the future, multiple 
+        fingerings might be generated to give the user a set of fingerings to choose from 
+        rather than the current method of selecting the &#39;optimal&#39; solution only. When this
+        is implemented these optimizations might need to be disabled to allow for multiple
+        solutions.</p>
+        <a class="anchor" id="Files"></a>
+        <h2>Files Area</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" height="400" width="300" src="../images/MFPG_GUI_files.png">
+        </p>
+
+        <p>The middle section of the GUI is for selected DSL and CSV Notemapper file, as well 
+        as the output. These are accessed via the tabs at the top. Once a file is
+        selected via the file selectors in other sections they can be modified and 
+        saved in the file window. The program operates on the saved files, so making changes 
+        to the DSL file in the file window does not change the output of the program unless 
+        the file is saved first. The file windows are as follows:</p>
+        <ul>
+        <li><p>Output</p>
+        <p>  This is where the output file is shown, if no output file is selected the results
+          are shown here anyway, but are not saved to any file.</p>
+        </li>
+        <li><p>Notemapper</p>
+        <p>  Here the selected CSV Notemapper file is shown if the CSV Notemapper is used.</p>
+        </li>
+        <li><p>DSL</p>
+        <p>  Here the selected DSL file is shown, and where it can be modified directly. In
+          future versions there will be built-in highlighting and typechecking available 
+          here.</p>
+        </li>
+        </ul>
+        <a class="anchor" id="Output"></a>
+        <h2>Output Area</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_output.png">
+        </p>
+
+        <p>The Output section allows configuring output. The output can either be in CSV format,
+        where the output will be split into columns for each attribute in the actionset (as 
+        well as a few other columns), or in a basic format where the output is more verbose.
+        The output can also be directed to a file if desired.</p>
+        <a class="anchor" id="Generation"></a>
+        <h2>Generation Area</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_generation.png">
+        </p>
+
+        <p>The &#39;Generate&#39; button runs the program with the current settings.</p>
+        <a class="anchor" id="Information"></a>
+        <h2>Information Area</h2>
+        <p align="left">
+            <img style="border:2px solid #737373" src="../images/MFPG_GUI_information.png">
+        </p>
+
+        <p>The information area shows output information that is related to program execution
+        rather than the generated fingering position output. This could be things like 
+        program errors or logging information. The clear info clears the output info area.</p>
+      </div>
+    </div>
+  </body>
+</html>

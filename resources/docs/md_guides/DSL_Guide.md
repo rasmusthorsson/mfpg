@@ -8,7 +8,7 @@ A MFPG DSL file consists of five parts: **Output**, **Attributes**, **Strings**,
 generate fingering positions, the parts are defined in the above order and separated by their respective 
 names followed by a colon:
 
-    Output:
+   	Output:
         (Output is defined here)
     Attributes:
         (Attributes are defined here)
@@ -24,7 +24,6 @@ Output is a single word defining what type of output all Actions should have. Cu
 supported types are __int__ and __double__, referring to whether the output is to be an **integer**
 (whole number such as 1, 5, 23 etc.) or a **double** (number with decimals such as 0.4672, 231.2, 23.36783 
 etc).
-
 For example:
 
     Output: int
