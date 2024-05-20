@@ -9,13 +9,16 @@
   <body>
     <div class="topbar">
       <div class="menu">
-        <button class="btn">
+        <button style="width: 100%;" class="btn">
           <a href="/">Home</a>
         </button>
       </div>
       <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/guides/">Guides</a>
+        </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
-          Guides &#11183
+          &#11183
         </button>
         <div id="guides" div class="dropdown-menu">
           <div class="dropdown-content">
@@ -40,10 +43,12 @@
           </div>
         </div>
       </div>
-
       <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/links/">Links</a>
+        </button>
         <button onclick="dropLinksMenu()" class="dropbtn">
-          Links &#11183
+          &#11183
         </button>
         <div id="links" div class="dropdown-menu">
           <div class="dropdown-content">
@@ -56,33 +61,31 @@
       </div>
       
       <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/info/">Info</a> 
+        </button>
         <button onclick="dropInfoMenu()" class="dropbtn">
-          Info &#11183
+          &#11183
         </button>
         <div id="info" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
               Patch Notes
             </div>
-            <a href="/patch-notes/">Patch Notes</a>
+            <a href="/info/patch-notes/">Patch Notes</a>
           </div>
         </div>
       </div>
-
     </div>
-    <div class="quickbar">
-      <div class="quickbar-text">
-        Patch Notes
+    <div class="homemenu">
+      <div class="hometitle"> 
+        Info
       </div>
-    </div>
-    <div class="guidepage-index">
-    </div>
-    <div class="guidepage">
-      <div class="pagetitle">
+      <h1>
         Patch Notes
-      </div>
-      <div class="guidepage-text">
-        To be implemented.
+      </h1>
+      <div class="links">
+        <a href="#">Patch 0.1</a>
       </div>
     </div>
   </body>

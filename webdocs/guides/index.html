@@ -9,13 +9,16 @@
   <body>
     <div class="topbar">
       <div class="menu">
-        <button class="btn">
+        <button style="width: 100%;" class="btn">
           <a href="/">Home</a>
         </button>
       </div>
       <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/guides/">Guides</a>
+        </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
-          Guides &#11183
+          &#11183
         </button>
         <div id="guides" div class="dropdown-menu">
           <div class="dropdown-content">
@@ -42,8 +45,11 @@
       </div>
 
       <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/links/">Links</a>
+        </button>
         <button onclick="dropLinksMenu()" class="dropbtn">
-          Links &#11183
+          &#11183
         </button>
         <div id="links" div class="dropdown-menu">
           <div class="dropdown-content">
@@ -56,76 +62,66 @@
       </div>
       
       <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/info/">Info</a> 
+        </button>
         <button onclick="dropInfoMenu()" class="dropbtn">
-          Info &#11183
+          &#11183
         </button>
         <div id="info" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
               Patch Notes
             </div>
-            <a href="/patch-notes/">Patch Notes</a>
+            <a href="/info/patch-notes/">Patch Notes</a>
           </div>
         </div>
       </div>
-
     </div>
-    <div class="quickbar">
-      <div class="quickbar-text">
+    <div class="homemenu">
+      <div class="hometitle"> 
         Guides
       </div>
-        <a href="guiguide" class="quicklink">GUI</a>
-        <a href="cliguide" class="quicklink">CLI</a>
-        <a href="dslguide" class="quicklink">DSL</a>
-        <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
-        <a href="examples" class="quicklink">Examples</a>
-    </div>
-    <div class="guidepage-index">
-      Hello
-    </div>
-    <div class="guidepage">
-      <div class="guidepage-text">
-        <h1>
-          Available Guides
-        </h1>
-        <h2 id="ggh">
-          GUI Guide
-        </h2>
-        <p>
-          The <a href="guiguide">GUI Guide</a> gives a brief overview of the different 
-          GUI components and how to use them.
-        </p>
-        <h2>
-          CLI Guide
-        </h2>
-        <p>
-          The <a href="cliguide">CLI Guide</a> gives a brief overview of how to use 
-          the commandline interface and the various available options.
-        </p>
-        <h2>
-          DSL Guide
-        </h2>
-        <p>
-          The <a href="dslguide">DSL Guide</a> describes how to define MFPG DSL files.
-          A DSL file is an important component to customize fingering position 
-          generation.
-        </p>
-        <h2>
-          Notemap Builder Guide
-        </h2>
-        <p>
-          The <a href="notemapbuilderguide">Notemap Builder Guide</a> shows a few
-          small examples of how to define your attribute value calculations. These
-          attribute values are required for any attribute used in the DSL file.
-        </p>
-        <h2>
-          Examples
-        </h2>
-        <p>
-          The <a href="examples">Examples Guide</a> shows a few examples of how to
-          use the program as a whole.
-        </p>
+      <h1>
+        Available Guides
+      </h1>
+      <div class="links">
+        <a href="guiguide">GUI Guide</a>
       </div>
+      <p style="text-align: center;">
+        The <a href="guiguide">GUI Guide</a> gives a brief overview of the different 
+        GUI components and how to use them.
+      </p>
+      <div class="links">
+        <a href="cliguide">CLI Guide</a>
+      </div>
+      <p style="text-align: center;">
+        The <a href="cliguide">CLI Guide</a> gives a brief overview of how to use 
+        the commandline interface and the various available options.
+      </p>
+      <div class="links">
+        <a href="dslguide">DSL Guide</a>
+      </div>
+      <p style="text-align: center;">
+        The <a href="dslguide">DSL Guide</a> describes how to define MFPG DSL files.
+        A DSL file is an important component to customize fingering position 
+        generation.
+      </p>
+      <div class="links">
+        <a href="notemapbuilder">Notemap Builder Guide</a>
+      </div>
+      <p style="text-align: center;">
+        The <a href="notemapbuilder">Notemap Builder Guide</a> shows a few
+        small examples of how to define your attribute value calculations. These
+        attribute values are required for any attribute used in the DSL file.
+      </p>
+      <div class="links">
+        <a href="examples">Examples</a>
+      </div>
+      <p style="text-align: center;">
+        The <a href="examples">Examples Guide</a> shows a few examples of how to
+        use the program as a whole.
+      </p>
     </div>
   </body>
 </html>
