@@ -4,7 +4,7 @@
   background-color: #e5e5ff;
   border: 5px solid #909090;
   height: 64px;
-  width: 100%;
+  width: 99.2%;
   box-sizing: border-box;
   z-index: 2;
   top: 0px;
@@ -129,7 +129,7 @@
   border: 3px solid #b1b1b1;
   box-sizing: border-box;
   background-color: #f7f7f1;
-  width: 101.5%;
+  width: 100%;
   min-height: 1000px;
 }
 .hometitle {
