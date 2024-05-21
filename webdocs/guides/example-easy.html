@@ -1,0 +1,297 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href="/styles.css">
+<script type="text/javascript" src="/scripts.js"></script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button style="width: 100%;" class="btn">
+          <a href="/">Home</a>
+        </button>
+      </div>
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/guides/">Guides</a>
+        </button>
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="guiguide">GUI</a>
+            <a href="cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="dslguide">DSL</a>
+            <a href="notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="examples">Examples</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/links/">Links</a>
+        </button>
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/info/">Info</a> 
+        </button>
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Patch Notes
+            </div>
+            <a href="/info/patch-notes/">Patch Notes</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="quickbar">
+      <div class="quickbar-text">
+        Guides
+      </div>
+        <a href="guiguide" class="quicklink">GUI</a>
+        <a href="cliguide" class="quicklink">CLI</a>
+        <a href="dslguide" class="quicklink">DSL</a>
+        <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
+        <a href="examples" class="quicklink">Examples</a>
+    </div>
+    <div class="guidepage-index">
+    </div>
+    <div class="guidepage">
+      <div class="pagetitle">
+        A simple example of how to use MFPG
+      </div>
+      <div class="guidepage-text">
+        <h1>Example -- Easy</h1>
+        <p>
+          In this tutorial we show a simple example of how to use <b>MFPG</b> via the
+          <b>GUI</b>. If the <b>CLI</b> is the preferable interface, then this
+          tutorial should still be applicable, with the only changes being how the
+          different options are selected. For an overview on how these options are
+          selected, see the <a href="/guides/guiguide">GUI Guide</a> or the
+          <a href="/guides/cliguide/">CLI Guide</a> respectively.
+          <br><br>
+          For this example we will need three different files, the music
+          score in the form of a <b>musicXML</b> file (a file format most notation
+          programs allow as export formats), the <b>MFPG DSL</b> file, and a
+          <b>CSV Notemapper</b> file. These files and their purpose will be explained
+          in their respective sections, and in this tutorial we will be using premade
+          files taken from the 
+          <a href="https://github.com/rasmusthorsson/mfpg">GitHub repo</a>.
+        </p>
+        <h2>Configurations</h2>
+        <p>
+          When you start the <b>MFPG GUI</b> it looks for a file called
+          <i>.mfpg_configs.xml</i> in the current directory. Most likely, this file
+          is not present when you first run the program, and you will be asked whether
+          you want to create this file in the current directory. This file contains
+          information about stored <i>configurations</i>. a configuration is a 
+          selection of <b>GUI</b> settings, such as which output file is used or
+          whether the <b>DSL</b> or <b>Presets</b> is used as 
+          <i>Instrument Settings</i>. 
+          Almost any setting you can set in the <b>GUI</b> can be stored in a 
+          configuration. The purpose if this is to simplify usage when the <b>GUI</b>
+          is restarted or when different configurations are desired depending on
+          situation. 
+          <br><br>
+          New configurations can be temporarily created in the program
+          by using the <i>configs</i> menu at the top of the window, and selected
+          in the dropdown bar underneath. Note that creating a new configuration 
+          does <i>not</i> create a new <i>stored</i> configuration, and any new
+          configuration that is not stored will be deleted when the program is closed.
+          If no <i>.mfpg_configs.xml</i> file is found then storing and loading of
+          configurations is disabled. Temporary configurations can be removed by using
+          the <i>Remove Config</i> button underneath the configuration selection.
+          However, we will not be working with configurations in this tutorial. 
+        </p>
+        <h2>Notemapper</h2> 
+        <p>
+          Next we will discuss the <b>Notemapper</b>. The <b>Notemapper</b> is
+          a necessary user-defined component of the program which dictates all
+          physical <i>ways</i> to play each note on an instrument. This means that
+          the <b>Notemapper</b> will specify things like:
+          <br><br>
+          The <b>A 4</b> Note can be played on the <b>D-String</b> using 
+          <b>Finger 2</b> in <b>Hand Position 3</b>
+          <br><br>
+          However, since almost all notes can be played in multiple different 
+          <i>ways</i>, the same <b>Notemapper</b> would also specify:
+          <br><br>
+          The <b>A 4</b> Note can be played on the <b>A-String</b> using 
+          <b>Finger 0</b> in <b>Hand Position 0</b>
+          <br><br>
+          (Which specifies that <b>A 4</b> can be played on the open <b>A-String</b>)
+          <br>
+          This is repeated until all <i>ways</i> to play <i>all</i> playable notes
+          have been specified. There is no restriction on whether some of the values
+          are repeated in different specifications, the same <b>Notemapper</b> could
+          also say:
+          <br><br>
+          The <b>A 4</b> Note can be played on the <b>D-String</b> using 
+          <b>Finger 3</b> in <b>Hand Position 2</b>
+          <br><br>
+          The <b>Notemapper</b> will therefore limit which <i>physical attributes</i>
+          can be used in the <b>MFPG DSL</b> (see next section). In these examples, 
+          the <i>physical attributes</i> are <b>String</b>, <b>Finger</b>, and <b>
+          Hand Position</b>. These are the only attributes available in the premade
+          <b>Notemapper</b> we are going to use. 
+          <br><br>
+          To select this <b>Notemapper</b> we will first need to download the CSV
+          file from the <a href="https://github.com/rasmusthorsson/mfpg">Github
+          repo</a> found under the <i>'resources/dsl_files/'</i> directory called
+          <b>BasicNoteMapper.csv</b>. Alternatively, it can be downloaded by clicking
+          <a href="/files/BasicNoteMapper.csv" target="_blank">here</a>. This file is
+          then used in the <b>GUI</b> by selecting <b>CSV Notemapper</b> under 
+          <i>Notemapper Settings</i>, and then selecting the file in the file selector
+          <i>CSV File</i> underneath.
+        </p>
+        <h2>Instrument and Actionset</h2>
+        <p>
+          For this section we will be using the <b>MFPG DSL</b>. In order for the
+          program know which notes can be played on which strings of the instrument, 
+          it must be told the specifics of the instrument by the user. We must also
+          define what is called an <b>Actionset</b> which will contain the
+          preferences of the user when it comes to deciding which fingering position
+          is superior when there is a choice between multiple fingering positions when
+          playing a note. We are going to start with a premade <b>MFPG DSL</b> file
+          and make some adjustments. In order to get an understanding on how the 
+          <b>MFPG DSL</b> files are written and the syntax of the <b>DSL</b> you
+          should read the <a href="/guides/dslguide">DSL Guide</a>.
+          <br><br>
+          The <b>MFPG DSL</b> file we will use contains a very basic actionset, 
+          the file can be found in the 
+          <a href="https://github.com/rasmusthorsson/mfpg">GitHub repo</a> in the
+          <i>'resources/dsl_files/'</i> directory named 
+          <b>DSL_test_configuration_1.mfpg
+          </b> or be downloaded <a href="/files/BasicDSL.mfpg" target="_blank">here
+          </a>. Once the file
+          has been downloaded the file can be selected by switching the <i>
+          Instrument Settings</i> to <b>DSL File</b> and then selecting the file
+          in the file selector underneath. Before we make any modifications or 
+          considerations of the <b>MFPG DSL</b> file, let us set up the rest of the
+          settings to make it easier to test the modifications we make later on.
+        </p>
+        <h2>Score selection and other tidbits</h2>
+        <p>
+        We will be using a test case from the 
+        <a href="https://github.com/rasmusthorsson/mfpg">GitHub repo</a> found in the
+        directory <i>'tests/cases/'</i>, we will use the <b>A_W.xml</b> test case (
+        which can also be downloaded directly 
+        <a href="/files/A_W.xml" target="_blank">here</a>.).
+        This file can then be selected as a target using the <i>file</i> menu at the
+        top of the window. 
+        <br><br>
+        We also have the option of selecting the solver. This option is likely to be
+        moved to some hidden advanced section as there is effectively no reason to
+        use any solver but the shortest path one currently, so that is the one we will
+        use. The two optimization checkboxes should also be used, as they improve 
+        performance of the solver.
+        <br><br>
+        Next, we can select whether we want the output to be written to a file or 
+        just written directly to the <i>Output</i> tab in the <i>files</i> window
+        in the middle. If a file is selected the file will instead be shown in the
+        <i>Output</i> tab. We will not select an output file for this example.
+        Finally, we can also select the type of output we want to see, currently only
+        two options are available, a CSV output (<i>comma-separated values</i>) or a
+        direct output. The direct output is easier to read for a human, so we will
+        select that.
+        </p>
+        <h2>The current state of the DSL file</h2>
+        Here is an image of how the program looks like with the current selection.
+        <p align="left">
+            <img width="600px" height="500px" style="border:2px solid #737373" src="../images/example-easy-selection.png">
+        </p>
+        <p>
+        Now we can start considering the <b>DSL</b> relative to our preferences. We 
+        can see
+        the <b>DSL</b> file by selecting the <i>DSL</i> tab in the <i>files</i> 
+        window, where we can then make changes to the file. Note that no changes are
+        made until the file is saved using the buttons at the bottom of the <i>files
+        </i> window. Alternatively, this file can be modified using any text-editor
+        of your choice if you find it easier to do so, but then you must re-select
+        the file using the <b>DSL</b> filepicker after making any changes.
+        <br><br>
+        <i>Section is subject to change as the base DSL changes over time</i>
+        <br><br>
+        The first three parts of the <b>DSL</b> file are parts which we will not 
+        modify: 
+        <ul>
+          <li>The output of each action is an integer, the alternative would have it
+              be a double which is not something we are likely to need.
+          <li>The attribute 
+            declarations specify which attributes may be used in the actions section, 
+            we do not want to remove any of these, and cannot add any new since any 
+            new additions must also be part of the <b>Notemapper</b>.</li>
+          <li>The instrument declaration, this describes which notes belong to
+            which strings on the instrument. Since the <b>Notemapper</b> only supports
+            the violin currently, we can not add any new notes here. We are also not
+            interested in excluding any existing notes either.</li>
+        </ul>
+        The <b>DSL</b> file also contains this set of rules:
+        <ul>
+          <li>Two rules which define rests, one for going <i>from</i> a rest and one 
+              for going <i>to</i> a rest. This allows us to disable all other actions
+              if a rest occurs, since we do not need to apply any cost if coming from
+              or going to a rest. </li>
+          <li>We then have three rules, one for each of the three attributes, that
+              simply describe applying a cost equivalent to the distance between
+              the values of the two attributes across a transition.</li>
+          <li>Finally we have a specific rule for the <b>String</b> attribute which
+              states that if the difference between <b>String</b> values is greater 
+              than 1, the cost should be 100. This is done as crossing a string without
+              playing it is something to be avoided at any cost generally</li>
+        </ul>  
+        Finally there is a dependencies part which have a set of rules meant to
+        achieve two things:
+        <ul>
+          <li>The first eight statements ensure that if the transition is from or
+              to a rest, no other actions are considered. This means there is no cost
+              associated with transitioning from or to a rest.</li>
+          <li>The last statement defines that if we have a transition that crosses
+              more than 1 string, we disable the 'regular' string action and only run
+              the 'expensive' string action.
+        </ul>
+        From these definitions, we can surely make a few improvements and additions to
+        build a more effective and accurate actionset.
+        </p>
+        <h2>Making some changes</h2>
+        <p>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

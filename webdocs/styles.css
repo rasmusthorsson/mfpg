@@ -111,13 +111,28 @@
   color: #555555;
 }
 .dropbtn:hover {
-  background-color: #cfcfcf;
+  color: #8f8f8f;
 }
 .btn:hover {
-  background-color: #cfcfcf;
+}
+.btn a:hover {
+  color: #8f8f8f;
 }
 .show {
   display: block;
+}
+td {
+  border: 2px solid black;
+  text-align: center;
+}
+th {
+  border: 2px solid black;
+  min-width: 100px;
+}
+.center {
+  border-collapse: collapse;
+  margin-left: auto; 
+  margin-right: auto; 
 }
 .homemenu {
   float: left;
@@ -161,7 +176,7 @@
   background-color: #d1d1f1;
   border: 5px solid #414141;
   height: 90px;
-  width: 100%;
+  width: 99.2%;
   box-sizing: border-box;
   top: 64px;
   left: 0px;

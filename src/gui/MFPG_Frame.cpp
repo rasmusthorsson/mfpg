@@ -911,11 +911,17 @@ void MFPG_Frame::BTSaveastext(wxCommandEvent& event) {
 				wxMessageBox("Nothing to save in output");
 				return;
 			}
+			if (save_as_dialog.ShowModal() == wxID_OK) {
+				current_panel->output_text->SaveFile(save_as_dialog.GetPath());
+			}
 			break;
 		case 1:
 			if (!current_panel->notemapper_text->IsEnabled()) {
 				wxMessageBox("Nothing to save in notemapper CSV File");
 				return;
+			}
+			if (save_as_dialog.ShowModal() == wxID_OK) {
+				current_panel->notemapper_text->SaveFile(save_as_dialog.GetPath());
 			}
 			break;
 		case 2:
@@ -923,12 +929,12 @@ void MFPG_Frame::BTSaveastext(wxCommandEvent& event) {
 				wxMessageBox("Nothing to save in DSL File");
 				return;
 			}
+			if (save_as_dialog.ShowModal() == wxID_OK) {
+				current_panel->dsl_text->SaveFile(save_as_dialog.GetPath());
+			}
 			break;
 		default:
 			break;
-	}
-	if (save_as_dialog.ShowModal() == wxID_OK) {
-		current_panel->output_text->SaveFile(save_as_dialog.GetPath());
 	}
 }
 
