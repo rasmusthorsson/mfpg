@@ -821,13 +821,11 @@ void MFPG_Frame::SetOutputToFile(Settings s) {
 	switch (s) {
 		case OUTPUT_TO_FILE:
 			current_panel->output_filepicker->Enable();
-			current_panel->output_text->Enable();
 			current_panel->output_to_file->SetValue(true);
 			current_panel->ST_OUTPUTTOFILE = OUTPUT_TO_FILE;
 			break;
 		default:
 			current_panel->output_filepicker->Disable();
-			current_panel->output_text->Disable();
 			current_panel->output_to_file->SetValue(false);
 			current_panel->ST_OUTPUTTOFILE = UNDEFINED;
 			break;

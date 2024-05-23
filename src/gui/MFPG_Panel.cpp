@@ -24,7 +24,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		notemap_box->SetSelection(0);
 		ST_NOTEMAPPER = NOTEMAPPER_BASIC;
 		
-		notemap_filepicker = XRCCTRL(*this, "ID_FPCSV", wxFilePickerCtrl);
+		notemap_filepicker = XRCCTRL(*this, "ID_FPCSVNoteMap", wxFilePickerCtrl);
 #ifdef STATICBOXSIZER
 		solver_area = XRCCTRL(*this, "SolverBox", wxStaticBoxSizer)->GetStaticBox();
 #else
@@ -43,15 +43,15 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		save_file_button = XRCCTRL(*this, "ID_BTSavetext", wxButton);
 		save_as_file_button = XRCCTRL(*this, "ID_BTSaveastext", wxButton);
 		//Manually adding pages since wxUiEditor can not
-		output_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(20, 10), wxSize(320, 520), 
+		output_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), wxSize(500, 520), 
 			wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY, wxDefaultValidator, 
 			"OUTPUT_TEXT");
-		output_text->Disable();
-		notemapper_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(20, 10), 
-				wxSize(320, 520), wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator,
+		output_text->Enable();
+		notemapper_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), 
+				wxSize(500, 520), wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator,
 				"NOTEMAPPER_TEXT");
 		notemapper_text->Disable();
-		dsl_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(20, 10), wxSize(320, 520), 
+		dsl_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), wxSize(500, 520), 
 				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator, "DSL_TEXT");
 		dsl_text->Disable();
 

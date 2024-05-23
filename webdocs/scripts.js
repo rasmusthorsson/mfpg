@@ -13,8 +13,17 @@ function dropInfoMenu() {
   document.getElementById("links").classList.remove("show");
   document.getElementById("guides").classList.remove("show");
 }
+function dropHiddenTextSol1() {
+  document.getElementById("sol-1").classList.toggle("show");
+}
+function dropHiddenTextSol2() {
+  document.getElementById("sol-2").classList.toggle("show");
+}
+function dropHiddenTextSol3() {
+  document.getElementById("sol-3").classList.toggle("show");
+}
 window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
+  if (!event.target.matches('.dropbtn') && !event.target.matches(".hiddenbutton")) {
     var dropdowns = document.getElementsByClassName("dropdown-menu");
     var i;
     for (i = 0; i < dropdowns.length; i++) {
