@@ -220,14 +220,14 @@ th {
   text-decoration: none;
   position: relative;
   font-size: 15px;
-  top: 10px;
+  padding-top: 10px;
   display: block;
   width: 100%;
 }
 .guidepage-index a.inner {
   position: relative;
+  padding-top: 0px;
   left: 10px;
-  top: 12px;
   font-size: 12px;
 }
 .guidepage-index a.inner-inner {
@@ -310,11 +310,10 @@ a.anchor {
   width: 100%;
 }
 .hidden {
-  float: left;
   position: relative;
   display: block;
   padding-bottom: 30px;
-  width: 95%;
+  width: 92%;
 }
 .hiddenbutton {
   position: relative;
@@ -326,6 +325,9 @@ a.anchor {
   border: none;
   cursor: pointer;
   font-family: serif;
+}
+.hiddenbutton:hover {
+  color: #616161;
 }
 .hiddentext {
   position: relative;

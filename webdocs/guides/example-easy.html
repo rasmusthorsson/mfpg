@@ -39,7 +39,7 @@
             <div class="dropdown-text">
               Tutorials
             </div> 
-            <a href="examples">Examples</a>
+            <a href="example-easy">Simple Example</a>
           </div>
         </div>
       </div>
@@ -87,9 +87,19 @@
         <a href="cliguide" class="quicklink">CLI</a>
         <a href="dslguide" class="quicklink">DSL</a>
         <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
-        <a href="examples" class="quicklink">Examples</a>
+        <a href="example-easy" class="quicklink">Simple Example</a>
     </div>
     <div class="guidepage-index">
+      <a href="#Configurations">Configurations</a>
+      <a href="#Notemapper">Notemapper</a>
+      <a href="#Instrument">Instrument and Actionset</a>
+      <a href="#Score">Score selection</a>
+      <a href="#Current">Current DSL File</a>
+      <a href="#Testing">Testing the Program</a>
+      <a href="#Changes">Making some changes</a>
+      <a href="#Ambiguous" class="inner">Ambiguous actions</a>
+      <a href="#Dependencies" class="inner">Dependencies?</a>
+      <a href="#Final" class="inner">Final Adjustments</a>
     </div>
     <div class="guidepage">
       <div class="pagetitle">
@@ -113,6 +123,7 @@
           files taken from the 
           <a href="https://github.com/rasmusthorsson/mfpg">GitHub repo</a>.
         </p>
+        <a class="anchor" id="Configurations"></a>
         <h2>Configurations</h2>
         <p>
           When you start the <b>MFPG GUI</b> it looks for a file called
@@ -138,6 +149,7 @@
           the <i>Remove Config</i> button underneath the configuration selection.
           However, we will not be working with configurations in this tutorial. 
         </p>
+        <a class="anchor" id="Notemapper"></a>
         <h2>Notemapper</h2> 
         <p>
           Next we will discuss the <b>Notemapper</b>. The <b>Notemapper</b> is
@@ -179,6 +191,7 @@
           <i>Notemapper Settings</i>, and then selecting the file in the file selector
           <i>CSV File</i> underneath.
         </p>
+        <a class="anchor" id="Instrument"></a>
         <h2>Instrument and Actionset</h2>
         <p>
           For this section we will be using the <b>MFPG DSL</b>. In order for the
@@ -205,6 +218,7 @@
           considerations of the <b>DSL</b> file, let us set up the rest of the
           settings to make it easier to test the modifications we make later on.
         </p>
+        <a class="anchor" id="Score"></a>
         <h2>Score selection and other tidbits</h2>
         <p>
         We will be using a test case from the 
@@ -230,6 +244,7 @@
         direct output. The direct output is easier to read for a human, so we will
         select that.
         </p>
+        <a class="anchor" id="Current"></a>
         <h2>The current state of the DSL file</h2>
         Here is an image of how the program looks like with the current selection.
         <p align="left">
@@ -251,7 +266,8 @@
         modify: 
         <ul>
           <li>The output of each action is an integer, the alternative would have it
-              be a double which is not something we are likely to need.
+              be a floating point value (number with decimals) which is not something 
+              we are going to need for this tutorial.
           <li>The attribute 
             declarations specify which attributes may be used in the actions section, 
             we do not want to remove any of these, and cannot add any new since any 
@@ -288,6 +304,7 @@
         From these definitions, we can surely make a few improvements and additions to
         build a more effective and accurate actionset.
         </p>
+        <a class="anchor" id="Testing"></a>
         <h2>Testing the program</h2>
         While this actionset is not quite what we have in mind for our final setup, 
         we should test out the program before we move on. In order to try it out, 
@@ -300,6 +317,8 @@
         you can switch the output to be <i>CSV Output</i>, tick the <i>Output to File
         </i> checkbox, select an output file, generate, and then compare the file with
         <a href="/files/A_W_first_test.csv">this</a>.
+        </p>
+        <a class="anchor" id="Changes"></a>
         <h2>Making some changes</h2>
         <p>
         With the program confirmed to work as intended, we can now look at making some
@@ -316,7 +335,10 @@
         captures our
         preferences very well, we have a very effective tool for easily generating
         new and accurate fingering position sequences.
-        <h3>Ambigouos actions</h3>
+        </p>
+        <a class="anchor" id="Ambiguous"></a>
+        <h3>Ambiguous actions</h3>
+        <p>
         <i>When <b>rules</b> are written in the <b>DSL</b> file I use the word 
           <b>action</b>
           instead, this is merely a semantic and they are effectively interchangable.
@@ -349,7 +371,7 @@
         switching to one hand position above or below the current one and switching
         finger. To achieve this we can look at the hand position action:
         <p align="center">
-        <code>HP = HAND_POSITION - HAND_POSITION != 0 : HAND_POSITION - HAND_POSITION (true),</code>
+        <code>HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS (true),</code>
         </p>
         Here we are still interested in preserving the scaling severity where the
         cost increases as the difference in hand position gets larger and larger. We
@@ -365,9 +387,10 @@
         going to go with the second option, and we will deal with large hand
         position transitions with a different action later.
         <p align="center">
-        <code>HP = HAND_POSITION - HAND_POSITION != 0 : HAND_POSITION - HAND_POSITION + 1 (true),</code>
+        <code>HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS + 1 (true),</code>
         </p>
         </p>
+        <a class="anchor" id="Dependencies"></a>
         <h3>Dependencies?</h3>
         <p>
         As discussed in an earlier section, our string action, <b>ST</b>, is only ever
@@ -387,7 +410,7 @@
         <p align="center">
         <code>N_FI = FINGER - FINGER == 0 : 0 (true),</code>
         <br>
-        <code>ST = STRING - STRING == 1 : 1 (false),</code>
+        <code>ST = STRING - STRING == 1 : 1 (false);</code>
         <br>
         <code>ST N_FI true,</code>
         </p>
@@ -420,7 +443,7 @@
         two dependencies:
         <p align="center">
         <code>N_FI REST_F false,</code>
-        <br><br>
+        <br>
         <code>N_FI REST_T false,</code>
         </p>
         And finally we can remove this dependency: 
@@ -430,6 +453,7 @@
         As it disables the <b>ST</b> action if the <b>ST_NR</b> action occurs and 
         since they are now exclusive to eachother this dependency is no longer needed.
         </p>
+        <a class="anchor" id="Final"></a>
         <h3>Final Adjustments</h3>
         <p>
         To finalize our <b>DSL</b> file we will add three more rules, these will be
@@ -442,7 +466,7 @@
           than 3 positions</h4>
         <div class="hidden">
           <button onclick="dropHiddenTextSol1()" class="hiddenbutton">
-            Solution &#8681
+            Solution &#11167
           </button>
           <div id="sol-1" class="hiddentext">
             For this rule we want to check the difference in hand positions, this can
@@ -451,15 +475,15 @@
             The cost we apply depends on how severely we want to punish this 
             transition, I will use a constant cost of 2:
             <p align="center">
-            <code>3_HP = HAND_POSITION - HAND_POSITION > 3 : 2 (true),</code>
+            <code>THREE_HP = HAND_POS - HAND_POS > 3 : 2 (true),</code>
             </p>
             This action works in conjunction with the <b>HP</b> action, thus the only
             dependency we need to consider is disabling this new action before or
             after a rest:
             <p align="center">
-            <code>3_HP REST_T false,</code>
-            <br><br>
-            <code>3_HP REST_F false,</code>
+            <code>THREE_HP REST_T false,</code>
+            <br>
+            <code>THREE_HP REST_F false,</code>
             </p>
           </div>
         </div>
@@ -471,7 +495,7 @@
         </h4>
         <div class="hidden">
           <button onclick="dropHiddenTextSol2()" class="hiddenbutton">
-            Solution &#8681
+            Solution &#11167
           </button>
           <div id="sol-2" class="hiddentext">
             Here we want to check whether the <i>next</i> hand position is greater
@@ -479,7 +503,7 @@
             constant cost, this will work to attempt to keep the hand position low
             but allow for higher hand positions when there are no good alternatives:
             <p align="center">
-            <code>HIGH_HP = to HAND_POSITION > 5 : 3 (true),</code>
+            <code>HIGH_HP = to HAND_POS > 5 : 3 (true),</code>
             </p>
             Notably, we will not need any dependencies, not even the rest ones we 
             have for all other actions, since the condition is exclusive to
@@ -498,16 +522,39 @@
           strings, think about how the open string is represented above.</h4>
         <div class="hidden">
           <button onclick="dropHiddenTextSol3()" class="hiddenbutton">
-            Solution &#8681
+            Solution &#11167
           </button>
           <div id="sol-3" class="hiddentext">
-            links
+            We will add a check for finger and hand position to check against 0. We
+            then add a constant cost of 10, but this is variable based on preference.
+            <p align="center">
+            <code>OPEN_ST = to FINGER == 0 && to HAND_POS == 0 : 10 (true),</code>
+            </p>
+            The placement of this action is important, remember that actions are 
+            evaluated in the order they are placed, and we want to disable any 
+            clashing finger and hand position actions.
+            <p align="center">
+            <code>ST OPEN_ST false,</code>
+            <br>
+            <code>ST_NR OPEN_ST false,</code>
+            <br>
+            <code>THREE_HP OPEN_ST false,</code>
+            <br>
+            <code>HP OPEN_ST false,</code>
+            </p>
+            This new action must be placed above any of the actions in the above
+            dependency declaration.
           </div>
         </div>
         The most important thing for these tasks is to solve the conditions for the
         actions. The costs of the actions are very subjective, and it is for that 
         reason the <b>DSL</b> even exists, to allow each individual to find fingering
-        position sequences that fit <i>their</i> preferences.
+        position sequences that fit their preferences. The complete final <b>DSL</b>
+        file with all the changes made in this tutorial can be found 
+        <a href="/files/SimpleExampleDSL.mfpg" target="_blank">here</a>. The output
+        (in <b>CSV</b> format, see the <a href="#Testing">Testing the program
+        section</a>) when generated with the new DSL file can be found 
+        <a href="/files/A_W_final_test.csv" target="_blank">here</a>.
         </p>
       </div>
     </div>

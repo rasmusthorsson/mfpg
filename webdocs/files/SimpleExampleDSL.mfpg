@@ -1,0 +1,41 @@
+Output: int 
+
+Attributes:
+	(i) STRING ,
+	(i) FINGER ,
+	(i) HAND_POS ;
+
+Strings:
+	1 : G 3 -> Gs 5 , 
+	2 : D 4 -> Ds 6 , 
+	3 : A 4 -> As 6 , 
+	4 : E 5 -> F 7 ;
+
+Actions:
+REST_F = this STRING == 0 && this FINGER == 0 && this HAND_POS == 0 : 0 (true) ,
+REST_T = to STRING == 0 && to FINGER == 0 && to HAND_POS == 0 : 0 (true) , 
+OPEN_ST = to FINGER == 0 && to HAND_POS == 0 : 10 (true), 
+HIGH_HP = to HAND_POS > 5 : 3 (true), 
+THREE_HP = HAND_POS - HAND_POS > 3 : 2 (true),
+HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS + 1 (true), 
+FI = FINGER - FINGER != 0 : 1 (true), 
+ST_NR = STRING - STRING >= 2 : FINGER - FINGER + 100 (true) , 
+N_FI = FINGER - FINGER == 0 : 0 (true), 
+ST = STRING - STRING == 1 : 1 (false);
+
+Dependencies:
+ST N_FI true, 
+ST OPEN_ST false,
+ST_NR OPEN_ST false,
+THREE_HP OPEN_ST false,
+HP OPEN_ST false, 
+HP REST_F false , 
+FI REST_F false ,
+ST_NR REST_F false ,
+ST REST_F false ,
+HP REST_T false , 
+FI REST_T false ,
+ST_NR REST_T false ,
+ST REST_T false ,
+THREE_HP REST_T false,
+THREE_HP REST_F false;
