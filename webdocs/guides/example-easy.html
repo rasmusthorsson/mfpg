@@ -14,7 +14,7 @@
         </button>
       </div>
       <div class="menu">
-        <button style="width: 75%;" class="btn">
+        <button style="width: 75%;" class="btn-selected">
           <a href="/guides/">Guides</a>
         </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
@@ -71,9 +71,10 @@
         <div id="info" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
-              Patch Notes
+              Information
             </div>
             <a href="/info/patch-notes/">Patch Notes</a>
+            <a href="/info/faq">Frequently Asked Questions</a>
           </div>
         </div>
       </div>
@@ -83,20 +84,23 @@
       <div class="quickbar-text">
         Guides
       </div>
-        <a href="guiguide" class="quicklink">GUI</a>
-        <a href="cliguide" class="quicklink">CLI</a>
-        <a href="dslguide" class="quicklink">DSL</a>
-        <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
-        <a href="example-easy" class="quicklink">Simple Example</a>
+        <a href="guiguide">GUI</a>
+        <a href="cliguide">CLI</a>
+        <a href="dslguide">DSL</a>
+        <a href="notemapbuilder">Notemap Builder</a>
+        <a href="example-easy" style="color:#a111f1;">Simple Example</a>
     </div>
     <div class="guidepage-index">
       <a href="#Configurations">Configurations</a>
       <a href="#Notemapper">Notemapper</a>
       <a href="#Instrument">Instrument and Actionset</a>
-      <a href="#Score">Score selection</a>
+      <a href="#Tidbits">Other Settings</a>
+      <a href="#Score" class="inner">Score Selection</a>
+      <a href="#Solver" class="inner">Solver Selection</a>
+      <a href="#Output" class="inner">Output Selection</a>
       <a href="#Current">Current DSL File</a>
-      <a href="#Testing">Testing the Program</a>
-      <a href="#Changes">Making some changes</a>
+      <a href="#Testing">Testing</a>
+      <a href="#Changes">Making changes</a>
       <a href="#Ambiguous" class="inner">Ambiguous actions</a>
       <a href="#Dependencies" class="inner">Dependencies?</a>
       <a href="#Final" class="inner">Final Adjustments</a>
@@ -109,7 +113,7 @@
         <h1>Example -- Easy</h1>
         <p>
           In this tutorial we show a simple example of how to use <b>MFPG</b> via the
-          <b>GUI</b>. If the <b>CLI</b> is the preferable interface, then this
+          <b>GUI</b>. If you would prefer to use the <b>CLI</b>, then this
           tutorial should still be applicable, with the only changes being how the
           different options are selected. For an overview on how these options are
           selected, see the <a href="/guides/guiguide">GUI Guide</a> or the
@@ -117,7 +121,7 @@
           <br><br>
           For this example we will need three different files, the music
           score in the form of a <b>musicXML</b> file (a file format most notation
-          programs allow as export formats), the <b>MFPG DSL</b> file, and a
+          programs allow as export format), the <b>MFPG DSL</b> file, and a
           <b>CSV Notemapper</b> file. These files and their purpose will be explained
           in their respective sections, and in this tutorial we will be using premade
           files taken from the 
@@ -126,28 +130,25 @@
         <a class="anchor" id="Configurations"></a>
         <h2>Configurations</h2>
         <p>
-          When you start the <b>MFPG GUI</b> it looks for a file called
+          When you first launch the <b>MFPG GUI</b>, it looks for a file named
           <i>.mfpg_configs.xml</i> in the current directory. Most likely, this file
           is not present when you first run the program, and you will be asked whether
-          you want to create this file in the current directory. This file contains
-          information about stored <i>configurations</i>. a configuration is a 
-          selection of <b>GUI</b> settings, such as which output file is used or
-          whether the <b>DSL</b> file or <b>Presets</b> is used as 
-          <i>Instrument Settings</i>. 
-          Almost any setting you can set in the <b>GUI</b> can be stored in a 
-          configuration. The purpose if this is to simplify usage when the <b>GUI</b>
-          is restarted or when different configurations are desired depending on
-          situation. 
+          you want to create this file in the current directory. This file is used to
+          stored information about saved <i>configs</i>. A config is a selection of
+          <b>GUI</b> settings, almost any setting you can set in the <b>GUI</b> can 
+          be saved as a config. The purpose of configs is to simplify usage when the 
+          <b>GUI</b> is restarted or to make it easy to switch between different 
+          configs are desired depending on situation. 
           <br><br>
-          New configurations can be temporarily created in the program
+          New configs can be temporarily created in the program
           by using the <i>configs</i> menu at the top of the window, and selected
-          in the dropdown bar underneath. Note that creating a new configuration 
-          does <i>not</i> create a new <i>stored</i> configuration, and any new
-          configuration that is not stored will be deleted when the program is closed.
-          If no <i>.mfpg_configs.xml</i> file is found then storing and loading of
-          configurations is disabled. Temporary configurations can be removed by using
-          the <i>Remove Config</i> button underneath the configuration selection.
-          However, we will not be working with configurations in this tutorial. 
+          in the dropdown bar underneath. Note that creating a new config 
+          does <i>not</i> create a new <i>saved</i> config, and any new
+          config that is not saved will be deleted when the program is closed.
+          If no <i>.mfpg_configs.xml</i> file is found then saving and loading of
+          configs is disabled. Temporary configs can be removed by using
+          the <i>Remove Config</i> button underneath the config selection.
+          However, we will not be working with configs in this tutorial. 
         </p>
         <a class="anchor" id="Notemapper"></a>
         <h2>Notemapper</h2> 
@@ -205,7 +206,7 @@
           <b>MFPG DSL</b> files are written and the syntax of the <b>DSL</b> you
           should read the <a href="/guides/dslguide">DSL Guide</a>.
           <br><br>
-          The <b>DSL</b> file we will use contains a very basic actionset, 
+          The <b>DSL</b> file we will use contains a very basic action set, 
           the file can be found in the 
           <a href="https://github.com/rasmusthorsson/mfpg">GitHub repo</a> in the
           <i>'resources/dsl_files/'</i> directory named 
@@ -213,32 +214,42 @@
           </b> or be downloaded <a href="/files/BasicDSL.mfpg" target="_blank">here
           </a>. Once the file
           has been downloaded the file can be selected by switching the <i>
-            Instrument Settings</i> to <b>DSL</b> File and then selecting the file
-          in the file selector underneath. Before we make any modifications or 
-          considerations of the <b>DSL</b> file, let us set up the rest of the
+            Instrument Settings</i> to <i>DSL File</i> and then selecting the file
+          in the file selector underneath. Before we make any modifications to 
+          the <b>DSL</b> file, let us set up the rest of the
           settings to make it easier to test the modifications we make later on.
         </p>
+        <a class="anchor" id="Tidbits"></a>
+        <h2>Other Settings</h2>
+        <p>
+        </p>
         <a class="anchor" id="Score"></a>
-        <h2>Score selection and other tidbits</h2>
+        <h3>Score Selection</h3>
         <p>
         We will be using a test case from the 
         <a href="https://github.com/rasmusthorsson/mfpg">GitHub repo</a> found in the
-        directory <i>'tests/cases/'</i>, we will use the <b>A_W.xml</b> test case (
-        which can also be downloaded directly 
-        <a href="/files/A_W.xml" target="_blank">here</a>.).
+        directory <i>'tests/cases/'</i>, we will use the <b>A_W.xml</b> test case 
+        (which can also be downloaded directly 
+        <a href="/files/A_W.xml" download>here</a>).
         This file can then be selected as a target using the <i>file</i> menu at the
         top of the window. 
-        <br><br>
-        We also have the option of selecting the solver. This option is likely to be
-        moved to some hidden advanced section as there is effectively no reason to
-        use any solver but the shortest path one currently, so that is the one we will
-        use. The two optimization checkboxes should also be used, as they improve 
-        performance of the solver.
-        <br><br>
+        </p>
+        <a class="anchor" id="Solver"></a>
+        <h3>Solver Selection</h3>
+        <p>
+        We also have the option of selecting the solver. The only solver that gives a
+        correct output out of the two options is the <b>Shortest Path</b> solver, so
+        that is the one we are going to use. The two optimization checkboxes should 
+        also be used, as they improve performance of the solver.
+        </p>
+        <a class="anchor" id="Output"></a>
+        <h3>Output Selection</h3>
+        <p>
         Next, we can select whether we want the output to be written to a file or 
         just written directly to the <i>Output</i> tab in the <i>files</i> window
-        in the middle. If a file is selected the file will instead be shown in the
-        <i>Output</i> tab. We will not select an output file for this example.
+        in the middle. If a file is selected the file itself will instead be shown in 
+        the <i>Output</i> tab. We will not use an output file for this example, so we
+        uncheck the <i>Output To File</i> checkbox.
         Finally, we can also select the type of output we want to see, currently only
         two options are available, a CSV output (<i>comma-separated values</i>) or a
         direct output. The direct output is easier to read for a human, so we will
@@ -253,12 +264,13 @@
         <p>
         Now we can start considering the <b>DSL</b> file relative to our preferences. 
         We can see
-        the <b>DSL</b> file by selecting the <i>DSL</i> tab in the <i>files</i> 
+        the <b>DSL</b> file by selecting the <i>DSL tab</i> in the <i>files</i> 
         window, where we can then make changes to the file. Note that no changes are
         made until the file is saved using the buttons at the bottom of the <i>files
         </i> window. Alternatively, this file can be modified using any text-editor
         of your choice if you find it easier to do so, but then you must re-select
-        the file using the <b>DSL</b> filepicker after making any changes.
+        the file using the <b>DSL</b> filepicker to see any new changes in the 
+        <i>files</i> window.
         <br><br>
         <i>Section is subject to change as the base DSL file changes over time</i>
         <br><br>
@@ -266,38 +278,41 @@
         modify: 
         <ul>
           <li>The output of each action is an integer, the alternative would have it
-              be a floating point value (number with decimals) which is not something 
-              we are going to need for this tutorial.
+              be a double value (number with decimals) which is not something we are 
+              going to need for this tutorial.
           <li>The attribute 
             declarations specify which attributes may be used in the actions section, 
-            we do not want to remove any of these, and cannot add any new since any 
-            new additions must also be part of the <b>Notemapper</b>.</li>
+            we do not want to remove any of these. We also cannot add any more
+            attributes since any new additions must also be part of the 
+            <b>Notemapper</b>, and the <b>Notemapper</b> we are using for this 
+            tutorial only defines those three attributes.</li>
           <li>The instrument declaration, this describes which notes belong to
-            which strings on the instrument. Since the <b>Notemapper</b> only supports
-            the violin currently, we can not add any new notes here. We are also not
+            which strings on the instrument. Since the <b>Notemapper</b> we are using
+            is for the violin, we can not add any new notes here. We are also not
             interested in excluding any existing notes either.</li>
         </ul>
-        The <b>DSL</b> file also contains this set of rules:
+        The <b>DSL</b> file also contains these actions:
         <ul>
-          <li>Two rules which define rests, one for going <i>from</i> a rest and one 
+          <li>Two actions which define rests, one for going <i>from</i> a rest and one 
               for going <i>to</i> a rest. This allows us to disable all other actions
               if a rest occurs, since we do not need to apply any cost if coming from
               or going to a rest. </li>
-          <li>We then have three rules, one for each of the three attributes, that
-              simply describe applying a cost equivalent to the distance between
+          <li>We then have three more actions, one for each of the three attributes, 
+              that each apply a cost equivalent to the distance between
               the values of the two attributes across a transition.</li>
-          <li>Finally we have a specific rule for the <b>String</b> attribute which
+          <li>Finally we have a specific action for the <b>String</b> attribute which
               states that if the difference between <b>String</b> values is greater 
-              than 1, the cost should be 100. This is done as crossing a string without
-              playing it is something to be avoided at any cost generally</li>
+              than 1, the cost should be 100. This is done as crossing a string 
+              without playing it is something to be avoided at (almost) any cost.
+          </li>
         </ul>  
-        Finally there is a dependencies part which have a set of rules meant to
+        Finally there is a dependencies part which have a set of dependencies meant to
         achieve two things:
         <ul>
-          <li>The first eight statements ensure that if the transition is from or
+          <li>The first eight dependencies ensure that if the transition is from or
               to a rest, no other actions are considered. This means there is no cost
               associated with transitioning from or to a rest.</li>
-          <li>The last statement defines that if we have a transition that crosses
+          <li>The last dependency defines that if we have a transition that crosses
               more than 1 string, we disable the 'regular' string action and only run
               the 'expensive' string action.
         </ul>
@@ -322,39 +337,34 @@
         <h2>Making some changes</h2>
         <p>
         With the program confirmed to work as intended, we can now look at making some
-        changes to the <b>DSL</b> file improve the output. We have to remember that the
-        output is only <i>right</i> or <i>wrong</i> in relation to the <b>DSL</b> 
-        file. The <b>DSL</b> file in turn
+        changes to the <b>DSL</b> file to improve the output. We have to remember 
+        that the output is only <i>right</i> or <i>wrong</i> in relation to the 
+        <b>DSL</b> file. The <b>DSL</b> file in turn
         is merely a set of rules on how to evaluate a transition between notes. 
         Therefore, what we want to achieve with the <b>DSL</b> file is a set of rules 
         that mirror the rules <i>we</i> use when we figure out the next fingering 
         position
         manually. This means that writing a <b>DSL</b> file that perfectly represents 
-        our own preferences might require many further small modifications over time.
-        However, this also means that once we arrive at a <b>DSL</b> file that 
-        captures our
+        our own preferences is not trivial, and you will probably not get it 
+        completely right on the first attempt. However, this also means that once we 
+        arrive at a <b>DSL</b> file that captures our
         preferences very well, we have a very effective tool for easily generating
         new and accurate fingering position sequences.
         </p>
         <a class="anchor" id="Ambiguous"></a>
         <h3>Ambiguous actions</h3>
         <p>
-        <i>When <b>rules</b> are written in the <b>DSL</b> file I use the word 
-          <b>action</b>
-          instead, this is merely a semantic and they are effectively interchangable.
-        </i>
-        <br><br>
         Let us first consider the three 'regular' actions we have defined, namely the
         three actions <b>HP</b>, <b>FI</b>, and <b>ST</b>. These actions are very 
         simple (they were originally made to faciliate testing, so not much practical
-        thought was put behind them), and will each probably require modifications.
+        thought was put into them), and will each probably require modifications.
         The actions are defined using <i>'costs'</i>, but perhaps a more accurate way
         to to view them is <i>'rank'</i> or <i>'severity'</i>. Changing finger is 
         less <i>severe</i> than changing hand position, therefore we would like the
         actions to reflect this. Since the actions <b>FI</b> and <b>HP</b> are 
         currently equal we must change at least one of them. First, let us take a
         look at the finger action:
-        <p align="center">
+        <p class="code-p">
         <code>FI = FINGER - FINGER != 0 : FINGER - FINGER (true),</code>
         </p>
         A problem we can see here is that cost increases with the distance of the
@@ -364,13 +374,13 @@
         that the first case is considered more severe than the second case? I think
         they are more or less the same. We can realize this change by changing the 
         distance function of the action to be a constant 1:
-        <p align="center">
+        <p class="code-p">
         <code>FI = FINGER - FINGER != 0 : 1 (true),</code>
         </p>
         We also want to remove any ambiguity from when we have the choice between 
         switching to one hand position above or below the current one and switching
         finger. To achieve this we can look at the hand position action:
-        <p align="center">
+        <p class="code-p">
         <code>HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS (true),</code>
         </p>
         Here we are still interested in preserving the scaling severity where the
@@ -386,7 +396,7 @@
         decide which fits our ultimate idea of the <b>DSL</b> file best. Here we are 
         going to go with the second option, and we will deal with large hand
         position transitions with a different action later.
-        <p align="center">
+        <p class="code-p">
         <code>HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS + 1 (true),</code>
         </p>
         </p>
@@ -396,18 +406,19 @@
         As discussed in an earlier section, our string action, <b>ST</b>, is only ever
         active if there is a transition where we change from one string to an 
         adjacent string. Generally, switching to an adjacent string should probably
-        not incur any cost <i>if</i> we also switch finger. However, if we do 
+        not incur any cost <i>if</i> we also switch finger, it is more or less the
+        same difficulty level as just switching finger. However, if we do 
         <i>not</i> switch finger but also switch string, we might have a situation
-        that should incur some cost. To achieve this, we could change the <b>ST</b> 
-        action like so:
-        <p align="center">
+        that should incur some cost. To achieve this, we <i>could</i> change the 
+        <b>ST</b> action like this:
+        <p class="code-p">
         <code>ST = STRING - STRING == 1 && FINGER - FINGER == 0 : 1 (true),</code>
         </p>
         This considers two conditions which must both be true for the cost to be 
         applied: the string value <i>must</i> change by exactly 1, and the finger
         value <i>must not</i> change. There is another way to achieve this using
         dependencies however:
-        <p align="center">
+        <p class="code-p">
         <code>N_FI = FINGER - FINGER == 0 : 0 (true),</code>
         <br>
         <code>ST = STRING - STRING == 1 : 1 (false);</code>
@@ -429,10 +440,12 @@
         <br><br>
         While the second method might seem more convoluted and less intuitive, it 
         allows for more simplicitly when defining actions, and more flexibility 
-        overall. If we consider the already existing rest actions, namely <b>REST_F
+        overall. To understand what I mean by this, consider the already existing 
+        rest actions, namely <b>REST_F
         </b> and <b>REST_T</b>, we <i>could</i> have used the first method to achieve
-        the same effect by not using the dependencies and adding two clauses to each
-        other action which checks if the transition was from or to a rest. This could
+        the same effect by not using the dependencies and adding two clauses to 
+        <i>each</i>
+        other action which checks if the transition was from or to a rest. This would
         bloat the actions however, and even in this simple example we could end up
         with fairly large actions that become increasingly more difficult to reason
         about.
@@ -441,24 +454,24 @@
         use that in this tutorial, but it is good to make sure that you understand
         why they both achieve the same thing. For completeness sake we add these 
         two dependencies:
-        <p align="center">
+        <p class="code-p">
         <code>N_FI REST_F false,</code>
         <br>
         <code>N_FI REST_T false,</code>
         </p>
         And finally we can remove this dependency: 
-        <p align="center">
+        <p class="code-p">
         <code>ST ST_NR true,</code>
         </p>
         As it disables the <b>ST</b> action if the <b>ST_NR</b> action occurs and 
-        since they are now exclusive to eachother this dependency is no longer needed.
+        since these actions are now exclusive, this dependency is no longer needed.
         </p>
         <a class="anchor" id="Final"></a>
         <h3>Final Adjustments</h3>
         <p>
-        To finalize our <b>DSL</b> file we will add three more rules, these will be
-        written in plaintext and the solution hidden so you can attempt them on your
-        own first.
+        To finalize our <b>DSL</b> file we will add three more rules, the 
+        specifications will be written and the solution hidden so you can attempt 
+        them on your own first.
         <br><br>
         As we discussed in a previous section, it might make sense to punish larger
         hand position shifts. We should add a rule for this.
@@ -474,13 +487,13 @@
             this time we want to make sure the difference is <i>larger</i> than 3.
             The cost we apply depends on how severely we want to punish this 
             transition, I will use a constant cost of 2:
-            <p align="center">
+            <p class="code-p">
             <code>THREE_HP = HAND_POS - HAND_POS > 3 : 2 (true),</code>
             </p>
             This action works in conjunction with the <b>HP</b> action, thus the only
             dependency we need to consider is disabling this new action before or
             after a rest:
-            <p align="center">
+            <p class="code-p">
             <code>THREE_HP REST_T false,</code>
             <br>
             <code>THREE_HP REST_F false,</code>
@@ -490,8 +503,7 @@
         Next, as the playable area decreases the closer we get to the bridge of the
         violin with our playing hand, one could suggest that there should be a cost 
         associated with higher hand positions.
-        <h4>Task 2: Add a rule which applies a cost if the hand position is above 5,
-          this action should incur heavier punishments the higher the position gets.
+        <h4>Task 2: Add a rule which applies a cost if the hand position is above 5.
         </h4>
         <div class="hidden">
           <button onclick="dropHiddenTextSol2()" class="hiddenbutton">
@@ -502,24 +514,24 @@
             than 5. We do this with the <i>to</i> condition. We then apply a
             constant cost, this will work to attempt to keep the hand position low
             but allow for higher hand positions when there are no good alternatives:
-            <p align="center">
+            <p class="code-p">
             <code>HIGH_HP = to HAND_POS > 5 : 3 (true),</code>
             </p>
-            Notably, we will not need any dependencies, not even the rest ones we 
-            have for all other actions, since the condition is exclusive to
+            Notably, we will not need any dependencies, not even the <b>rest</b> ones 
+            we have for all other actions, since the condition is exclusive to
             the <b>REST_T</b> action (they cannot both occur). Additionally if we are 
             transitioning <i>from</i> a rest, we will still want to impose the 
-            penalty of a high hand position.
+            penalty on a high hand position.
           </div>
         </div>
         Finally, we would like to avoid playing on an open string unless other options
-        are very unfeasible. This task will also require some dependencies. An open
-        string is defined with the attributes: 
+        are very unfeasible. An open string is defined with the attributes: 
         <br><br>
         String = (1-4), Finger = 0, Hand Position = 0.
         <br><br>
         <h4>Task 3: Add a rule which applies a constant cost for transitions to open 
-          strings, think about how the open string is represented above.</h4>
+          strings, think about how the open string is represented above. The
+          solution for this task should include a few dependencies.</h4>
         <div class="hidden">
           <button onclick="dropHiddenTextSol3()" class="hiddenbutton">
             Solution &#11167
@@ -527,13 +539,19 @@
           <div id="sol-3" class="hiddentext">
             We will add a check for finger and hand position to check against 0. We
             then add a constant cost of 10, but this is variable based on preference.
-            <p align="center">
-            <code>OPEN_ST = to FINGER == 0 && to HAND_POS == 0 : 10 (true),</code>
+            <p class="code-p">
+            <code>OPEN_ST = to STRING > 0 && to FINGER == 0 && to HAND_POS == 0 : 10 (true),</code>
             </p>
+            The reason for not splitting this action into three actions and binding
+            them together with dependencies is that this action is very 
+            <i>specific</i> with its definition; individually, these three conditions
+            do not make sense, but the combination of the three define this action very
+            well.
+            <br><br>
             The placement of this action is important, remember that actions are 
             evaluated in the order they are placed, and we want to disable any 
             clashing finger and hand position actions.
-            <p align="center">
+            <p class="code-p">
             <code>ST OPEN_ST false,</code>
             <br>
             <code>ST_NR OPEN_ST false,</code>
@@ -543,7 +561,7 @@
             <code>HP OPEN_ST false,</code>
             </p>
             This new action must be placed above any of the actions in the above
-            dependency declaration.
+            dependency declaration. 
           </div>
         </div>
         The most important thing for these tasks is to solve the conditions for the

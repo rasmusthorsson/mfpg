@@ -9,7 +9,7 @@
   <body>
     <div class="topbar">
       <div class="menu">
-        <button style="width: 100%;" class="btn">
+        <button style="width: 100%;" class="btn-selected">
           <a href="/">Home</a>
         </button>
       </div>
@@ -71,9 +71,10 @@
         <div id="info" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
-              Patch Notes
+              Information
             </div>
             <a href="/info/patch-notes/">Patch Notes</a>
+            <a href="/info/faq">Frequently Asked Questions</a>
           </div>
         </div>
       </div>
@@ -91,7 +92,7 @@
         <h2>MFPG</h2>
       <div class="homemenu-p"> 
         <b>MFPG</b> (<i>Music Fingering Position Generator</i>) is a tool for 
-        automatically determining the sequence of fingering positions for a piece of
+        automatically generating a sequence of fingering positions for a piece of
         music for a bowed string instrument. When a sequence of fingering positions 
         is developed for a piece of music, it is almost always done individually by 
         the musician who is going to play it. While there are a few suggested 
@@ -99,12 +100,12 @@
         many personal preferences come into play. 
         <br><br>
         The problem itself arises from the fact that for many bowed string 
-        instruments there is an overlap across strings. A lot of notes can be played 
-        on several different strings. Therefore, when playing a note, the musician 
-        must select what string to play that note on. To make matters worse, since
-        the position of the hand when playing a note on a string can vary, along with
-        which finger is used to play said note, further choices need to be made about
-        <i>how</i> to play that note. 
+        instruments there is an overlap across strings. in many cases the same note 
+        can be played on several different strings. Therefore, when playing a note, 
+        the musician must select what string to play that note on. To make matters 
+        worse, the position of the hand and which finger is used when playing a note 
+        on a string can vary, so further choices need to be made about <i>how</i> to 
+        play that note. 
         <br><br>
         <b>MFPG</b> solves this problem by allowing the user to define their 
         preferences for developing a sequence of fingering positions, and then
@@ -114,19 +115,18 @@
       <div class="homemenu-p"> 
         As the previous section states, <b>MFPG</b> takes the preferences of a user
         and generates the sequence of fingering positions for them. But why could the
-        user not just do this themselves? The answer can be found when looking at the
-        problem from a more mathematical viewpoint. The issue of developing a 
+        user not just do this themself? The answer can be found when looking at the
+        problem from a more mathematical perspective. The issue of developing a 
         sequence of fingering positions can be simplified into the graph problem
         of finding the shortest path through a layered weighted 
         <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a>.
-        While there are a few good solutions to this problem from an algorithmic
-        perspective, such as using 
+        A problem of which has many known solutions, such as using 
         <a href="https://en.wikipedia.org/wiki/Topological_sorting">
           Topological Sorting
         </a>.
         <br><br>
         However, this is not how anyone who is figuring out a sequence for fingering 
-        positions actually calculates the sequence. This is instead generally done
+        positions actually determines the sequence. This is instead generally done
         using some form of a <i>greedy</i> algorithm, an algorithm that effectively
         only concerns itself with the near future and does not consider the far 
         reaching consequences further along the music piece. This can either lead to
@@ -139,42 +139,43 @@
         a shortest path algorithm on a constructed graph based on the music piece
         and the preferences specified by the user. This should then find candidates
         of sequences which fit the users preferences, without those earlier mentioned
-        'acceptable' concessions. Even if a musician were to learn to use a short 
-        path algorithm to solve this problem, it would still take far longer and be 
-        far more tedious than letting a computer do it, since the preferences are 
-        usually well defined. 
+        'acceptable' concessions. Even if a musician were to learn to use a shortest 
+        path algorithm to manually solve this problem, it would still take far longer 
+        and be far more tedious than letting a computer do it. 
       </div>
         <h2>MFPG Interfaces</h2>
       <div class="homemenu-p"> 
       There are two interfaces for using <b>MFPG</b>: The <b>CLI</b> (<i>command-line 
       interface</i>) and the <b>GUI</b> (<i>graphical user interface</i>). The
       <b>CLI</b> a text-based interface (currently only tested using bash), while the
-      <b>GUI</b> is a graphical interface and probably the preferred interface in
+      <b>GUI</b> is a graphical interface and is usually the preferred interface in
       most cases. 
       </div>
         <h2>Using MFPG</h2>
       <div class="homemenu-p"> 
       For general usage, <b>MFPG</b> should be used using the <b>MFPG DSL</b> 
       (<i>Domain-specific Language</i>) which is intended as a <i>relatively</i> 
-      simple way to descibe the preferences of the musician. There is a specific page 
-      with a <a href="/guides/dslguide/">guide</a> on how to write <b>MFPG DSL</b> 
+      simple way to descibe the preferences of the musician. There is a dedicated page 
+      with a <a href="/guides/dslguide">guide</a> on how to write <b>MFPG DSL</b> 
       files. This should also generally be used in conjunction with a 
       <b>CSV Notemapper</b> (<i>comma-separated value Notemapper</i>) file. 
       <br><br>
       The <b>CSV Notemapper</b> file
-      is trickier to construct than the <b>MFPG DSL</b> file. It contains all the 
-      information about the physical attributes of all playable notes. This means
+      is trickier to construct than the <b>MFPG DSL</b> file, however a pre-built
+      <b>CSV Notemapper</b> file has already been created which contains 
+      many different <i>attributes</i> that a user could use. It contains all the 
+      information about the attributes of all playable notes. This means
       that for every playable note for a specific instrument, the <b>CSV</b> file
-      contains all <i>ways</i> to play that note. An example on using the 
+      contains all <i>ways</i> to play that note. An example on how to use the 
       <b>DSL</b> and the <b>CSV Notemapper</b> can be found 
-      <a href="#">here</a>.
+      <a href="guides/example-easy">here</a>.
       </div>
         <h1>Guides and Tutorials</h1>
       <div class="homemenu-p"> 
-        The guides available are:
+        Here is a list of available guides.
         <ul>
         <li><a href="guides/guiguide">The GUI Guide</a>: a guide on what the 
-          different parts of the graphical user interface does.</li>
+          different parts of the graphical user interface do.</li>
         <li><a href="guides/cliguide">The CLI Guide</a>: a short guide on what
           the different command-line interface options do.</li>
         <li><a href="guides/dslguide">The DSL Guide</a>: a guide/tutorial on
@@ -188,6 +189,11 @@
           simple tutorial on how to use the program.</li>
         </ul>
       </div>
+        <h1>Other Information</h1>
+        <ul>
+        <li><a href="/info/patch-notes/">Patch Notes</a>: A list of patch notes.</li>
+        <li><a href="/info/faq">F.A.Q</a>: Frequently Asked Questions.</li>
+        </ul>
     </div>
   </body>
 </html>

@@ -61,6 +61,6 @@ note number, note, string, finger, hp, cost, combinations
 60,Gs_4,2,3,1,1,7
 61,E_4,2,1,1,1,5
 62,Fs_4,2,2,1,0,6
-63,Fs_4,2,2,1,10,6
-64,REST,0,0,0,10,1
+63,Fs_4,2,2,1,0,6
+64,REST,0,0,0,0,1
 65,REST,0,0,0,-1,1

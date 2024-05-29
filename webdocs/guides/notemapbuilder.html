@@ -14,7 +14,7 @@
         </button>
       </div>
       <div class="menu">
-        <button style="width: 75%;" class="btn">
+        <button style="width: 75%;" class="btn-selected">
           <a href="/guides/">Guides</a>
         </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
@@ -71,9 +71,10 @@
         <div id="info" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
-              Patch Notes
+              Information
             </div>
             <a href="/info/patch-notes/">Patch Notes</a>
+            <a href="/info/faq">Frequently Asked Questions</a>
           </div>
         </div>
       </div>
@@ -84,11 +85,11 @@
       <div class="quickbar-text">
         Guides
       </div>
-        <a href="guiguide" class="quicklink">GUI</a>
-        <a href="cliguide" class="quicklink">CLI</a>
-        <a href="dslguide" class="quicklink">DSL</a>
-        <a href="notemapbuilder" class="quicklink">Notemap Builder</a>
-        <a href="example-easy" class="quicklink">Simple Example</a>
+        <a href="guiguide">GUI</a>
+        <a href="cliguide">CLI</a>
+        <a href="dslguide">DSL</a>
+        <a href="notemapbuilder" style="color:#a111f1;">Notemap Builder</a>
+        <a href="example-easy">Simple Example</a>
     </div>
     <div class="guidepage-index">
       <a href="#Attributes">Attributes</a>
@@ -104,32 +105,31 @@
       </div>
       <div class="guidepage-text">
         <h1>CSV Note Mapper File Generator</h1>
-        <p>In order to use physical attributes in actionset definitions via the DSL these 
+        <p>In order to use physical attributes in action set definitions via the <b>DSL</b> (or even with a preset) these 
         attributes must be mapped to notes. This guide gives a brief overview on how generate
         CSV files with mappings from physical attributes to notes such that they can be used
         in the DSL.</p>
         <p><strong>This is an advanced section and requires some knowledge of programming</strong></p>
         <a class="anchor" id="Attributes"></a>
         <h1>Attributes</h1>
-        <p>An <strong>Attribute</strong> is some physical aspect of a <em>way</em> to play a note, for example every
-        note is played on a string (or precisely played on no string). We could thus define
+        <p>A <strong>Phyiscal Attribute</strong> is some physical aspect of a way to play a note. For 
+        example, every note is played on a string, so we could define
         <strong>STRING</strong> as an attribute. Therefore if
         a note is played on the D-String on a violin, you would have an attribute value for 
-        that exact way of playing that note as <em>This way to play the note is on String 2</em>. 
+        that way of playing that note as: "<em>This note can be played on String 2</em>". 
         This allows us to define multiple ways of playing the same note by differentiating the 
-        ways that note is played. This also allows us to reason about transitions between 
+        way that note is played. This also allows us to reason about transitions between 
         ways of playing notes in a more concrete manner and assign <em>costs</em> to these 
-        transitions. </p>
-        <p>To <strong>map</strong> a list of attributes to a note means to specify that <em>Note x can be played
+        transitions. </p> <p>To <strong>map</strong> a list of attributes to a note means to specify that 
+        <em>Note x can be played
         with attribute values: a, b, c ...</em>. These mappings are then used when the program
-        is calculating the most effective way to play a piece of music. The mappings define
-        the possible phyiscal ways to play a note, and how that physical way looks.</p>
+        is calculating the most effective way to play a piece of music.</p>
         <a class="anchor" id="Existing"></a>
         <h2>Existing Attributes</h2>
         <p>Currently a few different attributes have been mapped for the violin in the default
         CSV file available:</p>
         <ul>
-        <li>String: The string being played, 0-4.</li>
+        <li>String: The string being played, 1-4.</li>
         <li>Finger: The finger used to play the note, 0-4.</li>
         <li>Hand Position: The position of the hand when playing the note: 1-12.</li>
         </ul>
@@ -147,10 +147,10 @@
         <h2>Defining Attributes</h2>
         <p>Attributes should often be 
         defined in relation to other attributes. For example, in the previous section the
-        two examples of the G 4 mappings are not random, the increase in the value of the
+        two examples of the <b>G 4</b> mappings are not random, the increase in the value of the
         <strong>FINGER</strong> attribute from 3 to 4 is synchronized with the decrease in the value of the
         <strong>HAND_POS</strong> attribute from 4 to 3. This is due to the relation between the two 
-        attributes: in reality, the G 4 note when played on the same string will be played
+        attributes: in reality, the <b>G 4</b> note when played on the same string will be played
         in the same location on that string, but the hand can move depending on which position
         is more beneficial in regards to previous or subsequent notes. Therefore we consider
         every possible hand position for that note on that string, and subsequently the finger
@@ -164,7 +164,7 @@
         <p>We can here see that the new distance attribute does not seem to have any direct 
         relation to the hand position or the finger attributes respectively, but could 
         possibly relate to their combined values. For example, if you consider the same 
-        finger and hand position values but for string 4, you would have a similar distance 
+        finger and hand position values but for string 4, you would have the same distance 
         value.</p>
         <a class="anchor" id="Developing"></a>
         <h2>Developing new Attribute definitions</h2>
@@ -201,8 +201,9 @@
         <p><strong>Only tested on Linux</strong></p>
         <p>Once the attribute addition is implemented you need to compile the code (only the 
         files in <strong>resources/csv_note_map_builder/</strong> need to be compiled.). This can be done
-        by simply running <strong>make</strong> in the directory. If you do not want/can not use <strong>make</strong> 
-        you will need to manually compile the files using a C++ compiler of your choice. With
+        by running <strong>make</strong> in the earlier mentioned directory. If you do not want/can not use 
+        <strong>make</strong> 
+        you will need to manually compile the files using a C++ compiler of your choice.</p><p> With
         the program compiled you can then execute the program with a file name as an
         argument to direct the output. The output CSV file (if built correctly) can then
         be used as input to the CLI or the GUI main program using the CSV Notemapper. With

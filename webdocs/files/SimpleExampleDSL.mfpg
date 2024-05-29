@@ -14,7 +14,7 @@ Strings:
 Actions:
 REST_F = this STRING == 0 && this FINGER == 0 && this HAND_POS == 0 : 0 (true) ,
 REST_T = to STRING == 0 && to FINGER == 0 && to HAND_POS == 0 : 0 (true) , 
-OPEN_ST = to FINGER == 0 && to HAND_POS == 0 : 10 (true), 
+OPEN_ST = to STRING > 0 && to FINGER == 0 && to HAND_POS == 0 : 10 (true), 
 HIGH_HP = to HAND_POS > 5 : 3 (true), 
 THREE_HP = HAND_POS - HAND_POS > 3 : 2 (true),
 HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS + 1 (true), 
