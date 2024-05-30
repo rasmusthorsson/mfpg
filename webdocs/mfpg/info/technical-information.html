@@ -1,0 +1,117 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button style="width: 100%;" class="btn">
+          <a href="/mfpg/">Home</a>
+        </button>
+      </div>
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/guides/">Guides</a>
+        </button>
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
+          </div>
+        </div>
+      </div>
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/links/">Links</a>
+        </button>
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button style="width: 75%;" class="btn-selected">
+          <a href="/mfpg/info/">Info</a> 
+        </button>
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Information
+            </div>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/technical-information">Technical Information</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="homemenu">
+      <div class="hometitle"> 
+        Technical Information
+      </div>
+      <h1>A Brief overview of how MFPG is implemented</h1>
+      <div class="homemenu-p">
+        The program works by constructing a layered weighted DAG by taking the score 
+        and constructing a linked list (<i>layerlist</i>) of <i>layers</i>. Each 
+        layer represents one
+        of the notes in the score and they are linked in the same order as the in the
+        score. Each layer in the linked list is then combined with the <i>Notemapper
+        </i> to copy all <i>Physical Note Representations</i> (PNRs) for the note that
+        the layer represents. Once the layers are all populated with PNRs, the 
+        linked list is combined with the <i>ActionSet</i> to construct the 
+        <i>Transition Matrices</i> between two connected layers. This transition
+        matrix calculates the transition cost from every PNR in the first layer 
+        to every PNR in the second layer. This process is repeated for each layer in 
+        the layerlist. Once this is completed, the graph is complete (represented
+        as the layerlist). After this, the shortest path through the graph is found 
+        using a shortest path algorithm. 
+        <br><br>
+        Here is an image of what this might look like:
+        <p align="center">
+            <img style="border:2px solid #737373;" width="800" height="400" src="/mfpg/images/Layers.png">
+        </p>
+        The program itself requires three inputs from the user:
+        <ul>
+          <li><b>Score</b>: The music score in the form of an XMLMusic file</li>
+          <li><b>Notemapper</b>: A CSV file containing the note mappings for the PNRs</li>
+          <li><b>DSL</b>: The ActionSet defined using the <b>MFPG DSL</b> as a 
+          <i>.mfpg</i> file.</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
