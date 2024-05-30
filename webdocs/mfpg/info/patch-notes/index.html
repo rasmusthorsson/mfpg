@@ -1,6 +1,6 @@
 <!doctype html>
-<link rel="stylesheet" type="text/css" href="/styles.css">
-<script type="text/javascript" src="/scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
@@ -10,12 +10,12 @@
     <div class="topbar">
       <div class="menu">
         <button style="width: 100%;" class="btn">
-          <a href="/">Home</a>
+          <a href="/mfpg/">Home</a>
         </button>
       </div>
       <div class="menu">
         <button style="width: 75%;" class="btn">
-          <a href="/guides/">Guides</a>
+          <a href="/mfpg/guides/">Guides</a>
         </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
           &#11183
@@ -25,28 +25,28 @@
             <div class="dropdown-text">
               Interfaces
             </div> 
-            <a href="/guides/guiguide">GUI</a>
-            <a href="/guides/cliguide">CLI</a>
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
           </div>
           <div class="dropdown-content">
             <div class="dropdown-text">
               Tools
             </div> 
-            <a href="/guides/dslguide">DSL</a>
-            <a href="/guides/notemapbuilder">Notemap Builder</a>
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
           </div>
           <div class="dropdown-content">
             <div class="dropdown-text">
               Tutorials
             </div> 
-            <a href="/guides/example-easy">Simple Example</a>
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
           </div>
         </div>
       </div>
 
       <div class="menu">
-        <button style="width: 75%;" class="btn-selected">
-          <a href="/links/">Links</a>
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/links/">Links</a>
         </button>
         <button onclick="dropLinksMenu()" class="dropbtn">
           &#11183
@@ -62,8 +62,8 @@
       </div>
       
       <div class="menu">
-        <button style="width: 75%;" class="btn">
-          <a href="/info/">Info</a> 
+        <button style="width: 75%;" class="btn-selected">
+          <a href="/mfpg/info/">Info</a> 
         </button>
         <button onclick="dropInfoMenu()" class="dropbtn">
           &#11183
@@ -73,23 +73,22 @@
             <div class="dropdown-text">
               Information
             </div>
-            <a href="/info/patch-notes/">Patch Notes</a>
-            <a href="/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
           </div>
         </div>
       </div>
     </div>
     <div class="homemenu">
       <div class="hometitle"> 
-        Links
+        Patches
       </div>
-      <h1>Links to related content</h1>
-      <div class="links">  
-        <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+      <h1>
+        Patch Notes
+      </h1>
+      <div class="links">
+        <a href="/info/patch-notes/patch-0-1">Patch 0.1</a>
       </div>
-      <p style="text-align: center;">
-        A link to the GitHub repository for this project.
-      </p>
     </div>
   </body>
 </html>

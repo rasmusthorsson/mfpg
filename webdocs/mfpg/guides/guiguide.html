@@ -1,6 +1,6 @@
 <!doctype html>
-<link rel="stylesheet" type="text/css" href="/styles.css">
-<script type="text/javascript" src="/scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
@@ -10,12 +10,12 @@
     <div class="topbar">
       <div class="menu">
         <button style="width: 100%;" class="btn">
-          <a href="/">Home</a>
+          <a href="/mfpg/">Home</a>
         </button>
       </div>
       <div class="menu">
         <button style="width: 75%;" class="btn-selected">
-          <a href="/guides/">Guides</a>
+          <a href="/mfpg/guides/">Guides</a>
         </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
           &#11183
@@ -25,28 +25,28 @@
             <div class="dropdown-text">
               Interfaces
             </div> 
-            <a href="guiguide">GUI</a>
-            <a href="cliguide">CLI</a>
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
           </div>
           <div class="dropdown-content">
             <div class="dropdown-text">
               Tools
             </div> 
-            <a href="dslguide">DSL</a>
-            <a href="notemapbuilder">Notemap Builder</a>
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
           </div>
           <div class="dropdown-content">
             <div class="dropdown-text">
               Tutorials
             </div> 
-            <a href="example-easy">Simple Example</a>
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
           </div>
         </div>
       </div>
 
       <div class="menu">
         <button style="width: 75%;" class="btn">
-          <a href="/links/">Links</a>
+          <a href="/mfpg/links/">Links</a>
         </button>
         <button onclick="dropLinksMenu()" class="dropbtn">
           &#11183
@@ -63,7 +63,7 @@
       
       <div class="menu">
         <button style="width: 75%;" class="btn">
-          <a href="/info/">Info</a> 
+          <a href="/mfpg/info/">Info</a> 
         </button>
         <button onclick="dropInfoMenu()" class="dropbtn">
           &#11183
@@ -73,8 +73,8 @@
             <div class="dropdown-text">
               Information
             </div>
-            <a href="/info/patch-notes/">Patch Notes</a>
-            <a href="/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
           </div>
         </div>
       </div>
@@ -84,11 +84,11 @@
       <div class="quickbar-text">
         Guides
       </div>
-        <a href="guiguide" style="color:#a111f1;">GUI</a>
-        <a href="cliguide">CLI</a>
-        <a href="dslguide">DSL</a>
-        <a href="notemapbuilder">Notemap Builder</a>
-        <a href="example-easy">Simple Example</a>
+        <a href="/mfpg/guides/guiguide" style="color:#a111f1;">GUI</a>
+        <a href="/mfpg/guides/cliguide">CLI</a>
+        <a href="/mfpg/guides/dslguide">DSL</a>
+        <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
+        <a href="/mfpg/guides/example-easy">Simple Example</a>
     </div>
     <div class="guidepage-index">
       <a href="#Overview">Overview</a>
@@ -116,13 +116,13 @@
         <h2>Overview</h2>
         <p>Here is a full view of the MFPG Gui.</p>
         <p align="left">
-            <img style="border:2px solid #737373" width="600" height="600" src="../images/MFPG_GUI_full.png">
+            <img style="border:2px solid #737373" width="600" height="600" src="/mfpg/images/MFPG_GUI_full.png">
         </p>
 
         <a class="anchor" id="Top Menu"></a>
         <h2>Top Menu</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_topmenu.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_topmenu.png">
         </p>
 
         <p>The top menu has 3 submenus:</p>
@@ -143,7 +143,7 @@
         <a class="anchor" id="Config"></a>
         <h2>Config Selector</h2>
         <p align="left">
-            <img style="border:2px solid #737373" width="600" src="../images/MFPG_GUI_config.png">
+            <img style="border:2px solid #737373" width="600" src="/mfpg/images/MFPG_GUI_config.png">
         </p>
 
         <p>The config selector allows you to swap between currently imported configurations. This is not the
@@ -152,7 +152,7 @@
         <a class="anchor" id="Global"></a>
         <h2>Global Settings</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_globals.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_globals.png">
         </p>
 
         <p>This section is for selections which do not depend on configurations. The <em>Remove 
@@ -162,14 +162,14 @@
         <a class="anchor" id="Instrument"></a>
         <h2>Instrument Settings</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_instrument.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_instrument.png">
         </p>
 
         <p>Here we decide the instrument specifications. This can be done by using <em>presets</em> 
         or by loading the instrument and actionset from a DSL (<i>domain specific language</i>) file. 
         The presets are hardcoded values and currently there are not many presets available. 
         Therefore it is recommended to use the DSL (for information on how to do this, see the
-        <a href="/guides/dslguide">DSL guide</a>.) 
+        <a href="/mfpg/guides/dslguide">DSL guide</a>.) 
         for most purposes currently. This is done by importing a <strong>.mfpg</strong> DSL
         file into the program using the DSL file selector. </p>
         <p>Only the violin is available as an 
@@ -179,7 +179,7 @@
         <a class="anchor" id="Notemapper"></a>
         <h2>Notemapper Settings</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_notemapper.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_notemapper.png">
         </p>
 
         <p>The notemapper selection is limited to the hardcoded <b>BasicNoteMapper</b>, which has the 
@@ -189,12 +189,12 @@
         either be a premade one (the GitHub repo has a standard CSV notemap file which 
         contains a few different attributes.), or constructed using the CSV file constructor,
         although the second option requires some work as well as some programming (see the
-        <a href="/guides/notemapbuilder">Notemap Builder guide</a> for more information regarding this 
+        <a href="/mfpg/guides/notemapbuilder">Notemap Builder guide</a> for more information regarding this 
         approach).</p>
         <a class="anchor" id="Solver"></a>
         <h2>Solver Settings</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_solver.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_solver.png">
         </p>
         <p>The solver section is allows for configuration of output accuracy and efficiency. The Shortest
         Path solver gives an accurate output based on the entire score. The greedy solver 
@@ -212,7 +212,7 @@
         <a class="anchor" id="Files"></a>
         <h2>Files Area</h2>
         <p align="left">
-            <img style="border:2px solid #737373" height="400" width="300" src="../images/MFPG_GUI_files.png">
+            <img style="border:2px solid #737373" height="400" width="300" src="/mfpg/images/MFPG_GUI_files.png">
         </p>
 
         <p>The middle section of the GUI is for modifying the selected DSL and CSV Notemapper files, as well 
@@ -236,7 +236,7 @@
         <a class="anchor" id="Output"></a>
         <h2>Output Area</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_output.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_output.png">
         </p>
 
         <p>The Output section allows configuring how the output is shown. The output can either be in CSV 
@@ -246,14 +246,14 @@
         <a class="anchor" id="Generation"></a>
         <h2>Generation Area</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_generation.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_generation.png">
         </p>
 
         <p>The &#39;Generate&#39; button runs the program with the current settings.</p>
         <a class="anchor" id="Information"></a>
         <h2>Information Area</h2>
         <p align="left">
-            <img style="border:2px solid #737373" src="../images/MFPG_GUI_information.png">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_information.png">
         </p>
 
         <p>The information area shows output information that is related to program execution

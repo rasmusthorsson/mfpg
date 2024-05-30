@@ -1,6 +1,6 @@
 <!doctype html>
-<link rel="stylesheet" type="text/css" href="/styles.css">
-<script type="text/javascript" src="/scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
 <html>
   <head>
     <link rel="stylesheet" href="styles.css">
@@ -10,12 +10,12 @@
     <div class="topbar">
       <div class="menu">
         <button style="width: 100%;" class="btn">
-          <a href="/">Home</a>
+          <a href="/mfpg/">Home</a>
         </button>
       </div>
       <div class="menu">
-        <button style="width: 75%;" class="btn-selected">
-          <a href="/guides/">Guides</a>
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/guides/">Guides</a>
         </button>
         <button onclick="dropGuidesMenu()" class="dropbtn">
           &#11183
@@ -25,28 +25,27 @@
             <div class="dropdown-text">
               Interfaces
             </div> 
-            <a href="guiguide">GUI</a>
-            <a href="cliguide">CLI</a>
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
           </div>
           <div class="dropdown-content">
             <div class="dropdown-text">
               Tools
             </div> 
-            <a href="dslguide">DSL</a>
-            <a href="notemapbuilder">Notemap Builder</a>
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
           </div>
           <div class="dropdown-content">
             <div class="dropdown-text">
               Tutorials
             </div> 
-            <a href="example-easy">Simple Example</a>
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
           </div>
         </div>
       </div>
-
       <div class="menu">
         <button style="width: 75%;" class="btn">
-          <a href="/links/">Links</a>
+          <a href="/mfpg/links/">Links</a>
         </button>
         <button onclick="dropLinksMenu()" class="dropbtn">
           &#11183
@@ -62,8 +61,8 @@
       </div>
       
       <div class="menu">
-        <button style="width: 75%;" class="btn">
-          <a href="/info/">Info</a> 
+        <button style="width: 75%;" class="btn-selected">
+          <a href="/mfpg/info/">Info</a> 
         </button>
         <button onclick="dropInfoMenu()" class="dropbtn">
           &#11183
@@ -73,53 +72,30 @@
             <div class="dropdown-text">
               Information
             </div>
-            <a href="/info/patch-notes/">Patch Notes</a>
-            <a href="/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
           </div>
         </div>
       </div>
     </div>
     <div class="homemenu">
       <div class="hometitle"> 
-        Guides
+        Info
       </div>
       <h1>
-        Available Guides
+        General Information  
       </h1>
       <div class="links">
-        <a href="guiguide">GUI Guide</a>
+        <a href="/mfpg/info/patch-notes/patch-0-1">Patch 0.1</a>
       </div>
       <p style="text-align: center;">
-        The GUI Guide gives a brief overview of the different GUI components and how 
-        to use them.
+        A placeholder for Patch 0.1
       </p>
       <div class="links">
-        <a href="cliguide">CLI Guide</a>
+        <a href="/mfpg/info/faq">F.A.Q</a>
       </div>
       <p style="text-align: center;">
-        The CLI Guide gives a brief overview of how to use the commandline interface 
-        and the various available options.
-      </p>
-      <div class="links">
-        <a href="dslguide">DSL Guide</a>
-      </div>
-      <p style="text-align: center;">
-        The DSL Guide describes how to define MFPG DSL files. A DSL file is an 
-        important component to customize fingering position generation.
-      </p>
-      <div class="links">
-        <a href="notemapbuilder">Notemap Builder Guide</a>
-      </div>
-      <p style="text-align: center;">
-        The Notemap Builder Guide shows a few small examples of how to define your 
-        attribute value calculations. These attribute values are required for any 
-        attribute used in the DSL file.
-      </p>
-      <div class="links">
-        <a href="example-easy">Simple Example</a>
-      </div>
-      <p style="text-align: center;">
-        The Simple Example Guide is a simple tutorial on how to use the program.
+        Page for frequently asked questions
       </p>
     </div>
   </body>
