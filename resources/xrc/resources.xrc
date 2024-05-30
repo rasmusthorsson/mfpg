@@ -180,7 +180,7 @@
 												<flag>wxALL</flag>
 												<border>5</border>
 												<minsize>150,-1d</minsize>
-												<object class="wxFilePickerCtrl" name="ID_FPCSV">
+												<object class="wxFilePickerCtrl" name="ID_FPCSVNoteMap">
 													<wildcard>*.csv</wildcard>
 													<style>wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR</style>
 													<enabled>0</enabled>

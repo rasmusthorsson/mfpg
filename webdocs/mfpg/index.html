@@ -1,0 +1,200 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button style="width: 100%;" class="btn-selected">
+          <a href="/mfpg/">Home</a>
+        </button>
+      </div>
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/guides/">Guides</a>
+        </button>
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/links/">Links</a>
+        </button>
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/info/">Info</a> 
+        </button>
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Information
+            </div>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/technical-information">Technical Information</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="homemenu">
+      <div class="hometitle">
+        MFPG Homepage
+      </div>
+      <div class="homemenu-p"> 
+        <h1>About</h1>
+        This is the GitHub pages webpage for the <a href="https://github.com/rasmusthorsson/mfpg">MFPG project</a>.
+        Here you can find useful links, information about patches, releases, guides,
+        and tutorials. 
+      </div>
+        <h2>MFPG</h2>
+      <div class="homemenu-p"> 
+        <b>MFPG</b> (<i>Music Fingering Position Generator</i>) is a tool for 
+        automatically generating a sequence of fingering positions for a piece of
+        music for a bowed string instrument. When a sequence of fingering positions 
+        is developed for a piece of music, it is almost always done individually by 
+        the musician who is going to play it. While there are a few suggested 
+        guidelines for this process, it is generally a personalized process where 
+        many personal preferences come into play. 
+        <br><br>
+        The problem itself arises from the fact that for many bowed string 
+        instruments there is an overlap across strings. in many cases the same note 
+        can be played on several different strings. Therefore, when playing a note, 
+        the musician must select what string to play that note on. To make matters 
+        worse, the position of the hand and which finger is used when playing a note 
+        on a string can vary, so further choices need to be made about <i>how</i> to 
+        play that note. 
+        <br><br>
+        <b>MFPG</b> solves this problem by allowing the user to define their 
+        preferences for developing a sequence of fingering positions, and then
+        does the work of developing that sequence for them.
+      </div>
+        <h2>Why MFPG?</h2>
+      <div class="homemenu-p"> 
+        As the previous section states, <b>MFPG</b> takes the preferences of a user
+        and generates the sequence of fingering positions for them. But why could the
+        user not just do this themself? The answer can be found when looking at the
+        problem from a more mathematical perspective. The issue of developing a 
+        sequence of fingering positions can be simplified into the graph problem
+        of finding the shortest path through a layered weighted 
+        <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a>.
+        A problem of which has many known solutions, such as using 
+        <a href="https://en.wikipedia.org/wiki/Topological_sorting">
+          Topological Sorting
+        </a>.
+        <br><br>
+        However, this is not how anyone who is figuring out a sequence for fingering 
+        positions actually determines the sequence. This is instead generally done
+        using some form of a <i>greedy</i> algorithm, an algorithm that effectively
+        only concerns itself with the near future and does not consider the far 
+        reaching consequences further along the music piece. This can either lead to
+        having to redo the process if certain sequences are found to lead to 
+        <i>deadends</i> (where the musician reaches a hand position on a string from
+        where they have no <b>acceptable</b> way to reach the next note), or a
+        suboptimal sequence where smaller 'acceptable' concessions have to be made.
+        <br><br>
+        <b>MFPG</b> assists in finding the <i>best</i> sequence by instead running
+        a shortest path algorithm on a constructed graph based on the music piece
+        and the preferences specified by the user. This should then find candidates
+        of sequences which fit the users preferences, without those earlier mentioned
+        'acceptable' concessions. Even if a musician were to learn to use a shortest 
+        path algorithm to manually solve this problem, it would still take far longer 
+        and be far more tedious than letting a computer do it. 
+      </div>
+        <h2>MFPG Interfaces</h2>
+      <div class="homemenu-p"> 
+      There are two interfaces for using <b>MFPG</b>: The <b>CLI</b> (<i>command-line 
+      interface</i>) and the <b>GUI</b> (<i>graphical user interface</i>). The
+      <b>CLI</b> a text-based interface (currently only tested using bash), while the
+      <b>GUI</b> is a graphical interface and is usually the preferred interface in
+      most cases. 
+      </div>
+        <h2>Using MFPG</h2>
+      <div class="homemenu-p"> 
+      For general usage, <b>MFPG</b> should be used using the <b>MFPG DSL</b> 
+      (<i>Domain-specific Language</i>) which is intended as a <i>relatively</i> 
+      simple way to descibe the preferences of the musician. There is a dedicated page 
+      with a <a href="/mfpg/guides/dslguide">guide</a> on how to write <b>MFPG DSL</b> 
+      files. This should also generally be used in conjunction with a 
+      <b>CSV Notemapper</b> (<i>comma-separated value Notemapper</i>) file. 
+      <br><br>
+      The <b>CSV Notemapper</b> file
+      is trickier to construct than the <b>MFPG DSL</b> file, however a pre-built
+      <b>CSV Notemapper</b> file has already been created which contains 
+      many different <i>attributes</i> that a user could use. It contains all the 
+      information about the attributes of all playable notes. This means
+      that for every playable note for a specific instrument, the <b>CSV</b> file
+      contains all <i>ways</i> to play that note. An example on how to use the 
+      <b>DSL</b> and the <b>CSV Notemapper</b> can be found 
+      <a href="/mfpg/guides/example-easy">here</a>.
+      </div>
+        <h1>Guides and Tutorials</h1>
+      <div class="homemenu-p"> 
+        Here is a list of available guides.
+        <ul>
+        <li><a href="/mfpg/guides/guiguide">The GUI Guide</a>: a guide on what the 
+          different parts of the graphical user interface do.</li>
+        <li><a href="/mfpg/guides/cliguide">The CLI Guide</a>: a short guide on what
+          the different command-line interface options do.</li>
+        <li><a href="/mfpg/guides/dslguide">The DSL Guide</a>: a guide/tutorial on
+          how to define MFPG DSL files. MFPG DSL files are important in order to
+          personalize the fingering position generation to fit your preferred way to
+          play your instrument.</li>
+        <li><a href="/mfpg/guides/notemapbuilder">The Notemap Builder Guide</a>: a 
+          more advanced guide on how to write code for generating CSV files for
+          the Notemap builder.</li>
+        <li><a href="/mfpg/guides/example-easy">A Simple Example</a>: This page shows a 
+          simple tutorial on how to use the program.</li>
+        </ul>
+      </div>
+        <h1>Other Information</h1>
+        <ul>
+        <li><a href="/mfpg/info/patch-notes/">Patch Notes</a>: A list of patch notes.</li>
+        <li><a href="/mfpg/info/faq">F.A.Q</a>: Frequently Asked Questions.</li>
+        </ul>
+    </div>
+  </body>
+</html>

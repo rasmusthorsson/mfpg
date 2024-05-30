@@ -7,7 +7,6 @@
 
 #include "../../src/NoteEnums.h"
 
-
 std::string Builder::build_file_CUSTOM() {
 	//Make your own notemapper here.
 	return "";

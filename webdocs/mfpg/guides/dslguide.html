@@ -1,0 +1,448 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button style="width: 100%;" class="btn">
+          <a href="/mfpg/">Home</a>
+        </button>
+      </div>
+      <div class="menu">
+        <button style="width: 75%;" class="btn-selected">
+          <a href="/mfpg/guides/">Guides</a>
+        </button>
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/links/">Links</a>
+        </button>
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/info/">Info</a> 
+        </button>
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Information
+            </div>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/technical-information">Technical Information</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="quickbar">
+      <div class="quickbar-text">
+        Guides
+      </div>
+        <a href="/mfpg/guides/guiguide">GUI</a>
+        <a href="/mfpg/guides/cliguide">CLI</a>
+        <a href="/mfpg/guides/dslguide" style="color:#a111f1;">DSL</a>
+        <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
+        <a href="/mfpg/guides/example-easy">Simple Example</a>
+    </div>
+    <div class="guidepage-index">
+      <a href="#Parts">Parts</a>
+      <a href="#Output" class="inner">Output</a>
+      <a href="#Attributes" class="inner">Attributes</a>
+      <a href="#Strings" class="inner">Strings</a>
+      <a href="#Actions" class="inner">Actions</a>
+      <a href="#Dependencies" class="inner">Dependencies</a>
+      <a href="#Syntax">Syntax Overview</a>
+      <a href="#Conditions" class="inner">Conditions</a>
+      <a href="#Distance" class="inner">Distance</a>
+      
+    </div>
+    <div class="guidepage">
+      <div class="pagetitle">
+        A Guide to using the MFPG DSL
+      </div>
+      <div class="guidepage-text">
+        <h1>DSL Guide</h1>
+        <p>This is a guide on how to write <b>MFPG DSL</b> files as defined in 
+        <strong>src/parser/mfpg_dsl.cf</strong> (in the <a href="https://github.com/rasmusthorsson/mfpg">
+          GitHub repo</a>), see that file for the full grammar.</p>
+        <a class="anchor" id="Parts"></a>
+        <h2>Parts</h2>
+        <p>A MFPG DSL file consists of five parts: <strong>Output</strong>, <strong>Attributes</strong>, <strong>Strings</strong>, <strong>Actions</strong>, and 
+        <strong>Dependencies</strong>. Each of these parts define some required configuration part the program will use to 
+        generate fingering positions, the parts are defined in the above order and separated by their respective 
+        names followed by a colon:</p>
+        <pre><code>
+        Output:
+            (Output is defined here)
+        Attributes:
+            (Attributes are defined here)
+        Strings:
+            (Strings are defined here)
+        Actions:
+            (Actions are defined here)
+        Dependencies:
+            (Dependencies are defined here)
+        </code></pre>
+        <a class="anchor" id="Output"></a>
+        <h3>Output</h3>
+        <p>The Output is a single word defining what type of output all Actions should have. Currently the only
+        supported types are <strong>int</strong> and <strong>double</strong>, referring to whether the output is to be an 
+        <strong>integer</strong>
+        (whole number such as 1, 5, 23 etc.) or a <strong>double</strong> (number with decimals such as 0.4672, 231.2, 23.36783 
+        etc).</p>
+        <p>For example:<br> 
+        <pre><code>
+        Output: int
+        </code></pre>
+        </p>
+        <a class="anchor" id="Attributes"></a>
+        <h3>Attributes</h3>
+        <p>An <b>Attribute</b> represents some physical aspect of a note. For example, consider that for a bowed string 
+        instrument a note can only be played by pressing one of four fingers on a string (or in the case of an
+        open string, pressing no finger on that string), and then bowing that string. Finger could then be defined as an 
+        Attribute with 5 different values (0-4). Another example of an attribute could be the physical distance between the 
+        note being played and the bridge. <br><br>Generally, a note can be played in more ways than one, and attributes are 
+        used to specify the different physical ways of playing notes. Notes can correspond to multiple different 
+        attribute value combinations, but every note 
+        will have the same attributes. In the above first example the same note can use different fingers depending 
+        on what string it is played on, but every way to play that note will use <i>some</i> finger (0-4).</p>
+        <p>The <b>Attributes</b> part defines what attributes may be referred to in later parts. If an attribute is not 
+        defined in the attributes part, that attribute can not be used in the <b>Actions</b> or <b>Dependencies</b> parts. 
+        Each attribute
+        will correspond to some value when the program is executed and the <i>types</i> of those values must be defined for 
+        each attribute here (We are <i>not</i> defining what the values are, just what type they have).
+        For example, consider a <b>DSL</b> file with three attributes; <b>String</b>, <b>Hand Position</b>, and <b>Finger</b>. 
+        Then also consider a note, say <strong>As_3</strong> on a violin. This <strong>As_3</strong> note can be played in 
+        two ways (as defined by our attributes!):</p>
+        <p>String = 1, Finger = 1, Hand Position = 2<br>String = 1, Finger = 2, Hand Position = 1</p>
+        <p>Both of these combinations play the same note and use the same attributes but use different <i>values</i> for the 
+        attributes. For a <b>DSL</b> file we will call the combination of <strong>all</strong> defined Attributes a 
+        <strong>Physical Note Representation</strong>
+        (PNR), so in the above example the PNR type for the notes is the same, differing only in the values of the 
+        attributes. As described above, we do not need to define the values for all possible PNRs for all notes in 
+        this part, but we must define what a PNR looks like for this <b>DSL</b> file.</p>
+        <pre><code>
+        Attributes:
+            (i) &quot;String&quot; ,
+            (i) &quot;Finger&quot; ,
+            (i) &quot;Hand_Pos&quot; ;
+        </code></pre>
+        <p>(The commas separate the different attribute definitions and the semi-colon signifies the end
+        of the <b>Attributes</b> part.)</p>
+        <p>The character in the parantheses represents the type of the subsequent attribute and can be <strong>i</strong>, <strong>d</strong>, 
+        or <strong>b</strong>, meaning <strong>integer</strong>, <strong>double</strong> and <strong>boolean</strong> respectively. <strong>integer</strong> and <strong>double</strong> are 
+        defined as in the output, while <strong>boolean</strong> means a truth value, either true or false. Once the attributes 
+        have been defined in this part neither the type of an attribute or the name of an attribute can be changed
+        in later parts.</p>
+        <p>We have then defined the PNR type for this example as: <b>String</b>, <b>Finger</b>, and <b>Hand_Pos</b>, 
+        with each attribute having the type <strong>i</strong>.
+        </p>
+        <a class="anchor" id="Strings"></a>
+        <h3>Strings</h3>
+        <p>As this software is designed for string instruments, strings must be defined for an instrument to exist (Note
+        that this is completely separate from the <b>String</b> attribute we defined in the earlier section). To 
+        define a string you define the number of that string (as an integer) and what range of notes can be played
+        on that string:</p>
+        <pre><code>
+        Strings:
+            1: C_4 -&gt; A_6 ,
+            2: C_5 -&gt; Cs_7 ,
+            3: G_3 -&gt; C_5 ;
+        </code></pre>
+        <p>In the above, we define three strings, the first can play all notes (in a chromatic scale) between 
+        (inclusive) <b>C 4</b> and <b>A 6</b>, the second can play all notes between <b>C 5</b> and <b>Cs 7</b>, and the 
+        third can play all notes between <b>G 3</b> and <b>C 5</b>. You could also define these notes using the position of 
+        the notes relative to <b>C 0</b> (as position 0):</p>
+        <pre><code>
+        Strings:
+            1: 48 -&gt; 81 ,
+            2: 60 -&gt; 85 ,
+            3: 43 -&gt; 60 ;
+        </code></pre>
+        <p>Which represents the exact same strings as above.</p>
+        <a class="anchor" id="Actions"></a>
+        <h3>Actions</h3>
+        <p>Each Action defines a comparison of two PNRs. The Action will consider one PNR for the 
+        <strong>current</strong> note, and one PNR for the <strong>next</strong> note in the score. This will happen until all PNRs for the 
+        <strong>current</strong> note have been compared to all PNRs of the <strong>next</strong> note. Let&#39;s look at an example: if the 
+        <strong>current</strong> note is <strong>A 3</strong> and the <strong>next</strong> note is <strong>G 3</strong> then an Action will consider (based on our 
+        Attribute example definitions in the <strong>Attributes</strong> section) the transition: <br><br><strong>A 3</strong> &rarr; <strong>G 3</strong>:</p>
+        <p>Transition option 1: <br>String = 1, Finger = 1, Hand Position = 2 &rarr; String = 1, Finger = 1, Hand Position = 1</p>
+        <p>Transition option 2: <br>String = 1, Finger = 2, Hand Position = 1 &rarr; String = 1, Finger = 1, Hand Position = 1</p>
+        <p>Each action defined will calculate the <strong>distance</strong> (the cost of the transition between the two notes using
+        these PNRs) between two PNRs of the <strong>current</strong> and the <strong>next</strong> note for <em>both</em> transition option 1 and 
+        transition option 2 individually.
+        <br><br>An action is defined by four components: </p>
+        <p>First the <em>name</em> of the action.</p>
+        <p>The second part consists of the <strong>condition</strong> function(s), a <strong>condition</strong> function is the decider function
+        which determines whether or not the <strong>distance</strong> function(s) should be evaluated, this should make more sense
+        in the example later.</p>
+        <p>The third part consists of the <strong>distance</strong> function(s), the <strong>distance</strong> function(s) calculates the 
+        <strong>distance</strong> between the two PNRs under consideration (or: the cost of transitioning from the 
+        <strong>current</strong> note to the <strong>next</strong> note via these PNRs). The output type of each
+        <strong>distance</strong> function must correspond to the <strong>output</strong> as defined in the <strong>Output</strong> part. </p>
+        <p>The final part is a truth value which represents the <strong>default condition</strong> for the action. It dictates
+        whether the Action should occur by default, or if it should only occur if the Dependencies dictate that it occurs.</p>
+        <p>One can think of an action like this (numbers in parentheses correspond to the order of the components 
+        described above):</p>
+        <p>Action Name(1) = if <strong>condition functions</strong>(2) and <strong>default condition</strong>(4) then add
+        <strong>distance functions</strong>(3) to the transition cost</p>
+        <p>As an example, consider Transition option 1. We might decide that we want to apply a cost for switching 
+        which finger is currently being used to play a note so we add an Action to do so.</p>
+        <pre><code>&quot;Finger_Action&quot; = ???
+        </code></pre>
+        <p>We must then decide what actually constitutes as a finger switch and define that as a <strong>condition</strong>
+        function. We can conclude that if a finger switch occurs, then the values of the <b>Finger</b> attribute must be
+        <em>different</em> in the two PNRs:</p>
+        <pre><code>&quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 ???
+        </code></pre>
+        <p>(Note that whenever the subtraction operator is applied, the absolute value function is implicitly applied to
+        the result as it does not make sense to have a negative <strong>distance</strong> or cost.)</p>
+        <p>The <strong>condition</strong> function above calcualates the difference between the finger in the first PNR and
+        the second PNR (It is implicit that the first attribute in a <b>condition</b> or <b>distance</b> function 
+        refers to a PNR for the <strong>current</strong> note and the 
+        second attribute refers to a PNR for the <strong>next</strong> note.). There are a few different ways to define a
+        <strong>conditions</strong> function, for a full list see end of this guide.</p>
+        <p>With a satisfactory <strong>condition</strong> function set defined, we now need to decide the cost of switching fingers.
+        A reasonable cost could perhaps be defined as simply 1, this way we are always adding a penalty
+        whenever we switch fingers without differentiating between finger swaps.</p>
+        <pre><code>&quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 ??? 
+        </code></pre>
+        <p>(Note that the colon (<b>:</b>) is used to mark the end of <strong>condition</strong> function definitions and the beginning of
+        <strong>distance</strong> function definitions.)</p>
+        <p>Finally, we need to decide whether or not this action should always be evaluated by default, or if
+        it should only be evaluated if it gets activated by some other action via dependency (more on this in the 
+        next part). For this action it makes sense that we should always evaluate it:</p>
+        <pre><code>&quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ;
+        </code></pre>
+        <p>We are now done with the action, and if we then apply this action to Transition option 1 we get (in 
+        pseudocode):</p>
+        <pre><code>if (abs(1 - 1) &gt; 0) then add 1 
+        </code></pre>
+        <p>As <em>abs(1 - 1)</em> is 0, the <strong>condition</strong> function prevents the <strong>distance</strong> function from being evaluated,
+        and therefore does not increase or decrease the cost of this transition.</p>
+        <p>For Transition option 2 we get:</p>
+        <pre><code>if (abs(1 - 2) &gt; 0) then add 1
+        </code></pre>
+        <p>Since <em>abs(1 - 2)</em> is 1, this time the <strong>distance</strong> function does get evaluated, and adds 
+        1 to the transition cost.</p>
+        <p>Therefore the <strong>distance</strong> between the PNRs in transition option 1 is <i>shorter</i> than the <strong>distance</strong> between 
+        PNRs in transition option 2. 
+        <br><br>However, we can also see that the PNRs differ in another way: the <b>Hand Position</b>
+        attribute also changes, so perhaps it makes sense to add another action to account for that.</p>
+        <pre><code>&quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : ???
+        </code></pre>
+        <p>Here we have defined a <strong>condition</strong> function in the same way as we did with the finger action, since it
+        is a good way to establish a change in attribute values. We then want to define a <strong>distance</strong> function for 
+        this action, but this time it would make sense to use the difference between <b>Hand Position</b> values as part of 
+        the <strong>distance</strong> calculations in order to get an action that increases the <strong>distance</strong> 
+        if the two hand positions
+        are physically farther apart:</p>
+        <pre><code>&quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true)
+        </code></pre>
+        <p>Above we define the <strong>distance</strong> function to be the difference in <b>Hand Position</b> + 1, to make it
+        so it is always more costly to swap hand position than it is to swap fingers.</p>
+        <p>With this new action added we now have two actions, when we have multiple actions each action is evaluated
+        individually for each PNR and the results are added together to form the final <strong>distance</strong> between the two
+        PNRs under consideration. We now get a different result for the transition options:</p>
+        <p>Transition option 1:</p>
+        <pre><code>(if (abs(1 - 1) &gt; 0) then add 1) + (if (abs(1 - 2) &gt; 0) then add (abs(1 - 2) + 1))
+        </code></pre>
+        <p>Where the second part after the + is the new hand position action and the first part is the old finger 
+        action. The result is now 2.</p>
+        <p>Transition option 2:</p>
+        <pre><code>(if (abs(1 - 2) &gt; 0) then add 1) + (if (abs(1 - 1) &gt; 0) then add (abs(1 - 1) + 1))
+        </code></pre>
+        <p>Which only returns 1 from the first part as the second part is not evaluated because there is no change in
+        hand positions.</p>
+        <p>It is also possible to construct an action with <em>several</em> <strong>condition</strong> functions. This is 
+        done with conjunctions and disjunctions:</p>
+        <p><strong>condition function</strong> &amp;&amp; <strong>condition function</strong></p>
+        <p><strong>condition function</strong> || <strong>condition function</strong></p>
+        <p>In the first case <em>both</em> <strong>condition</strong> functions must evaluate to true for the <strong>distance</strong> functions to be
+        evaluated, in the second case only one <strong>condition</strong> function must evaluate to true.</p>
+        <p>Similarly, multiple <strong>distance</strong> functions can be added to the same action:</p>
+        <p><strong>distance function</strong> + <strong>distance function</strong></p>
+        <p><strong>distance function</strong> - <strong>distance function</strong></p>
+        <p>Where the outputs of the functions are added or subtracted (remember that subtraction always applies the 
+        absolute function since an output can not be less than 0.).</p>
+        <p>Any number of functions can be joined together and the operators are left associative. For actions there
+        is no way to mix <strong>condition</strong> and <strong>distance</strong> functions, first we must define all <strong>condition</strong> 
+        functions, then we must add the separator (:) and then define all <strong>distance</strong> functions.</p>
+        <p>For completeness sake, this is how the Action section looks like for this example:</p>
+        <pre><code>
+        Actions:
+            &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
+            &quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true) ;
+        </code></pre>
+        <p>(Again, note the comma at the end of the first action and the semi-colon at the end of the final action, 
+        these symbols are a necessity to separate actions and denote the final action.)</p>
+        <a class="anchor" id="Dependencies"></a>
+        <h3>Dependencies</h3>
+        <p>Finally we have the <b>Dependencies</b> part. A dependency in this context can be defined as: </p>
+        <p><em>&quot;If Action A has occurred, Action B should/should not be evaluated.&quot;</em></p>
+        <p>This definition also adds an important new facet to the previous section: the <em>order</em> of the action 
+        definitions matter. If we define the above dependency but <em>Action A</em> is defined <strong>after</strong> <em>Action B</em>, then
+        the dependency has no effect, since actions are evaluated sequentially for each transition and reset when
+        a new transition is to be evaluated. </p>
+        <p>Let us consider an example. Let us say we want to add another action for dealing with the case where we switch 
+        strings while playing. 
+        <pre><code>&quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ;
+        </code></pre>
+        This is a simple action which works in the same way the finger action that we defined in the earlier section, but 
+        for strings.
+        <br><br>        
+        If we then consider
+        the cost of changing string <em>and</em> finger at the same time, it makes sense to consider that to be marginally
+        more costly than just changing finger. This is now captured with the combination of the two actions for finger
+        and string change.</p>
+        <p> But if we now consider the case where we switch strings and do <em>not</em> switch
+        finger: we are only imposing the cost of switching strings while we are doing something that 
+        is (from a playability perspective) <em>more</em> difficult than changing strings and finger at the same
+        time. We can solve this by adding another action:</p>
+        <pre><code>&quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ;
+        </code></pre>
+        <p>Here check whether we are switching finger when playing, and if we do <em>not</em> switch finger, we impose a cost
+        of 2. This action has a <strong>default</strong> condition of false however, because we only want this action to trigger
+        if we <em>also</em> switch strings. One could also imagine us adding another <strong>condition</strong> function which checks
+        whether we switched strings and finger at the same time, but because we already have an action which checks
+        this we can just define a dependency between the actions.</p>
+        <pre><code>
+        Actions:
+            &quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ,
+            &quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ,
+            &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
+            &quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true) ;
+        </code></pre>
+        <p>We can now define our dependency.</p>
+        <pre><code>
+        Dependencies:
+            &quot;String_Action&quot; &quot;Finger_String_Action&quot; true ;
+        </code></pre>
+        <p>The dependency above states that:</p>
+        <p><em>&quot;If &quot;String_Action&quot; occurred, then &quot;Finger_String_Action&quot; should be evaluated&quot;</em></p>
+        <p>Let us then consider an example of a transition between the two PNRs:</p>
+        <p>String = 1, Finger = 2, Hand Position = 1  &rarr; String = 2, Finger = 2, Hand Position = 1</p>
+        <p>In this case, the <b>String_Action</b> is triggered and adds a cost of 1. Then the <b>Finger_String_Action</b> is 
+        evaluated <em>because</em> the dependency changes the <strong>default condition</strong> to be true instead of false and the 
+        <strong>condition</strong> function evaluates to true, which adds 2 to the transition cost. The next two actions do 
+        not activate as the <strong>condition</strong> evaluates to false in both actions. </p>
+        <p>Dependencies allow us to formulate simple actions and join them together rather than having to write long and
+        tedious <strong>condition</strong> function sets which repeat the same <strong>condition</strong> over and over 
+        again across multiple actions. A more extreme
+        example of its use could be if we imagine multiple actions which should all be disabled if the current or 
+        next &quot;note&quot; is a rest. We would need to check whether both the current and next PNR were equivalent
+        to the rest &quot;note&quot; in every single action, this would bloat the <strong>distance</strong> function set and make it a lot 
+        more difficult to write and read <b>DSL</b> files. In this example one could instead just define a rest 
+        action that checks whether either of the PNRs are rests but applies no cost regardless, and then we define 
+        dependencies which disable all other actions if the rest action was triggered.</p>
+        <p>Our final DSL file looks like this:</p>
+        <pre><code>
+        Output: int
+        Strings:
+            1: C_4 -&gt; A_6 ,
+            2: C_5 -&gt; Cs_7 ,
+            3: G_3 -&gt; C_5 ;
+        Attributes:
+            (i) &quot;String&quot; ,
+            (i) &quot;Finger&quot; ,
+            (i) &quot;Hand_Pos&quot; ;
+        Actions:
+            &quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ,
+            &quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ,
+            &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
+            &quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true) ;
+        Dependencies:
+            &quot;String_Action&quot; &quot;Finger_String_Action&quot; true ;
+        </code></pre>
+        <a class="anchor" id="Syntax"></a>
+        <h2>Brief Syntax Overview</h2>
+        <p>Below is a list of all variations of <strong>condition</strong> and <strong>distance</strong> functions implemented followed by a
+        brief explanation of the function purpose. For a more concise view, check out the grammar file referenced
+        in the beginning.</p>
+        <p>(For verbosity sake I will only type out one of each of the functions and then list replacable parts below)</p>
+        <a class="anchor" id="Conditions"></a>
+        <h3>Condition Functions</h3>
+        <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot; == Number
+        </code></pre>
+        <p>Used to compare two combined attributes to some number.</p>
+        <pre><code>this &quot;Attr1&quot; == Number
+        </code></pre>
+        <p>Used to compare the Attribute &quot;Attr1&quot; of the <em>current</em> PNR to some number.</p>
+        <pre><code>to &quot;Attr1&quot; == Number
+        </code></pre>
+        <p>Used to compare the Attribute &quot;Attr1&quot; of the <em>next</em> PNR to some number.</p>
+        <pre><code>Boolean
+        </code></pre>
+        <p>This is a direct truth value, either true or false.</p>
+        <pre><code>this &quot;Attr1&quot; 
+        </code></pre>
+        <p>Direct truth value taking from a boolean attribute of the <em>current</em> PNR, can not be applied to <strong>integer</strong>
+        or <strong>double</strong> attribute values.</p>
+        <pre><code>to &quot;Attr1&quot;
+        </code></pre>
+        <p>same as above but for the <em>next</em> PNR.</p>
+        <a class="anchor" id="Distance"></a>
+        <h3>Distance Functions</h3>
+        <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot; * Number
+        </code></pre>
+        <p>Combines the values of &quot;Attr1&quot; and &quot;Attr2&quot; and multiplies it by some number</p>
+        <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot;
+        </code></pre>
+        <p>Combines the values of &quot;Attr1&quot; and &quot;Attr2&quot;</p>
+        <pre><code>Number
+        </code></pre>
+        <p>Direct adding of cost to <strong>distance</strong></p>
+        <p>All instances of &quot;==&quot; can be replaced by either of the following: &quot;&lt;&quot;, &quot;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;=&quot;, &quot;!=&quot;<br>All instances of &quot;+&quot; can be replaced by &quot;-&quot;<br>Number can refer to either an <strong>integer</strong> or a <strong>double</strong>.</p>
+      </div>
+    </div>
+  </body>
+</html>

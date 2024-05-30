@@ -1,0 +1,389 @@
+.topbar {
+  display: block;
+  position: fixed;
+  background-color: #e5e5ff;
+  border: 5px solid #909090;
+  height: 64px;
+  width: 99.2%;
+  box-sizing: border-box;
+  z-index: 2;
+  top: 0px;
+  left: 0px;
+}
+.topbar img {
+  float: left;
+  display: inline-block;
+  border: 4px solid #ddd;
+  width: 45px;
+  height: 45px;
+  background-color: #000000;
+}
+.menu {
+  float: left;
+  position: relative;
+  display: inline-block;
+  border-top: 4px;
+  border-bottom: 4px;
+  border-left: 2px;
+  border-right: 2px;
+  border-style: solid;
+  border-color: #e5e5ff;
+  box-sizing: border-box;
+  height: 100%;
+  width: 25%;
+  z-index: 1;
+}
+.dropbtn {
+  display: inline-block;
+  width: 25%;
+  background-color: #efffef;
+  color: #212121;
+  padding: 0px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  height: 100%;
+  font-family: serif;
+}
+.btn {
+  float: left;
+  display: block;
+  background-color: #efffef;
+  color: #212121;
+  padding: 0px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  height: 100%;
+  font-family: serif;
+}
+.btn-selected {
+  float: left;
+  display: block;
+  background-color: #efffef;
+  color: #212121;
+  padding: 0px;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  height: 100%;
+  font-family: serif;
+}
+.btn-selected a {
+  float: left;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  padding: 5px 0px;
+  color: #0191d1;
+  width: 100%;
+  height: 100%;
+}
+.btn a {
+  float: left;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  padding: 5px 0px;
+  color: #212121;
+  width: 100%;
+  height: 100%;
+}
+.dropbtn:hover {
+  color: #8f8f8f;
+}
+.btn-selected a:hover {
+  color: #7f9fff;
+}
+.btn a:hover {
+  color: #8f8f8f;
+}
+.dropdown-menu {
+  float: left;
+  display: none;
+  border: 2px solid #419191;
+  background-color: #e6e6f6; 
+  color: black;
+  padding: 10px 20px;
+  z-index: 2;
+  box-shadow: 1px 2px 6px #9696c6;
+}
+.dropdown-content {
+  float: left;
+  position: relative;
+  padding: 8px 20px;
+}
+.dropdown-text {
+  float: left;
+  position: relative;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  padding: 3px 0px;
+  font-size: 18px;
+  display: block;
+  height: 30px;
+  width: 100%;
+  font-family: serif;
+}
+.dropdown-content a {
+  float: left;
+  position: relative;
+  color: black;
+  padding: 6px 0px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  width: 100%;
+  font-family: Georgia, ui-rounded, monospace;
+}
+.dropdown-content a:hover {
+  color: #555555;
+}
+td {
+  border: 2px solid black;
+  text-align: center;
+}
+th {
+  border: 2px solid black;
+  min-width: 100px;
+}
+.center {
+  border-collapse: collapse;
+  margin-left: auto; 
+  margin-right: auto; 
+}
+.homemenu {
+  float: left;
+  position: absolute;
+  overflow-x: hidden;
+  color: #313131;
+  left: -6px;
+  top: 64px;
+  border: 3px solid #b1b1b1;
+  box-sizing: border-box;
+  background-color: #f7f7f1;
+  width: 100%;
+  min-height: 94%;
+}
+.hometitle {
+  display: block;
+  position: relative;
+  text-align: center; 
+  background-color: #d7d7d7;
+  font-size: 36px;
+  box-sizing: border-box;
+  border: 4px solid #515151;
+  width: 100%;
+}
+.homemenu-p {
+  position: relative;
+  width: 98%;
+  left: 10px;
+}
+.homemenu h1 {
+  position: relative;
+  top: 10px;
+  text-align: center;
+}
+.homemenu h2 {
+  position: relative;
+  left: 40px;
+}
+.quickbar {
+  position: fixed;
+  text-align: center;
+  background-color: #d1d1f1;
+  border: 5px solid #414141;
+  height: 90px;
+  width: 99.2%;
+  box-sizing: border-box;
+  top: 64px;
+  left: 0px;
+  z-index: 1;
+}
+.quickbar-text {
+  display: block;
+  position: relative;
+  padding: 4px 0px;
+  color: black;
+  text-align: center;
+  font-size: 28px;
+  z-index: 0;
+}
+.quickbar a {
+  text-decoration: none;
+  position: relative;
+  font-size: 15px;
+  padding: 12px 26px;
+  height: 100%;
+  color: #525202;
+  font-family: "Gill Sans Extrabold", ui-rounded, monospace;
+}
+.quickbar a:hover {
+  color: #000000;
+}
+.guidepage-index {
+  position: fixed;
+  display: block;
+  background-color: #f1f1f1;
+  min-height: 300px;
+  width: 188px;
+  border-right: 1px solid #515151;
+  border-left: 5px solid #515151;
+  box-sizing: border-box;
+  padding: 12px 20px;
+  top: 154px;
+  left: 0;
+  height: 100%;
+  z-index: 4;
+}
+.guidepage-index a {
+  color: #2121c1;
+  text-decoration: none;
+  position: relative;
+  font-size: 15px;
+  padding-top: 10px;
+  display: block;
+  width: 100%;
+}
+.guidepage-index a.inner {
+  position: relative;
+  padding-top: 0px;
+  left: 10px;
+  font-size: 12px;
+}
+.guidepage-index a.inner-inner {
+  position: relative;
+  left: 30px;
+  font-size: 12px;
+  top: 5px;
+}
+.guidepage-index a:hover {
+  color: #000000;
+}
+.guidepage {
+  position: absolute;
+  display: block; 
+  background-color: #f7f7f1;
+  top: 140px;
+  left: 180px;
+  padding: 20px 20px;
+  width: 75%;
+  min-height: 750px;
+}
+.guidepage p {
+  font-family: Georgia, sans-serif;
+}
+.pagetitle {
+  position: relative;
+  color: black;
+  font-size: 30px;
+  background-color: #f7f7f1;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  font-family: Georgia, serif;
+  width: 100%;
+}
+.guidepage-text {
+  position: relative;
+  display: block; 
+  width: 100%;
+}
+.guidepage-text pre {
+  position: relative;
+  color: #30307f;
+  top: 10px;
+}
+.guidepage-text p {
+  font-family: Georgia, serif;
+}
+a.anchor {
+  position: relative; 
+  top: -150px;
+  visibility: hidden;
+}
+.page {
+  float: left;
+  position: absolute;
+  display: block; 
+  background-color: #f7f7ec;
+  top: 154px;
+  border: 3px solid #b1b1b1;
+  box-sizing: border-box;
+  width: 99.2%;
+  left: 0px;
+  min-height: 780px;
+}
+.page h1 {
+  text-align: center;
+}
+.page h2 {
+  left: 40px;
+}
+.page h3 {
+  left: 40px;
+}
+.page p {
+  font-family: Georgia, sans-serif;
+}
+.links {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+.links a {
+  text-decoration: none;
+  color: #539353;
+  font-size: 30px;
+  text-align: center;
+}
+.links a:hover {
+  color: #959595;
+}
+.hidden {
+  position: relative;
+  display: block;
+  padding-bottom: 30px;
+  width: 92%;
+}
+.hiddenbutton {
+  position: relative;
+  background-color: #f7f7f1;
+  color: #212121;
+  padding: 0px;
+  font-size: 16px;
+  left: 50px;
+  border: none;
+  cursor: pointer;
+  font-family: serif;
+}
+.hiddenbutton:hover {
+  color: #616161;
+}
+.hiddentext {
+  position: relative;
+  display: none;
+  top: 10px;
+  border: 1px solid #919191;
+  background-color: #e1e1e1; 
+  color: black;
+  padding: 10px 20px;
+  width: 100%;
+  z-index: 0;
+}
+.hiddentext code {
+  font-size: 16px;
+  font-family: serif;
+}
+.code-p {
+  background-color: #f7f7e2;
+  border: 1px solid #a1a1a1;
+  text-align: left;
+  padding: 5px 0px 7px 30px;
+}
+.show {
+  display: block;
+}

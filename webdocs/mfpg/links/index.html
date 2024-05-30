@@ -1,0 +1,96 @@
+<!doctype html>
+<link rel="stylesheet" type="text/css" href="/mfpg/styles.css">
+<script type="text/javascript" src="/mfpg/scripts.js"></script>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <title>MFPG Webpage</title>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="menu">
+        <button style="width: 100%;" class="btn">
+          <a href="/mfpg/">Home</a>
+        </button>
+      </div>
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/guides/">Guides</a>
+        </button>
+        <button onclick="dropGuidesMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="guides" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Interfaces
+            </div> 
+            <a href="/mfpg/guides/guiguide">GUI</a>
+            <a href="/mfpg/guides/cliguide">CLI</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tools
+            </div> 
+            <a href="/mfpg/guides/dslguide">DSL</a>
+            <a href="/mfpg/guides/notemapbuilder">Notemap Builder</a>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Tutorials
+            </div> 
+            <a href="/mfpg/guides/example-easy">Simple Example</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu">
+        <button style="width: 75%;" class="btn-selected">
+          <a href="/mfpg/links/">Links</a>
+        </button>
+        <button onclick="dropLinksMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="links" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Links
+            </div>
+            <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="menu">
+        <button style="width: 75%;" class="btn">
+          <a href="/mfpg/info/">Info</a> 
+        </button>
+        <button onclick="dropInfoMenu()" class="dropbtn">
+          &#11183
+        </button>
+        <div id="info" div class="dropdown-menu">
+          <div class="dropdown-content">
+            <div class="dropdown-text">
+              Information
+            </div>
+            <a href="/mfpg/info/patch-notes/">Patch Notes</a>
+            <a href="/mfpg/info/faq">Frequently Asked Questions</a>
+            <a href="/mfpg/info/technical-information">Technical Information</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="homemenu">
+      <div class="hometitle"> 
+        Links
+      </div>
+      <h1>Links to related content</h1>
+      <div class="links">  
+        <a href="https://github.com/rasmusthorsson/mfpg">GitHub Repo</a>
+      </div>
+      <p style="text-align: center;">
+        A link to the GitHub repository for this project.
+      </p>
+    </div>
+  </body>
+</html>
