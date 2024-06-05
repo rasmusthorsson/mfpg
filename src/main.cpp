@@ -214,7 +214,6 @@ int main (int argc, char *argv[]) {
 	}
 
 	//TODO fix distance solver.
-	//TODO Fix opt levels and documentation.
 	//TODO catch exceptions as refs
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {

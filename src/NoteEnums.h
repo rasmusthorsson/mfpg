@@ -32,15 +32,15 @@ namespace noteenums {
 	        Fs_8 = 102, G_8 = 103, Gs_8 = 104, A_8 = 105, As_8 = 106, B_8 = 107
 	};
 
-	enum Duration {
-		DoubleDur, 
-		Whole, 
-		Half, 
-		Quarter, 
-		Eighth, 
-		Sixteenth, 
-		ThirtySecond, 
-		SixtyFourth
+	enum class Duration {
+		DoubleDur = 8, 
+		Whole = 7, 
+		Half = 6, 
+		Quarter = 5, 
+		Eighth = 4, 
+		Sixteenth = 3, 
+		ThirtySecond = 2, 
+		SixtyFourth = 1
 	};
 	inline std::string to_string(const Note& n) {
 		if (n == noteenums::Note::REST) {

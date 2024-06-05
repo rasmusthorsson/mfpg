@@ -6,7 +6,7 @@
 #include "Absyn.H"
 #include "IString.h"
 #include "NoteEnums.h"
-#include "PhysAttrMap.h"
+#include "NoteAttributes.h"
 #include "Action.h"
 #include "ActionSet.h"
 #include "Instrument.h"
@@ -18,9 +18,9 @@
 class InstrumentBuilder : public Visitor {
 public:
 //----------- Typedefs for lambda functions //
-	typedef int (distfun_int) (PhysAttrMap, PhysAttrMap);
-	typedef double (distfun_dub) (PhysAttrMap, PhysAttrMap);
-	typedef bool (condfun) (PhysAttrMap, PhysAttrMap);
+	typedef int (distfun_int) (NoteAttributes, NoteAttributes);
+	typedef double (distfun_dub) (NoteAttributes, NoteAttributes);
+	typedef bool (condfun) (NoteAttributes, NoteAttributes);
 
 	typedef ExValContainer (exp_fun) (const ExValContainer&, const ExValContainer&);
 

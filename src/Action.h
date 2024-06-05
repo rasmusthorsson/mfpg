@@ -1,7 +1,7 @@
 #ifndef ACTION_H_MFPG
 #define ACTION_H_MFPG
 
-#include "PhysAttrMap.h"
+#include "NoteAttributes.h"
 #include <vector>
 #include <functional>
 
@@ -25,8 +25,8 @@ enum ACCUMULATOR {
 //(dictated by how note tuples are defined). OutputValue is for the output structure,
 //generally int or float.
 template <OutputViable OutputValue> class Action {
-	typedef OutputValue (distfun) (PhysAttrMap, PhysAttrMap);
-	typedef bool (condfun) (PhysAttrMap, PhysAttrMap);
+	typedef OutputValue (distfun) (NoteAttributes, NoteAttributes);
+	typedef bool (condfun) (NoteAttributes, NoteAttributes);
 	private:
 		//Action name.
 		std::string ID;
@@ -52,10 +52,10 @@ template <OutputViable OutputValue> class Action {
 
 		//Apply the distance functions to two tuples, uses the accumulators to bind functions
 		//together.
-		OutputValue distance(const PhysAttrMap&, const PhysAttrMap&) const;
+		OutputValue distance(const NoteAttributes&, const NoteAttributes&) const;
 		//Apply the condition functions to two tuples, uses the accumulators to bind functions
 		//together.
-		bool condition(const PhysAttrMap&, const PhysAttrMap&) const;
+		bool condition(const NoteAttributes&, const NoteAttributes&) const;
 
 		std::string getID() const;
 		bool operator ==(const Action<OutputValue>&) const;

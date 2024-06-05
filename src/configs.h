@@ -104,62 +104,62 @@ namespace configs {
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
 	shared_ptr<ActionSet<Distance>> test_configuration_2() {
-		typedef Distance (*a_t_d) (PhysAttrMap, PhysAttrMap);
-		typedef bool (*a_t_c) (PhysAttrMap, PhysAttrMap);
+		typedef Distance (*a_t_d) (NoteAttributes, NoteAttributes);
+		typedef bool (*a_t_c) (NoteAttributes, NoteAttributes);
 
-		a_t_c rest_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (t1 == PhysAttrMap{0, 0, 0} || 
-				t2 == PhysAttrMap{0, 0, 0});
+		a_t_c rest_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (t1.getPhysAttr() == PhysAttrMap{0, 0, 0} || 
+				t2.getPhysAttr() == PhysAttrMap{0, 0, 0});
 		};
-		a_t_d rest_d = [](PhysAttrMap t1, PhysAttrMap t2) {
+		a_t_d rest_d = [](NoteAttributes t1, NoteAttributes t2) {
 			return 0;
 		};
-		a_t_c f_a_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (0 != int(t1.getVal("FINGER") - t2.getVal("FINGER")));
+		a_t_c f_a_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (0 != int(t1.getPhysAttr().getVal("FINGER") - t2.getPhysAttr().getVal("FINGER")));
 		};
-		a_t_d f_a_d = [](PhysAttrMap t1, PhysAttrMap t2) {
+		a_t_d f_a_d = [](NoteAttributes t1, NoteAttributes t2) {
 			return 1;
 		};
 
-		a_t_c s_a_cross_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (2 <= abs(int(t1.getVal("STRING") - t2.getVal("STRING"))));
+		a_t_c s_a_cross_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (2 <= abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING"))));
 		};
-		a_t_d s_a_cross_d = [](PhysAttrMap t1, PhysAttrMap t2) {
+		a_t_d s_a_cross_d = [](NoteAttributes t1, NoteAttributes t2) {
 			return 10;
 		};
 
-		a_t_c s_a_no_cross_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (0 != int(t1.getVal("STRING") - t2.getVal("STRING")));
+		a_t_c s_a_no_cross_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (0 != int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING")));
 		};
-		a_t_d s_a_no_cross_d = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return abs(int(t1.getVal("STRING") - t2.getVal("STRING")));
+		a_t_d s_a_no_cross_d = [](NoteAttributes t1, NoteAttributes t2) {
+			return abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING")));
 		};
 
-		a_t_c hp_a_no_change_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (0 == int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
+		a_t_c hp_a_no_change_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (0 == int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS")));
 		};
-		a_t_d hp_a_no_change_d = [](PhysAttrMap t1, PhysAttrMap t2) {
+		a_t_d hp_a_no_change_d = [](NoteAttributes t1, NoteAttributes t2) {
 			return 0;
 		};
 
-		a_t_c hp_a_short_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (3 >= abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS"))));
+		a_t_c hp_a_short_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (3 >= abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS"))));
 		};
-		a_t_d hp_a_short_d = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS"))) + 1);
-		};
-
-		a_t_c hp_a_long_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (3 < abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS"))));
-		};
-		a_t_d hp_a_long_d = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (2 * abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS"))));
+		a_t_d hp_a_short_d = [](NoteAttributes t1, NoteAttributes t2) {
+			return (abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS"))) + 1);
 		};
 
-		a_t_c hp_a_high_c = [](PhysAttrMap t1, PhysAttrMap t2) {
-			return (5 < t2.getVal("HAND_POS"));
+		a_t_c hp_a_long_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (3 < abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS"))));
 		};
-		a_t_d hp_a_high_d = [](PhysAttrMap t1, PhysAttrMap t2) {
+		a_t_d hp_a_long_d = [](NoteAttributes t1, NoteAttributes t2) {
+			return (2 * abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS"))));
+		};
+
+		a_t_c hp_a_high_c = [](NoteAttributes t1, NoteAttributes t2) {
+			return (5 < t2.getPhysAttr().getVal("HAND_POS"));
+		};
+		a_t_d hp_a_high_d = [](NoteAttributes t1, NoteAttributes t2) {
 			return 5;
 		};
 		
@@ -184,41 +184,41 @@ namespace configs {
 		return action_set;
 	}
 	shared_ptr<ActionSet<Distance>> test_configuration_1() {
-		typedef Distance (*action_type_dist) (PhysAttrMap, PhysAttrMap);
-		typedef bool (*action_type_cond) (PhysAttrMap, PhysAttrMap);
+		typedef Distance (*action_type_dist) (NoteAttributes, NoteAttributes);
+		typedef bool (*action_type_cond) (NoteAttributes, NoteAttributes);
 
-		action_type_cond hp_action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (0 != int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
+		action_type_cond hp_action_cond = [] (NoteAttributes t1, NoteAttributes t2) {
+			return (0 != int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS")));
 		};
-		action_type_dist hp_action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
-		};
-
-		action_type_cond finger_action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (0 != int(t1.getVal("FINGER") - t2.getVal("FINGER")));
-		};
-		action_type_dist finger_action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return abs(int(t1.getVal("FINGER") - t2.getVal("FINGER")));
+		action_type_dist hp_action_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+			return abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS")));
 		};
 
-		action_type_cond string_action_NR_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (2 <= abs(int(t1.getVal("STRING") - t2.getVal("STRING"))));
+		action_type_cond finger_action_cond = [] (NoteAttributes t1, NoteAttributes t2) {
+			return (0 != int(t1.getPhysAttr().getVal("FINGER") - t2.getPhysAttr().getVal("FINGER")));
 		};
-		action_type_dist string_action_NR_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return abs(int(t1.getVal("STRING") - t2.getVal("STRING"))) + 100;
-		};
-
-		action_type_cond string_action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (0 < abs(int(t1.getVal("STRING") - t2.getVal("STRING"))));
-		};
-		action_type_dist string_action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return abs(int(t1.getVal("STRING") - t2.getVal("STRING")));
+		action_type_dist finger_action_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+			return abs(int(t1.getPhysAttr().getVal("FINGER") - t2.getPhysAttr().getVal("FINGER")));
 		};
 
-		action_type_cond rest_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (t1 == PhysAttrMap{0, 0, 0} || t2 == PhysAttrMap{0, 0, 0});
+		action_type_cond string_action_NR_cond = [] (NoteAttributes t1, NoteAttributes t2) {
+			return (2 <= abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING"))));
 		};
-		action_type_dist rest_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
+		action_type_dist string_action_NR_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+			return abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING"))) + 100;
+		};
+
+		action_type_cond string_action_cond = [] (NoteAttributes t1, NoteAttributes t2) {
+			return (0 < abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING"))));
+		};
+		action_type_dist string_action_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+			return abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING")));
+		};
+
+		action_type_cond rest_cond = [] (NoteAttributes t1, NoteAttributes t2) {
+			return (t1.getPhysAttr() == PhysAttrMap{0, 0, 0} || t2.getPhysAttr() == PhysAttrMap{0, 0, 0});
+		};
+		action_type_dist rest_dist = [] (NoteAttributes t1, NoteAttributes t2) {
 			return 0;
 		};
 

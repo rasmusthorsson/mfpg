@@ -255,15 +255,15 @@ void InstrumentBuilder::visitScaledDist(ScaledDist *scaled_dist)
 	if (output == 'i') {
 		int num = integer;
 		std::function<int_link> current_link = i_link;
-		std::function<distfun_int> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> int {
-			return (current_link(num, (abs ((int) scale(t1.getVal(attr1), t2.getVal(attr2))))));	
+		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
+			return (current_link(num, (abs ((int) scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<dub_link> current_link = d_link;
 		int num = dub;
-		std::function<distfun_dub> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> double {
-			return (current_link(num, (abs ((double) scale(t1.getVal(attr1), t2.getVal(attr2))))));	
+		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
+			return (current_link(num, (abs ((double) scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}
@@ -279,13 +279,13 @@ void InstrumentBuilder::visitDirectDist(DirectDist *direct_dist)
 	if (direct_dist->exp_) direct_dist->exp_->accept(this);
 	std::function<exp_fun> current_e_fun = e_fun;
 	if (output == 'i') {
-		std::function<distfun_int> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> int {
-			return (abs ((int) current_e_fun(t1.getVal(attr1), t2.getVal(attr2))));	
+		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
+			return (abs ((int) current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
-		std::function<distfun_dub> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> double {
-			return (abs ((double) current_e_fun(t1.getVal(attr1), t2.getVal(attr2))));	
+		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
+			return (abs ((double) current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}
@@ -297,13 +297,13 @@ void InstrumentBuilder::visitConstDist(ConstDist *const_dist)
 	if (const_dist->num_) const_dist->num_->accept(this);
 	if (output == 'i') {
 		int num = integer;
-		std::function<distfun_int> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> int {
+		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
 			return num;	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		double num = dub;
-		std::function<distfun_dub> dfun = [=, this](PhysAttrMap t1, PhysAttrMap t2) -> double {
+		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
 			return num;	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
@@ -332,15 +332,36 @@ void InstrumentBuilder::visitCompCond(CompCond *comp_cond)
 	if (output == 'i') {
 		int num = integer;
 		std::function<int_fun> comp_fun = i_fun;
-		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (comp_fun(num, abs ((int)(calc_fun(t1.getVal(attr1), t2.getVal(attr2))))));	
+		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+			if (attr1 == "NOTE") {
+				return (comp_fun(num, abs ((int)(calc_fun(
+						ExValContainer((int)t1.getNote()), 
+						ExValContainer((int)t2.getNote()))))));
+			}
+			if (attr1 == "DURATION") {
+				return (comp_fun(num, abs ((int)(calc_fun(
+						ExValContainer((int)t1.getDuration()), 
+						ExValContainer((int)t2.getDuration()))))));
+			}
+			return (comp_fun(num, abs ((int)(calc_fun(t1.getPhysAttr().getVal(attr1), 
+								  t2.getPhysAttr().getVal(attr2))))));
 		};
 		a_int.addCondFun(cfun, tmp_acc);
 	} else if (output == 'd') {
 		int num = dub;
 		std::function<dub_fun> comp_fun = d_fun;
-		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (comp_fun(num, abs ((double)(calc_fun(t1.getVal(attr1), t2.getVal(attr2))))));	
+		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+			if (attr1 == "NOTE") {
+				return (comp_fun(num, abs ((double)(calc_fun(
+						ExValContainer((double)t1.getNote()), 
+						ExValContainer((double)t2.getNote()))))));
+			} 
+			if (attr1 == "DURATION") {
+				return (comp_fun(num, abs ((double)(calc_fun(
+						ExValContainer((double)t1.getDuration()), 
+						ExValContainer((double)t2.getDuration()))))));
+			}
+			return (comp_fun(num, abs ((double)(calc_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));
 		};
 		a_dub.addCondFun(cfun, tmp_acc);
 	}
@@ -356,15 +377,27 @@ void InstrumentBuilder::visitFrValueCond(FrValueCond *fr_value_cond)
 	if (output == 'i') {
 		std::function<int_fun> comp_fun = i_fun;
 		int num = integer;
-		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (comp_fun(num, t1.getVal(attr).getI()));	
+		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+			if (attr == "NOTE") {
+				return (comp_fun(num, ExValContainer((int)t1.getNote())));
+			}
+			if (attr == "DURATION") {
+				return (comp_fun(num, ExValContainer((int)t1.getDuration())));
+			}
+			return (comp_fun(num, t1.getPhysAttr().getVal(attr).getI()));	
 		};
 		a_int.addCondFun(cfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<dub_fun> comp_fun = d_fun;
 		double num = dub;
-		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (comp_fun(num, t1.getVal(attr).getD()));	
+		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+			if (attr == "NOTE") {
+				return (comp_fun(num, ExValContainer((double)t1.getNote())));
+			}
+			if (attr == "DURATION") {
+				return (comp_fun(num, ExValContainer((double)t1.getDuration())));
+			}
+			return (comp_fun(num, t1.getPhysAttr().getVal(attr).getD()));	
 		};
 		a_dub.addCondFun(cfun, tmp_acc);
 	}
@@ -380,15 +413,27 @@ void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
 	if (output == 'i') {
 		std::function<int_fun> comp_fun = i_fun;
 		int num = integer;
-		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (comp_fun(num, t2.getVal(attr).getI()));	
+		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+			if (attr == "NOTE") {
+				return (comp_fun(num, ExValContainer((int)t1.getNote())));
+			}
+			if (attr == "DURATION") {
+				return (comp_fun(num, ExValContainer((int)t1.getDuration())));
+			}
+			return (comp_fun(num, t2.getPhysAttr().getVal(attr).getI()));	
 		};
 		a_int.addCondFun(cfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<dub_fun> comp_fun = d_fun;
 		double num = dub;
-		std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-			return (comp_fun(num, t2.getVal(attr).getD()));	
+		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+			if (attr == "NOTE") {
+				return (comp_fun(num, ExValContainer((double)t1.getNote())));
+			}
+			if (attr == "DURATION") {
+				return (comp_fun(num, ExValContainer((double)t1.getDuration())));
+			}
+			return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
 		};
 		a_dub.addCondFun(cfun, tmp_acc);
 	}
@@ -399,7 +444,7 @@ void InstrumentBuilder::visitBoolCond(BoolCond *bool_cond)
 	ACCUMULATOR tmp_acc = acc;
 	if (bool_cond->bool_) bool_cond->bool_->accept(this);
 	bool cur_bool = boolean;
-	std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
+	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
 		return cur_bool;
 	};
 	if (output == 'i') {
@@ -414,8 +459,14 @@ void InstrumentBuilder::visitFrAttrCond(FrAttrCond *fr_attr_cond)
 	ACCUMULATOR tmp_acc = acc;
 	if (fr_attr_cond->attr_) fr_attr_cond->attr_->accept(this);
 	std::string attr = str;
-	std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-		return t1.getVal(attr);
+	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+		if (attr == "NOTE") {
+			return ExValContainer(true);
+		}
+		if (attr == "DURATION") {
+			return ExValContainer(true);
+		}
+		return t1.getPhysAttr().getVal(attr);
 	};
 	if (output == 'i') {
 		a_int.addCondFun(cfun, tmp_acc);
@@ -429,8 +480,14 @@ void InstrumentBuilder::visitToAttrCond(ToAttrCond *to_attr_cond)
 	ACCUMULATOR tmp_acc = acc;
 	if (to_attr_cond->attr_) to_attr_cond->attr_->accept(this);
 	std::string attr = str;
-	std::function<condfun> cfun = [=, this] (PhysAttrMap t1, PhysAttrMap t2) {
-		return t2.getVal(attr);
+	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+		if (attr == "NOTE") {
+			return ExValContainer(true);
+		}
+		if (attr == "DURATION") {
+			return ExValContainer(true);
+		}
+		return t2.getPhysAttr().getVal(attr);
 	};
 	if (output == 'i') {
 		a_int.addCondFun(cfun, tmp_acc);
@@ -552,7 +609,7 @@ void InstrumentBuilder::visitCDouble(CDouble *c_double)
 
 void InstrumentBuilder::visitESub(ESub *e_sub)
 {
-	acc = ACCUMULATOR::MINUS; //TODO Join these together
+	acc = ACCUMULATOR::MINUS;
 	if (output == 'i') {
 		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
 			return abs((int)(a - b));		
@@ -566,7 +623,7 @@ void InstrumentBuilder::visitESub(ESub *e_sub)
 
 void InstrumentBuilder::visitEPlus(EPlus *e_plus)
 {
-	acc = ACCUMULATOR::PLUS; //TODO Join these together
+	acc = ACCUMULATOR::PLUS;
 	e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
 		return a + b;		
 	};

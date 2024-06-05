@@ -9,7 +9,7 @@
 #include "GreedySolver.h"
 #include "Instrument.h"
 #include "SolverException.h"
-#include "PhysAttrMap.h"
+#include "NoteAttributes.h"
 #include "ExValException.h"
 #include "SPSolver.h"
 
@@ -732,26 +732,28 @@ TEST(Action, BasicAction) {
 	using namespace std;
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
-	typedef bool (*a_type_cond)(PhysAttrMap, PhysAttrMap);
-	typedef int (*a_type_dist)(PhysAttrMap, PhysAttrMap);
+	typedef bool (*a_type_cond)(NoteAttributes, NoteAttributes);
+	typedef int (*a_type_dist)(NoteAttributes, NoteAttributes);
 
-	a_type_cond d_f_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
+	a_type_cond d_f_cond = [] (NoteAttributes t1, NoteAttributes t2) {
 		return true;
 	};
-	a_type_dist d_f_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-		int string = abs((int)(t1.getVal("STRING") - t2.getVal("STRING")));
-		int hand = abs((int)(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
-		int finger = abs((int)(t1.getVal("FINGER") - t2.getVal("FINGER")));
+	a_type_dist d_f_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+		int string = abs((int)(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING")));
+		int hand = abs((int)(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS")));
+		int finger = abs((int)(t1.getPhysAttr().getVal("FINGER") - t2.getPhysAttr().getVal("FINGER")));
 		return string + hand + finger;	
 	};
 	const Action<int> NOC(d_f_cond, d_f_dist, "NOC");
 
-	const PhysAttrMap t1({{"STRING", 1}, 
-			      {"HAND_POS", 1}, 
-			      {"FINGER", 1}});
-	const PhysAttrMap t2({{"STRING", 2}, 
+	PhysAttrMap p1{{"STRING", 1}, 
+			{"HAND_POS", 1}, 
+			{"FINGER", 1}};
+	PhysAttrMap p2{{"STRING", 2}, 
 			      {"HAND_POS", 2}, 
-			      {"FINGER", 2}});
+			      {"FINGER", 2}};
+	const NoteAttributes t1(p1);
+	const NoteAttributes t2(p2);
 
 	ASSERT_EQ(NOC.distance(t1, t2), 3);
 	ASSERT_EQ(NOC.condition(t1, t2), true);
@@ -765,15 +767,15 @@ TEST(Action, FiveTupleAction) {
 	ATTRIBUTE_TYPES = "iiibd";
 	ATTRIBUTES = {"STRING", "HAND_POS", "FINGER", "UP_STROKE", "B_DISTANCE"};
 
-	typedef bool (*a_type_cond)(PhysAttrMap, PhysAttrMap);
-	typedef double (*a_type_dist)(PhysAttrMap, PhysAttrMap);
+	typedef bool (*a_type_cond)(NoteAttributes, NoteAttributes);
+	typedef double (*a_type_dist)(NoteAttributes, NoteAttributes);
 
-	a_type_dist d_f_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-		int string = abs(int(s1.getVal("STRING") - s2.getVal("STRING")));
-		int hand = abs(int(s1.getVal("HAND_POS") - s2.getVal("HAND_POS")));
-		int finger = abs(int(s1.getVal("FINGER") - s2.getVal("FINGER")));
-		bool up_stroke = s1.getVal("UP_STROKE") || s2.getVal("UP_STROKE");
-		double note_distance = abs(double(s1.getVal("B_DISTANCE") - s2.getVal("B_DISTANCE")));
+	a_type_dist d_f_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+		int string = abs(int(s1.getPhysAttr().getVal("STRING") - s2.getPhysAttr().getVal("STRING")));
+		int hand = abs(int(s1.getPhysAttr().getVal("HAND_POS") - s2.getPhysAttr().getVal("HAND_POS")));
+		int finger = abs(int(s1.getPhysAttr().getVal("FINGER") - s2.getPhysAttr().getVal("FINGER")));
+		bool up_stroke = s1.getPhysAttr().getVal("UP_STROKE") || s2.getPhysAttr().getVal("UP_STROKE");
+		double note_distance = abs(double(s1.getPhysAttr().getVal("B_DISTANCE") - s2.getPhysAttr().getVal("B_DISTANCE")));
 		double res;
 
 	       	if (up_stroke) {
@@ -783,18 +785,88 @@ TEST(Action, FiveTupleAction) {
 		}
 		return static_cast<double>(res);
 	};
-	a_type_cond d_f_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+	a_type_cond d_f_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 		return true;
 	};
 	const Action<double> upstroke_distance(d_f_cond, d_f_dist, "UD");
-
-	const PhysAttrMap t1({1, 2, 1, false, 3.0});
-	const PhysAttrMap t2({1, 2, 3, false, 7.0});
-	const PhysAttrMap t3({1, 2, 1, true, 3.0});
-	const PhysAttrMap t4({1, 2, 3, false, 7.0});
+	PhysAttrMap p1{1, 2, 1, false, 3.0};
+	PhysAttrMap p2{1, 2, 3, false, 7.0};
+	PhysAttrMap p3{1, 2, 1, true, 3.0};
+	PhysAttrMap p4{1, 2, 3, false, 7.0};
+	const NoteAttributes t1(p1);
+	const NoteAttributes t2(p2);
+	const NoteAttributes t3(p3);
+	const NoteAttributes t4(p4);
 
 	ASSERT_EQ(upstroke_distance.distance(t1, t2), 2.0);
 	ASSERT_EQ(upstroke_distance.distance(t3, t4), 8.0);
+}
+
+TEST(Action, DefinitionAttributes) {
+	using namespace std;
+	TUPLESIZE = 3;
+	ATTRIBUTE_TYPES = "iii";
+	ATTRIBUTES = {"STRING", "HAND_POS", "FINGER"};
+
+	typedef bool (*a_type_cond)(NoteAttributes, NoteAttributes);
+	typedef int (*a_type_dist)(NoteAttributes, NoteAttributes);
+
+	//Distance functions are never used for Definition attributes
+	a_type_dist d_c5_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+		return 1;
+	};
+	a_type_dist d_a4_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+		return 1;
+	};
+	a_type_dist d_b4_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+		return 1;
+	};
+	a_type_cond d_c5_cond = [] (NoteAttributes s1, NoteAttributes s2) {
+		return (s1.getNote() == noteenums::Note::C_5);
+	};
+	a_type_cond d_a4_cond = [] (NoteAttributes s1, NoteAttributes s2) {
+		return (s1.getNote() < noteenums::Note::A_4);
+	};
+	a_type_cond d_b4_cond = [] (NoteAttributes s1, NoteAttributes s2) {
+		return (s1.getNote() > noteenums::Note::A_4) && (s1.getNote() < noteenums::Note::C_5);
+	};
+	a_type_dist d_whole_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+		return 1;
+	};
+	a_type_dist d_eighth_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+		return 1;
+	};
+	a_type_cond d_whole_cond = [] (NoteAttributes s1, NoteAttributes s2) {
+		return (s1.getDuration() == noteenums::Duration::Whole);
+	};
+	a_type_cond d_eighth_cond = [] (NoteAttributes s1, NoteAttributes s2) {
+		return (s1.getDuration() < noteenums::Duration::Quarter);
+	};
+	const Action<int> note_c5(d_c5_cond, d_c5_dist, "C5");
+	const Action<int> note_a4(d_a4_cond, d_a4_dist, "A4");
+	const Action<int> note_b4(d_b4_cond, d_b4_dist, "B4");
+	const Action<int> duration_whole(d_whole_cond, d_whole_dist, "WHOLE");
+	const Action<int> duration_eighth(d_eighth_cond, d_eighth_dist, "EIGHTH");
+	PhysAttrMap p1{1, 2, 1};
+	SimplifiedNote s1(noteenums::Note::C_5, noteenums::Duration::Whole);
+	SimplifiedNote s2(noteenums::Note::A_4, noteenums::Duration::Eighth);
+	SimplifiedNote s3(noteenums::Note::B_4, noteenums::Duration::Whole);
+	SimplifiedNote s4(noteenums::Note::C_4, noteenums::Duration::Sixteenth);
+	const NoteAttributes t1(p1, s1);
+	const NoteAttributes t2(p1, s2);
+	const NoteAttributes t3(p1, s3);
+	const NoteAttributes t4(p1, s4);
+
+	ASSERT_EQ(note_c5.condition(t1, t2), true);
+	ASSERT_EQ(note_a4.condition(t1, t2), false);
+	ASSERT_EQ(note_b4.condition(t3, t4), true);
+	ASSERT_EQ(note_a4.condition(t4, t1), true);
+
+	ASSERT_EQ(duration_whole.condition(t1, t2), true);
+	ASSERT_EQ(duration_whole.condition(t2, t3), false);
+	ASSERT_EQ(duration_eighth.condition(t2, t3), true);
+	ASSERT_EQ(duration_eighth.condition(t3, t4), false);
+	
 }
 
 class Layer_Tests : public ::testing::Test {
@@ -872,8 +944,8 @@ TEST_F(Layer_Tests, RemoveNonexistantNode) {
 class ActionSet_Tests : public ::testing::Test {
 	using out_type = int;
 
-	typedef out_type (*a_type_dist)(PhysAttrMap, PhysAttrMap);
-	typedef bool (*a_type_cond)(PhysAttrMap, PhysAttrMap);
+	typedef out_type (*a_type_dist)(NoteAttributes, NoteAttributes);
+	typedef bool (*a_type_cond)(NoteAttributes, NoteAttributes);
 
 	public:
 		std::unique_ptr<ActionSet<out_type>> set;
@@ -881,30 +953,32 @@ class ActionSet_Tests : public ::testing::Test {
 			::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 			using namespace std;
 
-			a_type_cond fa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+			a_type_cond fa_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 				return true;
 			};
-			a_type_dist fa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-				return int(max(s1.getVal("FINGER"), s2.getVal("FINGER"))
-				       - min(s1.getVal("FINGER"), s2.getVal("FINGER")));
+			a_type_dist fa_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+				return int(max(s1.getPhysAttr().getVal("FINGER"), 
+							s2.getPhysAttr().getVal("FINGER"))
+				       - min(s1.getPhysAttr().getVal("FINGER"), 
+					       		s2.getPhysAttr().getVal("FINGER")));
 			};
 			const Action<out_type> f_a(fa_cond, fa_dist, "FA");
 			
-			a_type_cond ha_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+			a_type_cond ha_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 				return true;
 			};
-			a_type_dist ha_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-				return int(max(s1.getVal("HAND_POS"), s2.getVal("HAND_POS"))
-					 - min(s1.getVal("HAND_POS"), s2.getVal("HAND_POS")));
+			a_type_dist ha_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+				return int(max(s1.getPhysAttr().getVal("HAND_POS"), s2.getPhysAttr().getVal("HAND_POS"))
+					 - min(s1.getPhysAttr().getVal("HAND_POS"), s2.getPhysAttr().getVal("HAND_POS")));
 			};
 			const Action<out_type> h_a(ha_cond, ha_dist, "HA");
 			
-			a_type_cond sa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+			a_type_cond sa_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 				return true;
 			};
-			a_type_dist sa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-				return int(max(s1.getVal("STRING"), s2.getVal("STRING"))
-					- min(s1.getVal("STRING"), s2.getVal("STRING")));
+			a_type_dist sa_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+				return int(max(s1.getPhysAttr().getVal("STRING"), s2.getPhysAttr().getVal("STRING"))
+					- min(s1.getPhysAttr().getVal("STRING"), s2.getPhysAttr().getVal("STRING")));
 			};
 			const Action<out_type> s_a(sa_cond, sa_dist, "SA");
 
@@ -958,8 +1032,8 @@ class LayerList_Tests : public ::testing::Test {
 			using namespace std;
 			::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
-			typedef out_type (*a_type_dist) (PhysAttrMap, PhysAttrMap);
-			typedef bool (*a_type_cond) (PhysAttrMap, PhysAttrMap);
+			typedef out_type (*a_type_dist) (NoteAttributes, NoteAttributes);
+			typedef bool (*a_type_cond) (NoteAttributes, NoteAttributes);
 
 			const IString s1(1, Note::C_3, Note::B_3);
 			const IString s2(2, Note::G_3, Note::Ds_4);
@@ -975,27 +1049,27 @@ class LayerList_Tests : public ::testing::Test {
 
 			list = unique_ptr<LayerList<int>>(new LayerList<out_type>(l_vec));
 
-			a_type_cond fa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+			a_type_cond fa_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 				return true;
 			};
-			a_type_dist fa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-				return int(max(s1.getVal("FINGER"), s2.getVal("FINGER")) - min(s1.getVal("FINGER"), s2.getVal("FINGER")));
+			a_type_dist fa_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+				return int(max(s1.getPhysAttr().getVal("FINGER"), s2.getPhysAttr().getVal("FINGER")) - min(s1.getPhysAttr().getVal("FINGER"), s2.getPhysAttr().getVal("FINGER")));
 			};
 			const Action<out_type> f_a(fa_cond, fa_dist, "FA");
 			
-			a_type_cond ha_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+			a_type_cond ha_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 				return true;
 			};
-			a_type_dist ha_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-				return int(max(s1.getVal("HAND_POS"), s2.getVal("HAND_POS")) - min(s1.getVal("HAND_POS"), s2.getVal("HAND_POS")));
+			a_type_dist ha_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+				return int(max(s1.getPhysAttr().getVal("HAND_POS"), s2.getPhysAttr().getVal("HAND_POS")) - min(s1.getPhysAttr().getVal("HAND_POS"), s2.getPhysAttr().getVal("HAND_POS")));
 			};
 			const Action<out_type> h_a(ha_cond, ha_dist, "HA");
 			
-			a_type_cond sa_cond = [] (PhysAttrMap s1, PhysAttrMap s2) {
+			a_type_cond sa_cond = [] (NoteAttributes s1, NoteAttributes s2) {
 				return true;
 			};
-			a_type_dist sa_dist = [] (PhysAttrMap s1, PhysAttrMap s2) {
-				return int(max(s1.getVal("STRING"), s2.getVal("STRING")) - min(s1.getVal("STRING"), s2.getVal("STRING")));
+			a_type_dist sa_dist = [] (NoteAttributes s1, NoteAttributes s2) {
+				return int(max(s1.getPhysAttr().getVal("STRING"), s2.getPhysAttr().getVal("STRING")) - min(s1.getPhysAttr().getVal("STRING"), s2.getPhysAttr().getVal("STRING")));
 			};
 			const Action<out_type> s_a(sa_cond, sa_dist, "SA");
 			
@@ -1272,17 +1346,17 @@ class GreedySolver_Tests : public ::testing::Test {
 		Instrument<out_type> buildInstrument() {
 			using namespace std;
 
-			typedef out_type (*action_type_dist)(PhysAttrMap, PhysAttrMap);
-			typedef bool (*action_type_cond)(PhysAttrMap, PhysAttrMap);
+			typedef out_type (*action_type_dist)(NoteAttributes, NoteAttributes);
+			typedef bool (*action_type_cond)(NoteAttributes, NoteAttributes);
 			
 
-			action_type_cond action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
+			action_type_cond action_cond = [] (NoteAttributes t1, NoteAttributes t2) {
 				return true;
 			};
-			action_type_dist action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-				int out = abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
-				out = out + abs(int(t1.getVal("FINGER") - t2.getVal("FINGER")));
-				if (abs(int(t1.getVal("STRING") - t2.getVal("STRING"))) >= 2) {
+			action_type_dist action_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+				int out = abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS")));
+				out = out + abs(int(t1.getPhysAttr().getVal("FINGER") - t2.getPhysAttr().getVal("FINGER")));
+				if (abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING"))) >= 2) {
 					out = out + 100;
 				} else {
 					out = out + 1; //TODO always adds 1, even if string same
@@ -1360,16 +1434,16 @@ TEST(SPSolver_Tests, Basic) {
 	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 	using out_type = int;
 
-	typedef out_type (*action_type_dist)(PhysAttrMap, PhysAttrMap);
-	typedef bool (*action_type_cond)(PhysAttrMap, PhysAttrMap);
+	typedef out_type (*action_type_dist)(NoteAttributes, NoteAttributes);
+	typedef bool (*action_type_cond)(NoteAttributes, NoteAttributes);
 	
-	action_type_cond action_cond = [] (PhysAttrMap t1, PhysAttrMap t2) {
+	action_type_cond action_cond = [] (NoteAttributes t1, NoteAttributes t2) {
 		return true;
 	};
-	action_type_dist action_dist = [] (PhysAttrMap t1, PhysAttrMap t2) {
-		int out = abs(int(t1.getVal("HAND_POS") - t2.getVal("HAND_POS")));
-		out = out + abs(int(t1.getVal("FINGER") - t2.getVal("FINGER")));
-		if (abs(int(t1.getVal("STRING") - t2.getVal("STRING"))) >= 2) {
+	action_type_dist action_dist = [] (NoteAttributes t1, NoteAttributes t2) {
+		int out = abs(int(t1.getPhysAttr().getVal("HAND_POS") - t2.getPhysAttr().getVal("HAND_POS")));
+		out = out + abs(int(t1.getPhysAttr().getVal("FINGER") - t2.getPhysAttr().getVal("FINGER")));
+		if (abs(int(t1.getPhysAttr().getVal("STRING") - t2.getPhysAttr().getVal("STRING"))) >= 2) {
 			out = out + 100;
 		} else {
 			out = out + 1;

@@ -6,7 +6,7 @@
 #include "NoteList.h"
 #include "ActionSet.h"
 #include "LinkException.h"
-#include "PhysAttrMap.h"
+#include "NoteAttributes.h"
 
 #include <iterator>
 #include <cstddef>
