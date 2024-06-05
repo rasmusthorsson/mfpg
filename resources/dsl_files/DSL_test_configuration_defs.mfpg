@@ -1,4 +1,4 @@
-//Test DSL file for using Definition Attributes, same as test_1 file with two Definition actions
+//Test DSL file for using Definition Attributes, same as test_1 file with three Definition actions.
 Output: int 
 
 Attributes:
@@ -13,8 +13,9 @@ Strings:
 	4 : E 5 -> F 7 ;
 
 Actions:
-NOTE_C_FOUR = this NOTE == 48 : 100 (true) , 
-NOTE_B_FIVE = this NOTE == 71 : 50 (true) ,
+NOTE_C_FOUR = this NOTE == C 4 : 100 (true) , 
+NOTE_B_FIVE = this NOTE == B 5 : 50 (true) ,
+WHOLE = this DURATION == Whole : 20 (true) ,
 REST_F = this STRING == 0 && this FINGER == 0 && this HAND_POS == 0 : 0 (true) ,
 REST_T = to STRING == 0 && to FINGER == 0 && to HAND_POS == 0 : 0 (true) , 
 HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS (true) ,

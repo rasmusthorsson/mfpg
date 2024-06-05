@@ -47,6 +47,7 @@ public:
 //----------- String exclusives ------------//
 	std::vector<IString> strings;
 	noteenums::Note note;
+	noteenums::Duration duration;
 	
 //---------- Action exclusives -------------//
 	Action<int> a_int;
@@ -77,6 +78,7 @@ public:
 	void visitNoteDef(NoteDef *p);
 	void visitNoteDefBase(NoteDefBase *p);
 	void visitAttrType(AttrType *p);
+  	void visitDurationDefBase(DurationDefBase *p);
 	void visitAct(Act *p);
 	void visitActionName(ActionName *p);
 	void visitDep(Dep *p);
@@ -86,6 +88,8 @@ public:
 	void visitCompOp(CompOp *p);
 	void visitBoolOp(BoolOp *p);
 	void visitNum(Num *p);
+	void visitCNoteDef(CNoteDef *p);
+	void visitCDurationDef(CDurationDef *p);
 	void visitExp(Exp *p);
 	void visitScale(Scale *p);
 	void visitBool(Bool *p);
@@ -112,6 +116,14 @@ public:
 	void visitAttrType_i(AttrType_i *p);
 	void visitAttrType_d(AttrType_d *p);
 	void visitAttrType_b(AttrType_b *p);
+	void visitDurationDefBase_Double(DurationDefBase_Double *p);
+	void visitDurationDefBase_Whole(DurationDefBase_Whole *p);
+	void visitDurationDefBase_Half(DurationDefBase_Half *p);
+	void visitDurationDefBase_Quarter(DurationDefBase_Quarter *p);
+	void visitDurationDefBase_Eighth(DurationDefBase_Eighth *p);
+	void visitDurationDefBase_Sixteenth(DurationDefBase_Sixteenth *p);
+	void visitDurationDefBase_ThirtySecond(DurationDefBase_ThirtySecond *p);
+	void visitDurationDefBase_SixtyFourth(DurationDefBase_SixtyFourth *p);
 	void visitFunList(FunList *p);
 	void visitAName(AName *p);
 	void visitADeps(ADeps *p);
@@ -137,6 +149,10 @@ public:
 	void visitOr(Or *p);
 	void visitCInt(CInt *p);
 	void visitCDouble(CDouble *p);
+	void visitCNote(CNote *p);
+	void visitCDuration(CDuration *p);
+	void visitCNNote(CNNote *p);
+	void visitCNDuration(CNDuration *p);
 	void visitESub(ESub *p);
 	void visitEPlus(EPlus *p);
 	void visitSMul(SMul *p);

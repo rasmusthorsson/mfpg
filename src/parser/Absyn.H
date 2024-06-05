@@ -30,6 +30,7 @@ class SPos;
 class NoteDef;
 class NoteDefBase;
 class AttrType;
+class DurationDefBase;
 class Act;
 class ActionName;
 class Dep;
@@ -39,6 +40,8 @@ class Attr;
 class CompOp;
 class BoolOp;
 class Num;
+class CNoteDef;
+class CDurationDef;
 class Exp;
 class Scale;
 class Bool;
@@ -65,6 +68,14 @@ class NoteDefBase_Gs;
 class AttrType_i;
 class AttrType_d;
 class AttrType_b;
+class DurationDefBase_Double;
+class DurationDefBase_Whole;
+class DurationDefBase_Half;
+class DurationDefBase_Quarter;
+class DurationDefBase_Eighth;
+class DurationDefBase_Sixteenth;
+class DurationDefBase_ThirtySecond;
+class DurationDefBase_SixtyFourth;
 class FunList;
 class AName;
 class ADeps;
@@ -90,6 +101,10 @@ class And;
 class Or;
 class CInt;
 class CDouble;
+class CNote;
+class CDuration;
+class CNNote;
+class CNDuration;
 class ESub;
 class EPlus;
 class SMul;
@@ -114,6 +129,7 @@ public:
   virtual void visitNoteDef(NoteDef *p) = 0;
   virtual void visitNoteDefBase(NoteDefBase *p) = 0;
   virtual void visitAttrType(AttrType *p) = 0;
+  virtual void visitDurationDefBase(DurationDefBase *p) = 0;
   virtual void visitAct(Act *p) = 0;
   virtual void visitActionName(ActionName *p) = 0;
   virtual void visitDep(Dep *p) = 0;
@@ -123,6 +139,8 @@ public:
   virtual void visitCompOp(CompOp *p) = 0;
   virtual void visitBoolOp(BoolOp *p) = 0;
   virtual void visitNum(Num *p) = 0;
+  virtual void visitCNoteDef(CNoteDef *p) = 0;
+  virtual void visitCDurationDef(CDurationDef *p) = 0;
   virtual void visitExp(Exp *p) = 0;
   virtual void visitScale(Scale *p) = 0;
   virtual void visitBool(Bool *p) = 0;
@@ -149,6 +167,14 @@ public:
   virtual void visitAttrType_i(AttrType_i *p) = 0;
   virtual void visitAttrType_d(AttrType_d *p) = 0;
   virtual void visitAttrType_b(AttrType_b *p) = 0;
+  virtual void visitDurationDefBase_Double(DurationDefBase_Double *p) = 0;
+  virtual void visitDurationDefBase_Whole(DurationDefBase_Whole *p) = 0;
+  virtual void visitDurationDefBase_Half(DurationDefBase_Half *p) = 0;
+  virtual void visitDurationDefBase_Quarter(DurationDefBase_Quarter *p) = 0;
+  virtual void visitDurationDefBase_Eighth(DurationDefBase_Eighth *p) = 0;
+  virtual void visitDurationDefBase_Sixteenth(DurationDefBase_Sixteenth *p) = 0;
+  virtual void visitDurationDefBase_ThirtySecond(DurationDefBase_ThirtySecond *p) = 0;
+  virtual void visitDurationDefBase_SixtyFourth(DurationDefBase_SixtyFourth *p) = 0;
   virtual void visitFunList(FunList *p) = 0;
   virtual void visitAName(AName *p) = 0;
   virtual void visitADeps(ADeps *p) = 0;
@@ -174,6 +200,10 @@ public:
   virtual void visitOr(Or *p) = 0;
   virtual void visitCInt(CInt *p) = 0;
   virtual void visitCDouble(CDouble *p) = 0;
+  virtual void visitCNote(CNote *p) = 0;
+  virtual void visitCDuration(CDuration *p) = 0;
+  virtual void visitCNNote(CNNote *p) = 0;
+  virtual void visitCNDuration(CNDuration *p) = 0;
   virtual void visitESub(ESub *p) = 0;
   virtual void visitEPlus(EPlus *p) = 0;
   virtual void visitSMul(SMul *p) = 0;
@@ -261,6 +291,13 @@ public:
 
 };
 
+class DurationDefBase : public Visitable
+{
+public:
+  virtual DurationDefBase *clone() const = 0;
+
+};
+
 class Act : public Visitable
 {
 public:
@@ -321,6 +358,20 @@ class Num : public Visitable
 {
 public:
   virtual Num *clone() const = 0;
+
+};
+
+class CNoteDef : public Visitable
+{
+public:
+  virtual CNoteDef *clone() const = 0;
+
+};
+
+class CDurationDef : public Visitable
+{
+public:
+  virtual CDurationDef *clone() const = 0;
 
 };
 
@@ -658,6 +709,110 @@ public:
   virtual void accept(Visitor *v);
   virtual AttrType_b *clone() const;
   void swap(AttrType_b &);
+};
+
+class DurationDefBase_Double : public DurationDefBase
+{
+public:
+
+  DurationDefBase_Double(const DurationDefBase_Double &);
+  DurationDefBase_Double &operator=(const DurationDefBase_Double &);
+  DurationDefBase_Double();
+  ~DurationDefBase_Double();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_Double *clone() const;
+  void swap(DurationDefBase_Double &);
+};
+
+class DurationDefBase_Whole : public DurationDefBase
+{
+public:
+
+  DurationDefBase_Whole(const DurationDefBase_Whole &);
+  DurationDefBase_Whole &operator=(const DurationDefBase_Whole &);
+  DurationDefBase_Whole();
+  ~DurationDefBase_Whole();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_Whole *clone() const;
+  void swap(DurationDefBase_Whole &);
+};
+
+class DurationDefBase_Half : public DurationDefBase
+{
+public:
+
+  DurationDefBase_Half(const DurationDefBase_Half &);
+  DurationDefBase_Half &operator=(const DurationDefBase_Half &);
+  DurationDefBase_Half();
+  ~DurationDefBase_Half();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_Half *clone() const;
+  void swap(DurationDefBase_Half &);
+};
+
+class DurationDefBase_Quarter : public DurationDefBase
+{
+public:
+
+  DurationDefBase_Quarter(const DurationDefBase_Quarter &);
+  DurationDefBase_Quarter &operator=(const DurationDefBase_Quarter &);
+  DurationDefBase_Quarter();
+  ~DurationDefBase_Quarter();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_Quarter *clone() const;
+  void swap(DurationDefBase_Quarter &);
+};
+
+class DurationDefBase_Eighth : public DurationDefBase
+{
+public:
+
+  DurationDefBase_Eighth(const DurationDefBase_Eighth &);
+  DurationDefBase_Eighth &operator=(const DurationDefBase_Eighth &);
+  DurationDefBase_Eighth();
+  ~DurationDefBase_Eighth();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_Eighth *clone() const;
+  void swap(DurationDefBase_Eighth &);
+};
+
+class DurationDefBase_Sixteenth : public DurationDefBase
+{
+public:
+
+  DurationDefBase_Sixteenth(const DurationDefBase_Sixteenth &);
+  DurationDefBase_Sixteenth &operator=(const DurationDefBase_Sixteenth &);
+  DurationDefBase_Sixteenth();
+  ~DurationDefBase_Sixteenth();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_Sixteenth *clone() const;
+  void swap(DurationDefBase_Sixteenth &);
+};
+
+class DurationDefBase_ThirtySecond : public DurationDefBase
+{
+public:
+
+  DurationDefBase_ThirtySecond(const DurationDefBase_ThirtySecond &);
+  DurationDefBase_ThirtySecond &operator=(const DurationDefBase_ThirtySecond &);
+  DurationDefBase_ThirtySecond();
+  ~DurationDefBase_ThirtySecond();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_ThirtySecond *clone() const;
+  void swap(DurationDefBase_ThirtySecond &);
+};
+
+class DurationDefBase_SixtyFourth : public DurationDefBase
+{
+public:
+
+  DurationDefBase_SixtyFourth(const DurationDefBase_SixtyFourth &);
+  DurationDefBase_SixtyFourth &operator=(const DurationDefBase_SixtyFourth &);
+  DurationDefBase_SixtyFourth();
+  ~DurationDefBase_SixtyFourth();
+  virtual void accept(Visitor *v);
+  virtual DurationDefBase_SixtyFourth *clone() const;
+  void swap(DurationDefBase_SixtyFourth &);
 };
 
 class FunList : public Act
@@ -1023,6 +1178,63 @@ public:
   virtual void accept(Visitor *v);
   virtual CDouble *clone() const;
   void swap(CDouble &);
+};
+
+class CNote : public Num
+{
+public:
+  CNoteDef *cnotedef_;
+
+  CNote(const CNote &);
+  CNote &operator=(const CNote &);
+  CNote(CNoteDef *p1);
+  ~CNote();
+  virtual void accept(Visitor *v);
+  virtual CNote *clone() const;
+  void swap(CNote &);
+};
+
+class CDuration : public Num
+{
+public:
+  CDurationDef *cdurationdef_;
+
+  CDuration(const CDuration &);
+  CDuration &operator=(const CDuration &);
+  CDuration(CDurationDef *p1);
+  ~CDuration();
+  virtual void accept(Visitor *v);
+  virtual CDuration *clone() const;
+  void swap(CDuration &);
+};
+
+class CNNote : public CNoteDef
+{
+public:
+  NoteDefBase *notedefbase_;
+  Integer integer_;
+
+  CNNote(const CNNote &);
+  CNNote &operator=(const CNNote &);
+  CNNote(NoteDefBase *p1, Integer p2);
+  ~CNNote();
+  virtual void accept(Visitor *v);
+  virtual CNNote *clone() const;
+  void swap(CNNote &);
+};
+
+class CNDuration : public CDurationDef
+{
+public:
+  DurationDefBase *durationdefbase_;
+
+  CNDuration(const CNDuration &);
+  CNDuration &operator=(const CNDuration &);
+  CNDuration(DurationDefBase *p1);
+  ~CNDuration();
+  virtual void accept(Visitor *v);
+  virtual CNDuration *clone() const;
+  void swap(CNDuration &);
 };
 
 class ESub : public Exp

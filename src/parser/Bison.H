@@ -81,27 +81,35 @@ extern int mfpg_dsl_debug;
     _KW_Cs = 282,                  /* _KW_Cs  */
     _KW_D = 283,                   /* _KW_D  */
     _SYMB_4 = 284,                 /* _SYMB_4  */
-    _KW_Ds = 285,                  /* _KW_Ds  */
-    _KW_E = 286,                   /* _KW_E  */
-    _KW_F = 287,                   /* _KW_F  */
-    _KW_Fs = 288,                  /* _KW_Fs  */
-    _KW_G = 289,                   /* _KW_G  */
-    _KW_Gs = 290,                  /* _KW_Gs  */
-    _SYMB_0 = 291,                 /* _SYMB_0  */
-    _SYMB_2 = 292,                 /* _SYMB_2  */
-    _KW_b = 293,                   /* _KW_b  */
-    _KW_d = 294,                   /* _KW_d  */
-    _KW_double = 295,              /* _KW_double  */
-    _KW_false = 296,               /* _KW_false  */
-    _KW_i = 297,                   /* _KW_i  */
-    _KW_int = 298,                 /* _KW_int  */
-    _KW_this = 299,                /* _KW_this  */
-    _KW_to = 300,                  /* _KW_to  */
-    _KW_true = 301,                /* _KW_true  */
-    _DBAR = 302,                   /* _DBAR  */
-    T_Identifier = 303,            /* T_Identifier  */
-    _INTEGER_ = 304,               /* _INTEGER_  */
-    _DOUBLE_ = 305                 /* _DOUBLE_  */
+    _KW_Double = 285,              /* _KW_Double  */
+    _KW_Ds = 286,                  /* _KW_Ds  */
+    _KW_E = 287,                   /* _KW_E  */
+    _KW_Eighth = 288,              /* _KW_Eighth  */
+    _KW_F = 289,                   /* _KW_F  */
+    _KW_Fs = 290,                  /* _KW_Fs  */
+    _KW_G = 291,                   /* _KW_G  */
+    _KW_Gs = 292,                  /* _KW_Gs  */
+    _KW_Half = 293,                /* _KW_Half  */
+    _SYMB_0 = 294,                 /* _SYMB_0  */
+    _KW_Quarter = 295,             /* _KW_Quarter  */
+    _KW_Sixteenth = 296,           /* _KW_Sixteenth  */
+    _KW_SixtyFourth = 297,         /* _KW_SixtyFourth  */
+    _SYMB_2 = 298,                 /* _SYMB_2  */
+    _KW_ThirtySecond = 299,        /* _KW_ThirtySecond  */
+    _KW_Whole = 300,               /* _KW_Whole  */
+    _KW_b = 301,                   /* _KW_b  */
+    _KW_d = 302,                   /* _KW_d  */
+    _KW_double = 303,              /* _KW_double  */
+    _KW_false = 304,               /* _KW_false  */
+    _KW_i = 305,                   /* _KW_i  */
+    _KW_int = 306,                 /* _KW_int  */
+    _KW_this = 307,                /* _KW_this  */
+    _KW_to = 308,                  /* _KW_to  */
+    _KW_true = 309,                /* _KW_true  */
+    _DBAR = 310,                   /* _DBAR  */
+    T_Identifier = 311,            /* T_Identifier  */
+    _INTEGER_ = 312,               /* _INTEGER_  */
+    _DOUBLE_ = 313                 /* _DOUBLE_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -126,6 +134,7 @@ union YYSTYPE
   NoteDef* notedef_;
   NoteDefBase* notedefbase_;
   AttrType* attrtype_;
+  DurationDefBase* durationdefbase_;
   Act* act_;
   ActionName* actionname_;
   ListAct* listact_;
@@ -137,11 +146,13 @@ union YYSTYPE
   CompOp* compop_;
   BoolOp* boolop_;
   Num* num_;
+  CNoteDef* cnotedef_;
+  CDurationDef* cdurationdef_;
   Exp* exp_;
   Scale* scale_;
   Bool* bool_;
 
-#line 145 "Bison.H"
+#line 156 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -979,6 +979,326 @@ AttrType_b *AttrType_b::clone() const
 
 
 
+/********************   DurationDefBase_Double    ********************/
+DurationDefBase_Double::DurationDefBase_Double()
+{
+
+}
+
+DurationDefBase_Double::DurationDefBase_Double(const DurationDefBase_Double & other)
+{
+
+}
+
+DurationDefBase_Double &DurationDefBase_Double::operator=(const DurationDefBase_Double & other)
+{
+  DurationDefBase_Double tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_Double::swap(DurationDefBase_Double & other)
+{
+
+}
+
+DurationDefBase_Double::~DurationDefBase_Double()
+{
+
+}
+
+void DurationDefBase_Double::accept(Visitor *v)
+{
+  v->visitDurationDefBase_Double(this);
+}
+
+DurationDefBase_Double *DurationDefBase_Double::clone() const
+{
+  return new DurationDefBase_Double(*this);
+}
+
+
+
+/********************   DurationDefBase_Whole    ********************/
+DurationDefBase_Whole::DurationDefBase_Whole()
+{
+
+}
+
+DurationDefBase_Whole::DurationDefBase_Whole(const DurationDefBase_Whole & other)
+{
+
+}
+
+DurationDefBase_Whole &DurationDefBase_Whole::operator=(const DurationDefBase_Whole & other)
+{
+  DurationDefBase_Whole tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_Whole::swap(DurationDefBase_Whole & other)
+{
+
+}
+
+DurationDefBase_Whole::~DurationDefBase_Whole()
+{
+
+}
+
+void DurationDefBase_Whole::accept(Visitor *v)
+{
+  v->visitDurationDefBase_Whole(this);
+}
+
+DurationDefBase_Whole *DurationDefBase_Whole::clone() const
+{
+  return new DurationDefBase_Whole(*this);
+}
+
+
+
+/********************   DurationDefBase_Half    ********************/
+DurationDefBase_Half::DurationDefBase_Half()
+{
+
+}
+
+DurationDefBase_Half::DurationDefBase_Half(const DurationDefBase_Half & other)
+{
+
+}
+
+DurationDefBase_Half &DurationDefBase_Half::operator=(const DurationDefBase_Half & other)
+{
+  DurationDefBase_Half tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_Half::swap(DurationDefBase_Half & other)
+{
+
+}
+
+DurationDefBase_Half::~DurationDefBase_Half()
+{
+
+}
+
+void DurationDefBase_Half::accept(Visitor *v)
+{
+  v->visitDurationDefBase_Half(this);
+}
+
+DurationDefBase_Half *DurationDefBase_Half::clone() const
+{
+  return new DurationDefBase_Half(*this);
+}
+
+
+
+/********************   DurationDefBase_Quarter    ********************/
+DurationDefBase_Quarter::DurationDefBase_Quarter()
+{
+
+}
+
+DurationDefBase_Quarter::DurationDefBase_Quarter(const DurationDefBase_Quarter & other)
+{
+
+}
+
+DurationDefBase_Quarter &DurationDefBase_Quarter::operator=(const DurationDefBase_Quarter & other)
+{
+  DurationDefBase_Quarter tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_Quarter::swap(DurationDefBase_Quarter & other)
+{
+
+}
+
+DurationDefBase_Quarter::~DurationDefBase_Quarter()
+{
+
+}
+
+void DurationDefBase_Quarter::accept(Visitor *v)
+{
+  v->visitDurationDefBase_Quarter(this);
+}
+
+DurationDefBase_Quarter *DurationDefBase_Quarter::clone() const
+{
+  return new DurationDefBase_Quarter(*this);
+}
+
+
+
+/********************   DurationDefBase_Eighth    ********************/
+DurationDefBase_Eighth::DurationDefBase_Eighth()
+{
+
+}
+
+DurationDefBase_Eighth::DurationDefBase_Eighth(const DurationDefBase_Eighth & other)
+{
+
+}
+
+DurationDefBase_Eighth &DurationDefBase_Eighth::operator=(const DurationDefBase_Eighth & other)
+{
+  DurationDefBase_Eighth tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_Eighth::swap(DurationDefBase_Eighth & other)
+{
+
+}
+
+DurationDefBase_Eighth::~DurationDefBase_Eighth()
+{
+
+}
+
+void DurationDefBase_Eighth::accept(Visitor *v)
+{
+  v->visitDurationDefBase_Eighth(this);
+}
+
+DurationDefBase_Eighth *DurationDefBase_Eighth::clone() const
+{
+  return new DurationDefBase_Eighth(*this);
+}
+
+
+
+/********************   DurationDefBase_Sixteenth    ********************/
+DurationDefBase_Sixteenth::DurationDefBase_Sixteenth()
+{
+
+}
+
+DurationDefBase_Sixteenth::DurationDefBase_Sixteenth(const DurationDefBase_Sixteenth & other)
+{
+
+}
+
+DurationDefBase_Sixteenth &DurationDefBase_Sixteenth::operator=(const DurationDefBase_Sixteenth & other)
+{
+  DurationDefBase_Sixteenth tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_Sixteenth::swap(DurationDefBase_Sixteenth & other)
+{
+
+}
+
+DurationDefBase_Sixteenth::~DurationDefBase_Sixteenth()
+{
+
+}
+
+void DurationDefBase_Sixteenth::accept(Visitor *v)
+{
+  v->visitDurationDefBase_Sixteenth(this);
+}
+
+DurationDefBase_Sixteenth *DurationDefBase_Sixteenth::clone() const
+{
+  return new DurationDefBase_Sixteenth(*this);
+}
+
+
+
+/********************   DurationDefBase_ThirtySecond    ********************/
+DurationDefBase_ThirtySecond::DurationDefBase_ThirtySecond()
+{
+
+}
+
+DurationDefBase_ThirtySecond::DurationDefBase_ThirtySecond(const DurationDefBase_ThirtySecond & other)
+{
+
+}
+
+DurationDefBase_ThirtySecond &DurationDefBase_ThirtySecond::operator=(const DurationDefBase_ThirtySecond & other)
+{
+  DurationDefBase_ThirtySecond tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_ThirtySecond::swap(DurationDefBase_ThirtySecond & other)
+{
+
+}
+
+DurationDefBase_ThirtySecond::~DurationDefBase_ThirtySecond()
+{
+
+}
+
+void DurationDefBase_ThirtySecond::accept(Visitor *v)
+{
+  v->visitDurationDefBase_ThirtySecond(this);
+}
+
+DurationDefBase_ThirtySecond *DurationDefBase_ThirtySecond::clone() const
+{
+  return new DurationDefBase_ThirtySecond(*this);
+}
+
+
+
+/********************   DurationDefBase_SixtyFourth    ********************/
+DurationDefBase_SixtyFourth::DurationDefBase_SixtyFourth()
+{
+
+}
+
+DurationDefBase_SixtyFourth::DurationDefBase_SixtyFourth(const DurationDefBase_SixtyFourth & other)
+{
+
+}
+
+DurationDefBase_SixtyFourth &DurationDefBase_SixtyFourth::operator=(const DurationDefBase_SixtyFourth & other)
+{
+  DurationDefBase_SixtyFourth tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DurationDefBase_SixtyFourth::swap(DurationDefBase_SixtyFourth & other)
+{
+
+}
+
+DurationDefBase_SixtyFourth::~DurationDefBase_SixtyFourth()
+{
+
+}
+
+void DurationDefBase_SixtyFourth::accept(Visitor *v)
+{
+  v->visitDurationDefBase_SixtyFourth(this);
+}
+
+DurationDefBase_SixtyFourth *DurationDefBase_SixtyFourth::clone() const
+{
+  return new DurationDefBase_SixtyFourth(*this);
+}
+
+
+
 /********************   FunList    ********************/
 FunList::FunList(ActionName *p1, CFun *p2, DFun *p3, Bool *p4)
 {
@@ -2129,6 +2449,185 @@ void CDouble::accept(Visitor *v)
 CDouble *CDouble::clone() const
 {
   return new CDouble(*this);
+}
+
+
+
+/********************   CNote    ********************/
+CNote::CNote(CNoteDef *p1)
+{
+  cnotedef_ = p1;
+
+}
+
+CNote::CNote(const CNote & other)
+{
+  cnotedef_ = other.cnotedef_->clone();
+
+}
+
+CNote &CNote::operator=(const CNote & other)
+{
+  CNote tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CNote::swap(CNote & other)
+{
+  std::swap(cnotedef_, other.cnotedef_);
+
+}
+
+CNote::~CNote()
+{
+  delete(cnotedef_);
+
+}
+
+void CNote::accept(Visitor *v)
+{
+  v->visitCNote(this);
+}
+
+CNote *CNote::clone() const
+{
+  return new CNote(*this);
+}
+
+
+
+/********************   CDuration    ********************/
+CDuration::CDuration(CDurationDef *p1)
+{
+  cdurationdef_ = p1;
+
+}
+
+CDuration::CDuration(const CDuration & other)
+{
+  cdurationdef_ = other.cdurationdef_->clone();
+
+}
+
+CDuration &CDuration::operator=(const CDuration & other)
+{
+  CDuration tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CDuration::swap(CDuration & other)
+{
+  std::swap(cdurationdef_, other.cdurationdef_);
+
+}
+
+CDuration::~CDuration()
+{
+  delete(cdurationdef_);
+
+}
+
+void CDuration::accept(Visitor *v)
+{
+  v->visitCDuration(this);
+}
+
+CDuration *CDuration::clone() const
+{
+  return new CDuration(*this);
+}
+
+
+
+/********************   CNNote    ********************/
+CNNote::CNNote(NoteDefBase *p1, Integer p2)
+{
+  notedefbase_ = p1;
+  integer_ = p2;
+
+}
+
+CNNote::CNNote(const CNNote & other)
+{
+  notedefbase_ = other.notedefbase_->clone();
+  integer_ = other.integer_;
+
+}
+
+CNNote &CNNote::operator=(const CNNote & other)
+{
+  CNNote tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CNNote::swap(CNNote & other)
+{
+  std::swap(notedefbase_, other.notedefbase_);
+  std::swap(integer_, other.integer_);
+
+}
+
+CNNote::~CNNote()
+{
+  delete(notedefbase_);
+
+}
+
+void CNNote::accept(Visitor *v)
+{
+  v->visitCNNote(this);
+}
+
+CNNote *CNNote::clone() const
+{
+  return new CNNote(*this);
+}
+
+
+
+/********************   CNDuration    ********************/
+CNDuration::CNDuration(DurationDefBase *p1)
+{
+  durationdefbase_ = p1;
+
+}
+
+CNDuration::CNDuration(const CNDuration & other)
+{
+  durationdefbase_ = other.durationdefbase_->clone();
+
+}
+
+CNDuration &CNDuration::operator=(const CNDuration & other)
+{
+  CNDuration tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CNDuration::swap(CNDuration & other)
+{
+  std::swap(durationdefbase_, other.durationdefbase_);
+
+}
+
+CNDuration::~CNDuration()
+{
+  delete(durationdefbase_);
+
+}
+
+void CNDuration::accept(Visitor *v)
+{
+  v->visitCNDuration(this);
+}
+
+CNDuration *CNDuration::clone() const
+{
+  return new CNDuration(*this);
 }
 
 

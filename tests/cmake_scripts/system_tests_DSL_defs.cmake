@@ -21,8 +21,8 @@ execute_process(
 	COMMAND ${CMAKE_COMMAND} -E compare_files --ignore-eol ${CMAKE_BINARY_DIR}/A_D_o_F_defs.csv
 	../tests/outputs/A_D_o_F_defs.csv RESULT_VARIABLE A_D_o_F_res)
 
-file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_DSL_defs.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_defs.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_DSL_defs.csv)
+#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_defs.csv)
 
 if (NOT A_D_o_F_res) 
 	if (NOT A_W_res)

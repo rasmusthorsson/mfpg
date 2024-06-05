@@ -27,6 +27,7 @@ void InstrumentBuilder::visitSPos(SPos *t) {} //abstract class
 void InstrumentBuilder::visitNoteDef(NoteDef *t) {} //abstract class
 void InstrumentBuilder::visitNoteDefBase(NoteDefBase *t) {} //abstract class
 void InstrumentBuilder::visitAttrType(AttrType *t) {} //abstract class
+void InstrumentBuilder::visitDurationDefBase(DurationDefBase *t) {} //abstract class
 void InstrumentBuilder::visitAct(Act *t) {} //abstract class
 void InstrumentBuilder::visitActionName(ActionName *t) {} //abstract class
 void InstrumentBuilder::visitDFun(DFun *t) {} //abstract class
@@ -36,6 +37,8 @@ void InstrumentBuilder::visitAttr(Attr *t) {} //abstract class
 void InstrumentBuilder::visitCompOp(CompOp *t) {} //abstract class
 void InstrumentBuilder::visitBoolOp(BoolOp *t) {} //abstract class
 void InstrumentBuilder::visitNum(Num *t) {} //abstract class
+void InstrumentBuilder::visitCNoteDef(CNoteDef *t) {} //abstract class
+void InstrumentBuilder::visitCDurationDef(CDurationDef *t) {} //abstract class
 void InstrumentBuilder::visitExp(Exp *t) {} //abstract class
 void InstrumentBuilder::visitScale(Scale *t) {} //abstract class
 void InstrumentBuilder::visitBool(Bool *t) {} //abstract class
@@ -184,6 +187,46 @@ void InstrumentBuilder::visitAttrType_b(AttrType_b *attr_type_b)
 {
 	attrtypes += "b";
 	ATTRIBUTE_TYPES += "b";
+}
+
+void InstrumentBuilder::visitDurationDefBase_Double(DurationDefBase_Double *duration_def_base_double)
+{
+	duration = noteenums::Duration::DoubleDur;
+}
+
+void InstrumentBuilder::visitDurationDefBase_Whole(DurationDefBase_Whole *duration_def_base_whole)
+{
+	duration = noteenums::Duration::Whole;
+}
+
+void InstrumentBuilder::visitDurationDefBase_Half(DurationDefBase_Half *duration_def_base_half)
+{
+	duration = noteenums::Duration::Half;
+}
+
+void InstrumentBuilder::visitDurationDefBase_Quarter(DurationDefBase_Quarter *duration_def_base_quarter)
+{
+	duration = noteenums::Duration::Quarter;
+}
+
+void InstrumentBuilder::visitDurationDefBase_Eighth(DurationDefBase_Eighth *duration_def_base_eighth)
+{
+	duration = noteenums::Duration::Eighth;
+}
+
+void InstrumentBuilder::visitDurationDefBase_Sixteenth(DurationDefBase_Sixteenth *duration_def_base_sixteenth)
+{
+	duration = noteenums::Duration::Sixteenth;
+}
+
+void InstrumentBuilder::visitDurationDefBase_ThirtySecond(DurationDefBase_ThirtySecond *duration_def_base_thirty_second)
+{
+	duration = noteenums::Duration::ThirtySecond;
+}
+
+void InstrumentBuilder::visitDurationDefBase_SixtyFourth(DurationDefBase_SixtyFourth *duration_def_base_sixty_fourth)
+{
+	duration = noteenums::Duration::SixtyFourth;
 }
 
 void InstrumentBuilder::visitFunList(FunList *fun_list)
@@ -605,6 +648,32 @@ void InstrumentBuilder::visitCInt(CInt *c_int)
 void InstrumentBuilder::visitCDouble(CDouble *c_double)
 {
 	visitDouble(c_double->double_);
+}
+
+void InstrumentBuilder::visitCNote(CNote *c_note)
+{
+	if (c_note->cnotedef_) c_note->cnotedef_->accept(this);
+	std::cout << "\n";
+	std::cout << note;
+	std::cout << "\n";
+	integer = static_cast<int>(note);
+}
+
+void InstrumentBuilder::visitCDuration(CDuration *c_duration)
+{
+	if (c_duration->cdurationdef_) c_duration->cdurationdef_->accept(this);
+	integer = (int)duration;
+}
+
+void InstrumentBuilder::visitCNNote(CNNote *cn_note)
+{
+  visitInteger(cn_note->integer_);
+  if (cn_note->notedefbase_) cn_note->notedefbase_->accept(this);
+}
+
+void InstrumentBuilder::visitCNDuration(CNDuration *cn_duration)
+{
+  if (cn_duration->durationdefbase_) cn_duration->durationdefbase_->accept(this);
 }
 
 void InstrumentBuilder::visitESub(ESub *e_sub)

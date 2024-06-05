@@ -16,10 +16,11 @@ terminator nonempty IStr ";" ;
 ISPos.		SPos ::= Integer ;
 
 INote.		NoteDef ::= Integer ;
-NNote.		NoteDef ::= NoteDefBase " " Integer ;
+NNote.		NoteDef ::= NoteDefBase Integer ;
 
 rules NoteDefBase ::= "A" | "As" | "B" | "C" | "Cs" | "D" | "Ds" | "E" | "F" | "Fs" | "G" | "Gs" ;
 rules AttrType ::= "i" | "d" | "b" ;
+rules DurationDefBase ::= "Double" | "Whole" | "Half" | "Quarter" | "Eighth" | "Sixteenth" | "ThirtySecond" | "SixtyFourth" ;
 
 token Identifier (letter (letter | '_')*) ;
 
@@ -68,6 +69,11 @@ Or.		BoolOp ::= "||" ;
 
 CInt.		Num ::= Integer ;
 CDouble.	Num ::= Double ;
+CNote.		Num ::= CNoteDef ;
+CDuration.	Num ::= CDurationDef ;
+
+CNNote.		CNoteDef ::= NoteDefBase Integer ;
+CNDuration.	CDurationDef ::= DurationDefBase ;
 
 ESub.		Exp ::= "-" ;
 EPlus.		Exp ::= "+" ;
