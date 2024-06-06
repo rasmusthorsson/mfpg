@@ -1177,6 +1177,10 @@ void MFPG_Frame::Generate() {
 		std::cout << e_msg << "\n";
 		wxMessageBox(e_msg);
 		return;
+	} catch (std::exception &e) {
+		std::cout << "An undefine error has occurred, did you use an undeclared attribute?\n";
+		wxMessageBox("An undefined error has occurred, did you use an undeclared attribute?");
+		return;
 	}
 
 	std::shared_ptr<GraphSolver<int>> solver_i;

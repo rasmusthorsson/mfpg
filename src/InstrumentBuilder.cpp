@@ -503,12 +503,15 @@ void InstrumentBuilder::visitFrAttrCond(FrAttrCond *fr_attr_cond)
 	if (fr_attr_cond->attr_) fr_attr_cond->attr_->accept(this);
 	std::string attr = str;
 	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+		//Only primitives that are booleans should be applicable here
+		/*
 		if (attr == "NOTE") {
 			return ExValContainer(true);
 		}
 		if (attr == "DURATION") {
 			return ExValContainer(true);
 		}
+		*/
 		return t1.getPhysAttr().getVal(attr);
 	};
 	if (output == 'i') {
@@ -524,12 +527,15 @@ void InstrumentBuilder::visitToAttrCond(ToAttrCond *to_attr_cond)
 	if (to_attr_cond->attr_) to_attr_cond->attr_->accept(this);
 	std::string attr = str;
 	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+		//Only primitives that are booleans should be applicable here
+		/*
 		if (attr == "NOTE") {
 			return ExValContainer(true);
 		}
 		if (attr == "DURATION") {
 			return ExValContainer(true);
 		}
+		*/
 		return t2.getPhysAttr().getVal(attr);
 	};
 	if (output == 'i') {
@@ -653,9 +659,6 @@ void InstrumentBuilder::visitCDouble(CDouble *c_double)
 void InstrumentBuilder::visitCNote(CNote *c_note)
 {
 	if (c_note->cnotedef_) c_note->cnotedef_->accept(this);
-	std::cout << "\n";
-	std::cout << note;
-	std::cout << "\n";
 	integer = static_cast<int>(note);
 }
 

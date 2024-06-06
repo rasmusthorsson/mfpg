@@ -746,14 +746,16 @@ TEST(Action, BasicAction) {
 	};
 	const Action<int> NOC(d_f_cond, d_f_dist, "NOC");
 
+	SimplifiedNote n1;
+
 	PhysAttrMap p1{{"STRING", 1}, 
 			{"HAND_POS", 1}, 
 			{"FINGER", 1}};
 	PhysAttrMap p2{{"STRING", 2}, 
 			      {"HAND_POS", 2}, 
 			      {"FINGER", 2}};
-	const NoteAttributes t1(p1);
-	const NoteAttributes t2(p2);
+	const NoteAttributes t1(p1, n1);
+	const NoteAttributes t2(p2, n1);
 
 	ASSERT_EQ(NOC.distance(t1, t2), 3);
 	ASSERT_EQ(NOC.condition(t1, t2), true);
@@ -789,14 +791,15 @@ TEST(Action, FiveTupleAction) {
 		return true;
 	};
 	const Action<double> upstroke_distance(d_f_cond, d_f_dist, "UD");
+	SimplifiedNote n1;
 	PhysAttrMap p1{1, 2, 1, false, 3.0};
 	PhysAttrMap p2{1, 2, 3, false, 7.0};
 	PhysAttrMap p3{1, 2, 1, true, 3.0};
 	PhysAttrMap p4{1, 2, 3, false, 7.0};
-	const NoteAttributes t1(p1);
-	const NoteAttributes t2(p2);
-	const NoteAttributes t3(p3);
-	const NoteAttributes t4(p4);
+	const NoteAttributes t1(p1, n1);
+	const NoteAttributes t2(p2, n1);
+	const NoteAttributes t3(p3, n1);
+	const NoteAttributes t4(p4, n1);
 
 	ASSERT_EQ(upstroke_distance.distance(t1, t2), 2.0);
 	ASSERT_EQ(upstroke_distance.distance(t3, t4), 8.0);
@@ -993,33 +996,45 @@ class ActionSet_Tests : public ::testing::Test {
 //Tests that the distance between different inputs corresponds with the actions in 
 //the ActionSet
 TEST_F(ActionSet_Tests, CorrectDistance) {
+	const SimplifiedNote n1;
 	const PhysAttrMap f1 = {0, 0, 0};
 	const PhysAttrMap s1 = {1, 2, 1};
 
-	ASSERT_EQ(set->apply(f1, s1), 4);
+	const NoteAttributes t1(f1, n1);
+	const NoteAttributes t2(s1, n1);
+
+	ASSERT_EQ(set->apply(t1, t2), 4);
 
 	const PhysAttrMap f2 = {2, 2, 2};
 	const PhysAttrMap s2 = {0, 3, 2};
+	
+	const NoteAttributes t3(f2, n1);
+	const NoteAttributes t4(s2, n1);
 
-	ASSERT_EQ(set->apply(f2, s2), 3);
+	ASSERT_EQ(set->apply(t3, t4), 3);
 }
 
 //Tests that dependencies correctly disable actions and cannot re-enable them.
 TEST_F(ActionSet_Tests, Dependencies) {
 	set->addDependency("HA", "FA", false);
+	
+	const SimplifiedNote n1;
 
 	const PhysAttrMap f1 = {0, 0, 0};
 	const PhysAttrMap s1 = {1, 10, 1};
 
-	ASSERT_EQ(set->apply(f1, s1), 2);	
+	const NoteAttributes t1(f1, n1);
+	const NoteAttributes t2(s1, n1);
+
+	ASSERT_EQ(set->apply(t1, t2), 2);	
 
 	set->addDependency("SA", "FA", false);
 
-	ASSERT_EQ(set->apply(f1, s1), 1);	
+	ASSERT_EQ(set->apply(t1, t2), 1);	
 
 	set->addDependency("SA", "FA", true);
 
-	ASSERT_EQ(set->apply(f1, s1), 1);	
+	ASSERT_EQ(set->apply(t1, t2), 1);	
 }
 
 class LayerList_Tests : public ::testing::Test {

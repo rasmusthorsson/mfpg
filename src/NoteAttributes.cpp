@@ -1,21 +1,15 @@
 #include "NoteAttributes.h"
 
-NoteAttributes::NoteAttributes(const PhysAttrMap& p, const SimplifiedNote& n) 
-	: phys_attr(p), note(n.getNote()), duration(n.getDuration()) {}
-
-NoteAttributes::NoteAttributes(const PhysAttrMap& p) : phys_attr(p), 
-	note(noteenums::Note::C_4), duration(noteenums::Duration::Quarter) {
-
-}
+NoteAttributes::NoteAttributes(const PhysAttrMap& p, const SimplifiedNote& n) : phys_attr(p), note(n) {}
 
 const PhysAttrMap& NoteAttributes::getPhysAttr() {
 	return phys_attr;
 }
 
 const noteenums::Note& NoteAttributes::getNote() {
-	return note;
+	return note.getNote();
 }
 
 const noteenums::Duration& NoteAttributes::getDuration() {
-	return duration;
+	return note.getDuration();
 }
