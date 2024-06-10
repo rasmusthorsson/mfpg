@@ -19,8 +19,8 @@ template <class Output> class HandPosition {
 		HandPosition(PhysAttrMap, SimplifiedNote, LayerList<Output>&);
 		HandPosition(PhysAttrMap, SimplifiedNote, const LayerList<Output>&);
 		
-		const PhysAttrMap getState() const;
-		const SimplifiedNote getNote() const;
+		const PhysAttrMap& getState() const;
+		const SimplifiedNote& getNote() const;
 		const LayerList<Output>& getLayerList() const;
 }; 
 #endif

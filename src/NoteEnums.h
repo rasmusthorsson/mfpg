@@ -42,6 +42,11 @@ namespace noteenums {
 		ThirtySecond = 2, 
 		SixtyFourth = 1
 	};
+	inline std::string to_string(const Duration& d) {
+		const std::vector<std::string> durations = {"SixtyFourth", "ThirtySecond", "Sixteenth",
+			"Eighth", "Quarter", "Half", "Whole", "Double"};
+		return durations[static_cast<int>(d)];
+	}
 	inline std::string to_string(const Note& n) {
 		if (n == noteenums::Note::REST) {
 			return std::string("REST");
@@ -99,6 +104,11 @@ namespace noteenums {
 //Outputting note to output stream.
 inline std::ostream& operator << (std::ostream& out, const noteenums::Note& n) {
 	out << to_string(n);
+	return out;	
+}
+//Outputting duration to output stream.
+inline std::ostream& operator << (std::ostream& out, const noteenums::Duration& d) {
+	out << to_string(d);
 	return out;	
 }
 #endif

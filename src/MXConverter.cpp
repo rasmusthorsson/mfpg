@@ -1,12 +1,14 @@
 #include "MXConverter.h"
-
+#include <set>
 using namespace noteenums;
+extern std::set<std::string> DEFINITIVES;
 
 //Converts notes based on a regular 12-step chromatic scale, notes are converted to 
 //their offset within an octave, the octave is then added as a multiple of 12, with 
 //the alter added on the end. The alter is used for sharps or flats, but could also 
 //be used to increase notes full steps if desired.
 const Note MXConverter::ConvertNote(mx::api::NoteData& n) {
+	DEFINITIVES.insert("NOTE");
 	if (n.isRest) {
 		return Note::REST;
 	} 
@@ -45,6 +47,7 @@ const Note MXConverter::ConvertNote(mx::api::NoteData& n) {
 
 //Basic conversion between mx durations to noteenum durations.
 const Duration MXConverter::ConvertDuration(mx::api::NoteData& n) {
+	DEFINITIVES.insert("DURATION");
 	switch(n.durationData.durationName) {
 		case mx::api::DurationName::breve:
 			return Duration::DoubleDur;

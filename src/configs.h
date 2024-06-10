@@ -8,97 +8,151 @@
 #include <ostream>
 #include <memory>
 #include <string>
+#include <set>
 
 using Distance = int;
 
 int TUPLESIZE;
 std::string ATTRIBUTE_TYPES;
 std::vector<std::string> ATTRIBUTES;
-
+std::set<std::string> DEFINITIVES;
 namespace configs {
 	using namespace std;
 	
-	void writeOutput(ostream& out, shared_ptr<GraphSolver<double>> solver, bool csv) {
+	enum OUTPUT_TYPE {
+		BASIC,
+		CSV
+	};
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<int>> solver, OUTPUT_TYPE output) {
 		int count = 1;
-		double total_cost = 0;
-		if (csv) {
-			out << "note number, note, string, finger, hp, cost, "
-				"combinations\r\n";
-			for (auto sol : solver->getSolution()) {
-				out << count << ","
-					<< get<0>(sol).getNote() << ","
-					<< get<0>(sol).getState().to_string_csv()
-					<< get<1>(sol) << ","
-					<< get<0>(sol).getLayerList().getElem().getSize() 
-					<< "\r\n";
-				count++;
-				if (get<1>(sol) > -1) {
-					total_cost += get<1>(sol);
+		int total_cost = 0;
+		switch (output) {
+			case OUTPUT_TYPE::BASIC:
+				for (auto sol : solver->getSolution()) {
+					out << "Note number: " << count << "\n";
+					for (string def : DEFINITIVES) {
+						if (def == "NOTE") {
+							out << "Note: " << get<0>(sol).getNote().getNote() << "\n";
+						} else if (def == "DURATION") {
+							out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
+						}
+					}
+					out << get<0>(sol).getState().to_string() 
+						<< "\n"
+						<< "Cost of transition: " << get<1>(sol) 
+						<< "\n"
+						<< "Amount of possible fingerings: " 
+						<< get<0>(sol).getLayerList().getElem().getSize() 
+						<< "\n"
+						<< "-------------------------------------------------------" 
+						<< "\n";
+					count++;
+					if (get<1>(sol) > -1) {
+						total_cost += get<1>(sol);
+					}
 				}
-			}
-		} else {
-			for (auto sol : solver->getSolution()) {
-				out << "Note number: " << count << "\n";
-				out << "Note: " << get<0>(sol).getNote() << "\n";
-				out 
-					<< get<0>(sol).getState().to_string() 
-					<< "\n"
-					<< "Distance of transition: " << get<1>(sol) 
-					<< "\n"
-					<< "Amount of possible fingerings: " 
-					<< get<0>(sol).getLayerList().getElem().getSize() 
-					<< "\n"
-					<< "------------------------------------" 
-					<< "\n";
-				count++;
-				if (get<1>(sol) > -1) {
-					total_cost += get<1>(sol);
+				break;
+			case OUTPUT_TYPE::CSV:
+				out << "NoteCount,";
+				for (string def : DEFINITIVES) {
+					out << def;
+					out << ",";
 				}
-			}
-		}
+				out << "Cost,Combinations,";
+				for (int i = 1; i < ATTRIBUTES.size(); i++) {
+					out << ATTRIBUTES[i-1];
+					out << ",";
+				}
+				out << ATTRIBUTES[ATTRIBUTES.size()-1];
+				out << "\r\n";
+				for (auto sol : solver->getSolution()) {
+					out << count << ",";
+					for (string def : DEFINITIVES) {
+						if (def == "NOTE") {
+							out << get<0>(sol).getNote().getNote() << ",";
+						} else if (def == "DURATION") {
+							out << get<0>(sol).getNote().getDuration() << ",";
+						}
+					}
+					out << get<1>(sol) << ",";
+					out << get<0>(sol).getLayerList().getElem().getSize() << ",";
+					out << get<0>(sol).getState().to_string_csv() << "\r\n";
+					count++;
+					if (get<1>(sol) > -1) {
+						total_cost += get<1>(sol);
+					}
+				}
+				break;
+			default:
+				break;
+		} 
 		mfpg_log::Log::verbose_out(std::cout,
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
-
-	void writeOutput(ostream& out, shared_ptr<GraphSolver<int>> solver, bool csv) {
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<double>> solver, OUTPUT_TYPE output) {
 		int count = 1;
-		int total_cost = 0;
-		if (csv) {
-			out << "note number, note, string, finger, hp, cost, "
-				"combinations\r\n";
-			for (auto sol : solver->getSolution()) {
-				out << count << ","
-					<< get<0>(sol).getNote() << ","
-					<< get<0>(sol).getState().to_string_csv()
-					<< get<1>(sol) << ","
-					<< get<0>(sol).getLayerList().getElem().getSize() 
-					<< "\r\n";
-				count++;
-				if (get<1>(sol) > -1) {
-					total_cost += get<1>(sol);
+		double total_cost = 0;
+		switch (output) {
+			case OUTPUT_TYPE::BASIC:
+				for (auto sol : solver->getSolution()) {
+					out << "Note number: " << count << "\n";
+					for (string def : DEFINITIVES) {
+						if (def == "NOTE") {
+							out << "Note: " << get<0>(sol).getNote().getNote() << "\n";
+						} else if (def == "DURATION") {
+							out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
+						}
+					}
+					out << get<0>(sol).getState().to_string() 
+						<< "\n"
+						<< "Cost of transition: " << get<1>(sol) 
+						<< "\n"
+						<< "Amount of possible fingerings: " 
+						<< get<0>(sol).getLayerList().getElem().getSize() 
+						<< "\n"
+						<< "-------------------------------------------------------" 
+						<< "\n";
+					count++;
+					if (get<1>(sol) > -1) {
+						total_cost += get<1>(sol);
+					}
 				}
-			}
-		} else {
-			for (auto sol : solver->getSolution()) {
-				out << "Note number: " << count << "\n";
-				out << "Note: " << get<0>(sol).getNote() << "\n";
-				out 
-					<< get<0>(sol).getState().to_string() 
-					<< "\n"
-					<< "Distance of transition: " << get<1>(sol) 
-					<< "\n"
-					<< "Amount of possible fingerings: " 
-					<< get<0>(sol).getLayerList().getElem().getSize() 
-					<< "\n"
-					<< "------------------------------------" 
-					<< "\n";
-				count++;
-				if (get<1>(sol) > -1) {
-					total_cost += get<1>(sol);
+				break;
+			case OUTPUT_TYPE::CSV:
+				out << "NoteCount,";
+				for (string def : DEFINITIVES) {
+					out << def;
+					out << ",";
 				}
-			}
-		}
+				out << "Cost,Combinations,";
+				for (int i = 1; i < ATTRIBUTES.size(); i++) {
+					out << ATTRIBUTES[i-1];
+					out << ",";
+				}
+				out << ATTRIBUTES[ATTRIBUTES.size()-1];
+				out << "\r\n";
+				for (auto sol : solver->getSolution()) {
+					out << count << ",";
+					for (string def : DEFINITIVES) {
+						if (def == "NOTE") {
+							out << get<0>(sol).getNote().getNote() << ",";
+						} else if (def == "DURATION") {
+							out << get<0>(sol).getNote().getDuration() << ",";
+						}
+					}
+					out << get<1>(sol) << ",";
+					out << get<0>(sol).getLayerList().getElem().getSize() << ",";
+					out << get<0>(sol).getState().to_string_csv() << "\r\n";
+					count++;
+					if (get<1>(sol) > -1) {
+						total_cost += get<1>(sol);
+					}
+				}
+				break;
+			default:
+				break;
+		} 
 		mfpg_log::Log::verbose_out(std::cout,
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);

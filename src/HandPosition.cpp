@@ -10,12 +10,12 @@ template<typename Output>
 HandPosition<Output>::HandPosition(PhysAttrMap i, SimplifiedNote n, const LayerList<Output>& ls) : state(i), note(n), layer_list(ls) {}
 
 template<typename Output>
-const PhysAttrMap HandPosition<Output>::getState() const {
+const PhysAttrMap& HandPosition<Output>::getState() const {
 	return state;
 }
 
 template<typename Output>
-const SimplifiedNote HandPosition<Output>::getNote() const {
+const SimplifiedNote& HandPosition<Output>::getNote() const {
 	return note;
 }
 
