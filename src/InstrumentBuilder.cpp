@@ -26,6 +26,7 @@ void InstrumentBuilder::visitIStr(IStr *t) {} //abstract class
 void InstrumentBuilder::visitSPos(SPos *t) {} //abstract class
 void InstrumentBuilder::visitNoteDef(NoteDef *t) {} //abstract class
 void InstrumentBuilder::visitNoteDefBase(NoteDefBase *t) {} //abstract class
+void InstrumentBuilder::visitRestDefBase(RestDefBase *t) {} //abstract class
 void InstrumentBuilder::visitAttrType(AttrType *t) {} //abstract class
 void InstrumentBuilder::visitDurationDefBase(DurationDefBase *t) {} //abstract class
 void InstrumentBuilder::visitAct(Act *t) {} //abstract class
@@ -169,6 +170,10 @@ void InstrumentBuilder::visitNoteDefBase_G(NoteDefBase_G *notedef_base_g)
 void InstrumentBuilder::visitNoteDefBase_Gs(NoteDefBase_Gs *notedef_base_gs)
 {
 	note = static_cast<noteenums::Note>(8 + (12 * integer));
+}
+void InstrumentBuilder::visitRestDefBase_REST(RestDefBase_REST *rest_def_base_rest)
+{
+	note = noteenums::Note::REST;
 }
 
 void InstrumentBuilder::visitAttrType_i(AttrType_i *attr_type_i)
@@ -458,10 +463,10 @@ void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
 		int num = integer;
 		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
 			if (attr == "NOTE") {
-				return (comp_fun(num, ExValContainer((int)t1.getNote())));
+				return (comp_fun(num, ExValContainer((int)t2.getNote())));
 			}
 			if (attr == "DURATION") {
-				return (comp_fun(num, ExValContainer((int)t1.getDuration())));
+				return (comp_fun(num, ExValContainer((int)t2.getDuration())));
 			}
 			return (comp_fun(num, t2.getPhysAttr().getVal(attr).getI()));	
 		};
@@ -471,10 +476,10 @@ void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
 		double num = dub;
 		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
 			if (attr == "NOTE") {
-				return (comp_fun(num, ExValContainer((double)t1.getNote())));
+				return (comp_fun(num, ExValContainer((double)t2.getNote())));
 			}
 			if (attr == "DURATION") {
-				return (comp_fun(num, ExValContainer((double)t1.getDuration())));
+				return (comp_fun(num, ExValContainer((double)t2.getDuration())));
 			}
 			return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
 		};
@@ -666,6 +671,10 @@ void InstrumentBuilder::visitCDuration(CDuration *c_duration)
 {
 	if (c_duration->cdurationdef_) c_duration->cdurationdef_->accept(this);
 	integer = (int)duration;
+}
+void InstrumentBuilder::visitCNRestNote(CNRestNote *cn_rest_note)
+{
+  if (cn_rest_note->restdefbase_) cn_rest_note->restdefbase_->accept(this);
 }
 
 void InstrumentBuilder::visitCNNote(CNNote *cn_note)

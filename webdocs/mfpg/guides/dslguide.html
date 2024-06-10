@@ -96,6 +96,7 @@
       <a href="#Parts">Parts</a>
       <a href="#Output" class="inner">Output</a>
       <a href="#Attributes" class="inner">Attributes</a>
+      <a href="#Definitive" class="inner-inner">Definitives</a>
       <a href="#Strings" class="inner">Strings</a>
       <a href="#Actions" class="inner">Actions</a>
       <a href="#Dependencies" class="inner">Dependencies</a>
@@ -171,9 +172,9 @@
         this part, but we must define what a PNR looks like for this <b>DSL</b> file.</p>
         <pre><code>
         Attributes:
-            (i) &quot;String&quot; ,
-            (i) &quot;Finger&quot; ,
-            (i) &quot;Hand_Pos&quot; ;
+            (i) String ,
+            (i) Finger ,
+            (i) Hand_Pos ;
         </code></pre>
         <p>(The commas separate the different attribute definitions and the semi-colon signifies the end
         of the <b>Attributes</b> part.)</p>
@@ -237,12 +238,12 @@
         <strong>distance functions</strong>(3) to the transition cost</p>
         <p>As an example, consider Transition option 1. We might decide that we want to apply a cost for switching 
         which finger is currently being used to play a note so we add an Action to do so.</p>
-        <pre><code>&quot;Finger_Action&quot; = ???
+        <pre><code>Finger_Action = ???
         </code></pre>
         <p>We must then decide what actually constitutes as a finger switch and define that as a <strong>condition</strong>
         function. We can conclude that if a finger switch occurs, then the values of the <b>Finger</b> attribute must be
         <em>different</em> in the two PNRs:</p>
-        <pre><code>&quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 ???
+        <pre><code>Finger_Action = Finger - Finger; &gt; 0 ???
         </code></pre>
         <p>(Note that whenever the subtraction operator is applied, the absolute value function is implicitly applied to
         the result as it does not make sense to have a negative <strong>distance</strong> or cost.)</p>
@@ -254,14 +255,14 @@
         <p>With a satisfactory <strong>condition</strong> function set defined, we now need to decide the cost of switching fingers.
         A reasonable cost could perhaps be defined as simply 1, this way we are always adding a penalty
         whenever we switch fingers without differentiating between finger swaps.</p>
-        <pre><code>&quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 ??? 
+        <pre><code>Finger_Action; = Finger - Finger &gt; 0 : 1 ??? 
         </code></pre>
         <p>(Note that the colon (<b>:</b>) is used to mark the end of <strong>condition</strong> function definitions and the beginning of
         <strong>distance</strong> function definitions.)</p>
         <p>Finally, we need to decide whether or not this action should always be evaluated by default, or if
         it should only be evaluated if it gets activated by some other action via dependency (more on this in the 
         next part). For this action it makes sense that we should always evaluate it:</p>
-        <pre><code>&quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ;
+        <pre><code>Finger_Action; = Finger - Finger &gt; 0 : 1 (true) ;
         </code></pre>
         <p>We are now done with the action, and if we then apply this action to Transition option 1 we get (in 
         pseudocode):</p>
@@ -278,7 +279,7 @@
         PNRs in transition option 2. 
         <br><br>However, we can also see that the PNRs differ in another way: the <b>Hand Position</b>
         attribute also changes, so perhaps it makes sense to add another action to account for that.</p>
-        <pre><code>&quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : ???
+        <pre><code>HP_Action = Hand_Pos - Hand_Pos &gt; 0 : ???
         </code></pre>
         <p>Here we have defined a <strong>condition</strong> function in the same way as we did with the finger action, since it
         is a good way to establish a change in attribute values. We then want to define a <strong>distance</strong> function for 
@@ -286,7 +287,7 @@
         the <strong>distance</strong> calculations in order to get an action that increases the <strong>distance</strong> 
         if the two hand positions
         are physically farther apart:</p>
-        <pre><code>&quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true)
+        <pre><code>HP_Action = Hand_Pos - Hand_Pos &gt; 0 : Hand_Pos - Hand_Pos + 1 (true)
         </code></pre>
         <p>Above we define the <strong>distance</strong> function to be the difference in <b>Hand Position</b> + 1, to make it
         so it is always more costly to swap hand position than it is to swap fingers.</p>
@@ -320,11 +321,51 @@
         <p>For completeness sake, this is how the Action section looks like for this example:</p>
         <pre><code>
         Actions:
-            &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
-            &quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true) ;
+            Finger_Action = Finger - Finger &gt; 0 : 1 (true) ,
+            HP_Action = Hand_Pos - Hand_Pos &gt; 0 : Hand_Pos - Hand_Pos + 1 (true) ;
         </code></pre>
         <p>(Again, note the comma at the end of the first action and the semi-colon at the end of the final action, 
         these symbols are a necessity to separate actions and denote the final action.)</p>
+        <a class="anchor" id="Definitive"></a>
+        <h4>Definitive Attributes</h4>
+        <p>Before we move on from this section there is another type of <i>Attributes
+        </i> to discuss. <b>Definitive Attributes</b> are attributes taken
+        directly from the score, as opposed to being taken from the user defined 
+        <i>CSV Notemapper</i>. These attributes correspond to the more abstract 
+        attributes of a note, such as the note name itself, or the length of the note.
+        This means that the values of these attributes will be the same for each
+        <b>PNR</b>, since they relate directly to the transition between notes in the
+        score itself.</p>
+        <p>The usage of these attributes should in almost all cases be limited to the
+        <b>condition functions</b>, as they have the same value for all <b>PNRs</b>. 
+        These attributes can be used to create actions which are conditional on
+        things like the duration of a note, for example:
+        <pre><code>
+        Actions:
+            Duration_Action_LTQ = this DURATION &lt; Sixteenth && String - String == 1 : 10,
+            Duration_Length_Action_GTEQ = this DURATION >= Sixteenth && String - String == 1 : 2,
+        </code></pre>
+        Here the cost of switching strings is greater if we are playing a note shorter
+        than a sixteenth in duration, which allows us to define different behaviour if 
+        the notes differ in the score. Here is a list of all definitive attributes
+        and their type:
+        <center>
+          <table>
+            <tr>
+              <th>Attribute</th>
+              <th>Type</th>
+            </tr>
+            <tr>
+              <td>NOTE</td>
+              <td>Notes in the form of <b>A 4</b> or <b>E6</b>, also supports 
+                  integers</td>
+            </tr>
+            <tr>
+              <td>DURATION</td>
+              <td>Note duration, between <b>Double</b> and <b>SixtyFourth</b></td>
+            </tr>
+          </table>
+        </center>
         <a class="anchor" id="Dependencies"></a>
         <h3>Dependencies</h3>
         <p>Finally we have the <b>Dependencies</b> part. A dependency in this context can be defined as: </p>
@@ -335,7 +376,7 @@
         a new transition is to be evaluated. </p>
         <p>Let us consider an example. Let us say we want to add another action for dealing with the case where we switch 
         strings while playing. 
-        <pre><code>&quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ;
+        <pre><code>String_Action = String - String &gt; 0 : 1 (true) ;
         </code></pre>
         This is a simple action which works in the same way the finger action that we defined in the earlier section, but 
         for strings.
@@ -348,7 +389,7 @@
         finger: we are only imposing the cost of switching strings while we are doing something that 
         is (from a playability perspective) <em>more</em> difficult than changing strings and finger at the same
         time. We can solve this by adding another action:</p>
-        <pre><code>&quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ;
+        <pre><code>Finger_String_Action = Finger - Finger == 0 : 2 (false) ;
         </code></pre>
         <p>Here check whether we are switching finger when playing, and if we do <em>not</em> switch finger, we impose a cost
         of 2. This action has a <strong>default</strong> condition of false however, because we only want this action to trigger
@@ -357,18 +398,18 @@
         this we can just define a dependency between the actions.</p>
         <pre><code>
         Actions:
-            &quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ,
-            &quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ,
-            &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
-            &quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true) ;
+            String_Action = String - String &gt; 0 : 1 (true) ,
+            Finger_String_Action = Finger - Finger == 0 : 2 (false) ,
+            Finger_Action = Finger - Finger &gt; 0 : 1 (true) ,
+            HP_Action = Hand_Pos - Hand_Pos &gt; 0 : Hand_Pos - Hand_Pos + 1 (true) ;
         </code></pre>
         <p>We can now define our dependency.</p>
         <pre><code>
         Dependencies:
-            &quot;String_Action&quot; &quot;Finger_String_Action&quot; true ;
+            String_Action Finger_String_Action true ;
         </code></pre>
         <p>The dependency above states that:</p>
-        <p><em>&quot;If &quot;String_Action&quot; occurred, then &quot;Finger_String_Action&quot; should be evaluated&quot;</em></p>
+        <p><em>&quot;If String_Action occurred, then Finger_String_Action should be evaluated&quot;</em></p>
         <p>Let us then consider an example of a transition between the two PNRs:</p>
         <p>String = 1, Finger = 2, Hand Position = 1  &rarr; String = 2, Finger = 2, Hand Position = 1</p>
         <p>In this case, the <b>String_Action</b> is triggered and adds a cost of 1. Then the <b>Finger_String_Action</b> is 
@@ -392,16 +433,16 @@
             2: C_5 -&gt; Cs_7 ,
             3: G_3 -&gt; C_5 ;
         Attributes:
-            (i) &quot;String&quot; ,
-            (i) &quot;Finger&quot; ,
-            (i) &quot;Hand_Pos&quot; ;
+            (i) String ,
+            (i) Finger ,
+            (i) Hand_Pos ;
         Actions:
-            &quot;String_Action&quot; = &quot;String&quot; - &quot;String&quot; &gt; 0 : 1 (true) ,
-            &quot;Finger_String_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; == 0 : 2 (false) ,
-            &quot;Finger_Action&quot; = &quot;Finger&quot; - &quot;Finger&quot; &gt; 0 : 1 (true) ,
-            &quot;HP_Action&quot; = &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; &gt; 0 : &quot;Hand_Pos&quot; - &quot;Hand_Pos&quot; + 1 (true) ;
+            String_Action = String - String &gt; 0 : 1 (true) ,
+            Finger_String_Action = Finger - Finger == 0 : 2 (false) ,
+            Finger_Action = Finger - Finger &gt; 0 : 1 (true) ,
+            HP_Action = Hand_Pos - Hand_Pos &gt; 0 : Hand_Pos - Hand_Pos + 1 (true) ;
         Dependencies:
-            &quot;String_Action&quot; &quot;Finger_String_Action&quot; true ;
+            String_Action Finger_String_Action true ;
         </code></pre>
         <a class="anchor" id="Syntax"></a>
         <h2>Brief Syntax Overview</h2>
@@ -411,33 +452,33 @@
         <p>(For verbosity sake I will only type out one of each of the functions and then list replacable parts below)</p>
         <a class="anchor" id="Conditions"></a>
         <h3>Condition Functions</h3>
-        <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot; == Number
+        <pre><code>Attr1 + Attr2 == Number
         </code></pre>
         <p>Used to compare two combined attributes to some number.</p>
-        <pre><code>this &quot;Attr1&quot; == Number
+        <pre><code>this Attr1 == Number
         </code></pre>
-        <p>Used to compare the Attribute &quot;Attr1&quot; of the <em>current</em> PNR to some number.</p>
-        <pre><code>to &quot;Attr1&quot; == Number
+        <p>Used to compare the Attribute Attr1 of the <em>current</em> PNR to some number.</p>
+        <pre><code>to Attr1 == Number
         </code></pre>
-        <p>Used to compare the Attribute &quot;Attr1&quot; of the <em>next</em> PNR to some number.</p>
+        <p>Used to compare the Attribute Attr1 of the <em>next</em> PNR to some number.</p>
         <pre><code>Boolean
         </code></pre>
         <p>This is a direct truth value, either true or false.</p>
-        <pre><code>this &quot;Attr1&quot; 
+        <pre><code>this Attr1 
         </code></pre>
         <p>Direct truth value taking from a boolean attribute of the <em>current</em> PNR, can not be applied to <strong>integer</strong>
         or <strong>double</strong> attribute values.</p>
-        <pre><code>to &quot;Attr1&quot;
+        <pre><code>to Attr1
         </code></pre>
         <p>same as above but for the <em>next</em> PNR.</p>
         <a class="anchor" id="Distance"></a>
         <h3>Distance Functions</h3>
-        <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot; * Number
+        <pre><code>Attr1 + Attr2 * Number
         </code></pre>
-        <p>Combines the values of &quot;Attr1&quot; and &quot;Attr2&quot; and multiplies it by some number</p>
-        <pre><code>&quot;Attr1&quot; + &quot;Attr2&quot;
+        <p>Combines the values of Attr1 and Attr2 and multiplies it by some number</p>
+        <pre><code>Attr1 + Attr2
         </code></pre>
-        <p>Combines the values of &quot;Attr1&quot; and &quot;Attr2&quot;</p>
+        <p>Combines the values of Attr1 and Attr2</p>
         <pre><code>Number
         </code></pre>
         <p>Direct adding of cost to <strong>distance</strong></p>

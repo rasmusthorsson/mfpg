@@ -92,24 +92,25 @@ extern int mfpg_dsl_debug;
     _KW_Half = 293,                /* _KW_Half  */
     _SYMB_0 = 294,                 /* _SYMB_0  */
     _KW_Quarter = 295,             /* _KW_Quarter  */
-    _KW_Sixteenth = 296,           /* _KW_Sixteenth  */
-    _KW_SixtyFourth = 297,         /* _KW_SixtyFourth  */
-    _SYMB_2 = 298,                 /* _SYMB_2  */
-    _KW_ThirtySecond = 299,        /* _KW_ThirtySecond  */
-    _KW_Whole = 300,               /* _KW_Whole  */
-    _KW_b = 301,                   /* _KW_b  */
-    _KW_d = 302,                   /* _KW_d  */
-    _KW_double = 303,              /* _KW_double  */
-    _KW_false = 304,               /* _KW_false  */
-    _KW_i = 305,                   /* _KW_i  */
-    _KW_int = 306,                 /* _KW_int  */
-    _KW_this = 307,                /* _KW_this  */
-    _KW_to = 308,                  /* _KW_to  */
-    _KW_true = 309,                /* _KW_true  */
-    _DBAR = 310,                   /* _DBAR  */
-    T_Identifier = 311,            /* T_Identifier  */
-    _INTEGER_ = 312,               /* _INTEGER_  */
-    _DOUBLE_ = 313                 /* _DOUBLE_  */
+    _KW_REST = 296,                /* _KW_REST  */
+    _KW_Sixteenth = 297,           /* _KW_Sixteenth  */
+    _KW_SixtyFourth = 298,         /* _KW_SixtyFourth  */
+    _SYMB_2 = 299,                 /* _SYMB_2  */
+    _KW_ThirtySecond = 300,        /* _KW_ThirtySecond  */
+    _KW_Whole = 301,               /* _KW_Whole  */
+    _KW_b = 302,                   /* _KW_b  */
+    _KW_d = 303,                   /* _KW_d  */
+    _KW_double = 304,              /* _KW_double  */
+    _KW_false = 305,               /* _KW_false  */
+    _KW_i = 306,                   /* _KW_i  */
+    _KW_int = 307,                 /* _KW_int  */
+    _KW_this = 308,                /* _KW_this  */
+    _KW_to = 309,                  /* _KW_to  */
+    _KW_true = 310,                /* _KW_true  */
+    _DBAR = 311,                   /* _DBAR  */
+    T_Identifier = 312,            /* T_Identifier  */
+    _INTEGER_ = 313,               /* _INTEGER_  */
+    _DOUBLE_ = 314                 /* _DOUBLE_  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -133,6 +134,7 @@ union YYSTYPE
   SPos* spos_;
   NoteDef* notedef_;
   NoteDefBase* notedefbase_;
+  RestDefBase* restdefbase_;
   AttrType* attrtype_;
   DurationDefBase* durationdefbase_;
   Act* act_;
@@ -152,7 +154,7 @@ union YYSTYPE
   Scale* scale_;
   Bool* bool_;
 
-#line 156 "Bison.H"
+#line 158 "Bison.H"
 
 };
 typedef union YYSTYPE YYSTYPE;

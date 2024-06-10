@@ -22,6 +22,9 @@ function dropHiddenTextSol2() {
 function dropHiddenTextSol3() {
   document.getElementById("sol-3").classList.toggle("show");
 }
+function dropHiddenTextSol4() {
+  document.getElementById("sol-4").classList.toggle("show");
+}
 window.onclick = function(event) {
   if (!event.target.matches('.dropbtn') && !event.target.matches(".hiddenbutton")) {
     var dropdowns = document.getElementsByClassName("dropdown-menu");

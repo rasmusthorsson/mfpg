@@ -27,6 +27,8 @@ NoteDef* pNoteDef(FILE *inp);
 NoteDef* pNoteDef(const char *str);
 NoteDefBase* pNoteDefBase(FILE *inp);
 NoteDefBase* pNoteDefBase(const char *str);
+RestDefBase* pRestDefBase(FILE *inp);
+RestDefBase* pRestDefBase(const char *str);
 AttrType* pAttrType(FILE *inp);
 AttrType* pAttrType(const char *str);
 DurationDefBase* pDurationDefBase(FILE *inp);

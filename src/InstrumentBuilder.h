@@ -77,6 +77,7 @@ public:
 	void visitSPos(SPos *p);
 	void visitNoteDef(NoteDef *p);
 	void visitNoteDefBase(NoteDefBase *p);
+  	void visitRestDefBase(RestDefBase *p);
 	void visitAttrType(AttrType *p);
   	void visitDurationDefBase(DurationDefBase *p);
 	void visitAct(Act *p);
@@ -113,6 +114,7 @@ public:
 	void visitNoteDefBase_Fs(NoteDefBase_Fs *p);
 	void visitNoteDefBase_G(NoteDefBase_G *p);
 	void visitNoteDefBase_Gs(NoteDefBase_Gs *p);
+  	void visitRestDefBase_REST(RestDefBase_REST *p);
 	void visitAttrType_i(AttrType_i *p);
 	void visitAttrType_d(AttrType_d *p);
 	void visitAttrType_b(AttrType_b *p);
@@ -151,6 +153,7 @@ public:
 	void visitCDouble(CDouble *p);
 	void visitCNote(CNote *p);
 	void visitCDuration(CDuration *p);
+  	void visitCNRestNote(CNRestNote *p);
 	void visitCNNote(CNNote *p);
 	void visitCNDuration(CNDuration *p);
 	void visitESub(ESub *p);

@@ -29,6 +29,7 @@ class IStr;
 class SPos;
 class NoteDef;
 class NoteDefBase;
+class RestDefBase;
 class AttrType;
 class DurationDefBase;
 class Act;
@@ -65,6 +66,7 @@ class NoteDefBase_F;
 class NoteDefBase_Fs;
 class NoteDefBase_G;
 class NoteDefBase_Gs;
+class RestDefBase_REST;
 class AttrType_i;
 class AttrType_d;
 class AttrType_b;
@@ -103,6 +105,7 @@ class CInt;
 class CDouble;
 class CNote;
 class CDuration;
+class CNRestNote;
 class CNNote;
 class CNDuration;
 class ESub;
@@ -128,6 +131,7 @@ public:
   virtual void visitSPos(SPos *p) = 0;
   virtual void visitNoteDef(NoteDef *p) = 0;
   virtual void visitNoteDefBase(NoteDefBase *p) = 0;
+  virtual void visitRestDefBase(RestDefBase *p) = 0;
   virtual void visitAttrType(AttrType *p) = 0;
   virtual void visitDurationDefBase(DurationDefBase *p) = 0;
   virtual void visitAct(Act *p) = 0;
@@ -164,6 +168,7 @@ public:
   virtual void visitNoteDefBase_Fs(NoteDefBase_Fs *p) = 0;
   virtual void visitNoteDefBase_G(NoteDefBase_G *p) = 0;
   virtual void visitNoteDefBase_Gs(NoteDefBase_Gs *p) = 0;
+  virtual void visitRestDefBase_REST(RestDefBase_REST *p) = 0;
   virtual void visitAttrType_i(AttrType_i *p) = 0;
   virtual void visitAttrType_d(AttrType_d *p) = 0;
   virtual void visitAttrType_b(AttrType_b *p) = 0;
@@ -202,6 +207,7 @@ public:
   virtual void visitCDouble(CDouble *p) = 0;
   virtual void visitCNote(CNote *p) = 0;
   virtual void visitCDuration(CDuration *p) = 0;
+  virtual void visitCNRestNote(CNRestNote *p) = 0;
   virtual void visitCNNote(CNNote *p) = 0;
   virtual void visitCNDuration(CNDuration *p) = 0;
   virtual void visitESub(ESub *p) = 0;
@@ -281,6 +287,13 @@ class NoteDefBase : public Visitable
 {
 public:
   virtual NoteDefBase *clone() const = 0;
+
+};
+
+class RestDefBase : public Visitable
+{
+public:
+  virtual RestDefBase *clone() const = 0;
 
 };
 
@@ -670,6 +683,19 @@ public:
   virtual void accept(Visitor *v);
   virtual NoteDefBase_Gs *clone() const;
   void swap(NoteDefBase_Gs &);
+};
+
+class RestDefBase_REST : public RestDefBase
+{
+public:
+
+  RestDefBase_REST(const RestDefBase_REST &);
+  RestDefBase_REST &operator=(const RestDefBase_REST &);
+  RestDefBase_REST();
+  ~RestDefBase_REST();
+  virtual void accept(Visitor *v);
+  virtual RestDefBase_REST *clone() const;
+  void swap(RestDefBase_REST &);
 };
 
 class AttrType_i : public AttrType
@@ -1206,6 +1232,20 @@ public:
   virtual void accept(Visitor *v);
   virtual CDuration *clone() const;
   void swap(CDuration &);
+};
+
+class CNRestNote : public CNoteDef
+{
+public:
+  RestDefBase *restdefbase_;
+
+  CNRestNote(const CNRestNote &);
+  CNRestNote &operator=(const CNRestNote &);
+  CNRestNote(RestDefBase *p1);
+  ~CNRestNote();
+  virtual void accept(Visitor *v);
+  virtual CNRestNote *clone() const;
+  void swap(CNRestNote &);
 };
 
 class CNNote : public CNoteDef

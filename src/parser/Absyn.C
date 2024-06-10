@@ -859,6 +859,46 @@ NoteDefBase_Gs *NoteDefBase_Gs::clone() const
 
 
 
+/********************   RestDefBase_REST    ********************/
+RestDefBase_REST::RestDefBase_REST()
+{
+
+}
+
+RestDefBase_REST::RestDefBase_REST(const RestDefBase_REST & other)
+{
+
+}
+
+RestDefBase_REST &RestDefBase_REST::operator=(const RestDefBase_REST & other)
+{
+  RestDefBase_REST tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void RestDefBase_REST::swap(RestDefBase_REST & other)
+{
+
+}
+
+RestDefBase_REST::~RestDefBase_REST()
+{
+
+}
+
+void RestDefBase_REST::accept(Visitor *v)
+{
+  v->visitRestDefBase_REST(this);
+}
+
+RestDefBase_REST *RestDefBase_REST::clone() const
+{
+  return new RestDefBase_REST(*this);
+}
+
+
+
 /********************   AttrType_i    ********************/
 AttrType_i::AttrType_i()
 {
@@ -2537,6 +2577,50 @@ void CDuration::accept(Visitor *v)
 CDuration *CDuration::clone() const
 {
   return new CDuration(*this);
+}
+
+
+
+/********************   CNRestNote    ********************/
+CNRestNote::CNRestNote(RestDefBase *p1)
+{
+  restdefbase_ = p1;
+
+}
+
+CNRestNote::CNRestNote(const CNRestNote & other)
+{
+  restdefbase_ = other.restdefbase_->clone();
+
+}
+
+CNRestNote &CNRestNote::operator=(const CNRestNote & other)
+{
+  CNRestNote tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void CNRestNote::swap(CNRestNote & other)
+{
+  std::swap(restdefbase_, other.restdefbase_);
+
+}
+
+CNRestNote::~CNRestNote()
+{
+  delete(restdefbase_);
+
+}
+
+void CNRestNote::accept(Visitor *v)
+{
+  v->visitCNRestNote(this);
+}
+
+CNRestNote *CNRestNote::clone() const
+{
+  return new CNRestNote(*this);
 }
 
 
