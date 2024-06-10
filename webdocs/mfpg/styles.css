@@ -141,13 +141,21 @@
 .dropdown-content a:hover {
   color: #555555;
 }
+table {
+  position: relative;
+  top: 10px;
+  border-spacing: 0px;
+  border: 1px solid black;
+}
 td {
   border: 2px solid black;
+  padding: 10px;
   text-align: center;
 }
 th {
   border: 2px solid black;
   min-width: 100px;
+  text-align: center;
 }
 .center {
   border-collapse: collapse;
@@ -257,8 +265,8 @@ th {
 .guidepage-index a.inner-inner {
   position: relative;
   left: 30px;
-  font-size: 12px;
-  top: 5px;
+  font-size: 11px;
+  padding-top: 0px;
 }
 .guidepage-index a:hover {
   color: #000000;

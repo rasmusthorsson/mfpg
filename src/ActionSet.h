@@ -12,8 +12,8 @@
 //is only executed if there are no dependencies preventing it from doing so (as 
 //defined by the user).
 template <OutputViable OutputValue> class ActionSet {
-	typedef OutputValue (distfun) (PhysAttrMap, PhysAttrMap);
-	typedef bool (condfun) (PhysAttrMap, PhysAttrMap);
+	typedef OutputValue (distfun) (NoteAttributes, NoteAttributes);
+	typedef bool (condfun) (NoteAttributes, NoteAttributes);
 	private:
 		//Actions with their respective default running configuration, 
 		//false = do not run by default, true = run by default.
@@ -52,6 +52,6 @@ template <OutputViable OutputValue> class ActionSet {
 		//-1 on failure to insert.
 		int addDependency(std::string, std::string, bool); 
 		//Applies the actionset to two tuples; n1 to n2.
-		OutputValue apply(const PhysAttrMap&, const PhysAttrMap&) const;
+		OutputValue apply(const NoteAttributes&, const NoteAttributes&) const;
 };
 #endif

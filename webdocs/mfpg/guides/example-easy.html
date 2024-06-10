@@ -525,7 +525,7 @@
             penalty on a high hand position.
           </div>
         </div>
-        Finally, we would like to avoid playing on an open string unless other options
+        We would also like to avoid playing on an open string unless other options
         are very unfeasible. An open string is defined with the attributes: 
         <br><br>
         String = (1-4), Finger = 0, Hand Position = 0.
@@ -563,6 +563,32 @@
             </p>
             This new action must be placed above any of the actions in the above
             dependency declaration. 
+          </div>
+        </div>
+        Finally, we would like to redefine the <b>REST_F</b> and <b>REST_T</b>
+        to use <i>definitive</i> attributes rather than the convoluted way of 
+        defining a rest by it's exclusive
+        <b>PNR</b>:
+      <br><br>
+      String = 0, Finger = 0, Hand Position = 0.
+      <br><br>
+      <h4>Task 4: Modify the rest actions to use definitive attributes rather
+      than the current setup.</h4>
+      </div>
+        <div class="hidden">
+          <button onclick="dropHiddenTextSol4()" class="hiddenbutton">
+            Solution &#11167
+          </button>
+          <div id="sol-4" class="hiddentext">
+            Here we just replace the checks against the physical attributes with one
+            check against the type of note.
+            <p class="code-p">
+            <code>REST_F = this NOTE == REST : 0 (true),</code>
+            <br>
+            <code>REST_T = to NOTE == REST : 0 (true),</code>
+            </p>
+            There is no need to alter anything further, thanks to the separation 
+            between dependencies and actions.
           </div>
         </div>
         The most important thing for these tasks is to solve the conditions for the

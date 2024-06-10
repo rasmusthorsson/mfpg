@@ -46,7 +46,7 @@ file(GLOB_RECURSE BASE src/SimplifiedNote.cpp src/MXConverter.cpp src/LinkExcept
 	src/BasicNoteMapper.cpp src/LayerList.cpp src/Instrument.cpp src/SolverException.cpp Action.cpp
 	src/GreedySolver.cpp src/ExValContainer.cpp src/PhysAttrMap.cpp src/ExValException.cpp 
 	src/SPSolver.cpp src/ActionSet.cpp src/HandPosition.cpp src/CSVNoteMapper.cpp 
-	src/NoteMapperException.cpp ${DSL})
+	src/NoteMapperException.cpp src/NoteAttributes.cpp ${DSL})
 
 file(GLOB_RECURSE CLI_BASE src/main.cpp ${BASE})
 
@@ -116,8 +116,12 @@ if(BUILD_TESTS)
 			${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_A_W_sps_two.cmake)
   add_test(NAME DSL_one COMMAND ${CMAKE_COMMAND} -P 
 	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_DSL_one.cmake)
+  add_test(NAME DSL_one_with_defs COMMAND ${CMAKE_COMMAND} -P 
+	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_DSL_one_with_defs.cmake)
   add_test(NAME CSVBasicNoteMap COMMAND ${CMAKE_COMMAND} -P 
 	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_CSV_BasicNoteMapper.cmake)
+  add_test(NAME Defs_test COMMAND ${CMAKE_COMMAND} -P 
+	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_DSL_defs.cmake)
 
   set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
@@ -130,6 +134,10 @@ if(BUILD_TESTS)
   set_tests_properties(A_W_sps_two PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
     
   set_tests_properties(DSL_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  
+  set_tests_properties(DSL_one_with_defs PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
   set_tests_properties(CSVBasicNoteMap PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  
+  set_tests_properties(Defs_test PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 endif()

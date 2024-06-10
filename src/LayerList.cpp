@@ -119,10 +119,12 @@ int LayerList<Output>::buildTransitions(const std::shared_ptr<ActionSet<Output>>
 		return 1;
 	}
 	auto next_layer = next->getElem();
-	for (const PhysAttrMap& this_tuple : elem.getNodes()) {
+	for (const PhysAttrMap& this_phys : elem.getNodes()) {
 		std::vector<Output> outputs;
-		for (const PhysAttrMap& next_tuple : next_layer.getNodes()) {
-			outputs.push_back(as->apply(this_tuple, next_tuple));
+		for (const PhysAttrMap& next_phys : next_layer.getNodes()) {
+			NoteAttributes this_attr(this_phys, elem.getNote());
+			NoteAttributes next_attr(next_phys, next_layer.getNote());
+			outputs.push_back(as->apply(this_attr, next_attr));
 		}
 		transitions.push_back(outputs);
 	} 

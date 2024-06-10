@@ -54,7 +54,7 @@ void Action<OutputValue>::addDistFun(std::function<distfun> d, ACCUMULATOR a) {
 }
 
 template<OutputViable OutputValue>
-OutputValue Action<OutputValue>::distance(const PhysAttrMap& s1, const PhysAttrMap& s2) const {
+OutputValue Action<OutputValue>::distance(const NoteAttributes& s1, const NoteAttributes& s2) const {
 	OutputValue acc = {};
 	for (auto fun : distance_funs) {
 		if (fun.second == ACCUMULATOR::PLUS) {
@@ -67,7 +67,7 @@ OutputValue Action<OutputValue>::distance(const PhysAttrMap& s1, const PhysAttrM
 }
 
 template<OutputViable OutputValue>
-bool Action<OutputValue>::condition(const PhysAttrMap& s1, const PhysAttrMap& s2) const {
+bool Action<OutputValue>::condition(const NoteAttributes& s1, const NoteAttributes& s2) const {
 	bool acc = false;
 	for (auto fun : condition_funs) {
 		if (fun.second == ACCUMULATOR::AND) {

@@ -118,7 +118,7 @@ int ActionSet<OutputValue>::addDependency(std::string dependent, std::string dep
 }	
 
 template<OutputViable OutputValue>
-OutputValue ActionSet<OutputValue>::apply(const PhysAttrMap& n1, const PhysAttrMap& n2) const {
+OutputValue ActionSet<OutputValue>::apply(const NoteAttributes& n1, const NoteAttributes& n2) const {
 	OutputValue output = {}; //output must be zero-initializable
 	std::vector<std::string> taken = {};
 

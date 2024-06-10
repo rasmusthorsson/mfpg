@@ -53,7 +53,7 @@ Printer.o : Printer.C Printer.H Absyn.H
 Skeleton.o : Skeleton.C Skeleton.H Absyn.H
 	${CC} ${CCFLAGS} -Wno-unused-parameter -c Skeleton.C
 
-#Since the Lexer.C file uses 'isatty' which is used via "unistd.h". Since this file
+#The Lexer.C file uses 'isatty' which is used via "unistd.h". Since this file
 #is not available on windows we must include the "io.h" file for windows while
 #disabling the "unistd.h" file.
 
