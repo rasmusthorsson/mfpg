@@ -37,15 +37,11 @@ namespace configs {
 							out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
 						}
 					}
-					out << get<0>(sol).getState().to_string() 
-						<< "\n"
-						<< "Cost of transition: " << get<1>(sol) 
-						<< "\n"
-						<< "Amount of possible fingerings: " 
-						<< get<0>(sol).getLayerList().getElem().getSize() 
-						<< "\n"
-						<< "-------------------------------------------------------" 
-						<< "\n";
+					out << get<0>(sol).getState().to_string() << "\n";
+					out << "Cost of transition: " << get<1>(sol) << "\n";
+					out << "Amount of possible fingerings: " 
+						<< get<0>(sol).getLayerList().getElem().getSize() << "\n";
+					out << "--------------------------------------------------" << "\n";
 					count++;
 					if (get<1>(sol) > -1) {
 						total_cost += get<1>(sol);
@@ -53,6 +49,7 @@ namespace configs {
 				}
 				break;
 			case OUTPUT_TYPE::CSV:
+				//Headers
 				out << "NoteCount,";
 				for (string def : DEFINITIVES) {
 					out << def;
@@ -65,6 +62,7 @@ namespace configs {
 				}
 				out << ATTRIBUTES[ATTRIBUTES.size()-1];
 				out << "\r\n";
+				//Columns
 				for (auto sol : solver->getSolution()) {
 					out << count << ",";
 					for (string def : DEFINITIVES) {
@@ -157,6 +155,7 @@ namespace configs {
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
+
 	shared_ptr<ActionSet<Distance>> test_configuration_2() {
 		typedef Distance (*a_t_d) (NoteAttributes, NoteAttributes);
 		typedef bool (*a_t_c) (NoteAttributes, NoteAttributes);
