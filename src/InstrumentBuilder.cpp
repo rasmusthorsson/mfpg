@@ -398,7 +398,7 @@ void InstrumentBuilder::visitCompCond(CompCond *comp_cond)
 		};
 		a_int.addCondFun(cfun, tmp_acc);
 	} else if (output == 'd') {
-		int num = dub;
+		double num = dub;
 		std::function<dub_fun> comp_fun = d_fun;
 		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
 			if (attr1 == "NOTE") {
@@ -434,7 +434,16 @@ void InstrumentBuilder::visitFrValueCond(FrValueCond *fr_value_cond)
 			if (attr == "DURATION") {
 				return (comp_fun(num, ExValContainer((int)t1.getDuration())));
 			}
-			return (comp_fun(num, t1.getPhysAttr().getVal(attr).getI()));	
+			switch (t1.getPhysAttr().getVal(attr).getType()) {
+				case 'i':
+					return (comp_fun(num, (int)t1.getPhysAttr().getVal(attr).getI()));	
+				case 'b':
+					return (comp_fun(num, (int)t1.getPhysAttr().getVal(attr).getB()));	
+				case 'd':
+					return (comp_fun(num, (int)t1.getPhysAttr().getVal(attr).getD()));	
+				default:
+					return (comp_fun(num, t1.getPhysAttr().getVal(attr).getI()));	
+			}
 		};
 		a_int.addCondFun(cfun, tmp_acc);
 	} else if (output == 'd') {
@@ -447,7 +456,16 @@ void InstrumentBuilder::visitFrValueCond(FrValueCond *fr_value_cond)
 			if (attr == "DURATION") {
 				return (comp_fun(num, ExValContainer((double)t1.getDuration())));
 			}
-			return (comp_fun(num, t1.getPhysAttr().getVal(attr).getD()));	
+			switch (t1.getPhysAttr().getVal(attr).getType()) {
+				case 'i':
+					return (comp_fun(num, (double)t1.getPhysAttr().getVal(attr).getI()));	
+				case 'b':
+					return (comp_fun(num, (double)t1.getPhysAttr().getVal(attr).getB()));	
+				case 'd':
+					return (comp_fun(num, (double)t1.getPhysAttr().getVal(attr).getD()));	
+				default:
+					return (comp_fun(num, t1.getPhysAttr().getVal(attr).getD()));	
+			}
 		};
 		a_dub.addCondFun(cfun, tmp_acc);
 	}
@@ -470,7 +488,16 @@ void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
 			if (attr == "DURATION") {
 				return (comp_fun(num, ExValContainer((int)t2.getDuration())));
 			}
-			return (comp_fun(num, t2.getPhysAttr().getVal(attr).getI()));	
+			switch (t2.getPhysAttr().getVal(attr).getType()) {
+				case 'i':
+					return (comp_fun(num, (int)t2.getPhysAttr().getVal(attr).getI()));	
+				case 'b':
+					return (comp_fun(num, (int)t2.getPhysAttr().getVal(attr).getB()));	
+				case 'd':
+					return (comp_fun(num, (int)t2.getPhysAttr().getVal(attr).getD()));	
+				default:
+					return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
+			}
 		};
 		a_int.addCondFun(cfun, tmp_acc);
 	} else if (output == 'd') {
@@ -483,7 +510,16 @@ void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
 			if (attr == "DURATION") {
 				return (comp_fun(num, ExValContainer((double)t2.getDuration())));
 			}
-			return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
+			switch (t2.getPhysAttr().getVal(attr).getType()) {
+				case 'i':
+					return (comp_fun(num, (double)t2.getPhysAttr().getVal(attr).getI()));	
+				case 'b':
+					return (comp_fun(num, (double)t2.getPhysAttr().getVal(attr).getB()));	
+				case 'd':
+					return (comp_fun(num, (double)t2.getPhysAttr().getVal(attr).getD()));	
+				default:
+					return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
+			}
 		};
 		a_dub.addCondFun(cfun, tmp_acc);
 	}
@@ -695,11 +731,11 @@ void InstrumentBuilder::visitESub(ESub *e_sub)
 	acc = ACCUMULATOR::MINUS;
 	if (output == 'i') {
 		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
-			return abs((int)(a - b));		
+			return static_cast<int>(abs(a - b));		
 		};
 	} else if (output == 'd') {
 		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
-			return abs((double)(a - b));		
+			return static_cast<double>(abs(a - b));		
 		};
 	}
 }

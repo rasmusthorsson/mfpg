@@ -39,13 +39,40 @@ const char ExValContainer::getType() const {
 
 //--------------------------------- CONVERSIONS ---------------------------------
 ExValContainer::operator int() {
-	return getI();
+	switch (type) {
+		case 'i':
+			return static_cast<int>(getI());
+		case 'd':
+			return static_cast<int>(getD());
+		case 'b':
+			return static_cast<int>(getB());
+		default:
+			return getI();
+	}
 }
 ExValContainer::operator bool() {
-	return getB();
+	switch (type) {
+		case 'i':
+			return static_cast<bool>(getI());
+		case 'd':
+			return static_cast<bool>(getD());
+		case 'b':
+			return static_cast<bool>(getB());
+		default:
+			return getB();
+	}
 }
 ExValContainer::operator double() {
-	return getD();
+	switch (type) {
+		case 'i':
+			return static_cast<double>(getI());
+		case 'd':
+			return static_cast<double>(getD());
+		case 'b':
+			return static_cast<double>(getB());
+		default:
+			return getD();
+	}
 }
 
 //--------------------------------- STRINGS ---------------------------------

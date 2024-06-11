@@ -115,7 +115,10 @@ CSVNoteMapper::CSVNoteMapper(std::string fp, const std::vector<IString>& list) {
 	}
 	//Add REST note to mapped_notes, then select all lines found in full_map that are notes on the
 	//strings.
-	mapped_notes.insert(std::make_pair(noteenums::Note::REST, PhysAttrMap({0, 0, 0})));
+	auto rest_range = full_map.equal_range(noteenums::Note::REST);
+		for (auto rest = rest_range.first; rest != rest_range.second; ++rest) {
+			mapped_notes.insert(std::make_pair(rest->first, rest->second));
+		}
 	for (auto &str : list) {
 		mapString(str);
 	}
