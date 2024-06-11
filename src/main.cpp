@@ -204,7 +204,7 @@ int main (int argc, char *argv[]) {
 			note_mapper = std::shared_ptr<NoteMapper>(new CSVNoteMapper(map_csv_path, violin_i->getIStrings()));
 		//If the notemapper cannot parse the CSV file/if the CSV file does not contain the correct
 		//attributes.
-		} catch (NoteMapperException e) {
+		} catch (NoteMapperException& e) {
 			mfpg_log::Log::verbose_out(log, 
 				e.what(), 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
@@ -214,7 +214,6 @@ int main (int argc, char *argv[]) {
 	}
 
 	//TODO fix distance solver.
-	//TODO catch exceptions as refs
 	std::shared_ptr<GraphSolver<Distance>> solver;
 	try {
 		//Build the layerlist from the notelist and mapper.
@@ -297,6 +296,12 @@ int main (int argc, char *argv[]) {
 		} 
 		solver->solve(list);
 //------------------------------ Output ----------------------------------
+		configs::OUTPUT_TYPE csv = configs::OUTPUT_TYPE::CSV;
+		if (result["csv"].as<bool>()) {
+			csv = configs::OUTPUT_TYPE::CSV;
+		} else {
+			csv = configs::OUTPUT_TYPE::BASIC;
+		}
 		if (result.count("output")) {
 			auto out_file = result["output"].as<std::string>();
 			ofstream out;
@@ -306,23 +311,23 @@ int main (int argc, char *argv[]) {
 					", Aborting...\n", mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 				return -1;
 			}
-			configs::writeOutput(out, solver, result["csv"].as<bool>());
+			configs::writeOutput(out, solver, csv);
 			out.close();
 		} else {
 			ostream out(std::cout.rdbuf());
-			configs::writeOutput(out, solver, result["csv"].as<bool>());
+			configs::writeOutput(out, solver, csv);
 		}
 		return 1;
 	}
 	//Exception for if adding nodes to layers fail.
-	catch (NodeException e) {
+	catch (NodeException& e) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what() + "Failed note: " + e.failedNote().to_string() + 
 					    " Failed node: " + e.failedNode().to_string() + "\n",
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	//Exception for if there is a problem linking layers together.
-	} catch (LinkException<Distance> e) {
+	} catch (LinkException<Distance>& e) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what(),
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
@@ -330,7 +335,7 @@ int main (int argc, char *argv[]) {
 	
 	//Exception for failures of creating or accessing exclusive values from the physical representation
 	//maps.
-	} catch (ExValException e) {
+	} catch (ExValException& e) {
 		std::string affected_tuples = "[";
 		int count = 1;
 		for (auto t : e.getExVal()) {
@@ -345,13 +350,13 @@ int main (int argc, char *argv[]) {
 		mfpg_log::Log::verbose_out(log,
 					    e.what() + "\nAffected Tuples: " + affected_tuples + "\n",
 					    mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
-	} catch (SolverException e) {
+	} catch (SolverException& e) {
 			mfpg_log::Log::verbose_out(log, e.what() + "\nFailed to find layer path: " + 
 				to_string(e.getLayer()) + " -> " + to_string(e.getLayer() + 1) + "\n", 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;
 		//Exception for if access to layer nodes is out of range
-		} catch (std::out_of_range e) {
+		} catch (std::out_of_range& e) {
 			mfpg_log::Log::verbose_out(log, std::string(e.what()) + "\n", 
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 			return -1;

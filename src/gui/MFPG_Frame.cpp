@@ -1256,16 +1256,16 @@ void MFPG_Frame::Generate() {
 		wxMessageBox(e_msg);
 		return;
 	}
-	bool use_csv = false;
+	configs::OUTPUT_TYPE use_csv = configs::OUTPUT_TYPE::BASIC;
 	switch (current_panel->ST_OUTPUTTYPE) {
 		case CSV_OUTPUT:
-			use_csv = true;
+			use_csv = configs::OUTPUT_TYPE::CSV;
 			break;
 		case DIRECT_OUTPUT:
-			use_csv = false;
+			use_csv = configs::OUTPUT_TYPE::BASIC;
 			break;
 		case UNDEFINED:
-			use_csv = false;
+			use_csv = configs::OUTPUT_TYPE::BASIC;
 			break;
 		default:
 			wxMessageBox("IMPOSSIBLE PROGRAM FLOW");

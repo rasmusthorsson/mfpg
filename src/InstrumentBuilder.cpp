@@ -10,10 +10,12 @@
 
 #include <iostream>
 #include <memory>
+#include <set>
 
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
+extern std::set<std::string> DEFINITIVES;
 
 //Entry point for the instrument builder.
 void InstrumentBuilder::visitInput(Input *t) {

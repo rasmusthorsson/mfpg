@@ -39,9 +39,9 @@ execute_process(
 	COMMAND ${CMAKE_COMMAND} -E compare_files --ignore-eol ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv RESULT_VARIABLE A_W_sps_res)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_with_defs.csv)
+file(REMOVE ${CMAKE_BINARY_DIR}/A_D_o_F_DSL_with_defs.csv)
 file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL.csv)
-file(REMOVE ${CMAKE_BINARY_DIR}/A_W_with_defs.csv)
+file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_with_defs.csv)
 file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv)
 file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv)
 
