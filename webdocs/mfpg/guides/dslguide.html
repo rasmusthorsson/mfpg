@@ -178,6 +178,11 @@
         </code></pre>
         <p>(The commas separate the different attribute definitions and the semi-colon signifies the end
         of the <b>Attributes</b> part.)</p>
+        <br>
+        <b><i>Important! Currently there must be a string attribute, otherwise the program will not run,
+            this attribute must be named either STRING or String.</i></b>
+        <br>
+        <br>
         <p>The character in the parantheses represents the type of the subsequent attribute and can be <strong>i</strong>, <strong>d</strong>, 
         or <strong>b</strong>, meaning <strong>integer</strong>, <strong>double</strong> and <strong>boolean</strong> respectively. <strong>integer</strong> and <strong>double</strong> are 
         defined as in the output, while <strong>boolean</strong> means a truth value, either true or false. Once the attributes 
@@ -209,6 +214,11 @@
             3: 43 -&gt; 60 ;
         </code></pre>
         <p>Which represents the exact same strings as above.</p>
+        <p>The reason the <b>String</b> attribute is a necessity is that the instrument strings are linked 
+        with the string attribute to establish which notes in the notemapper belong to which string 
+        on the instrument. This is a side-effect of not having instrument-specific attributes, which might 
+        get added in the future. But for now, strings need to be defined in both the notemapper and the 
+        DSL.</p>
         <a class="anchor" id="Actions"></a>
         <h3>Actions</h3>
         <p>Each Action defines a comparison of two PNRs. The Action will consider one PNR for the 
