@@ -35,9 +35,6 @@
 using namespace noteenums;
 using namespace std;
 
-//TODO Add double outputs 
-using Distance = int;
-
 //Global variables used for synchronization and correctness checks
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
@@ -117,10 +114,10 @@ int main (int argc, char *argv[]) {
 	//Patchwork solution until fixed output typing.	
 	std::shared_ptr<Instrument<int>> violin_i;
 	std::shared_ptr<Instrument<double>> violin_d;
-
+	
+	char output = 'i';
 	//If the DSL is used.
 	if (result.count("dsl")) {
-		char output = 'i';
 		InstrumentBuilder instrument_builder;
 
 		//------- Parse DSL file -----------
@@ -210,49 +207,63 @@ int main (int argc, char *argv[]) {
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		}
 	} else {
-		note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
+		if (output == 'i') {
+			note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_i->getIStrings()));
+		} else if (output == 'd') {
+			note_mapper = std::shared_ptr<NoteMapper>(new BasicNoteMapper(violin_d->getIStrings()));
+		}
 	}
 
-	//TODO fix distance solver.
-	std::shared_ptr<GraphSolver<Distance>> solver;
+	std::shared_ptr<GraphSolver<int>> solver_i;
+	std::shared_ptr<GraphSolver<double>> solver_d;
 	try {
 		//Build the layerlist from the notelist and mapper.
-		LayerList<Distance> list(note_list, note_mapper);
+		std::shared_ptr<LayerList<int>> list_i;
+		std::shared_ptr<LayerList<double>> list_d;
 
 		//Build transitions between layers using the ActionSet
-	 	list.buildTransitions(violin_i->getActionSet());
+		if (output == 'i') {
+			list_i = std::shared_ptr<LayerList<int>>(new LayerList<int>(note_list, note_mapper));
+	 		list_i->buildTransitions(violin_i->getActionSet());
+		} else if (output == 'd') {
+			list_d = std::shared_ptr<LayerList<double>>(new LayerList<double>(note_list, note_mapper));
+	 		list_d->buildTransitions(violin_d->getActionSet());
+		}
 		
 		//Interactive mode allows to explore the graph interactively, very basic, used for testing.
 		if (result.count("interactive")) {
+			if (output != 'i') {
+				std::cout << "Interactive mode only supported for integer output.\n";
+			}
 			int row, column;
 			char cont;
 			while (true) {
 				std::cout << "Select which layer you want to view.\n";
 				std::cin >> row;
-				if (row < list.getSize() && row >= 0) {
+				if (row < list_i->getSize() && row >= 0) {
 					std::cout << "Layer " << row << " selected, size (from 0): " 
-						  << list.getList(row).getElem().getSize() - 1 << "\n";
+						  << list_i->getList(row).getElem().getSize() - 1 << "\n";
 					std::cout << "Select which physmap you want to view.\n";
 					std::cin >> column;
-					if (column < list.getList(row).getElem().getSize() && column >= 0) {
-						std::cout << "Transitions for physmap: " << list.getList(row)
+					if (column < list_i->getList(row).getElem().getSize() && column >= 0) {
+						std::cout << "Transitions for physmap: " << list_i->getList(row)
 											.getElem()
 											.getNodes()[column]
 											.to_string_csv() 
-						  << " Note: " << list.getList(row).getElem().getNote() 
+						  << " Note: " << list_i->getList(row).getElem().getNote() 
 						  << "\n";
 						std::cout << "Elems:      | ";
-						for (int i = 0; i < list.getList(row)
+						for (int i = 0; i < list_i->getList(row)
 									.getTransitions()[column]
 									.size(); i++) {
 							std::cout << i << " | ";
 						}
 						std::cout << "\n";
 						std::cout << "Costs:      | ";
-						for (int i = 0; i < list.getList(row)
+						for (int i = 0; i < list_i->getList(row)
 									.getTransitions()[column]
 									.size(); i++) {
-							std::cout << list.getList(row)
+							std::cout << list_i->getList(row)
 									.getTransitions()
 									[column][i] << " | ";
 						}
@@ -278,7 +289,7 @@ int main (int argc, char *argv[]) {
 
 		//Select solver
 		if (result.count("greedy")) {
-			solver = std::shared_ptr<GraphSolver<Distance>>(new GreedySolver());
+			solver_i = std::shared_ptr<GraphSolver<int>>(new GreedySolver());
 			mfpg_log::Log::verbose_out(log, 
 					"Using Greedy solver\n",
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
@@ -287,14 +298,26 @@ int main (int argc, char *argv[]) {
 			mfpg_log::Log::verbose_out(log, 
 					"Using Shortest Path solver with optimizing level: " + to_string(opt) + "\n",
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
-			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(opt));
+			if (output == 'i') {
+				solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(opt));
+			} else if (output == 'd') {
+				solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(opt));
+			}
 		} else {
 			mfpg_log::Log::verbose_out(log, 
 					"No solver selected, defaulting to Shortest Path solver with optimizing level 1\n",
 					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
-			solver = std::shared_ptr<GraphSolver<Distance>>(new SPSolver<int>(2));
+			if (output == 'i') {
+				solver_i = std::shared_ptr<GraphSolver<int>>(new SPSolver<int>(2));
+			} else if (output == 'd') {
+				solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(2));
+			}
 		} 
-		solver->solve(list);
+		if (output == 'i') {
+			solver_i->solve(*list_i);
+		} else if (output == 'd') {
+			solver_d->solve(*list_d);
+		}
 //------------------------------ Output ----------------------------------
 		configs::OUTPUT_TYPE csv = configs::OUTPUT_TYPE::CSV;
 		if (result["csv"].as<bool>()) {
@@ -311,11 +334,19 @@ int main (int argc, char *argv[]) {
 					", Aborting...\n", mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 				return -1;
 			}
-			configs::writeOutput(out, solver, csv);
+			if (output == 'i') {
+				configs::writeOutput(out, solver_i, csv);
+			} else if (output == 'd') {
+				configs::writeOutput(out, solver_d, csv);
+			}
 			out.close();
 		} else {
 			ostream out(std::cout.rdbuf());
-			configs::writeOutput(out, solver, csv);
+			if (output == 'i') {
+				configs::writeOutput(out, solver_i, csv);
+			} else if (output == 'd') {
+				configs::writeOutput(out, solver_d, csv);
+			}
 		}
 		return 1;
 	}

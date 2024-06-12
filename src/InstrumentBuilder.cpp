@@ -7,6 +7,7 @@
    algorithms to use context information differently. */
 
 #include "InstrumentBuilder.h"
+#include "ParserError.H"
 
 #include <iostream>
 #include <memory>
@@ -306,14 +307,14 @@ void InstrumentBuilder::visitScaledDist(ScaledDist *scaled_dist)
 		int num = integer;
 		std::function<int_link> current_link = i_link;
 		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
-			return (current_link(num, (abs ((int) scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
+			return static_cast<int>(current_link(num, (abs (scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<dub_link> current_link = d_link;
 		int num = dub;
 		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
-			return (current_link(num, (abs ((double) scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
+			return static_cast<double>(current_link(num, (abs (scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}
@@ -330,12 +331,12 @@ void InstrumentBuilder::visitDirectDist(DirectDist *direct_dist)
 	std::function<exp_fun> current_e_fun = e_fun;
 	if (output == 'i') {
 		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
-			return (abs ((int) current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
+			return static_cast<int>(abs (current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
-			return (abs ((double) current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
+			return static_cast<double>(abs (current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}
@@ -379,42 +380,41 @@ void InstrumentBuilder::visitCompCond(CompCond *comp_cond)
 	std::string attr2 = str;
 	if (comp_cond->compop_) comp_cond->compop_->accept(this);
 	if (comp_cond->num_) comp_cond->num_->accept(this);
-	if (output == 'i') {
-		int num = integer;
-		std::function<int_fun> comp_fun = i_fun;
-		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
-			if (attr1 == "NOTE") {
-				return (comp_fun(num, abs ((int)(calc_fun(
-						ExValContainer((int)t1.getNote()), 
-						ExValContainer((int)t2.getNote()))))));
-			}
-			if (attr1 == "DURATION") {
-				return (comp_fun(num, abs ((int)(calc_fun(
-						ExValContainer((int)t1.getDuration()), 
-						ExValContainer((int)t2.getDuration()))))));
-			}
-			return (comp_fun(num, abs ((int)(calc_fun(t1.getPhysAttr().getVal(attr1), 
-								  t2.getPhysAttr().getVal(attr2))))));
-		};
-		a_int.addCondFun(cfun, tmp_acc);
-	} else if (output == 'd') {
-		double num = dub;
-		std::function<dub_fun> comp_fun = d_fun;
-		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
-			if (attr1 == "NOTE") {
-				return (comp_fun(num, abs ((double)(calc_fun(
-						ExValContainer((double)t1.getNote()), 
-						ExValContainer((double)t2.getNote()))))));
-			} 
-			if (attr1 == "DURATION") {
-				return (comp_fun(num, abs ((double)(calc_fun(
-						ExValContainer((double)t1.getDuration()), 
-						ExValContainer((double)t2.getDuration()))))));
-			}
-			return (comp_fun(num, abs ((double)(calc_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));
-		};
-		a_dub.addCondFun(cfun, tmp_acc);
-	}
+	int num_i = integer;
+	int num_d = dub;
+	std::function<int_fun> comp_fun_i = i_fun;
+	std::function<dub_fun> comp_fun_d = d_fun;
+	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) -> bool {
+		if (attr1 == "NOTE") {
+			return (comp_fun_i(num_i, abs ((calc_fun(
+					ExValContainer((int)t1.getNote()), 
+					ExValContainer((int)t2.getNote()))))));
+		}
+		if (attr1 == "DURATION") {
+			return (comp_fun_d(num_d, abs ((calc_fun(
+					ExValContainer((int)t1.getDuration()), 
+					ExValContainer((int)t2.getDuration()))))));
+		}
+		switch (t1.getPhysAttr().getVal(attr1).getType()) {
+			case 'i':
+				if (t2.getPhysAttr().getVal(attr2).getType() != 'i') {
+					throw parse_error(14, "COMPARISON CONDITION FUNCTION " + attr1 + " is an integer but " + attr2 + " is not, they cannot be combined");
+				}
+				return (comp_fun_i(num_i, abs ((calc_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));
+			case 'b':
+				throw parse_error(18, "COMPARISON CONDITION FUNCTION " + attr1 + " is a boolean and thus cannot be combined with anything");
+			case 'd':
+				if (t2.getPhysAttr().getVal(attr2).getType() != 'd') {
+					throw parse_error(21, "COMPARISON CONDITION FUNCTION " + attr1 + " is a double but " + attr2 + " is not, they cannot be combined");
+				}
+				return (comp_fun_d(num_d, abs ((calc_fun(t1.getPhysAttr().getVal(attr1), 
+							  t2.getPhysAttr().getVal(attr2))))));
+			default:
+				throw parse_error(26, "No type found for attribute " + attr1);
+		}
+	};
+	a_int.addCondFun(cfun, tmp_acc);
+	a_dub.addCondFun(cfun, tmp_acc);
 }
 
 void InstrumentBuilder::visitFrValueCond(FrValueCond *fr_value_cond)
@@ -424,51 +424,30 @@ void InstrumentBuilder::visitFrValueCond(FrValueCond *fr_value_cond)
 	std::string attr = str;
 	if (fr_value_cond->compop_) fr_value_cond->compop_->accept(this);
 	if (fr_value_cond->num_) fr_value_cond->num_->accept(this);
-	if (output == 'i') {
-		std::function<int_fun> comp_fun = i_fun;
-		int num = integer;
-		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
-			if (attr == "NOTE") {
-				return (comp_fun(num, ExValContainer((int)t1.getNote())));
-			}
-			if (attr == "DURATION") {
-				return (comp_fun(num, ExValContainer((int)t1.getDuration())));
-			}
-			switch (t1.getPhysAttr().getVal(attr).getType()) {
-				case 'i':
-					return (comp_fun(num, (int)t1.getPhysAttr().getVal(attr).getI()));	
-				case 'b':
-					return (comp_fun(num, (int)t1.getPhysAttr().getVal(attr).getB()));	
-				case 'd':
-					return (comp_fun(num, (int)t1.getPhysAttr().getVal(attr).getD()));	
-				default:
-					return (comp_fun(num, t1.getPhysAttr().getVal(attr).getI()));	
-			}
-		};
-		a_int.addCondFun(cfun, tmp_acc);
-	} else if (output == 'd') {
-		std::function<dub_fun> comp_fun = d_fun;
-		double num = dub;
-		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
-			if (attr == "NOTE") {
-				return (comp_fun(num, ExValContainer((double)t1.getNote())));
-			}
-			if (attr == "DURATION") {
-				return (comp_fun(num, ExValContainer((double)t1.getDuration())));
-			}
-			switch (t1.getPhysAttr().getVal(attr).getType()) {
-				case 'i':
-					return (comp_fun(num, (double)t1.getPhysAttr().getVal(attr).getI()));	
-				case 'b':
-					return (comp_fun(num, (double)t1.getPhysAttr().getVal(attr).getB()));	
-				case 'd':
-					return (comp_fun(num, (double)t1.getPhysAttr().getVal(attr).getD()));	
-				default:
-					return (comp_fun(num, t1.getPhysAttr().getVal(attr).getD()));	
-			}
-		};
-		a_dub.addCondFun(cfun, tmp_acc);
-	}
+	std::function<dub_fun> comp_fun_d = d_fun;
+	std::function<int_fun> comp_fun_i = i_fun;
+	int num_i = integer;
+	double num_d = dub;
+	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+		if (attr == "NOTE") {
+			return (comp_fun_i(num_i, ExValContainer((int)t1.getNote())));
+		}
+		if (attr == "DURATION") {
+			return (comp_fun_i(num_i, ExValContainer((int)t1.getDuration())));
+		}
+		switch (t1.getPhysAttr().getVal(attr).getType()) {
+			case 'i':
+				return (comp_fun_i(num_i, t1.getPhysAttr().getVal(attr).getI()));	
+			case 'b':
+				throw parse_error(11, "FROM VALUE CONDITION FUNCTION " + attr + " is a boolean and thus cannot be compared with anything");
+			case 'd':
+				return (comp_fun_d(num_d, t1.getPhysAttr().getVal(attr).getD()));	
+			default:
+				throw parse_error(15, "No type found for attribute " + attr);
+		}
+	};
+	a_int.addCondFun(cfun, tmp_acc);
+	a_dub.addCondFun(cfun, tmp_acc);
 }
 
 void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
@@ -478,51 +457,30 @@ void InstrumentBuilder::visitToValueCond(ToValueCond *to_value_cond)
 	std::string attr = str;
 	if (to_value_cond->compop_) to_value_cond->compop_->accept(this);
 	if (to_value_cond->num_) to_value_cond->num_->accept(this);
-	if (output == 'i') {
-		std::function<int_fun> comp_fun = i_fun;
-		int num = integer;
-		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
-			if (attr == "NOTE") {
-				return (comp_fun(num, ExValContainer((int)t2.getNote())));
-			}
-			if (attr == "DURATION") {
-				return (comp_fun(num, ExValContainer((int)t2.getDuration())));
-			}
-			switch (t2.getPhysAttr().getVal(attr).getType()) {
-				case 'i':
-					return (comp_fun(num, (int)t2.getPhysAttr().getVal(attr).getI()));	
-				case 'b':
-					return (comp_fun(num, (int)t2.getPhysAttr().getVal(attr).getB()));	
-				case 'd':
-					return (comp_fun(num, (int)t2.getPhysAttr().getVal(attr).getD()));	
-				default:
-					return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
-			}
-		};
-		a_int.addCondFun(cfun, tmp_acc);
-	} else if (output == 'd') {
-		std::function<dub_fun> comp_fun = d_fun;
-		double num = dub;
-		std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
-			if (attr == "NOTE") {
-				return (comp_fun(num, ExValContainer((double)t2.getNote())));
-			}
-			if (attr == "DURATION") {
-				return (comp_fun(num, ExValContainer((double)t2.getDuration())));
-			}
-			switch (t2.getPhysAttr().getVal(attr).getType()) {
-				case 'i':
-					return (comp_fun(num, (double)t2.getPhysAttr().getVal(attr).getI()));	
-				case 'b':
-					return (comp_fun(num, (double)t2.getPhysAttr().getVal(attr).getB()));	
-				case 'd':
-					return (comp_fun(num, (double)t2.getPhysAttr().getVal(attr).getD()));	
-				default:
-					return (comp_fun(num, t2.getPhysAttr().getVal(attr).getD()));	
-			}
-		};
-		a_dub.addCondFun(cfun, tmp_acc);
-	}
+	std::function<dub_fun> comp_fun_d = d_fun;
+	std::function<int_fun> comp_fun_i = i_fun;
+	int num_i = integer;
+	double num_d = dub;
+	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
+		if (attr == "NOTE") {
+			return (comp_fun_i(num_i, ExValContainer((int)t2.getNote())));
+		}
+		if (attr == "DURATION") {
+			return (comp_fun_i(num_i, ExValContainer((int)t2.getDuration())));
+		}
+		switch (t2.getPhysAttr().getVal(attr).getType()) {
+			case 'i':
+				return (comp_fun_i(num_i, t2.getPhysAttr().getVal(attr).getI()));
+			case 'b':
+				throw parse_error(11, "FROM VALUE CONDITION FUNCTION " + attr + " is a boolean and thus cannot be compared with anything");
+			case 'd':
+				return (comp_fun_d(num_d, t2.getPhysAttr().getVal(attr).getD()));
+			default:
+				throw parse_error(15, "No type found for attribute " + attr);
+		}
+	};
+	a_int.addCondFun(cfun, tmp_acc);
+	a_dub.addCondFun(cfun, tmp_acc);
 }
 
 void InstrumentBuilder::visitBoolCond(BoolCond *bool_cond)
@@ -533,11 +491,8 @@ void InstrumentBuilder::visitBoolCond(BoolCond *bool_cond)
 	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) {
 		return cur_bool;
 	};
-	if (output == 'i') {
-		a_int.addCondFun(cfun, tmp_acc);
-	} else if (output == 'd') {
-		a_dub.addCondFun(cfun, tmp_acc);
-	}
+	a_int.addCondFun(cfun, tmp_acc);
+	a_dub.addCondFun(cfun, tmp_acc);
 }
 
 void InstrumentBuilder::visitFrAttrCond(FrAttrCond *fr_attr_cond)
@@ -557,11 +512,8 @@ void InstrumentBuilder::visitFrAttrCond(FrAttrCond *fr_attr_cond)
 		*/
 		return t1.getPhysAttr().getVal(attr);
 	};
-	if (output == 'i') {
-		a_int.addCondFun(cfun, tmp_acc);
-	} else if (output == 'd') {
-		a_dub.addCondFun(cfun, tmp_acc);
-	}
+	a_int.addCondFun(cfun, tmp_acc);
+	a_dub.addCondFun(cfun, tmp_acc);
 }
 
 void InstrumentBuilder::visitToAttrCond(ToAttrCond *to_attr_cond)
@@ -581,11 +533,8 @@ void InstrumentBuilder::visitToAttrCond(ToAttrCond *to_attr_cond)
 		*/
 		return t2.getPhysAttr().getVal(attr);
 	};
-	if (output == 'i') {
-		a_int.addCondFun(cfun, tmp_acc);
-	} else if (output == 'd') {
-		a_dub.addCondFun(cfun, tmp_acc);
-	}
+	a_int.addCondFun(cfun, tmp_acc);
+	a_dub.addCondFun(cfun, tmp_acc);
 }
 
 void InstrumentBuilder::visitEAttr(EAttr *e_attr)
@@ -595,88 +544,70 @@ void InstrumentBuilder::visitEAttr(EAttr *e_attr)
 
 void InstrumentBuilder::visitEq(Eq *eq)
 {
-	if (output == 'i') {
-		i_fun = [] (int i, int v) {
-			return i == v;
-		};
-	} else if (output == 'd') {
-		d_fun = [] (double i, double v) {
-			return i == v;
-		};
-	}
+	i_fun = [] (int i, int v) {
+		return i == v;
+	};
+	d_fun = [] (double i, double v) {
+		return i == v;
+	};
 }
 
 void InstrumentBuilder::visitNEq(NEq *n_eq)
 {
-	if (output == 'i') {
-		i_fun = [] (int i, int v) {
-			return i != v;
-		};
-	} else if (output == 'd') {
-		d_fun = [] (double i, double v) {
-			return i != v;
-		};
-	}
+	i_fun = [] (int i, int v) {
+		return i != v;
+	};
+	d_fun = [] (double i, double v) {
+		return i != v;
+	};
 }
 
 void InstrumentBuilder::visitGt(Gt *gt)
 {
 	//Reversed because the second argument represents the input, while the first the number, but in the
 	//syntax its the opposite.
-	if (output == 'i') {
-		i_fun = [] (int i, int v) {
-			return i < v;
-		};
-	} else if (output == 'd') {
-		d_fun = [] (double i, double v) {
-			return i < v;
-		};
-	}
+	i_fun = [] (int i, int v) {
+		return i < v;
+	};
+	d_fun = [] (double i, double v) {
+		return i < v;
+	};
 }
 
 void InstrumentBuilder::visitLt(Lt *lt)
 {
 	//Reversed because the second argument represents the input, while the first the number, but in the
 	//syntax its the opposite.
-	if (output == 'i') {
-		i_fun = [] (int i, int v) {
-			return i > v;
-		};
-	} else if (output == 'd') {
-		d_fun = [] (double i, double v) {
-			return i > v;
-		};
-	}
+	i_fun = [] (int i, int v) {
+		return i > v;
+	};
+	d_fun = [] (double i, double v) {
+		return i > v;
+	};
 }
 
 void InstrumentBuilder::visitGte(Gte *gte)
 {
 	//Reversed because the second argument represents the input, while the first the number, but in the
 	//syntax its the opposite.
-	if (output == 'i') {
-		i_fun = [] (int i, int v) {
-			return i <= v;
-		};
-	} else if (output == 'd') {
-		d_fun = [] (double i, double v) {
-			return i <= v;
-		};
-	}
+	i_fun = [] (int i, int v) {
+		return i <= v;
+	};
+	d_fun = [] (double i, double v) {
+		return i <= v;
+	};
 }
 
 void InstrumentBuilder::visitLte(Lte *lte)
 {
 	//Reversed because the second argument represents the input, while the first the number, but in the
 	//syntax its the opposite.
-	if (output == 'i') {
-		i_fun = [] (int i, int v) {
-			return i >= v;
-		};
-	} else if (output == 'd') {
-		d_fun = [] (double i, double v) {
-			return i >= v;
-		};
-	}
+	i_fun = [] (int i, int v) {
+		return i >= v;
+	};
+	d_fun = [] (double i, double v) {
+		return i >= v;
+	};
 }
 
 void InstrumentBuilder::visitAnd(And *and_)
@@ -729,15 +660,9 @@ void InstrumentBuilder::visitCNDuration(CNDuration *cn_duration)
 void InstrumentBuilder::visitESub(ESub *e_sub)
 {
 	acc = ACCUMULATOR::MINUS;
-	if (output == 'i') {
-		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
-			return static_cast<int>(abs(a - b));		
-		};
-	} else if (output == 'd') {
-		e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
-			return static_cast<double>(abs(a - b));		
-		};
-	}
+	e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
+		return abs(a - b);		
+	};
 }
 
 void InstrumentBuilder::visitEPlus(EPlus *e_plus)
@@ -750,15 +675,12 @@ void InstrumentBuilder::visitEPlus(EPlus *e_plus)
 
 void InstrumentBuilder::visitSMul(SMul *s_mul)
 {
-	if (output == 'i') {
-		i_link = [] (int i, const ExValContainer& v) {
-			return i * v;
-		};
-	} else if (output == 'd') {
-		d_link = [] (double i, const ExValContainer& v) {
-			return i * v;
-		};
-	}
+	i_link = [] (int i, const ExValContainer& v) {
+		return i * v;
+	};
+	d_link = [] (double i, const ExValContainer& v) {
+		return i * v;
+	};
 }
 
 void InstrumentBuilder::visitVTrue(VTrue *v_true)
@@ -803,6 +725,7 @@ void InstrumentBuilder::visitListDep(ListDep *list_dep)
 void InstrumentBuilder::visitInteger(Integer x)
 {
 	integer = x;
+	dub = static_cast<double>(x);
 }
 
 void InstrumentBuilder::visitChar(Char x)
@@ -812,6 +735,7 @@ void InstrumentBuilder::visitChar(Char x)
 
 void InstrumentBuilder::visitDouble(Double x)
 {
+	integer = static_cast<int>(x);
 	dub = x;
 }
 

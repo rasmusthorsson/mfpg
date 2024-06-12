@@ -1,7 +1,5 @@
-//DSL file which is equivalent to the built-in test configuration 1 in config.h. Also used to test that a
-//DSL file with the same configuration as a built-in ActionSet definition has the same output.
-
-Output: int 
+//Test 1 but with double output
+Output: double 
 
 Attributes:
 	(i) STRING ,
@@ -15,11 +13,11 @@ Strings:
 	4 : E 5 -> F 7 ;
 
 Actions:
-REST_F = this STRING == 0 && this FINGER == 0 && this HAND_POS == 0 : 0 (true) ,
-REST_T = to STRING == 0 && to FINGER == 0 && to HAND_POS == 0 : 0 (true) , 
+REST_F = this NOTE == REST : 0 (true) ,
+REST_T = to NOTE == REST : 0 (true) , 
 HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS (true) ,
 FI = FINGER - FINGER != 0 : FINGER - FINGER (true) , 
-ST_NR = STRING - STRING >= 2 : 100 (true) , 
+ST_NR = STRING - STRING >= 2 : STRING - STRING + 100 (true) , 
 ST = STRING - STRING > 0 : STRING - STRING (true) ;
 
 Dependencies:

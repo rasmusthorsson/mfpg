@@ -20,7 +20,7 @@ REST_F = this STRING == 0 && this FINGER == 0 && this HAND_POS == 0 : 0 (true) ,
 REST_T = to STRING == 0 && to FINGER == 0 && to HAND_POS == 0 : 0 (true) , 
 HP = HAND_POS - HAND_POS != 0 : HAND_POS - HAND_POS (true) ,
 FI = FINGER - FINGER != 0 : FINGER - FINGER (true) , 
-ST_NR = STRING - STRING >= 2 : FINGER - FINGER + 100 (true) , 
+ST_NR = STRING - STRING >= 2 : STRING - STRING + 100 (true) , 
 ST = STRING - STRING > 0 : STRING - STRING (true) ;
 
 Dependencies:
