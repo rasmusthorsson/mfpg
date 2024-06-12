@@ -307,14 +307,14 @@ void InstrumentBuilder::visitScaledDist(ScaledDist *scaled_dist)
 		int num = integer;
 		std::function<int_link> current_link = i_link;
 		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
-			return static_cast<int>(current_link(num, (abs (scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
+			return static_cast<int>(current_link(num, scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<dub_link> current_link = d_link;
 		int num = dub;
 		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
-			return static_cast<double>(current_link(num, (abs (scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));	
+			return static_cast<double>(current_link(num, scale(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}
@@ -331,12 +331,12 @@ void InstrumentBuilder::visitDirectDist(DirectDist *direct_dist)
 	std::function<exp_fun> current_e_fun = e_fun;
 	if (output == 'i') {
 		std::function<distfun_int> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> int {
-			return static_cast<int>(abs (current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
+			return static_cast<int>(current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2)));	
 		};
 		a_int.addDistFun(dfun, tmp_acc);
 	} else if (output == 'd') {
 		std::function<distfun_dub> dfun = [=, this](NoteAttributes t1, NoteAttributes t2) -> double {
-			return static_cast<double>(abs (current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))));	
+			return static_cast<double>(current_e_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2)));	
 		};
 		a_dub.addDistFun(dfun, tmp_acc);
 	}
@@ -386,29 +386,28 @@ void InstrumentBuilder::visitCompCond(CompCond *comp_cond)
 	std::function<dub_fun> comp_fun_d = d_fun;
 	std::function<condfun> cfun = [=, this] (NoteAttributes t1, NoteAttributes t2) -> bool {
 		if (attr1 == "NOTE") {
-			return (comp_fun_i(num_i, abs ((calc_fun(
+			return (comp_fun_i(num_i, (calc_fun(
 					ExValContainer((int)t1.getNote()), 
-					ExValContainer((int)t2.getNote()))))));
+					ExValContainer((int)t2.getNote())))));
 		}
 		if (attr1 == "DURATION") {
-			return (comp_fun_d(num_d, abs ((calc_fun(
+			return (comp_fun_d(num_d, (calc_fun(
 					ExValContainer((int)t1.getDuration()), 
-					ExValContainer((int)t2.getDuration()))))));
+					ExValContainer((int)t2.getDuration())))));
 		}
 		switch (t1.getPhysAttr().getVal(attr1).getType()) {
 			case 'i':
 				if (t2.getPhysAttr().getVal(attr2).getType() != 'i') {
 					throw parse_error(14, "COMPARISON CONDITION FUNCTION " + attr1 + " is an integer but " + attr2 + " is not, they cannot be combined");
 				}
-				return (comp_fun_i(num_i, abs ((calc_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2))))));
+				return (comp_fun_i(num_i, (calc_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2)))));
 			case 'b':
 				throw parse_error(18, "COMPARISON CONDITION FUNCTION " + attr1 + " is a boolean and thus cannot be combined with anything");
 			case 'd':
 				if (t2.getPhysAttr().getVal(attr2).getType() != 'd') {
 					throw parse_error(21, "COMPARISON CONDITION FUNCTION " + attr1 + " is a double but " + attr2 + " is not, they cannot be combined");
 				}
-				return (comp_fun_d(num_d, abs ((calc_fun(t1.getPhysAttr().getVal(attr1), 
-							  t2.getPhysAttr().getVal(attr2))))));
+				return (comp_fun_d(num_d, (calc_fun(t1.getPhysAttr().getVal(attr1), t2.getPhysAttr().getVal(attr2)))));
 			default:
 				throw parse_error(26, "No type found for attribute " + attr1);
 		}
@@ -661,7 +660,17 @@ void InstrumentBuilder::visitESub(ESub *e_sub)
 {
 	acc = ACCUMULATOR::MINUS;
 	e_fun = [] (const ExValContainer& a, const ExValContainer& b) -> ExValContainer {
-		return abs(a - b);		
+		ExValContainer res = a - b;
+		switch (res.getType()) {
+			case 'i':
+				return abs((int)res);
+			case 'd':
+				return abs((double)res);
+			case 'b':
+				return abs((int)res);
+			default:
+				return abs((int)res);
+		}
 	};
 }
 
