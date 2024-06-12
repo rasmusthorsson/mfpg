@@ -1019,7 +1019,6 @@ void MFPG_Frame::Generate() {
 	
 	InstrumentBuilder instrument_builder;
 
-	//Patchwork fix for multiple output types
 	std::shared_ptr<Instrument<int>> violin_i;
 	std::shared_ptr<Instrument<double>> violin_d;
 
@@ -1174,6 +1173,11 @@ void MFPG_Frame::Generate() {
 			count++;
 		}
 		std::string e_msg = e.what() + "\nAffected Tuples: " + affected_tuples;
+		std::cout << e_msg << "\n";
+		wxMessageBox(e_msg);
+		return;
+	} catch (parse_error &e) {
+		std::string e_msg = "DSL Parser error in lambda function. error on line: " + (std::to_string(e.getLine()) + " in lambda function: " + e.what());
 		std::cout << e_msg << "\n";
 		wxMessageBox(e_msg);
 		return;

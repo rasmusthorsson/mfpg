@@ -115,7 +115,10 @@ CSVNoteMapper::CSVNoteMapper(std::string fp, const std::vector<IString>& list) {
 	}
 	//Add REST note to mapped_notes, then select all lines found in full_map that are notes on the
 	//strings.
-	mapped_notes.insert(std::make_pair(noteenums::Note::REST, PhysAttrMap({0, 0, 0})));
+	auto rest_range = full_map.equal_range(noteenums::Note::REST);
+		for (auto rest = rest_range.first; rest != rest_range.second; ++rest) {
+			mapped_notes.insert(std::make_pair(rest->first, rest->second));
+		}
 	for (auto &str : list) {
 		mapString(str);
 	}
@@ -129,9 +132,14 @@ void CSVNoteMapper::mapString(const IString& s) {
 
 	//If there is a string attribute
 	bool string_exists = false;
+	std::string string_attr = "";
 	for (auto a : ATTRIBUTES) {
-		if ("STRING" == a) {
+		if (a == "STRING") {
 			string_exists = true;
+			string_attr = "STRING";
+		} else if (a == "String") {
+			string_exists = true;
+			string_attr = "String";
 		}
 	}
 	//For each note on the string we check through all notes specified in the CSV file and add the
@@ -140,7 +148,7 @@ void CSVNoteMapper::mapString(const IString& s) {
 		auto range = full_map.equal_range(note);
 		for (auto i = range.first; i != range.second; ++i) {
 			if (string_exists) {
-				if (i->second.getVal("STRING") == s.getPosition()) {
+				if (i->second.getVal(string_attr) == s.getPosition()) {
 					mapped_notes.insert(std::make_pair(i->first, i->second));
 				}
 			} else {
