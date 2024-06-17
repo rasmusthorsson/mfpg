@@ -104,12 +104,28 @@ int main (int argc, char *argv[]) {
 //------------------------- MX conversion --------------------------------
 
 	using namespace mx::api;
-	auto& mgr = DocumentManager::getInstance();
-	const auto documentID = mgr.createFromFile(score_path);
-	const auto score = mgr.getData(documentID);
-	mgr.destroyDocument(documentID);
-	const NoteList note_list(score);
+	NoteList note_list;
 
+	try {
+		auto& mgr = DocumentManager::getInstance();
+		const auto documentID = mgr.createFromFile(score_path);
+		const auto score = mgr.getData(documentID);
+		mgr.destroyDocument(documentID);
+		note_list.loadNotes(score);
+	} catch (ConversionException e) {
+		mfpg_log::Log::verbose_out(log, ("ERROR: Could not convert mx structure to notelist: " + 
+			e.what() + "\n"), 
+			mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	} catch (runtime_error e) {
+		mfpg_log::Log::verbose_out(log, ("ERROR: Could not parse musicXML score: " + 
+			std::string(e.what()) + " This could be an error related to how the score was " + 
+			"exported, see: " +
+			"https://rasmusthorsson.github.io/mfpg/info/issues for information regarding known"
+			+ " issues relating to this." + "\n"), 
+			mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	}
 //---------------------- Instrument creation ----------------------------
 	//Patchwork solution until fixed output typing.	
 	std::shared_ptr<Instrument<int>> violin_i;

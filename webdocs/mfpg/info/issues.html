@@ -20,7 +20,7 @@
         <button onclick="dropGuidesMenu()" class="dropbtn">
           &#11183
         </button>
-        <div id="guides" class="dropdown-menu">
+        <div id="guides" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
               Interfaces
@@ -43,7 +43,6 @@
           </div>
         </div>
       </div>
-
       <div class="menu">
         <button style="width: 75%;" class="btn">
           <a href="/mfpg/links/">Links</a>
@@ -51,7 +50,7 @@
         <button onclick="dropLinksMenu()" class="dropbtn">
           &#11183
         </button>
-        <div id="links" class="dropdown-menu">
+        <div id="links" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
               Links
@@ -60,6 +59,7 @@
           </div>
         </div>
       </div>
+      
       <div class="menu">
         <button style="width: 75%;" class="btn-selected">
           <a href="/mfpg/info/">Info</a> 
@@ -67,7 +67,7 @@
         <button onclick="dropInfoMenu()" class="dropbtn">
           &#11183
         </button>
-        <div id="info" class="dropdown-menu">
+        <div id="info" div class="dropdown-menu">
           <div class="dropdown-content">
             <div class="dropdown-text">
               Information
@@ -80,23 +80,24 @@
         </div>
       </div>
     </div>
-    <div class="quickbar">
-      <div class="quickbar-text">
-        Patch Notes
+    <div class="homemenu">
+      <div class="hometitle"> 
+        Known Issues
       </div>
-      <a href="/mfpg/info/patch-notes/patch-0-1" style="color:#a111f1;">Patch 0.1</a>
-    </div>
-    <div class="guidepage-index">
-      <a href="#">Placeholder</a>
-    </div>
-    <div class="guidepage">
-      <div class="pagetitle"> 
-        Placeholder Patch page
-      </div>
-      <div class="guidepage-text">
-        <h1>Placeholder</h1>
-        This is placeholder for patch pages.
-      </div>
+      <h1>
+        Noteflight musicXML Export
+      </h1>
+      <h3 align="center">
+        Noteflight exports <i>musicXML</i> files containing tuplets in an order not supported by the 
+        <b>mx</b> library. Currently it cannot successfully parse scores directly exported to 
+        <i>musicXML</i> by Noteflight.
+      </h3>
+      <p style="text-align: center;">
+      This can be solved by exporting the score as a <i>MIDI</i> file (or some other accepted export format
+      by Noteflight), and then using a converter to convert it to <i>musicXML</i>. This issue should be 
+      fixed in future updates where a converter is automatically used in the program when the file format
+      is not musicXML.
+      </p>
     </div>
   </body>
 </html>

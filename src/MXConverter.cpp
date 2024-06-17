@@ -1,4 +1,5 @@
 #include "MXConverter.h"
+#include "Log.h"
 #include <set>
 using namespace noteenums;
 extern std::set<std::string> DEFINITIVES;
@@ -66,6 +67,38 @@ const Duration MXConverter::ConvertDuration(mx::api::NoteData& n) {
 		case mx::api::DurationName::dur64th:
 			return Duration::SixtyFourth;
 		default:
-			throw ConversionException("Duration not found.", n); 
+			mfpg_log::Log::verbose_out(std::cout,
+				"No Duration Name was specified, defaulting to duration time tick...\n",
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL
+				);
+			break;
+	}
+	int t = n.durationData.durationTimeTicks;
+	if (t <= 3840 && t > 1920) {
+		return Duration::DoubleDur;
+	}
+	else if (t <= 1920 && t > 960) {
+		return Duration::Whole;
+	}
+	else if (t <= 960 && t > 480) {
+		return Duration::Half;
+	}
+	else if (t <= 480 && t > 240) {
+		return Duration::Quarter;
+	}
+	else if (t <= 240 && t > 120) {
+		return Duration::Eighth;
+	}
+	else if (t <= 120 && t > 60) {
+		return Duration::Sixteenth;
+	}
+	else if (t <= 60 && t > 30) {
+		return Duration::ThirtySecond;
+	}
+	else if (t <= 30 && t > 15) {
+		return Duration::SixtyFourth;
+	}
+	else {
+		throw ConversionException("Duration not found.", n);
 	}
 }

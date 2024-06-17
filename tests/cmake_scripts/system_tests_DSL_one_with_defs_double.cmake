@@ -15,8 +15,8 @@ execute_process(
 execute_process(
 	COMMAND ${CMAKE_COMMAND} -E compare_files --ignore-eol ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs_double.csv RESULT_VARIABLE A_W_sps_res)
 
-#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs_double.csv)
-#file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv)
+file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs_double.csv)
+file(REMOVE ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv)
 
 if (NOT A_W_sps_res)
 	message("csv match")

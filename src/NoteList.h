@@ -9,15 +9,15 @@
 class NoteList {
 	private:
 		//List of notes in simplified form in the score.
-		const std::list<SimplifiedNote> notes;
+		std::list<SimplifiedNote> notes;
 
-		//Load notes into the list from the score.
-		const std::list<SimplifiedNote> loadNotes(const mx::api::ScoreData&);
 	public:
-		NoteList() = delete;
+		NoteList();
 		NoteList(const mx::api::ScoreData&);
 		
 		int size() const;
+		//Load notes into the list from the score.
+		const void loadNotes(const mx::api::ScoreData&);
 		
 		const SimplifiedNote& front() const;
 		const std::list<SimplifiedNote>& getNotes() const;

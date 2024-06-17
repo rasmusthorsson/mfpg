@@ -219,8 +219,7 @@ void MFPG_Frame::MenuExit(wxCommandEvent& event) {
 }
 
 void MFPG_Frame::MenuGuide(wxCommandEvent& event) {
-	//TODO Create a guide on github pages and link to it from here
-	wxMessageBox("NOT IMPLEMENTED");
+	wxLaunchDefaultBrowser(wxString("https://rasmusthorsson.github.io/mfpg/"), 0);
 }
 void MFPG_Frame::MenuAbout(wxCommandEvent& event) {
 	wxMessageBox("A tool for generating fingering position for scores played on bowed string instruments  by using customizable configurations which allow users to generate their preferred fingerings.", 
@@ -1011,11 +1010,29 @@ void MFPG_Frame::Generate() {
 	
 	//Read file into mx structures
 	using namespace mx::api;
-	auto& mgr = DocumentManager::getInstance();	
-	const auto documentID = mgr.createFromFile(score_path_);
-	const auto score = mgr.getData(documentID);
-	mgr.destroyDocument(documentID);
-	const NoteList note_list(score);
+	NoteList note_list;
+
+	try {
+		auto& mgr = DocumentManager::getInstance();
+		const auto documentID = mgr.createFromFile(score_path_);
+		const auto score = mgr.getData(documentID);
+		mgr.destroyDocument(documentID);
+		note_list.loadNotes(score);
+	} catch (ConversionException e) {
+		std::string e_msg("ERROR: Could not convert mx structure to notelist: " + e.what() + "\n"); 
+		std::cout << e_msg;
+		wxMessageBox(e_msg);
+		return;
+	} catch (std::runtime_error e) {
+		std::string e_msg(std::string("ERROR: Could not parse musicXML score. This could be an") + 
+			"error related to how the score was exported, see: " +
+			"https://rasmusthorsson.github.io/mfpg/info/issues for information regarding known"
+			+ " issues relating to this. The error message can be seen in the information " 
+			+ "window\n"); 
+		std::cout << e_msg + std::string(e.what());
+		wxMessageBox(e_msg);
+		return;
+	}
 	
 	InstrumentBuilder instrument_builder;
 
