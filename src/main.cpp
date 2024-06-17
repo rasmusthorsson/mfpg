@@ -125,6 +125,11 @@ int main (int argc, char *argv[]) {
 			+ " issues relating to this." + "\n"), 
 			mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
+	} catch (out_of_range e) {
+		mfpg_log::Log::verbose_out(log, ("ERROR: Could not read score into NoteList: " + 
+			std::string(e.what())), 
+			mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
 	}
 //---------------------- Instrument creation ----------------------------
 	//Patchwork solution until fixed output typing.	

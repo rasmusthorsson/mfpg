@@ -12,14 +12,18 @@ NoteList::NoteList(const ScoreData& score) {
 
 const void NoteList::loadNotes(const ScoreData& score) {
 	for (PartData p: score.parts) {
-		for (MeasureData m: p.measures) {
-			for (StaffData s: m.staves) {
-				for (NoteData n: s.voices.at(0).notes) {
-					notes.push_back(n);
+		if (p.name == "Violin 1") {
+			for (MeasureData m: p.measures) {
+				for (StaffData s: m.staves) {
+					for (NoteData n: s.voices.at(0).notes) {
+						notes.push_back(n);
+					}
 				}
 			}
+			return;
 		}
 	}
+	throw std::out_of_range("Could not find a violin instrument.\n");
 }
 
 int NoteList::size() const {
