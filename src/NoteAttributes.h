@@ -7,6 +7,8 @@
 #include "NoteEnums.h"
 #include "SimplifiedNote.h"
 
+//Wrapper for containing physical attribute maps and definitive attributes in the same
+//structure
 class NoteAttributes {
 	private:	
 		const PhysAttrMap& phys_attr;
@@ -15,6 +17,7 @@ class NoteAttributes {
 		NoteAttributes() = delete; 
 		NoteAttributes(const PhysAttrMap&, const SimplifiedNote&); 
 		const PhysAttrMap& getPhysAttr();
+		//Definitives
 		const noteenums::Note& getNote();
 		const noteenums::Duration& getDuration();
 };
