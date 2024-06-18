@@ -80,6 +80,20 @@
 									<object class="sizeritem">
 										<flag>wxALL|wxEXPAND</flag>
 										<border>5</border>
+										<object class="wxStaticBoxSizer" name="IName_Box">
+											<orient>wxVERTICAL</orient>
+											<label>IName</label>
+											<object class="sizeritem">
+												<flag>wxALL|wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxTextCtrl" name="ID_IName">
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
 										<object class="wxStaticBoxSizer" name="DSL_Box">
 											<orient>wxVERTICAL</orient>
 											<label>DSL File</label>

@@ -65,7 +65,6 @@ MFPG_Frame::MFPG_Frame(bool _use_xrc) : use_xrc(_use_xrc), wxFrame(nullptr, wxID
 	wxMenu *menuFile = new wxMenu;
 
 	menuFile->Append(ID_MenuNewScore, "&Select Score","");
-	menuFile->AppendSeparator();
 	menuFile->Append(wxID_EXIT);
 
 	wxMenu *menuHelp = new wxMenu;
@@ -74,13 +73,9 @@ MFPG_Frame::MFPG_Frame(bool _use_xrc) : use_xrc(_use_xrc), wxFrame(nullptr, wxID
 	
 	wxMenu *menuConfig = new wxMenu;
 	menuConfig->Append(ID_MenuNewConfig, "&New Config");
-	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuLoadConfig, "&Load Config");
-	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveConfig, "&Save Config");
-	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuSaveAsConfig, "&Save Config As");
-	menuConfig->AppendSeparator();
 	menuConfig->Append(ID_MenuDeleteConfig, "&Delete Saved Config");
 
 	wxMenuBar *menuBar = new wxMenuBar;
@@ -310,6 +305,8 @@ void MFPG_Frame::LoadConfig(wxString name) {
 	}
 
 	SetInstSettings(S_(std::string(config->GetAttribute(INSTRUMENT_SETTINGS_CONF, wxEmptyString))));
+
+	SetInstrumentName((std::string(config->GetAttribute(INSTRUMENT_NAME_CONF, wxEmptyString))));
 	
 	SetInstrument(S_(std::string(config->GetAttribute(INSTRUMENT_CONF, wxEmptyString))));
 	
@@ -374,6 +371,7 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	}
 	std::vector<std::pair<std::string, std::string>> config_attrs({
 			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
+			{INSTRUMENT_NAME_CONF, std::string(current_panel->instrument_text->GetLineText(0))},
 			{DSL_FILE_CONF, dsl_file},
 			{INSTRUMENT_CONF, _S(current_panel->ST_INSTRUMENT)},
 			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
@@ -447,6 +445,7 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 	}
 	std::vector<std::pair<std::string, std::string>> config_attrs({
 			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
+			{INSTRUMENT_NAME_CONF, std::string(current_panel->instrument_text->GetLineText(0))},
 			{DSL_FILE_CONF, dsl_file},
 			{INSTRUMENT_CONF, _S(current_panel->ST_INSTRUMENT)},
 			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
@@ -476,6 +475,7 @@ wxXmlNode *MFPG_Frame::NewConfig(wxString conf_name) {
 	
 	std::vector<std::pair<std::string, std::string>> config_settings({
 			{INSTRUMENT_SETTINGS_CONF, "USE_PRESETS"},
+			{INSTRUMENT_NAME_CONF, "Violin"},
 			{DSL_FILE_CONF, "NONE"},
 			{INSTRUMENT_CONF, "INSTRUMENT_VIOLIN"},
 			{ACTIONSET_CONF, "ACTIONSET_T1"},
@@ -628,6 +628,10 @@ void MFPG_Frame::SetInstrument(Settings s) {
 			current_panel->ST_INSTRUMENT = UNDEFINED;
 			break;
 	}
+}
+
+void MFPG_Frame::SetInstrumentName(wxString s) {
+	current_panel->instrument_text->SetLabel(s);
 }
 
 void MFPG_Frame::CBActionSet(wxCommandEvent& event) {
@@ -1012,7 +1016,7 @@ void MFPG_Frame::Generate() {
 	//Read file into mx structures
 	using namespace mx::api;
 	NoteList note_list;
-	INSTRUMENT_NAME = "Violin";
+	INSTRUMENT_NAME = current_panel->instrument_text->GetLineText(0);
 
 	try {
 		auto& mgr = DocumentManager::getInstance();
@@ -1033,6 +1037,11 @@ void MFPG_Frame::Generate() {
 			+ "window\n"); 
 		std::cout << e_msg + std::string(e.what());
 		wxMessageBox(e_msg);
+		return;
+	} catch (std::out_of_range e) {
+		std::string e_msg("ERROR: Could not read score into NoteList: " + std::string(e.what()));
+		std::cout << e_msg + std::string(e.what());
+		wxMessageBox(e_msg); 
 		return;
 	}
 	

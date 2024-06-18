@@ -49,6 +49,7 @@ class MFPG_Panel : public wxPanel {
 
 		//Instrument settings
 		STATIC_BOX *instrument_area;
+		wxTextCtrl *instrument_text;
 		wxComboBox *instrument_settings_box;
 		wxComboBox *instrument_box;
 		wxComboBox *actionset_box;

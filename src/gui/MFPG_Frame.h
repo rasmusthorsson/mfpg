@@ -8,6 +8,7 @@
 
 //Definitions of XML attribute names
 #define INSTRUMENT_SETTINGS_CONF "instrument_settings"
+#define INSTRUMENT_NAME_CONF "instrument_name"
 #define DSL_FILE_CONF "dsl_file"
 #define INSTRUMENT_CONF "instrument"
 #define ACTIONSET_CONF "actionset"
@@ -85,6 +86,7 @@ class MFPG_Frame : public wxFrame {
 		void SetNoteMapper(Settings);
 		void SetInstSettings(Settings);
 		void SetInstrument(Settings);
+		void SetInstrumentName(wxString);
 		void SetActionSet(Settings);
 		void SetSolver(Settings);
 		void SetOpt(Settings);

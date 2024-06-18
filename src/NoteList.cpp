@@ -25,7 +25,7 @@ const void NoteList::loadNotes(const ScoreData& score) {
 			return;
 		}
 	}
-	throw std::out_of_range("Could not find a violin instrument.\n");
+	throw std::out_of_range("Could not find an instrument by the name:" + INSTRUMENT_NAME + "\n");
 }
 
 int NoteList::size() const {
