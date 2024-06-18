@@ -82,7 +82,7 @@
 										<border>5</border>
 										<object class="wxStaticBoxSizer" name="IName_Box">
 											<orient>wxVERTICAL</orient>
-											<label>IName</label>
+											<label>Instrument Name</label>
 											<object class="sizeritem">
 												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>

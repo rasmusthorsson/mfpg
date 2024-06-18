@@ -18,7 +18,7 @@ bool MFPG_Gui::OnInit() {
 	MFPG_Frame *frame;
 	for (auto s : xrc_locations) {
 		xrc_stream.open(s); //Check to see if file exists
-		if (xrc_stream.is_open() && false) {
+		if (xrc_stream.is_open()) {
 			xrc_stream.close();
 			wxXmlResource::Get()->InitAllHandlers();
 			wxXmlResource::Get()->Load(s);
