@@ -23,6 +23,7 @@ class GlobEnvironment : public ::testing::Environment {
 			TUPLESIZE = 3;
 			ATTRIBUTE_TYPES = "iii";
 			ATTRIBUTES = {"STRING", "HAND_POS", "FINGER"};
+			INSTRUMENT_NAME = "Violin";
 		}
 		~GlobEnvironment() override {}
 		void SetUp() override {}
@@ -521,8 +522,12 @@ TEST(PhysAttrMap, BooleanOperations) {
 //Tests that an empty NoteList is the result of an empty score.
 TEST(NoteList, Undefined) {
 	using namespace mx::api;
+	::testing::Environment* const env = ::testing::AddGlobalTestEnvironment(new GlobEnvironment);
 
 	ScoreData score = ScoreData{};
+	score.parts.emplace_back( PartData{} );
+	auto& part = score.parts.back();
+	part.name = "Violin";
 
 	const NoteList note_list(score);
 

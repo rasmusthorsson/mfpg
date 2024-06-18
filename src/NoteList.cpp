@@ -4,6 +4,8 @@ using namespace std;
 using namespace mx::api;
 using it = std::list<SimplifiedNote>::const_iterator;
 
+extern std::string INSTRUMENT_NAME;
+
 NoteList::NoteList() : notes() {};
 
 NoteList::NoteList(const ScoreData& score) {
@@ -12,7 +14,7 @@ NoteList::NoteList(const ScoreData& score) {
 
 const void NoteList::loadNotes(const ScoreData& score) {
 	for (PartData p: score.parts) {
-		if (p.name == "Violin 1") {
+		if (p.name == INSTRUMENT_NAME) {
 			for (MeasureData m: p.measures) {
 				for (StaffData s: m.staves) {
 					for (NoteData n: s.voices.at(0).notes) {

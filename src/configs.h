@@ -14,6 +14,7 @@ using Distance = int;
 
 int TUPLESIZE;
 std::string ATTRIBUTE_TYPES;
+std::string INSTRUMENT_NAME;
 std::vector<std::string> ATTRIBUTES;
 std::set<std::string> DEFINITIVES;
 namespace configs {

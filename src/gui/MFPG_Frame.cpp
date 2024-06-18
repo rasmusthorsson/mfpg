@@ -44,6 +44,7 @@
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
+extern std::string INSTRUMENT_NAME;
 
 //Seperator depending on OS, might not be needed.
 inline char sep()
@@ -1011,6 +1012,7 @@ void MFPG_Frame::Generate() {
 	//Read file into mx structures
 	using namespace mx::api;
 	NoteList note_list;
+	INSTRUMENT_NAME = "Violin";
 
 	try {
 		auto& mgr = DocumentManager::getInstance();
