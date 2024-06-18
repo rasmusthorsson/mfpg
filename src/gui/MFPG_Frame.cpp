@@ -1017,6 +1017,7 @@ void MFPG_Frame::Generate() {
 	using namespace mx::api;
 	NoteList note_list;
 	INSTRUMENT_NAME = current_panel->instrument_text->GetLineText(0);
+	std::set<std::string> csv_out_col({});
 
 	try {
 		auto& mgr = DocumentManager::getInstance();
@@ -1314,9 +1315,9 @@ void MFPG_Frame::Generate() {
 		out_path = current_panel->FilePath_Output;
 		out.open(out_path, std::ofstream::binary);
 		if (output_type == 'i') {
-			configs::writeOutput(out, solver_i, use_csv);
+			configs::writeOutput(out, solver_i, use_csv, csv_out_col);
 		} else if (output_type == 'd') {
-			configs::writeOutput(out, solver_d, use_csv);
+			configs::writeOutput(out, solver_d, use_csv, csv_out_col);
 		}
 		out.close();
 		current_panel->output_text->LoadFile(current_panel->FilePath_Output);
@@ -1324,9 +1325,9 @@ void MFPG_Frame::Generate() {
 		std::ostream *to_out = new std::ostream{nullptr};
 		wxStreamToTextRedirector out_redirect(current_panel->output_text, to_out);
 		if (output_type == 'i') {
-			configs::writeOutput(*to_out, solver_i, use_csv);
+			configs::writeOutput(*to_out, solver_i, use_csv, csv_out_col);
 		} else if (output_type == 'd') {
-			configs::writeOutput(*to_out, solver_d, use_csv);
+			configs::writeOutput(*to_out, solver_d, use_csv, csv_out_col);
 		}
 	}
 }

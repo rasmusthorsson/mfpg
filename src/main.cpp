@@ -52,7 +52,7 @@ int main (int argc, char *argv[]) {
 		("shortest-path", "Use shortest path solver with optional optimizing levels (0, 1, 2).", cxxopts::value<int>()->implicit_value("0"))
 		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
-		("c,csv", "Structure output as CSV.")
+		("c,csv", "Structure output as CSV.", cxxopts::value<std::vector<std::string>>()->implicit_value({}))
 		("t,test", "Select test parameters (1, 2).", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose (0, 1, 2).", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
@@ -84,6 +84,12 @@ int main (int argc, char *argv[]) {
 	INSTRUMENT_NAME = "Violin";
 	if (result.count("instrument")) {
 		INSTRUMENT_NAME = result["instrument"].as<std::string>();
+	}
+	std::set<std::string> csv_out_cols({});
+	if (result.count("csv")) {
+		for (std::string s : result["csv"].as<std::vector<std::string>>()) {
+			if (s != "") csv_out_cols.insert(s);
+		}
 	}
 
 //-------------------------- Read Score ---------------------------------
@@ -347,7 +353,7 @@ int main (int argc, char *argv[]) {
 		}
 //------------------------------ Output ----------------------------------
 		configs::OUTPUT_TYPE csv = configs::OUTPUT_TYPE::CSV;
-		if (result["csv"].as<bool>()) {
+		if (result.count("csv")) {
 			csv = configs::OUTPUT_TYPE::CSV;
 		} else {
 			csv = configs::OUTPUT_TYPE::BASIC;
@@ -362,17 +368,17 @@ int main (int argc, char *argv[]) {
 				return -1;
 			}
 			if (output == 'i') {
-				configs::writeOutput(out, solver_i, csv);
+				configs::writeOutput(out, solver_i, csv, csv_out_cols);
 			} else if (output == 'd') {
-				configs::writeOutput(out, solver_d, csv);
+				configs::writeOutput(out, solver_d, csv, csv_out_cols);
 			}
 			out.close();
 		} else {
 			ostream out(std::cout.rdbuf());
 			if (output == 'i') {
-				configs::writeOutput(out, solver_i, csv);
+				configs::writeOutput(out, solver_i, csv, csv_out_cols);
 			} else if (output == 'd') {
-				configs::writeOutput(out, solver_d, csv);
+				configs::writeOutput(out, solver_d, csv, csv_out_cols);
 			}
 		}
 		return 1;
