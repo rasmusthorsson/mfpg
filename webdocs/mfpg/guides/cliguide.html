@@ -121,7 +121,7 @@
         <li><strong>score</strong>: The input file, must be an XML file in the form of musicXML, implicitly the last argument of the program and must be supplied.</li>
         <li><strong>--version</strong>: Check compiled version of MFPG.</li>
         <li><strong>-h</strong> or <strong>--help</strong>: Outputs all options.</li>
-        <li><strong>-c</strong> or <strong>--csv</strong>: direct the program to output the results in a CSV format.</li>
+        <li><strong>-c</strong> or <strong>--csv=column_list</strong>: direct the program to output the results in a CSV format. <b>column_list</b> can be specified to specify which csv columns should be outputted, the default is to output all columns.</li>
         <li><strong>-v integer</strong> or <strong>--verbose=integer</strong>: Sets verbosity to different levels, 0 is silent, 1 is errors, 2 is everything.</li>
         <li><strong>--greedy</strong>: Directs the program to use the greedy solver instead of a shortest path solver, this is primarily used for testing.</li>
         <li><strong>shortest-path=integer</strong>: Sets the solver to be the shortest path solver with an optimization level. 0 is no optimization, 1 is invalidation of all previous layers on complete visitation of a layer, and 2 is stop when one solution has been found (and 1).</li>
