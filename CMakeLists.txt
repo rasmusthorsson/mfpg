@@ -124,6 +124,8 @@ if(BUILD_TESTS)
 	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_CSV_BasicNoteMapper.cmake)
   add_test(NAME Defs_test COMMAND ${CMAKE_COMMAND} -P 
 	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_DSL_defs.cmake)
+  add_test(NAME Air_notes_instruments COMMAND ${CMAKE_COMMAND} -P 
+	  		${CMAKE_SOURCE_DIR}/tests/cmake_scripts/system_tests_Air_notes.cmake)
 
   set_tests_properties(A_W_one PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 
@@ -144,4 +146,6 @@ if(BUILD_TESTS)
   set_tests_properties(CSVBasicNoteMap PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
   
   set_tests_properties(Defs_test PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
+  
+  set_tests_properties(Air_notes_instruments PROPERTIES PASS_REGULAR_EXPRESSION "csv match")
 endif()

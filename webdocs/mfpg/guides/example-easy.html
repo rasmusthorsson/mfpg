@@ -196,14 +196,18 @@
         </p>
         <a class="anchor" id="Instrument"></a>
         <h2>Instrument and Actionset</h2>
-        <p>
-          For this section we will be using the <b>MFPG DSL</b>. In order for the
-          program know which notes can be played on which strings of the instrument, 
+        <p> First, let us specify the name of the instrument
+          we are using, this instrument name must correspond to the name of the instrument part in 
+          the score file. The only instrument in the example file we are going to use will be
+          the violin with the name <b>Violin</b>, so we will write that as our instrument name.</p>
+          </p>Next, in order for the
+          program know which notes can be played on which strings of the instrument
           it must be told the specifics of the instrument by the user. We must also
           define what is called an <b>Actionset</b> which will contain the
           preferences of the user when it comes to deciding which fingering position
           is superior when there is a choice between multiple fingering positions when
-          playing a note. We are going to start with a premade <b>DSL</b> file
+          playing a note. For both these purposes we will be using the <b>MFPG DSL </b>.
+          We are going to start with a premade <b>DSL</b> file
           and make some adjustments. In order to get an understanding on how the 
           <b>MFPG DSL</b> files are written and the syntax of the <b>DSL</b> you
           should read the <a href="/mfpg/guides/dslguide">DSL Guide</a>.
@@ -217,8 +221,8 @@
           </a>. Once the file
           has been downloaded the file can be selected by switching the <i>
             Instrument Settings</i> to <i>DSL File</i> and then selecting the file
-          in the file selector underneath. Before we make any modifications to 
-          the <b>DSL</b> file, let us set up the rest of the
+          in the file selector underneath. 
+          Before we make any modifications to the <b>DSL</b> file, let us set up the rest of the
           settings to make it easier to test the modifications we make later on.
         </p>
         <a class="anchor" id="Tidbits"></a>

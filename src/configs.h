@@ -14,6 +14,7 @@ using Distance = int;
 
 int TUPLESIZE;
 std::string ATTRIBUTE_TYPES;
+std::string INSTRUMENT_NAME;
 std::vector<std::string> ATTRIBUTES;
 std::set<std::string> DEFINITIVES;
 namespace configs {
@@ -23,9 +24,12 @@ namespace configs {
 		BASIC,
 		CSV
 	};
-	void writeOutput(ostream& out, shared_ptr<GraphSolver<int>> solver, OUTPUT_TYPE output) {
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<int>> solver, OUTPUT_TYPE output,
+			std::set<std::string> columns) {
+		bool not_first = false;
 		int count = 1;
 		int total_cost = 0;
+		bool c = columns.size() == 0;
 		switch (output) {
 			case OUTPUT_TYPE::BASIC:
 				for (auto sol : solver->getSolution()) {
@@ -50,31 +54,68 @@ namespace configs {
 				break;
 			case OUTPUT_TYPE::CSV:
 				//Headers
-				out << "NoteCount,";
+				if (columns.contains("NoteCount") || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << "NoteCount";
+				}
 				for (string def : DEFINITIVES) {
-					out << def;
-					out << ",";
+					if (columns.contains(def) || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << def;
+					}
 				}
-				out << "Cost,Combinations,";
-				for (int i = 1; i < ATTRIBUTES.size(); i++) {
-					out << ATTRIBUTES[i-1];
-					out << ",";
+				if (columns.contains("Cost") || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << "Cost";
 				}
-				out << ATTRIBUTES[ATTRIBUTES.size()-1];
+				if (columns.contains("Combinations") || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << "Combinations";
+				}
+				for (int i = 0; i < ATTRIBUTES.size(); i++) {
+					if (columns.contains(ATTRIBUTES[i]) || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << ATTRIBUTES[i];
+					}
+				}
+				not_first = false;
 				out << "\r\n";
 				//Columns
 				for (auto sol : solver->getSolution()) {
-					out << count << ",";
+					if (columns.contains("NoteCount") || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << count;
+					}
 					for (string def : DEFINITIVES) {
 						if (def == "NOTE") {
-							out << get<0>(sol).getNote().getNote() << ",";
+							if (columns.contains("NOTE") || c) {
+								if (not_first) out << ","; else not_first = true;
+								out << get<0>(sol).getNote().getNote();
+							}
 						} else if (def == "DURATION") {
-							out << get<0>(sol).getNote().getDuration() << ",";
+							if (columns.contains("DURATION") || c) {
+								if (not_first) out << ","; else not_first = true;
+								out << get<0>(sol).getNote().getDuration();
+							}
 						}
 					}
-					out << get<1>(sol) << ",";
-					out << get<0>(sol).getLayerList().getElem().getSize() << ",";
-					out << get<0>(sol).getState().to_string_csv() << "\r\n";
+					if (columns.contains("Cost") || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << get<1>(sol);
+					}
+					if (columns.contains("Combinations") || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << get<0>(sol).getLayerList().getElem().getSize();
+					}
+					for (int i = 0; i < ATTRIBUTES.size(); i++) {
+						if (columns.contains(ATTRIBUTES[i]) || c) {
+							if (not_first) out << ","; else not_first = true;
+							out << get<0>(sol).getState().getVal(ATTRIBUTES[i])
+								.to_string_csv();
+						}
+					}
+					not_first = false;
+					out << "\r\n";
 					count++;
 					if (get<1>(sol) > -1) {
 						total_cost += get<1>(sol);
@@ -88,9 +129,12 @@ namespace configs {
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 	}
-	void writeOutput(ostream& out, shared_ptr<GraphSolver<double>> solver, OUTPUT_TYPE output) {
+	void writeOutput(ostream& out, shared_ptr<GraphSolver<double>> solver, OUTPUT_TYPE output,
+			std::set<std::string> columns) {
+		bool not_first = false;
 		int count = 1;
 		double total_cost = 0;
+		bool c = columns.size() == 0;
 		switch (output) {
 			case OUTPUT_TYPE::BASIC:
 				for (auto sol : solver->getSolution()) {
@@ -118,30 +162,69 @@ namespace configs {
 				}
 				break;
 			case OUTPUT_TYPE::CSV:
-				out << "NoteCount,";
+				//Headers
+				if (columns.contains("NoteCount") || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << "NoteCount";
+				}
 				for (string def : DEFINITIVES) {
-					out << def;
-					out << ",";
+					if (columns.contains(def) || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << def;
+					}
 				}
-				out << "Cost,Combinations,";
-				for (int i = 1; i < ATTRIBUTES.size(); i++) {
-					out << ATTRIBUTES[i-1];
-					out << ",";
+				if (columns.contains("Cost") || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << "Cost";
 				}
-				out << ATTRIBUTES[ATTRIBUTES.size()-1];
+				if (columns.contains("Combinations") || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << "Combinations";
+				}
+				for (int i = 0; i < ATTRIBUTES.size(); i++) {
+					if (columns.contains(ATTRIBUTES[i]) || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << ATTRIBUTES[i];
+					}
+				}
+				not_first = false;
 				out << "\r\n";
+				//Columns
 				for (auto sol : solver->getSolution()) {
-					out << count << ",";
+					if (columns.contains("NoteCount") || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << count;
+					}
 					for (string def : DEFINITIVES) {
 						if (def == "NOTE") {
-							out << get<0>(sol).getNote().getNote() << ",";
+							if (columns.contains("NOTE") || c) {
+								if (not_first) out << ","; else not_first = true;
+								out << get<0>(sol).getNote().getNote();
+							}
 						} else if (def == "DURATION") {
-							out << get<0>(sol).getNote().getDuration() << ",";
+							if (columns.contains("DURATION") || c) {
+								if (not_first) out << ","; else not_first = true;
+								out << get<0>(sol).getNote().getDuration();
+							}
 						}
 					}
-					out << get<1>(sol) << ",";
-					out << get<0>(sol).getLayerList().getElem().getSize() << ",";
-					out << get<0>(sol).getState().to_string_csv() << "\r\n";
+					if (columns.contains("Cost") || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << get<1>(sol);
+					}
+					if (columns.contains("Combinations") || c) {
+						if (not_first) out << ","; else not_first = true;
+						out << get<0>(sol).getLayerList().getElem().getSize();
+					}
+					for (int i = 0; i < ATTRIBUTES.size(); i++) {
+						if (columns.contains(ATTRIBUTES[i]) || c) {
+							if (not_first) out << ","; else not_first = true;
+							out << get<0>(sol).getState().getVal(ATTRIBUTES[i])
+								.to_string_csv();
+						}
+					}
+					not_first = false;
+					out << "\r\n";
 					count++;
 					if (get<1>(sol) > -1) {
 						total_cost += get<1>(sol);

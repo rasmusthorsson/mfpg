@@ -39,6 +39,7 @@ using namespace std;
 extern int TUPLESIZE;
 extern std::string ATTRIBUTE_TYPES;
 extern std::vector<std::string> ATTRIBUTES;
+extern std::string INSTRUMENT_NAME;
 
 int main (int argc, char *argv[]) {
 //-------------------------------- Input/Arguments -------------------------
@@ -51,11 +52,12 @@ int main (int argc, char *argv[]) {
 		("shortest-path", "Use shortest path solver with optional optimizing levels (0, 1, 2).", cxxopts::value<int>()->implicit_value("0"))
 		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
-		("c,csv", "Structure output as CSV.")
+		("c,csv", "Structure output as CSV.", cxxopts::value<std::vector<std::string>>()->implicit_value({}))
 		("t,test", "Select test parameters (1, 2).", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose (0, 1, 2).", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
 		("d,dsl", "Use the DSL to specify strings, actions and attributes.", cxxopts::value<std::string>())
+		("i,instrument", "The name of the instrument as specified in the score.", cxxopts::value<std::string>())
 		("interactive", "For interactive testing of layers.");
 	options.parse_positional({"score"});
 
@@ -78,6 +80,16 @@ int main (int argc, char *argv[]) {
 		mfpg_log::Log::verbose_out(log, "Verbose option set: " + 
 				(to_string(result["verbose"].as<int>())) + "\n", 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
+	}
+	INSTRUMENT_NAME = "Violin";
+	if (result.count("instrument")) {
+		INSTRUMENT_NAME = result["instrument"].as<std::string>();
+	}
+	std::set<std::string> csv_out_cols({});
+	if (result.count("csv")) {
+		for (std::string s : result["csv"].as<std::vector<std::string>>()) {
+			if (s != "") csv_out_cols.insert(s);
+		}
 	}
 
 //-------------------------- Read Score ---------------------------------
@@ -123,6 +135,11 @@ int main (int argc, char *argv[]) {
 			"exported, see: " +
 			"https://rasmusthorsson.github.io/mfpg/info/issues for information regarding known"
 			+ " issues relating to this." + "\n"), 
+			mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		return -1;
+	} catch (out_of_range e) {
+		mfpg_log::Log::verbose_out(log, ("ERROR: Could not read score into NoteList: " + 
+			std::string(e.what())), 
 			mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		return -1;
 	}
@@ -336,7 +353,7 @@ int main (int argc, char *argv[]) {
 		}
 //------------------------------ Output ----------------------------------
 		configs::OUTPUT_TYPE csv = configs::OUTPUT_TYPE::CSV;
-		if (result["csv"].as<bool>()) {
+		if (result.count("csv")) {
 			csv = configs::OUTPUT_TYPE::CSV;
 		} else {
 			csv = configs::OUTPUT_TYPE::BASIC;
@@ -351,17 +368,17 @@ int main (int argc, char *argv[]) {
 				return -1;
 			}
 			if (output == 'i') {
-				configs::writeOutput(out, solver_i, csv);
+				configs::writeOutput(out, solver_i, csv, csv_out_cols);
 			} else if (output == 'd') {
-				configs::writeOutput(out, solver_d, csv);
+				configs::writeOutput(out, solver_d, csv, csv_out_cols);
 			}
 			out.close();
 		} else {
 			ostream out(std::cout.rdbuf());
 			if (output == 'i') {
-				configs::writeOutput(out, solver_i, csv);
+				configs::writeOutput(out, solver_i, csv, csv_out_cols);
 			} else if (output == 'd') {
-				configs::writeOutput(out, solver_d, csv);
+				configs::writeOutput(out, solver_d, csv, csv_out_cols);
 			}
 		}
 		return 1;

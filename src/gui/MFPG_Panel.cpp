@@ -1,13 +1,19 @@
 #include "MFPG_Panel.h"
 #include "wx/xrc/xmlres.h"
+#include "wx/valtext.h"
 
 void MFPG_Panel::InitPanel(bool use_xrc) {
 	if (use_xrc) {
 		remove_config_button = XRCCTRL(*this, "ID_BTRemoveConfig", wxButton);
 		score_selected_text = XRCCTRL(*this, "SelectedScore", wxStaticText);
 		instrument_area = XRCCTRL(*this, "InstrumentBox", STATIC_BOX);
+
+		instrument_text = XRCCTRL(*this, "ID_IName", wxTextCtrl);
+		instrument_text->SetLabel("Violin");
+
 		instrument_settings_box = XRCCTRL(*this, "ID_CBInstSettings", wxComboBox);
 		instrument_settings_box->SetSelection(0);
+
 		dsl_filepicker = XRCCTRL(*this, "ID_FPDSL", wxFilePickerCtrl);
 		ST_INSTRUMENT_SETTING = USE_PRESETS;
 
@@ -92,16 +98,22 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 //----------------------------------------------INSTRUMENT SETTINGS-------------------------------------
 		//Box: Area containing Instrument/Actionset settings
 		instrument_area = new wxStaticBox(this, wxID_ANY, "Instrument Settings", wxPoint(10, 30),
-			wxSize(400, 250), 0, wxStaticBoxNameStr);
+			wxSize(400, 300), 0, wxStaticBoxNameStr);
 		//Selection: Instrument settings
 		wxString instrument_setting_choices[] = {"Presets", "DSL File"};
 		instrument_settings_box = new wxComboBox(instrument_area, ID_CBInstSettings, _T("Presets"), 
-			wxPoint(20, 30), wxSize(320, 40), 2, instrument_setting_choices, wxCB_READONLY, 
+			wxPoint(30, 25), wxSize(320, 20), 2, instrument_setting_choices, wxCB_READONLY, 
 			wxDefaultValidator);
 		ST_INSTRUMENT_SETTING = USE_PRESETS;
+		//Instrument Name
+		wxStaticBox *instrument_text_area = new wxStaticBox(instrument_area, wxID_ANY, "Instrument Name", wxPoint(20, 60),
+			wxSize(360, 60), 0, wxStaticBoxNameStr);
+		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString("ID_IName"), wxPoint(10, 20), 
+			wxSize(320, 20), 0, wxDefaultValidator, wxString("Violin")); 
+		instrument_text->SetLabel("Violin");
 		//Text: DSL File:
 		wxStaticBox *dsl_box = new wxStaticBox(instrument_area, wxID_ANY, "DSL File", 
-			wxPoint(20, 70), wxSize(360, 80), 0, wxStaticBoxNameStr);
+			wxPoint(20, 130), wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: DSL
 		dsl_filepicker = new wxFilePickerCtrl(dsl_box, ID_FPDSL, wxEmptyString,
 			wxFileSelectorPromptStr, _("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, 20),
@@ -110,29 +122,29 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		dsl_filepicker->Disable();
 		//Text: Instrument:
 		wxStaticText *inst_text = new wxStaticText(instrument_area, wxID_ANY, "Instrument Presets", 
-			wxPoint(20, 160), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END,
+			wxPoint(20, 220), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END,
 			"INSTRUMENT_TEXT");
 		//Selection: Instrument
 		wxString inst_choices[] = {"Violin"};
 		instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), 
-			wxPoint(20, 180), wxSize(160, 40), 1, inst_choices, wxCB_READONLY, 
+			wxPoint(20, 250), wxSize(160, 40), 1, inst_choices, wxCB_READONLY, 
 			wxDefaultValidator, wxComboBoxNameStr);
 		ST_INSTRUMENT = INSTRUMENT_VIOLIN;
 		//Text: ActionSet
 		wxStaticText *as_text = new wxStaticText(instrument_area, wxID_ANY, "Action Set Presets", 
-			wxPoint(220, 160), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, 
+			wxPoint(220, 220), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, 
 			"ACTIONSET_TEXT");
 		//Selection: ActionSet
 		wxString actionset_choices[] = {"Test1", "Test2"};
 		actionset_box = new wxComboBox(instrument_area, ID_CBActionSet, _T("Test1"), 
-			wxPoint(220, 180), wxSize(160, 40), 2, actionset_choices, wxCB_READONLY, 
+			wxPoint(220, 250), wxSize(160, 20), 2, actionset_choices, wxCB_READONLY, 
 			wxDefaultValidator);
 		ST_ACTIONSET = ACTIONSET_T1;
 
 //-----------------------------------------NOTE MAPPER SETTINGS----------------------------------------
 		//Box: Area for NoteMapper settings
-		notemap_area = new wxStaticBox(this, wxID_ANY, "Note Mapper", wxPoint(10, 290), 
-			wxSize(400, 200), 0, wxStaticBoxNameStr);
+		notemap_area = new wxStaticBox(this, wxID_ANY, "Note Mapper", wxPoint(10, 340), 
+			wxSize(400, 180), 0, wxStaticBoxNameStr);
 		//Selection: NoteMapper
 		wxString nm_choices[] = {"Basic", "CSV File"};
 		notemap_box = new wxComboBox(notemap_area, ID_CBNoteMapper, _T("Basic"), wxPoint(20, 30), 
@@ -151,7 +163,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 
 //-------------------------------------------SOLVER SETTINGS------------------------------------------
 		//Box: Area for Solver selection
-		solver_area = new wxStaticBox(this, wxID_ANY, "Solver", wxPoint(10, 500), wxSize(400, 260), 
+		solver_area = new wxStaticBox(this, wxID_ANY, "Solver", wxPoint(10, 530), wxSize(400, 230), 
 			0, wxStaticBoxNameStr);
 		//Selection: Solver
 		wxString solver_choices[] = {"Shortest Path", "Greedy"};
@@ -168,7 +180,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxPoint(20, 80), wxSize(360, 20), 0, wxDefaultValidator, "OPT1");
 		//Text: Opt 1 Label
 		wxStaticText *opt2_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 190),
-			wxSize(360, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT2_TEXT");
+			wxSize(360, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT2_TEXT");
 		opt2_text->SetLabel("Stops solving after finding one solution.");
 		opt2_text->Wrap(360);
 		opt2_text->Refresh();
@@ -245,7 +257,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		generation_area = new wxStaticBox(this, wxID_ANY, "Output Generation", wxPoint(950, 250),
 			wxSize(200, 90), 0, wxStaticBoxNameStr);
 		//Button: Generate
-		generate_button = new wxButton(generation_area, ID_BTGenerate, "Generate", wxPoint(50, 20),
+		generate_button = new wxButton(generation_area, ID_BTGenerate, "Generate", wxPoint(50, 30),
 			wxSize(100, 40), 0, wxDefaultValidator, "GENERATE_BUTTON");
 
 //----------------------------------------INFORMATION--------------------------------------------

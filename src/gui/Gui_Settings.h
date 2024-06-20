@@ -12,6 +12,7 @@ enum {
 	ID_MenuSaveAsConfig = 105,
 	ID_MenuDeleteConfig = 106,
 	ID_MenuGuide = 107,
+	ID_MenuAdvancedSettings = 108,
 
 	ID_CBOOKChange = 201,
 	ID_NBOOKChange = 202,
@@ -35,7 +36,9 @@ enum {
 	ID_BTSavetext = 602,
 	ID_BTSaveastext = 603,
 	ID_BTClearInfo = 604,
-	ID_BTRemoveConfig = 605
+	ID_BTRemoveConfig = 605,
+	ID_BTAddColumn = 606,
+	ID_BTRemoveColumn = 607
 };
 
 //Enums and arrays used for converting settings in the string format in the XML configs file to Enums in 

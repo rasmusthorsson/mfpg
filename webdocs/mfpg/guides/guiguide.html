@@ -130,16 +130,24 @@
         <p>The top menu has 3 submenus:</p>
         <ul>
         <li><h4>File</h4>
-        <p>The 'file' menu is used for selecting the target score. Currently this can only
+        <p>The 'File' menu is used for selecting the target score. Currently this can only
           be done by locally storing the score and importing it directly to the program.</p>
         </li>
         <li><h4>Help</h4>
-        <p>  The 'help' menu provides direction to helpful resources such as guides and tutorials.</p>
+        <p>  The 'Help' menu provides direction to helpful resources such as guides and tutorials.</p>
         </li>
         <li><h4>Configs</h4>
-        <p>  The 'configs' menu allows for saving, loading, deleting, and creating new configs. The program uses a hidden file called <strong>.mfpg_configs.xml</strong> to store
+        <p>  The 'Configs' menu allows for saving, loading, deleting, and creating new configs. The program uses a hidden file called <strong>.mfpg_configs.xml</strong> to store
           configs in XML format. If no such file is found these options will be
           disabled.</p>
+        </li>
+        <li><h4>Advanced</h4>
+        <p> The 'Advanced' menu has settings and options which are more specialized and allow for more 
+        control of the program. The 'Settings' sub-menu of the 'Advanced' menu currently lets the user
+        decide which output columns should be outputted when using the <i>CSV</i> output format. To 
+        configure this, just add the column header names that you want to include from the output 
+        <i>CSV</i> file in the 'Settings' window. If no headers are selected then all columns will be 
+        outputted.</p>
         </li>
         </ul>
         <a class="anchor" id="Config"></a>
@@ -178,6 +186,9 @@
         instrument preset so far and the actionset presets are simple actionsets 
         primarily used for testing. The implementation of these actionsets can be found in
         the GitHub repo in the <strong>src/configs.h</strong> file.</p>
+        <p>Additionally, the instrument name has to be specified here. This name should correspond exactly
+        to the name of the instrument part in the score (i.e "Violin 1", or "Viola" depending on what they
+        are named in the score.).</p>
         <a class="anchor" id="Notemapper"></a>
         <h2>Notemapper Settings</h2>
         <p align="left">
