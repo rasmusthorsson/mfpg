@@ -2,6 +2,8 @@
 #define MFPG_FRAME_H
 #include "MFPG_Choicebook.h"
 
+#include <set>
+
 #include "wx/wx.h"
 #include "wx/filepicker.h"
 #include "wx/xml/xml.h"
@@ -47,6 +49,7 @@ class MFPG_Frame : public wxFrame {
 		void MenuExit(wxCommandEvent&);
 		void MenuAbout(wxCommandEvent&);
 		void MenuGuide(wxCommandEvent&);
+		void MenuAdvancedSettings(wxCommandEvent&);
 		//Books
 		void CBOOKChange(wxBookCtrlEvent&);
 		void NBOOKChange(wxBookCtrlEvent&);
@@ -71,15 +74,23 @@ class MFPG_Frame : public wxFrame {
 		void BTSavetext(wxCommandEvent&);
 		void BTSaveastext(wxCommandEvent&);
 		void BTClearInfo(wxCommandEvent&);
+		void BTAddColumn(wxCommandEvent&);
+		void BTRemoveColumn(wxCommandEvent&);
 
 		//Programwide paths
 		wxString score_path;
 		wxString configs_path;
+		std::set<std::string> output_columns;
 
 		//Frame book
 		MFPG_Choicebook *config_book;
 		//Keeping track of which panel is currently active
 		MFPG_Panel *current_panel;
+		//Output Columns in advanced settings
+		wxStaticText *out_cols_text;
+		wxTextCtrl *add_col_ctrl;
+		wxButton *add_col_btn;
+		wxButton *rem_col_btn;
 
 		//Functions to allow setting the settings while also activating the correct buttons
 		//in the gui from inside the code.
@@ -100,5 +111,9 @@ class MFPG_Frame : public wxFrame {
 		//New config must be attached to existing document or explicitly deleted
 		wxXmlNode *NewConfig(wxString);
 		void LoadConfig(wxString);
+
+		//Misc Helpers
+		//Updates output columns in the advanced settings
+		void UpdateCols();
 };
 #endif

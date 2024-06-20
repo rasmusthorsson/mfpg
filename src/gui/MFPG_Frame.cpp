@@ -17,6 +17,7 @@
 #include <wx/xml/xml.h>
 #include "wx/xrc/xmlres.h"
 #include <wx/stdpaths.h>
+#include <wx/textctrl.h>
 
 #include "conf_cmake.h"
 #include "configs.h"
@@ -78,10 +79,14 @@ MFPG_Frame::MFPG_Frame(bool _use_xrc) : use_xrc(_use_xrc), wxFrame(nullptr, wxID
 	menuConfig->Append(ID_MenuSaveAsConfig, "&Save Config As");
 	menuConfig->Append(ID_MenuDeleteConfig, "&Delete Saved Config");
 
+	wxMenu *menuAdvanced = new wxMenu;
+	menuAdvanced->Append(ID_MenuAdvancedSettings, "&Settings");
+
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, "&File");
 	menuBar->Append(menuHelp, "&Help");
 	menuBar->Append(menuConfig, "&Configs");
+	menuBar->Append(menuAdvanced, "&Advanced");
 
 	SetMenuBar( menuBar );
 
@@ -160,6 +165,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuSaveConfig, MFPG_Frame::MenuSaveConfig)
 	EVT_MENU(ID_MenuSaveAsConfig, MFPG_Frame::MenuSaveAsConfig)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
+	EVT_MENU(ID_MenuAdvancedSettings, MFPG_Frame::MenuAdvancedSettings)
 
 	EVT_CHOICEBOOK_PAGE_CHANGED(ID_CBOOKChange, MFPG_Frame::CBOOKChange)
 	//For the static structures
@@ -185,6 +191,8 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(ID_BTSaveastext, MFPG_Frame::BTSaveastext)
 	EVT_BUTTON(ID_BTClearInfo, MFPG_Frame::BTClearInfo)
 	EVT_BUTTON(ID_BTRemoveConfig, MFPG_Frame::BTRemoveConfig)
+	EVT_BUTTON(ID_BTAddColumn, MFPG_Frame::BTAddColumn)
+	EVT_BUTTON(ID_BTRemoveColumn, MFPG_Frame::BTRemoveColumn)
 	//For XRC file
 	EVT_NOTEBOOK_PAGE_CHANGED(XRCID("ID_NBOOKChange"), MFPG_Frame::NBOOKChange)
 
@@ -217,6 +225,56 @@ void MFPG_Frame::MenuExit(wxCommandEvent& event) {
 void MFPG_Frame::MenuGuide(wxCommandEvent& event) {
 	wxLaunchDefaultBrowser(wxString("https://rasmusthorsson.github.io/mfpg/"), 0);
 }
+
+void MFPG_Frame::MenuAdvancedSettings(wxCommandEvent& event) {
+	wxFrame *w = new wxFrame(this, wxID_ANY, "Advanced Settings", wxDefaultPosition, wxDefaultSize,
+		wxDEFAULT_FRAME_STYLE, wxFrameNameStr);
+	wxNotebook *advanced_book = new wxNotebook(w, wxID_ANY, wxPoint(10, 10), wxDefaultSize, wxNB_TOP,
+		"NB_SETTINGS");
+	wxPanel *output_panel = new wxPanel(advanced_book, wxID_ANY, wxPoint(10, 10), wxDefaultSize, 
+		wxTAB_TRAVERSAL, "ADV_OUTPUT_PANEL");
+	advanced_book->AddPage(output_panel, "Output Settings", true, -1);
+	wxStaticText *out_cols_label = new wxStaticText(output_panel, wxID_ANY, "Selected Output Columns:", 
+		wxPoint(20, 20), wxDefaultSize, wxALIGN_LEFT, wxStaticTextNameStr);
+	out_cols_text = new wxStaticText(output_panel, wxID_ANY, "", wxPoint(20, 45), wxSize(160, 20), 
+		wxALIGN_LEFT, wxStaticTextNameStr);
+	UpdateCols();
+	add_col_ctrl = new wxTextCtrl(output_panel, wxID_ANY, "", wxPoint(20, 100), 
+		wxSize(200, 20), 0, wxDefaultValidator, "ADD_COL_CTRL"); 
+	add_col_btn = new wxButton(output_panel, ID_BTAddColumn, "Add Column", wxPoint(240, 90),
+			wxSize(120, 20), 0, wxDefaultValidator, "ADD_COL_BTN");
+	rem_col_btn = new wxButton(output_panel, ID_BTRemoveColumn, "Remove Column", wxPoint(240, 115),
+			wxSize(120, 20), 0, wxDefaultValidator, "ADD_COL_BTN");
+	w->Show(true);
+}
+
+void MFPG_Frame::BTAddColumn(wxCommandEvent& event) {
+	output_columns.insert(std::string(add_col_ctrl->GetLineText(0)));
+	add_col_ctrl->Clear();
+	UpdateCols();
+}
+
+void MFPG_Frame::BTRemoveColumn(wxCommandEvent& event) {
+	output_columns.erase(std::string(add_col_ctrl->GetLineText(0)));
+	add_col_ctrl->Clear();
+	UpdateCols();
+}
+
+void MFPG_Frame::UpdateCols() {
+	std::string temp_text = "";
+	if (output_columns.size() > 0) {
+		for (std::string col : output_columns) {
+			if (col != "") {
+				temp_text += col + " | ";
+			}
+		}
+	} else {
+		temp_text = "All";
+	}
+	out_cols_text->SetLabel(wxString(temp_text));
+	out_cols_text->Wrap(300);
+}
+
 void MFPG_Frame::MenuAbout(wxCommandEvent& event) {
 	wxMessageBox("A tool for generating fingering position for scores played on bowed string instruments  by using customizable configurations which allow users to generate their preferred fingerings.", 
 			"About MFPG", wxOK|wxICON_INFORMATION);
@@ -244,10 +302,20 @@ void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 
 	if (conf_name_dialog->ShowModal() == wxID_OK) {
 		new_conf = conf_name_dialog->GetValue();
-		MFPG_Panel *config_panel = new MFPG_Panel(config_book);
-		config_panel->score_selected_text->SetLabel(score_path);
-		config_panel->score_selected_text->Refresh();
-		config_book->AddPage(config_panel, new_conf, true, 0);
+		MFPG_Panel *config_panel;
+		if (use_xrc) {
+			config_panel = new MFPG_Panel();	
+			wxXmlResource::Get()->LoadPanel(config_panel, config_book, "MFPG_Panel_XRC");
+		} else {
+			config_panel = new MFPG_Panel(config_book);	
+		}
+		config_panel->InitPanel(use_xrc);
+		if (!score_path) {
+		} else {
+			config_panel->score_selected_text->SetLabel(score_path);
+			config_panel->score_selected_text->Refresh();
+		}
+		config_book->AddPage(config_panel, new_conf, true, -1);
 		current_panel = config_panel;
 	}
 }
@@ -631,7 +699,7 @@ void MFPG_Frame::SetInstrument(Settings s) {
 }
 
 void MFPG_Frame::SetInstrumentName(wxString s) {
-	current_panel->instrument_text->SetLabel(s);
+	current_panel->instrument_text->SetValue(s);
 }
 
 void MFPG_Frame::CBActionSet(wxCommandEvent& event) {
@@ -1017,7 +1085,6 @@ void MFPG_Frame::Generate() {
 	using namespace mx::api;
 	NoteList note_list;
 	INSTRUMENT_NAME = current_panel->instrument_text->GetLineText(0);
-	std::set<std::string> csv_out_col({});
 
 	try {
 		auto& mgr = DocumentManager::getInstance();
@@ -1315,9 +1382,9 @@ void MFPG_Frame::Generate() {
 		out_path = current_panel->FilePath_Output;
 		out.open(out_path, std::ofstream::binary);
 		if (output_type == 'i') {
-			configs::writeOutput(out, solver_i, use_csv, csv_out_col);
+			configs::writeOutput(out, solver_i, use_csv, output_columns);
 		} else if (output_type == 'd') {
-			configs::writeOutput(out, solver_d, use_csv, csv_out_col);
+			configs::writeOutput(out, solver_d, use_csv, output_columns);
 		}
 		out.close();
 		current_panel->output_text->LoadFile(current_panel->FilePath_Output);
@@ -1325,9 +1392,9 @@ void MFPG_Frame::Generate() {
 		std::ostream *to_out = new std::ostream{nullptr};
 		wxStreamToTextRedirector out_redirect(current_panel->output_text, to_out);
 		if (output_type == 'i') {
-			configs::writeOutput(*to_out, solver_i, use_csv, csv_out_col);
+			configs::writeOutput(*to_out, solver_i, use_csv, output_columns);
 		} else if (output_type == 'd') {
-			configs::writeOutput(*to_out, solver_d, use_csv, csv_out_col);
+			configs::writeOutput(*to_out, solver_d, use_csv, output_columns);
 		}
 	}
 }
