@@ -1,0 +1,24 @@
+//Test for a DSL where the FINGER and HAND_POS attributes from the CSV file are not used.
+Output: int 
+
+Attributes:
+	(i) STRING ; 
+
+Strings:
+	1 : G 3 -> Gs 5 , 
+	2 : D 4 -> Ds 6 , 
+	3 : A 4 -> As 6 , 
+	4 : E 5 -> F 7 ;
+
+Actions:
+REST_F = this NOTE == REST : 0 (true) ,
+REST_T = to NOTE == REST : 0 (true) , 
+ST_NR = STRING - STRING >= 2 : STRING - STRING + 100 (true) , 
+ST = STRING - STRING > 0 : STRING - STRING (true) ;
+
+Dependencies:
+ST_NR REST_F false ,
+ST REST_F false ,
+ST_NR REST_T false ,
+ST REST_T false ,
+ST ST_NR false ;

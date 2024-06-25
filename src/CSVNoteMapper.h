@@ -4,8 +4,9 @@
 #include "NoteMapper.h"
 
 class CSVNoteMapper : public NoteMapper {
-	protected:
+	private:
 		std::multimap<noteenums::Note, PhysAttrMap> full_map;
+	protected:
 		void mapString(const IString&);
 	public:
 		CSVNoteMapper(std::string, const std::vector<IString>&);

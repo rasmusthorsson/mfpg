@@ -238,6 +238,10 @@ int main (int argc, char *argv[]) {
 			mfpg_log::Log::verbose_out(log, 
 				e.what(), 
 				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
+		} catch (ExValException& e) {
+			mfpg_log::Log::verbose_out(log, 
+				e.what(), 
+				mfpg_log::VERBOSE_LEVEL::VERBOSE_ERRORS);
 		}
 	} else {
 		if (output == 'i') {
