@@ -90,6 +90,10 @@ MFPG_Frame::MFPG_Frame(bool _use_xrc) : use_xrc(_use_xrc), wxFrame(nullptr, wxID
 
 	SetMenuBar( menuBar );
 
+	//Framewide settings
+	ST_SOLVER = SOLVER_SPS;
+	ST_OPT = OPT_3;
+	
 	//Status bar
 	CreateStatusBar();
 	std::string status("MFPG -- Version: ");
@@ -167,6 +171,8 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_MENU(ID_MenuDeleteConfig, MFPG_Frame::MenuDeleteConfig)
 	EVT_MENU(ID_MenuAdvancedSettings, MFPG_Frame::MenuAdvancedSettings)
 
+	EVT_CLOSE(MFPG_Frame::FrameClose)
+
 	EVT_CHOICEBOOK_PAGE_CHANGED(ID_CBOOKChange, MFPG_Frame::CBOOKChange)
 	//For the static structures
 	EVT_NOTEBOOK_PAGE_CHANGED(ID_NBOOKChange, MFPG_Frame::NBOOKChange)
@@ -218,6 +224,14 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(XRCID("ID_BTRemoveConfig"), MFPG_Frame::BTRemoveConfig)
 wxEND_EVENT_TABLE()
 
+void MFPG_Frame::FrameClose(wxCloseEvent& event) {
+	if (event.CanVeto()) {
+		Destroy();
+	} else {
+		Destroy();
+	}
+}
+
 void MFPG_Frame::MenuExit(wxCommandEvent& event) {
 	Close(true);
 }
@@ -227,24 +241,68 @@ void MFPG_Frame::MenuGuide(wxCommandEvent& event) {
 }
 
 void MFPG_Frame::MenuAdvancedSettings(wxCommandEvent& event) {
-	wxFrame *w = new wxFrame(this, wxID_ANY, "Advanced Settings", wxDefaultPosition, wxDefaultSize,
+	//Main frame
+	wxFrame *w = new wxFrame(this, wxID_ANY, "Advanced Settings", wxDefaultPosition, wxSize(600, 400),
 		wxDEFAULT_FRAME_STYLE, wxFrameNameStr);
+	//Book for panels
 	wxNotebook *advanced_book = new wxNotebook(w, wxID_ANY, wxPoint(10, 10), wxDefaultSize, wxNB_TOP,
 		"NB_SETTINGS");
+	//Output columns panel
 	wxPanel *output_panel = new wxPanel(advanced_book, wxID_ANY, wxPoint(10, 10), wxDefaultSize, 
 		wxTAB_TRAVERSAL, "ADV_OUTPUT_PANEL");
 	advanced_book->AddPage(output_panel, "Output Settings", true, -1);
-	wxStaticText *out_cols_label = new wxStaticText(output_panel, wxID_ANY, "Selected Output Columns:", 
+	//Box: Output Columns
+	wxStaticBox *column_area = new wxStaticBox(output_panel, wxID_ANY, "Columns", wxPoint(10, 10), 
+		wxSize(570, 300), 0, wxStaticBoxNameStr);
+	//Text: Selected Output Columns
+	wxStaticText *out_cols_label = new wxStaticText(column_area, wxID_ANY, "Selected Output Columns:", 
 		wxPoint(20, 20), wxDefaultSize, wxALIGN_LEFT, wxStaticTextNameStr);
-	out_cols_text = new wxStaticText(output_panel, wxID_ANY, "", wxPoint(20, 45), wxSize(160, 20), 
+	//Text: [Colums Selected]
+	out_cols_text = new wxStaticText(column_area, wxID_ANY, "", wxPoint(20, 45), wxSize(160, 20), 
 		wxALIGN_LEFT, wxStaticTextNameStr);
 	UpdateCols();
-	add_col_ctrl = new wxTextCtrl(output_panel, wxID_ANY, "", wxPoint(20, 100), 
-		wxSize(200, 20), 0, wxDefaultValidator, "ADD_COL_CTRL"); 
-	add_col_btn = new wxButton(output_panel, ID_BTAddColumn, "Add Column", wxPoint(240, 90),
-			wxSize(120, 20), 0, wxDefaultValidator, "ADD_COL_BTN");
-	rem_col_btn = new wxButton(output_panel, ID_BTRemoveColumn, "Remove Column", wxPoint(240, 115),
-			wxSize(120, 20), 0, wxDefaultValidator, "ADD_COL_BTN");
+	//Text Control: Column Name
+	add_col_ctrl = new wxTextCtrl(column_area, wxID_ANY, "", wxPoint(20, 95), 
+		wxSize(250, 20), 0, wxDefaultValidator, "ADD_COL_CTRL"); 
+	//Button: Add Column in Control
+	add_col_btn = new wxButton(column_area, ID_BTAddColumn, "Add Column", wxPoint(20, 135),
+			wxSize(120, 30), 0, wxDefaultValidator, "ADD_COL_BTN");
+	//Button: Remove Column in Control
+	rem_col_btn = new wxButton(column_area, ID_BTRemoveColumn, "Remove Column", wxPoint(150, 135),
+			wxSize(120, 30), 0, wxDefaultValidator, "REM_COL_BTN");
+	
+	//Solver panel
+	wxPanel *solver_panel = new wxPanel(advanced_book, wxID_ANY, wxPoint(10, 10), wxDefaultSize, 
+		wxTAB_TRAVERSAL, "ADV_SOLVER_PANEL");
+	advanced_book->AddPage(solver_panel, "Solver Settings", false, -1);
+	//Box: Solver
+	solver_area = new wxStaticBox(solver_panel, wxID_ANY, "Solver", wxPoint(10, 10), wxSize(570, 300), 
+		0, wxStaticBoxNameStr);
+	//Selection: Solver
+	wxString solver_choices[] = {"Shortest Path", "Greedy"};
+	solver_box = new wxComboBox(solver_area, ID_CBSolver, _T("Shortest Path"), wxPoint(20, 30), 
+		wxSize(360, 40), 2, solver_choices, wxCB_READONLY, wxDefaultValidator);
+	//Text: Opt 1 Label
+	wxStaticText *opt1_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 110),
+		wxSize(360, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT1_TEXT");
+	opt1_text->SetLabel("Invalidates previous layers if a layer has been completely been visited.");
+	opt1_text->Wrap(360);
+	opt1_text->Refresh();
+	//Checkbox: Shortest Path solver optimization 1
+	sps_opt_1 = new wxCheckBox(solver_area, ID_CHBSPSOpt1, "Shortest Path Optimization 1", 
+		wxPoint(20, 80), wxSize(360, 20), 0, wxDefaultValidator, "OPT1");
+	//Text: Opt 1 Label
+	wxStaticText *opt2_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 190),
+		wxSize(360, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT2_TEXT");
+	opt2_text->SetLabel("Stops solving after finding one solution.");
+	opt2_text->Wrap(360);
+	opt2_text->Refresh();
+	//Checkbox: Shortest Path solver optimization 2
+	sps_opt_2 = new wxCheckBox(solver_area, ID_CHBSPSOpt2, "Shortest Path Optimization 2", 
+		wxPoint(20, 160), wxSize(360, 20), 0, wxDefaultValidator, "OPT2");
+	SetSolver(ST_SOLVER);
+	SetOpt(ST_OPT);
+
 	w->Show(true);
 }
 
@@ -381,10 +439,11 @@ void MFPG_Frame::LoadConfig(wxString name) {
 	SetActionSet(S_(std::string(config->GetAttribute(ACTIONSET_CONF, wxEmptyString))));
 	
 	SetNoteMapper(S_(std::string(config->GetAttribute(NOTEMAPPER_SETTINGS_CONF, wxEmptyString))));
+
+	//Solver and OPT will not have the selection options initiated at all times.
+	ST_SOLVER = S_(std::string(config->GetAttribute(SOLVER_SETTINGS_CONF, wxEmptyString)));
 	
-	SetSolver(S_(std::string(config->GetAttribute(SOLVER_SETTINGS_CONF, wxEmptyString))));
-	
-	SetOpt(S_(std::string(config->GetAttribute(SOLVER_OPT_CONF, wxEmptyString))));
+	ST_OPT = S_(std::string(config->GetAttribute(SOLVER_OPT_CONF, wxEmptyString)));
 	
 	SetOutput(S_(std::string(config->GetAttribute(OUTPUT_SETTINGS_CONF, wxEmptyString))));
 	
@@ -445,8 +504,8 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
 			{NOTEMAPPER_SETTINGS_CONF, _S(current_panel->ST_NOTEMAPPER)},
 			{NOTEMAPPER_FILE_CONF, notemapper_file},
-			{SOLVER_SETTINGS_CONF, _S(current_panel->ST_SOLVER)},
-			{SOLVER_OPT_CONF, _S(current_panel->ST_OPT)},
+			{SOLVER_SETTINGS_CONF, _S(ST_SOLVER)},
+			{SOLVER_OPT_CONF, _S(ST_OPT)},
 			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
 			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
 			{OUTPUT_FILE_CONF, output_file}
@@ -519,8 +578,8 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
 			{NOTEMAPPER_SETTINGS_CONF, _S(current_panel->ST_NOTEMAPPER)},
 			{NOTEMAPPER_FILE_CONF, notemapper_file},
-			{SOLVER_SETTINGS_CONF, _S(current_panel->ST_SOLVER)},
-			{SOLVER_OPT_CONF, _S(current_panel->ST_OPT)},
+			{SOLVER_SETTINGS_CONF, _S(ST_SOLVER)},
+			{SOLVER_OPT_CONF, _S(ST_OPT)},
 			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
 			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
 			{OUTPUT_FILE_CONF, output_file}
@@ -734,7 +793,7 @@ void MFPG_Frame::SetActionSet(Settings s) {
 }
 
 void MFPG_Frame::CBSolver(wxCommandEvent& event) {
-	switch (current_panel->solver_box->GetCurrentSelection()) {
+	switch (solver_box->GetCurrentSelection()) {
 		case 0:
 			SetSolver(SOLVER_SPS);
 			break;
@@ -751,46 +810,46 @@ void MFPG_Frame::SetSolver(Settings s) {
 	switch (s) {
 		case SOLVER_SPS:
 			//Enable help-text underneath checkboxes
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			for (auto text : solver_area->GetChildren()) {
 				if ((text->GetName() == "OPT1_TEXT" && 
-				     current_panel->sps_opt_1->IsChecked()) || 
+				     sps_opt_1->IsChecked()) || 
 				     (text->GetName() == "OPT2_TEXT" && 
-				      current_panel->sps_opt_2->IsChecked())) {
+				      sps_opt_2->IsChecked())) {
 					text->Enable();
 				}
 			}
-			current_panel->sps_opt_1->Enable();
-			current_panel->sps_opt_2->Enable();
-			current_panel->solver_box->SetSelection(0);
-			current_panel->ST_SOLVER = SOLVER_SPS;
+			sps_opt_1->Enable();
+			sps_opt_2->Enable();
+			solver_box->SetSelection(0);
+			ST_SOLVER = SOLVER_SPS;
 			break;
 		case SOLVER_GREEDY:
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT1_TEXT" || text->GetName() == "OPT2_TEXT") {
 					text->Disable();
 				}
 			}
-			current_panel->sps_opt_1->Disable();
-			current_panel->sps_opt_2->Disable();
-			current_panel->solver_box->SetSelection(1);
-			current_panel->ST_SOLVER = SOLVER_GREEDY;
+			sps_opt_1->Disable();
+			sps_opt_2->Disable();
+			solver_box->SetSelection(1);
+			ST_SOLVER = SOLVER_GREEDY;
 			break;
 		default:
-			current_panel->solver_box->SetSelection(-1);
-			current_panel->ST_SOLVER = UNDEFINED;
+			solver_box->SetSelection(-1);
+			ST_SOLVER = UNDEFINED;
 			break;
 	}
 }
 
 void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
-	if (current_panel->sps_opt_1->IsChecked()) {
-		if (current_panel->sps_opt_2->IsChecked()) {
+	if (sps_opt_1->IsChecked()) {
+		if (sps_opt_2->IsChecked()) {
 			SetOpt(OPT_3);
 		} else {
 			SetOpt(OPT_1);
 		}
 	} else {
-		if (current_panel->sps_opt_2->IsChecked()) {
+		if (sps_opt_2->IsChecked()) {
 			SetOpt(OPT_2);
 		} else {
 			SetOpt(OPT_0);
@@ -798,14 +857,14 @@ void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
 	}
 }
 void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
-	if (current_panel->sps_opt_2->IsChecked()) {
-		if (current_panel->sps_opt_1->IsChecked()) {
+	if (sps_opt_2->IsChecked()) {
+		if (sps_opt_1->IsChecked()) {
 			SetOpt(OPT_3);
 		} else {
 			SetOpt(OPT_2);
 		}
 	} else {
-		if (current_panel->sps_opt_1->IsChecked()) {
+		if (sps_opt_1->IsChecked()) {
 			SetOpt(OPT_1);
 		} else {
 			SetOpt(OPT_0);
@@ -815,69 +874,69 @@ void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
 void MFPG_Frame::SetOpt(Settings s) {
 	switch (s) {
 		case OPT_0:
-			current_panel->sps_opt_1->SetValue(false);
-			current_panel->sps_opt_2->SetValue(false);
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			sps_opt_1->SetValue(false);
+			sps_opt_2->SetValue(false);
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT1_TEXT") {
 					text->Disable();
 				}
 			}
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT2_TEXT") {
 					text->Disable();
 				}
 			}
-			current_panel->ST_OPT = OPT_0;
+			ST_OPT = OPT_0;
 			break;
 		case OPT_1:
-			current_panel->sps_opt_1->SetValue(true);
-			current_panel->sps_opt_2->SetValue(false);
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			sps_opt_1->SetValue(true);
+			sps_opt_2->SetValue(false);
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT1_TEXT") {
 					text->Enable();
 				}
 			}
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT2_TEXT") {
 					text->Disable();
 				}
 			}
-			current_panel->ST_OPT = OPT_1;
+			ST_OPT = OPT_1;
 			break;
 		case OPT_2:
-			current_panel->sps_opt_1->SetValue(false);
-			current_panel->sps_opt_2->SetValue(true);
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			sps_opt_1->SetValue(false);
+			sps_opt_2->SetValue(true);
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT1_TEXT") {
 					text->Disable();
 				}
 			}
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT2_TEXT") {
 					text->Enable();
 				}
 			}
-			current_panel->ST_OPT = OPT_2;
+			ST_OPT = OPT_2;
 			break;
 		case OPT_3:
-			current_panel->sps_opt_1->SetValue(true);
-			current_panel->sps_opt_2->SetValue(true);
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			sps_opt_1->SetValue(true);
+			sps_opt_2->SetValue(true);
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT1_TEXT") {
 					text->Enable();
 				}
 			}
-			for (auto text : current_panel->solver_area->GetChildren()) {
+			for (auto text : solver_area->GetChildren()) {
 				if (text->GetName() == "OPT2_TEXT") {
 					text->Enable();
 				}
 			}
-			current_panel->ST_OPT = OPT_3;
+			ST_OPT = OPT_3;
 			break;
 		default:
-			current_panel->sps_opt_1->SetValue(false);
-			current_panel->sps_opt_2->SetValue(false);
-			current_panel->ST_OPT = UNDEFINED;
+			sps_opt_1->SetValue(false);
+			sps_opt_2->SetValue(false);
+			ST_OPT = UNDEFINED;
 			break;
 	}
 }
@@ -1285,7 +1344,7 @@ void MFPG_Frame::Generate() {
 
 	std::shared_ptr<GraphSolver<int>> solver_i;
 	std::shared_ptr<GraphSolver<double>> solver_d;
-	switch (current_panel->ST_SOLVER) {
+	switch (ST_SOLVER) {
 		case SOLVER_GREEDY:
 			solver_i = std::shared_ptr<GraphSolver<int>>(new GreedySolver());
 			if (output_type == 'd') {
@@ -1294,7 +1353,7 @@ void MFPG_Frame::Generate() {
 			}
 			break;
 		case SOLVER_SPS:
-			switch (current_panel->ST_OPT) {
+			switch (ST_OPT) {
 				case OPT_0:
 					solver_i = std::shared_ptr<GraphSolver<int>>(
 										new SPSolver<int>(0));

@@ -28,8 +28,6 @@ class MFPG_Panel : public wxPanel {
 		Settings ST_NOTEMAPPER = UNDEFINED;
 		Settings ST_ACTIONSET = UNDEFINED;
 		Settings ST_INSTRUMENT = UNDEFINED;
-		Settings ST_SOLVER = UNDEFINED;
-		Settings ST_OPT = UNDEFINED;
 		Settings ST_OUTPUTTYPE = UNDEFINED;
 		Settings ST_OUTPUTTOFILE = UNDEFINED;
 
@@ -54,12 +52,6 @@ class MFPG_Panel : public wxPanel {
 		wxComboBox *instrument_box;
 		wxComboBox *actionset_box;
 		wxFilePickerCtrl *dsl_filepicker;
-
-		//Solver settings
-		wxStaticBox *solver_area;
-		wxComboBox *solver_box;
-		wxCheckBox *sps_opt_1;
-		wxCheckBox *sps_opt_2;
 
 		//Open files
 		STATIC_BOX *files_area;

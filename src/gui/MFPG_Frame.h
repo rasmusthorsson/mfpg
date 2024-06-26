@@ -38,6 +38,10 @@ class MFPG_Frame : public wxFrame {
 	public:
 		MFPG_Frame(bool);
 
+		//Framewide settings
+		Settings ST_SOLVER = UNDEFINED;
+		Settings ST_OPT = UNDEFINED;
+
 		//Interactive structures in the GUI
 		//Menu
 		void MenuNewScore(wxCommandEvent&);
@@ -50,6 +54,8 @@ class MFPG_Frame : public wxFrame {
 		void MenuAbout(wxCommandEvent&);
 		void MenuGuide(wxCommandEvent&);
 		void MenuAdvancedSettings(wxCommandEvent&);
+		//Frame
+		void FrameClose(wxCloseEvent&);
 		//Books
 		void CBOOKChange(wxBookCtrlEvent&);
 		void NBOOKChange(wxBookCtrlEvent&);
@@ -84,13 +90,21 @@ class MFPG_Frame : public wxFrame {
 
 		//Frame book
 		MFPG_Choicebook *config_book;
+
 		//Keeping track of which panel is currently active
 		MFPG_Panel *current_panel;
+
 		//Output Columns in advanced settings
 		wxStaticText *out_cols_text;
 		wxTextCtrl *add_col_ctrl;
 		wxButton *add_col_btn;
 		wxButton *rem_col_btn;
+		
+		//Solver settings in advanced settings
+		wxStaticBox *solver_area;
+		wxComboBox *solver_box;
+		wxCheckBox *sps_opt_1;
+		wxCheckBox *sps_opt_2;
 
 		//Functions to allow setting the settings while also activating the correct buttons
 		//in the gui from inside the code.
