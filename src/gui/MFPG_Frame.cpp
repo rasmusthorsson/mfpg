@@ -2,6 +2,7 @@
 #include "mx/api/DocumentManager.h"
 
 #include "MFPG_Frame.h"
+#include "MFPG_AdvFrame.h"
 
 #include <stdexcept>
 #include <wx/docview.h>
@@ -199,6 +200,7 @@ wxBEGIN_EVENT_TABLE(MFPG_Frame, wxFrame)
 	EVT_BUTTON(ID_BTRemoveConfig, MFPG_Frame::BTRemoveConfig)
 	EVT_BUTTON(ID_BTAddColumn, MFPG_Frame::BTAddColumn)
 	EVT_BUTTON(ID_BTRemoveColumn, MFPG_Frame::BTRemoveColumn)
+	EVT_BUTTON(ID_BTClearColumns, MFPG_Frame::BTClearColumns)
 	//For XRC file
 	EVT_NOTEBOOK_PAGE_CHANGED(XRCID("ID_NBOOKChange"), MFPG_Frame::NBOOKChange)
 
@@ -241,80 +243,28 @@ void MFPG_Frame::MenuGuide(wxCommandEvent& event) {
 }
 
 void MFPG_Frame::MenuAdvancedSettings(wxCommandEvent& event) {
-	//Main frame
-	wxFrame *w = new wxFrame(this, wxID_ANY, "Advanced Settings", wxDefaultPosition, wxSize(600, 400),
-		wxDEFAULT_FRAME_STYLE, wxFrameNameStr);
-	//Book for panels
-	wxNotebook *advanced_book = new wxNotebook(w, wxID_ANY, wxPoint(10, 10), wxDefaultSize, wxNB_TOP,
-		"NB_SETTINGS");
-	//Output columns panel
-	wxPanel *output_panel = new wxPanel(advanced_book, wxID_ANY, wxPoint(10, 10), wxDefaultSize, 
-		wxTAB_TRAVERSAL, "ADV_OUTPUT_PANEL");
-	advanced_book->AddPage(output_panel, "Output Settings", true, -1);
-	//Box: Output Columns
-	wxStaticBox *column_area = new wxStaticBox(output_panel, wxID_ANY, "Columns", wxPoint(10, 10), 
-		wxSize(570, 300), 0, wxStaticBoxNameStr);
-	//Text: Selected Output Columns
-	wxStaticText *out_cols_label = new wxStaticText(column_area, wxID_ANY, "Selected Output Columns:", 
-		wxPoint(20, 20), wxDefaultSize, wxALIGN_LEFT, wxStaticTextNameStr);
-	//Text: [Colums Selected]
-	out_cols_text = new wxStaticText(column_area, wxID_ANY, "", wxPoint(20, 45), wxSize(160, 20), 
-		wxALIGN_LEFT, wxStaticTextNameStr);
+	adv_frame = new MFPG_AdvFrame(this);
 	UpdateCols();
-	//Text Control: Column Name
-	add_col_ctrl = new wxTextCtrl(column_area, wxID_ANY, "", wxPoint(20, 95), 
-		wxSize(250, 20), 0, wxDefaultValidator, "ADD_COL_CTRL"); 
-	//Button: Add Column in Control
-	add_col_btn = new wxButton(column_area, ID_BTAddColumn, "Add Column", wxPoint(20, 135),
-			wxSize(120, 30), 0, wxDefaultValidator, "ADD_COL_BTN");
-	//Button: Remove Column in Control
-	rem_col_btn = new wxButton(column_area, ID_BTRemoveColumn, "Remove Column", wxPoint(150, 135),
-			wxSize(120, 30), 0, wxDefaultValidator, "REM_COL_BTN");
-	
-	//Solver panel
-	wxPanel *solver_panel = new wxPanel(advanced_book, wxID_ANY, wxPoint(10, 10), wxDefaultSize, 
-		wxTAB_TRAVERSAL, "ADV_SOLVER_PANEL");
-	advanced_book->AddPage(solver_panel, "Solver Settings", false, -1);
-	//Box: Solver
-	solver_area = new wxStaticBox(solver_panel, wxID_ANY, "Solver", wxPoint(10, 10), wxSize(570, 300), 
-		0, wxStaticBoxNameStr);
-	//Selection: Solver
-	wxString solver_choices[] = {"Shortest Path", "Greedy"};
-	solver_box = new wxComboBox(solver_area, ID_CBSolver, _T("Shortest Path"), wxPoint(20, 30), 
-		wxSize(360, 40), 2, solver_choices, wxCB_READONLY, wxDefaultValidator);
-	//Text: Opt 1 Label
-	wxStaticText *opt1_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 110),
-		wxSize(360, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT1_TEXT");
-	opt1_text->SetLabel("Invalidates previous layers if a layer has been completely been visited.");
-	opt1_text->Wrap(360);
-	opt1_text->Refresh();
-	//Checkbox: Shortest Path solver optimization 1
-	sps_opt_1 = new wxCheckBox(solver_area, ID_CHBSPSOpt1, "Shortest Path Optimization 1", 
-		wxPoint(20, 80), wxSize(360, 20), 0, wxDefaultValidator, "OPT1");
-	//Text: Opt 1 Label
-	wxStaticText *opt2_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 190),
-		wxSize(360, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT2_TEXT");
-	opt2_text->SetLabel("Stops solving after finding one solution.");
-	opt2_text->Wrap(360);
-	opt2_text->Refresh();
-	//Checkbox: Shortest Path solver optimization 2
-	sps_opt_2 = new wxCheckBox(solver_area, ID_CHBSPSOpt2, "Shortest Path Optimization 2", 
-		wxPoint(20, 160), wxSize(360, 20), 0, wxDefaultValidator, "OPT2");
 	SetSolver(ST_SOLVER);
 	SetOpt(ST_OPT);
-
-	w->Show(true);
+	adv_frame->Show(true);
 }
 
 void MFPG_Frame::BTAddColumn(wxCommandEvent& event) {
-	output_columns.insert(std::string(add_col_ctrl->GetLineText(0)));
-	add_col_ctrl->Clear();
+	output_columns.insert(std::string(adv_frame->add_col_ctrl->GetLineText(0)));
+	adv_frame->add_col_ctrl->Clear();
 	UpdateCols();
 }
 
 void MFPG_Frame::BTRemoveColumn(wxCommandEvent& event) {
-	output_columns.erase(std::string(add_col_ctrl->GetLineText(0)));
-	add_col_ctrl->Clear();
+	output_columns.erase(std::string(adv_frame->add_col_ctrl->GetLineText(0)));
+	adv_frame->add_col_ctrl->Clear();
+	UpdateCols();
+}
+
+void MFPG_Frame::BTClearColumns(wxCommandEvent& event) {
+	output_columns.clear();
+	adv_frame->add_col_ctrl->Clear();
 	UpdateCols();
 }
 
@@ -329,8 +279,8 @@ void MFPG_Frame::UpdateCols() {
 	} else {
 		temp_text = "All";
 	}
-	out_cols_text->SetLabel(wxString(temp_text));
-	out_cols_text->Wrap(300);
+	adv_frame->out_cols_text->SetLabel(wxString(temp_text));
+	adv_frame->out_cols_text->Wrap(300);
 }
 
 void MFPG_Frame::MenuAbout(wxCommandEvent& event) {
@@ -342,13 +292,18 @@ void MFPG_Frame::MenuNewScore(wxCommandEvent& event) {
 		wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml"), 
 		wxFD_OPEN|wxFD_FILE_MUST_EXIST, wxDefaultPosition);
 	if (score_select_dialog->ShowModal() == wxID_OK) {
-		score_path = score_select_dialog->GetPath();
-		for (auto panel : config_book->getPanels()) {
-			panel->score_selected_text->SetLabel(score_path);
-			panel->score_selected_text->Refresh();
-		}
+		SelectScore(score_select_dialog->GetPath());
 	}
 }
+
+void MFPG_Frame::SelectScore(wxString s) {
+	score_path = s;
+	for (auto panel : config_book->getPanels()) {
+		panel->score_selected_text->SetLabel(score_path);
+		panel->score_selected_text->Refresh();
+	}
+}
+
 void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 	wxString new_conf;
 	wxTextEntryDialog *conf_name_dialog = new wxTextEntryDialog(this, _("Config Name"),
@@ -464,6 +419,11 @@ void MFPG_Frame::LoadConfig(wxString name) {
 	} else {
 		SelectOutputFile(std::string(config->GetAttribute(OUTPUT_FILE_CONF, wxEmptyString)));
 	}
+	if (config->GetAttribute(SCORE_CONF, wxEmptyString) == "NONE") {
+		SelectScore("");	
+	} else {
+		SelectScore(std::string(config->GetAttribute(SCORE_CONF, wxEmptyString)));
+	}
 }
 void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	wxString conf_name = config_book->GetPageText(config_book->GetSelection());
@@ -496,6 +456,11 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 	} else {
 		output_file = current_panel->FilePath_Output;
 	}
+	std::string score_path_file = "NONE";
+	if (!score_path) {
+	} else {
+		score_path_file = score_path;
+	}
 	std::vector<std::pair<std::string, std::string>> config_attrs({
 			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
 			{INSTRUMENT_NAME_CONF, std::string(current_panel->instrument_text->GetLineText(0))},
@@ -508,7 +473,8 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 			{SOLVER_OPT_CONF, _S(ST_OPT)},
 			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
 			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
-			{OUTPUT_FILE_CONF, output_file}
+			{OUTPUT_FILE_CONF, output_file},
+			{SCORE_CONF, score_path_file}
 			});
 	wxXmlAttribute *attr = config->GetAttributes();
 	while (attr) {
@@ -570,6 +536,11 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 	} else {
 		output_file = current_panel->FilePath_Output;
 	}
+	std::string score_path_file = "NONE";
+	if (!score_path) {
+	} else {
+		score_path_file = score_path;
+	}
 	std::vector<std::pair<std::string, std::string>> config_attrs({
 			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
 			{INSTRUMENT_NAME_CONF, std::string(current_panel->instrument_text->GetLineText(0))},
@@ -582,7 +553,8 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 			{SOLVER_OPT_CONF, _S(ST_OPT)},
 			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
 			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
-			{OUTPUT_FILE_CONF, output_file}
+			{OUTPUT_FILE_CONF, output_file},
+			{SCORE_CONF, score_path_file}
 			});
 	wxXmlAttribute *attr = config->GetAttributes();
 	while (attr) {
@@ -612,7 +584,8 @@ wxXmlNode *MFPG_Frame::NewConfig(wxString conf_name) {
 			{SOLVER_OPT_CONF, "OPT_3"},
 			{OUTPUT_SETTINGS_CONF, "CSV_OUTPUT"},
 			{OUTPUT_TO_FILE_CONF, "OUTPUT_TO_FILE"},
-			{OUTPUT_FILE_CONF, "NONE"}
+			{OUTPUT_FILE_CONF, "NONE"},
+			{SCORE_CONF, "NONE"}
 			});
 
 	for (auto p : config_settings) {
@@ -792,154 +765,6 @@ void MFPG_Frame::SetActionSet(Settings s) {
 	}
 }
 
-void MFPG_Frame::CBSolver(wxCommandEvent& event) {
-	switch (solver_box->GetCurrentSelection()) {
-		case 0:
-			SetSolver(SOLVER_SPS);
-			break;
-		case 1:
-			SetSolver(SOLVER_GREEDY);
-			break;
-		default:
-			SetSolver(UNDEFINED);
-			wxMessageBox("UNDEFINED NOTEMAPPER");
-			break;
-	}
-}
-void MFPG_Frame::SetSolver(Settings s) {
-	switch (s) {
-		case SOLVER_SPS:
-			//Enable help-text underneath checkboxes
-			for (auto text : solver_area->GetChildren()) {
-				if ((text->GetName() == "OPT1_TEXT" && 
-				     sps_opt_1->IsChecked()) || 
-				     (text->GetName() == "OPT2_TEXT" && 
-				      sps_opt_2->IsChecked())) {
-					text->Enable();
-				}
-			}
-			sps_opt_1->Enable();
-			sps_opt_2->Enable();
-			solver_box->SetSelection(0);
-			ST_SOLVER = SOLVER_SPS;
-			break;
-		case SOLVER_GREEDY:
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT1_TEXT" || text->GetName() == "OPT2_TEXT") {
-					text->Disable();
-				}
-			}
-			sps_opt_1->Disable();
-			sps_opt_2->Disable();
-			solver_box->SetSelection(1);
-			ST_SOLVER = SOLVER_GREEDY;
-			break;
-		default:
-			solver_box->SetSelection(-1);
-			ST_SOLVER = UNDEFINED;
-			break;
-	}
-}
-
-void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
-	if (sps_opt_1->IsChecked()) {
-		if (sps_opt_2->IsChecked()) {
-			SetOpt(OPT_3);
-		} else {
-			SetOpt(OPT_1);
-		}
-	} else {
-		if (sps_opt_2->IsChecked()) {
-			SetOpt(OPT_2);
-		} else {
-			SetOpt(OPT_0);
-		}
-	}
-}
-void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
-	if (sps_opt_2->IsChecked()) {
-		if (sps_opt_1->IsChecked()) {
-			SetOpt(OPT_3);
-		} else {
-			SetOpt(OPT_2);
-		}
-	} else {
-		if (sps_opt_1->IsChecked()) {
-			SetOpt(OPT_1);
-		} else {
-			SetOpt(OPT_0);
-		}
-	}
-}
-void MFPG_Frame::SetOpt(Settings s) {
-	switch (s) {
-		case OPT_0:
-			sps_opt_1->SetValue(false);
-			sps_opt_2->SetValue(false);
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT1_TEXT") {
-					text->Disable();
-				}
-			}
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT2_TEXT") {
-					text->Disable();
-				}
-			}
-			ST_OPT = OPT_0;
-			break;
-		case OPT_1:
-			sps_opt_1->SetValue(true);
-			sps_opt_2->SetValue(false);
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT1_TEXT") {
-					text->Enable();
-				}
-			}
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT2_TEXT") {
-					text->Disable();
-				}
-			}
-			ST_OPT = OPT_1;
-			break;
-		case OPT_2:
-			sps_opt_1->SetValue(false);
-			sps_opt_2->SetValue(true);
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT1_TEXT") {
-					text->Disable();
-				}
-			}
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT2_TEXT") {
-					text->Enable();
-				}
-			}
-			ST_OPT = OPT_2;
-			break;
-		case OPT_3:
-			sps_opt_1->SetValue(true);
-			sps_opt_2->SetValue(true);
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT1_TEXT") {
-					text->Enable();
-				}
-			}
-			for (auto text : solver_area->GetChildren()) {
-				if (text->GetName() == "OPT2_TEXT") {
-					text->Enable();
-				}
-			}
-			ST_OPT = OPT_3;
-			break;
-		default:
-			sps_opt_1->SetValue(false);
-			sps_opt_2->SetValue(false);
-			ST_OPT = UNDEFINED;
-			break;
-	}
-}
 
 void MFPG_Frame::CHBOutputToFile(wxCommandEvent& event) {
 	if (current_panel->output_to_file->IsChecked()) {
@@ -948,6 +773,7 @@ void MFPG_Frame::CHBOutputToFile(wxCommandEvent& event) {
 		SetOutputToFile(UNDEFINED);
 	}
 }
+
 void MFPG_Frame::SetOutputToFile(Settings s) {
 	switch (s) {
 		case OUTPUT_TO_FILE:
@@ -1118,6 +944,156 @@ void MFPG_Frame::BTRemoveConfig(wxCommandEvent& event) {
 	if (q.ShowModal() == wxID_YES) {
 		config_book->DeletePageAndPanel();
 		config_book->Refresh();
+	}
+}
+
+void MFPG_Frame::CBSolver(wxCommandEvent& event) {
+	switch (adv_frame->solver_box->GetCurrentSelection()) {
+		case 0:
+			SetSolver(SOLVER_SPS);
+			break;
+		case 1:
+			SetSolver(SOLVER_GREEDY);
+			break;
+		default:
+			SetSolver(UNDEFINED);
+			wxMessageBox("UNDEFINED NOTEMAPPER");
+			break;
+	}
+}
+void MFPG_Frame::SetSolver(Settings s) {
+	switch (s) {
+		case SOLVER_SPS:
+			//Enable help-text underneath checkboxes
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if ((text->GetName() == "OPT1_TEXT" && 
+				     adv_frame->sps_opt_1->IsChecked()) || 
+				     (text->GetName() == "OPT2_TEXT" && 
+				      adv_frame->sps_opt_2->IsChecked())) {
+					text->Enable();
+				}
+			}
+			adv_frame->sps_opt_1->Enable();
+			adv_frame->sps_opt_2->Enable();
+			adv_frame->solver_box->SetSelection(0);
+			ST_SOLVER = SOLVER_SPS;
+			break;
+		case SOLVER_GREEDY:
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT1_TEXT" || text->GetName() == "OPT2_TEXT") {
+					text->Disable();
+				}
+			}
+			adv_frame->sps_opt_1->Disable();
+			adv_frame->sps_opt_2->Disable();
+			adv_frame->solver_box->SetSelection(1);
+			ST_SOLVER = SOLVER_GREEDY;
+			break;
+		default:
+			adv_frame->solver_box->SetSelection(-1);
+			ST_SOLVER = UNDEFINED;
+			break;
+	}
+}
+
+void MFPG_Frame::CHBSPSOpt1(wxCommandEvent& event) {
+	if (adv_frame->sps_opt_1->IsChecked()) {
+		if (adv_frame->sps_opt_2->IsChecked()) {
+			SetOpt(OPT_3);
+		} else {
+			SetOpt(OPT_1);
+		}
+	} else {
+		if (adv_frame->sps_opt_2->IsChecked()) {
+			SetOpt(OPT_2);
+		} else {
+			SetOpt(OPT_0);
+		}
+	}
+}
+void MFPG_Frame::CHBSPSOpt2(wxCommandEvent& event) {
+	if (adv_frame->sps_opt_2->IsChecked()) {
+		if (adv_frame->sps_opt_1->IsChecked()) {
+			SetOpt(OPT_3);
+		} else {
+			SetOpt(OPT_2);
+		}
+	} else {
+		if (adv_frame->sps_opt_1->IsChecked()) {
+			SetOpt(OPT_1);
+		} else {
+			SetOpt(OPT_0);
+		}
+	}
+}
+
+void MFPG_Frame::SetOpt(Settings s) {
+	switch (s) {
+		case OPT_0:
+			adv_frame->sps_opt_1->SetValue(false);
+			adv_frame->sps_opt_2->SetValue(false);
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT1_TEXT") {
+					text->Disable();
+				}
+			}
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT2_TEXT") {
+					text->Disable();
+				}
+			}
+			ST_OPT = OPT_0;
+			break;
+		case OPT_1:
+			adv_frame->sps_opt_1->SetValue(true);
+			adv_frame->sps_opt_2->SetValue(false);
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT1_TEXT") {
+					text->Enable();
+				}
+			}
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT2_TEXT") {
+					text->Disable();
+				}
+			}
+			ST_OPT = OPT_1;
+			break;
+		case OPT_2:
+			adv_frame->sps_opt_1->SetValue(false);
+			adv_frame->sps_opt_2->SetValue(true);
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT1_TEXT") {
+					text->Disable();
+				}
+			}
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT2_TEXT") {
+					text->Enable();
+				}
+			}
+			ST_OPT = OPT_2;
+			break;
+		case OPT_3:
+			adv_frame->sps_opt_1->SetValue(true);
+			adv_frame->sps_opt_2->SetValue(true);
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT1_TEXT") {
+					text->Enable();
+				}
+			}
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT2_TEXT") {
+					text->Enable();
+				}
+			}
+			ST_OPT = OPT_3;
+			break;
+		default:
+			adv_frame->sps_opt_1->SetValue(false);
+			adv_frame->sps_opt_2->SetValue(false);
+			ST_OPT = UNDEFINED;
+			break;
 	}
 }
 

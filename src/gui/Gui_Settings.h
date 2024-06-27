@@ -38,7 +38,8 @@ enum {
 	ID_BTClearInfo = 604,
 	ID_BTRemoveConfig = 605,
 	ID_BTAddColumn = 606,
-	ID_BTRemoveColumn = 607
+	ID_BTRemoveColumn = 607,
+	ID_BTClearColumns = 608
 };
 
 //Enums and arrays used for converting settings in the string format in the XML configs file to Enums in 

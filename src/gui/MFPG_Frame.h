@@ -1,6 +1,8 @@
 #ifndef MFPG_FRAME_H
 #define MFPG_FRAME_H
+
 #include "MFPG_Choicebook.h"
+#include "MFPG_AdvFrame.h"
 
 #include <set>
 
@@ -22,6 +24,7 @@
 #define OUTPUT_TO_FILE_CONF "output_to_file"
 #define OUTPUT_FILE_CONF "output_file"
 #define CONFIG_NAME_CONF "name"
+#define SCORE_CONF "score"
 
 using Distance = int;
 
@@ -82,10 +85,13 @@ class MFPG_Frame : public wxFrame {
 		void BTClearInfo(wxCommandEvent&);
 		void BTAddColumn(wxCommandEvent&);
 		void BTRemoveColumn(wxCommandEvent&);
+		void BTClearColumns(wxCommandEvent&);
 
 		//Programwide paths
 		wxString score_path;
 		wxString configs_path;
+		
+		//Output columns
 		std::set<std::string> output_columns;
 
 		//Frame book
@@ -94,17 +100,8 @@ class MFPG_Frame : public wxFrame {
 		//Keeping track of which panel is currently active
 		MFPG_Panel *current_panel;
 
-		//Output Columns in advanced settings
-		wxStaticText *out_cols_text;
-		wxTextCtrl *add_col_ctrl;
-		wxButton *add_col_btn;
-		wxButton *rem_col_btn;
-		
-		//Solver settings in advanced settings
-		wxStaticBox *solver_area;
-		wxComboBox *solver_box;
-		wxCheckBox *sps_opt_1;
-		wxCheckBox *sps_opt_2;
+		//Adv Settings frame
+		MFPG_AdvFrame* adv_frame;
 
 		//Functions to allow setting the settings while also activating the correct buttons
 		//in the gui from inside the code.
@@ -113,14 +110,18 @@ class MFPG_Frame : public wxFrame {
 		void SetInstrument(Settings);
 		void SetInstrumentName(wxString);
 		void SetActionSet(Settings);
-		void SetSolver(Settings);
-		void SetOpt(Settings);
 		void SetOutputToFile(Settings);
 		void SetOutput(Settings);
 
 		void SelectDSLFile(wxString);
 		void SelectNoteMapFile(wxString);
 		void SelectOutputFile(wxString);
+
+		//Framewide settings
+		void SetSolver(Settings);
+		void SetOpt(Settings);
+		
+		void SelectScore(wxString);
 
 		//New config must be attached to existing document or explicitly deleted
 		wxXmlNode *NewConfig(wxString);
