@@ -99,7 +99,9 @@
       <a href="#Global">Global</a>
       <a href="#Instrument">Instrument</a>
       <a href="#Notemapper">Notemapper</a>
-      <a href="#Solver">Solver</a>
+      <a href="#Settings" class="inner">Settings</a>
+      <a href="#Columns" class="inner-inner">Columns</a>
+      <a href="#Solver" class="inner-inner">Solver</a>
       <a href="#Files">Files</a>
       <a href="#Output">Output</a>
       <a href="#Generation">Generation</a>
@@ -127,7 +129,7 @@
             <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_topmenu.png">
         </p>
 
-        <p>The top menu has 3 submenus:</p>
+        <p>The top menu has 4 menus:</p>
         <ul>
         <li><h4>File</h4>
         <p>The 'File' menu is used for selecting the target score. Currently this can only
@@ -143,11 +145,42 @@
         </li>
         <li><h4>Advanced</h4>
         <p> The 'Advanced' menu has settings and options which are more specialized and allow for more 
-        control of the program. The 'Settings' sub-menu of the 'Advanced' menu currently lets the user
-        decide which output columns should be outputted when using the <i>CSV</i> output format. To 
-        configure this, just add the column header names that you want to include from the output 
-        <i>CSV</i> file in the 'Settings' window. If no headers are selected then all columns will be 
-        outputted.</p>
+        control of the program. 
+        </p>
+        <a class="anchor" id="Settings"></a>
+        <h3>Settings</h3>
+        <p> The 'Settings' sub-menu of the 'Advanced' menu currently lets the user
+        decide which output columns should be outputted when using the <i>CSV</i> output format, as well
+        as letting the user decide on specifics regarding the solver. </p>
+        <a class="anchor" id="Columns"></a>
+        <h4>Columns Settings</h4>
+        <p align="left">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_columns.png">
+        </p>
+        To configure the output columns, just add the column header names that you want to include from the 
+        output <i>CSV</i> file. If no headers are selected then all columns will be outputted. You can also
+        clear all selected headers with the <i>Clear Columns</i> button, or remove them one at a time with
+        the <i>Remove Columns</i> button.
+        <p>
+        </p>
+        <a class="anchor" id="Solver"></a>
+        <h4>Solver Settings</h4>
+        <p align="left">
+            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_solver.png">
+        </p>
+        <p>The solver section is allows for configuration of output accuracy and efficiency. The Shortest
+        Path solver gives an accurate output based on the entire score. The greedy solver 
+        selects the easiest path based on the easiest next step. This means that the shortest
+        path solver is the solver that should be used unless there is a specific reason to
+        use the greedy solver. </p>
+        <p>The checkboxes are efficiency optimizations to the shortest
+        path solver allow for faster solutions. This will in general not be a problem since 
+        the solver will often times be fast enough without these optimizations, but for some
+        extreme cases they might improve performance noticably. In the future, multiple 
+        fingerings might be generated to give the user a set of fingerings to choose from 
+        rather than the current method of selecting the &#39;optimal&#39; solution only. When this
+        is implemented these optimizations might need to be disabled to allow for multiple
+        solutions.</p>
         </li>
         </ul>
         <a class="anchor" id="Config"></a>
@@ -204,24 +237,6 @@
         although the second option requires some work as well as some programming (see the
         <a href="/mfpg/guides/notemapbuilder">Notemap Builder guide</a> for more information regarding this 
         approach).</p>
-        <a class="anchor" id="Solver"></a>
-        <h2>Solver Settings</h2>
-        <p align="left">
-            <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_solver.png">
-        </p>
-        <p>The solver section is allows for configuration of output accuracy and efficiency. The Shortest
-        Path solver gives an accurate output based on the entire score. The greedy solver 
-        selects the easiest path based on the easiest next step. This means that the shortest
-        path solver is the solver that should be used unless there is a specific reason to
-        use the greedy solver. </p>
-        <p>The checkboxes are efficiency optimizations to the shortest
-        path solver allow for faster solutions. This will in general not be a problem since 
-        the solver will often times be fast enough without these optimizations, but for some
-        extreme cases they might improve performance noticably. In the future, multiple 
-        fingerings might be generated to give the user a set of fingerings to choose from 
-        rather than the current method of selecting the &#39;optimal&#39; solution only. When this
-        is implemented these optimizations might need to be disabled to allow for multiple
-        solutions.</p>
         <a class="anchor" id="Files"></a>
         <h2>Files Area</h2>
         <p align="left">

@@ -69,6 +69,8 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		information_area = XRCCTRL(*this, "InformationBox", STATIC_BOX);
 		information_text = XRCCTRL(*this, "InformationText", wxTextCtrl);
 		clear_info_button = XRCCTRL(*this, "ID_BTClearInfo", wxButton);
+		ST_SOLVER = SOLVER_SPS;
+		ST_OPT = OPT_3;
 	} else {
 //------------------------------------------------REMOVE_CONFIG----------------------------------------
 		remove_config_button = new wxButton(this, ID_BTRemoveConfig, "Remove Config", wxPoint(25, 2),
@@ -96,7 +98,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Instrument Name
 		wxStaticBox *instrument_text_area = new wxStaticBox(instrument_area, wxID_ANY, "Instrument Name", wxPoint(20, 60),
 			wxSize(360, 60), 0, wxStaticBoxNameStr);
-		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString("ID_IName"), wxPoint(10, 20), 
+		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString(""), wxPoint(10, 20), 
 			wxSize(320, 20), 0, wxDefaultValidator, wxString("Violin")); 
 		instrument_text->SetLabel("Violin");
 		//Text: DSL File:
@@ -115,7 +117,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Selection: Instrument
 		wxString inst_choices[] = {"Violin"};
 		instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), 
-			wxPoint(20, 250), wxSize(160, 40), 1, inst_choices, wxCB_READONLY, 
+			wxPoint(20, 250), wxSize(160, 20), 1, inst_choices, wxCB_READONLY, 
 			wxDefaultValidator, wxComboBoxNameStr);
 		ST_INSTRUMENT = INSTRUMENT_VIOLIN;
 		//Text: ActionSet
@@ -132,7 +134,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 //-----------------------------------------NOTE MAPPER SETTINGS----------------------------------------
 		//Box: Area for NoteMapper settings
 		notemap_area = new wxStaticBox(this, wxID_ANY, "Note Mapper", wxPoint(10, 340), 
-			wxSize(400, 180), 0, wxStaticBoxNameStr);
+			wxSize(400, 200), 0, wxStaticBoxNameStr);
 		//Selection: NoteMapper
 		wxString nm_choices[] = {"Basic", "CSV File"};
 		notemap_box = new wxComboBox(notemap_area, ID_CBNoteMapper, _T("Basic"), wxPoint(20, 30), 
@@ -229,6 +231,8 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Button: Clear Info
 		clear_info_button = new wxButton(information_area, ID_BTClearInfo, "Clear Info", 
 			wxPoint(20, 180), wxSize(80, 30), 0, wxDefaultValidator, "CLEAR_INFO_BUTTON");
+		ST_SOLVER = SOLVER_SPS;
+		ST_OPT = OPT_3;
 	}
 }
 

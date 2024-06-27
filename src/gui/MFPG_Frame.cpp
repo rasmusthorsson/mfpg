@@ -90,10 +90,6 @@ MFPG_Frame::MFPG_Frame(bool _use_xrc) : use_xrc(_use_xrc), wxFrame(nullptr, wxID
 	menuBar->Append(menuAdvanced, "&Advanced");
 
 	SetMenuBar( menuBar );
-
-	//Framewide settings
-	ST_SOLVER = SOLVER_SPS;
-	ST_OPT = OPT_3;
 	
 	//Status bar
 	CreateStatusBar();
@@ -245,8 +241,8 @@ void MFPG_Frame::MenuGuide(wxCommandEvent& event) {
 void MFPG_Frame::MenuAdvancedSettings(wxCommandEvent& event) {
 	adv_frame = new MFPG_AdvFrame(this);
 	UpdateCols();
-	SetSolver(ST_SOLVER);
-	SetOpt(ST_OPT);
+	SetSolver(current_panel->ST_SOLVER);
+	SetOpt(current_panel->ST_OPT);
 	adv_frame->Show(true);
 }
 
@@ -297,11 +293,9 @@ void MFPG_Frame::MenuNewScore(wxCommandEvent& event) {
 }
 
 void MFPG_Frame::SelectScore(wxString s) {
-	score_path = s;
-	for (auto panel : config_book->getPanels()) {
-		panel->score_selected_text->SetLabel(score_path);
-		panel->score_selected_text->Refresh();
-	}
+	current_panel->score_path = s;
+	current_panel->score_selected_text->SetLabel(current_panel->score_path);
+	current_panel->score_selected_text->Refresh();
 }
 
 void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
@@ -323,9 +317,9 @@ void MFPG_Frame::MenuNewConfig(wxCommandEvent& event) {
 			config_panel = new MFPG_Panel(config_book);	
 		}
 		config_panel->InitPanel(use_xrc);
-		if (!score_path) {
+		if (!current_panel->score_path) {
 		} else {
-			config_panel->score_selected_text->SetLabel(score_path);
+			config_panel->score_selected_text->SetLabel(current_panel->score_path);
 			config_panel->score_selected_text->Refresh();
 		}
 		config_book->AddPage(config_panel, new_conf, true, -1);
@@ -396,9 +390,9 @@ void MFPG_Frame::LoadConfig(wxString name) {
 	SetNoteMapper(S_(std::string(config->GetAttribute(NOTEMAPPER_SETTINGS_CONF, wxEmptyString))));
 
 	//Solver and OPT will not have the selection options initiated at all times.
-	ST_SOLVER = S_(std::string(config->GetAttribute(SOLVER_SETTINGS_CONF, wxEmptyString)));
+	current_panel->ST_SOLVER = S_(std::string(config->GetAttribute(SOLVER_SETTINGS_CONF, wxEmptyString)));
 	
-	ST_OPT = S_(std::string(config->GetAttribute(SOLVER_OPT_CONF, wxEmptyString)));
+	current_panel->ST_OPT = S_(std::string(config->GetAttribute(SOLVER_OPT_CONF, wxEmptyString)));
 	
 	SetOutput(S_(std::string(config->GetAttribute(OUTPUT_SETTINGS_CONF, wxEmptyString))));
 	
@@ -457,9 +451,9 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 		output_file = current_panel->FilePath_Output;
 	}
 	std::string score_path_file = "NONE";
-	if (!score_path) {
+	if (!current_panel->score_path) {
 	} else {
-		score_path_file = score_path;
+		score_path_file = current_panel->score_path;
 	}
 	std::vector<std::pair<std::string, std::string>> config_attrs({
 			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
@@ -469,8 +463,8 @@ void MFPG_Frame::MenuSaveConfig(wxCommandEvent& event) {
 			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
 			{NOTEMAPPER_SETTINGS_CONF, _S(current_panel->ST_NOTEMAPPER)},
 			{NOTEMAPPER_FILE_CONF, notemapper_file},
-			{SOLVER_SETTINGS_CONF, _S(ST_SOLVER)},
-			{SOLVER_OPT_CONF, _S(ST_OPT)},
+			{SOLVER_SETTINGS_CONF, _S(current_panel->ST_SOLVER)},
+			{SOLVER_OPT_CONF, _S(current_panel->ST_OPT)},
 			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
 			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
 			{OUTPUT_FILE_CONF, output_file},
@@ -537,9 +531,9 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 		output_file = current_panel->FilePath_Output;
 	}
 	std::string score_path_file = "NONE";
-	if (!score_path) {
+	if (!current_panel->score_path) {
 	} else {
-		score_path_file = score_path;
+		score_path_file = current_panel->score_path;
 	}
 	std::vector<std::pair<std::string, std::string>> config_attrs({
 			{INSTRUMENT_SETTINGS_CONF, _S(current_panel->ST_INSTRUMENT_SETTING)},
@@ -549,8 +543,8 @@ void MFPG_Frame::MenuSaveAsConfig(wxCommandEvent& event) {
 			{ACTIONSET_CONF, _S(current_panel->ST_ACTIONSET)},
 			{NOTEMAPPER_SETTINGS_CONF, _S(current_panel->ST_NOTEMAPPER)},
 			{NOTEMAPPER_FILE_CONF, notemapper_file},
-			{SOLVER_SETTINGS_CONF, _S(ST_SOLVER)},
-			{SOLVER_OPT_CONF, _S(ST_OPT)},
+			{SOLVER_SETTINGS_CONF, _S(current_panel->ST_SOLVER)},
+			{SOLVER_OPT_CONF, _S(current_panel->ST_OPT)},
 			{OUTPUT_SETTINGS_CONF, _S(current_panel->ST_OUTPUTTYPE)},
 			{OUTPUT_TO_FILE_CONF, _S(current_panel->ST_OUTPUTTOFILE)},
 			{OUTPUT_FILE_CONF, output_file},
@@ -976,7 +970,7 @@ void MFPG_Frame::SetSolver(Settings s) {
 			adv_frame->sps_opt_1->Enable();
 			adv_frame->sps_opt_2->Enable();
 			adv_frame->solver_box->SetSelection(0);
-			ST_SOLVER = SOLVER_SPS;
+			current_panel->ST_SOLVER = SOLVER_SPS;
 			break;
 		case SOLVER_GREEDY:
 			for (auto text : adv_frame->solver_area->GetChildren()) {
@@ -987,11 +981,11 @@ void MFPG_Frame::SetSolver(Settings s) {
 			adv_frame->sps_opt_1->Disable();
 			adv_frame->sps_opt_2->Disable();
 			adv_frame->solver_box->SetSelection(1);
-			ST_SOLVER = SOLVER_GREEDY;
+			current_panel->ST_SOLVER = SOLVER_GREEDY;
 			break;
 		default:
 			adv_frame->solver_box->SetSelection(-1);
-			ST_SOLVER = UNDEFINED;
+			current_panel->ST_SOLVER = UNDEFINED;
 			break;
 	}
 }
@@ -1042,7 +1036,7 @@ void MFPG_Frame::SetOpt(Settings s) {
 					text->Disable();
 				}
 			}
-			ST_OPT = OPT_0;
+			current_panel->ST_OPT = OPT_0;
 			break;
 		case OPT_1:
 			adv_frame->sps_opt_1->SetValue(true);
@@ -1057,7 +1051,7 @@ void MFPG_Frame::SetOpt(Settings s) {
 					text->Disable();
 				}
 			}
-			ST_OPT = OPT_1;
+			current_panel->ST_OPT = OPT_1;
 			break;
 		case OPT_2:
 			adv_frame->sps_opt_1->SetValue(false);
@@ -1072,7 +1066,7 @@ void MFPG_Frame::SetOpt(Settings s) {
 					text->Enable();
 				}
 			}
-			ST_OPT = OPT_2;
+			current_panel->ST_OPT = OPT_2;
 			break;
 		case OPT_3:
 			adv_frame->sps_opt_1->SetValue(true);
@@ -1087,12 +1081,12 @@ void MFPG_Frame::SetOpt(Settings s) {
 					text->Enable();
 				}
 			}
-			ST_OPT = OPT_3;
+			current_panel->ST_OPT = OPT_3;
 			break;
 		default:
 			adv_frame->sps_opt_1->SetValue(false);
 			adv_frame->sps_opt_2->SetValue(false);
-			ST_OPT = UNDEFINED;
+			current_panel->ST_OPT = UNDEFINED;
 			break;
 	}
 }
@@ -1109,12 +1103,12 @@ void MFPG_Frame::BTGenerate(wxCommandEvent& event) {
 void MFPG_Frame::Generate() {
 	//Redirect std::cout to write to information window
 	wxStreamToTextRedirector redirect(current_panel->information_text);
-	std::string score_path_; 
-	score_path_ = score_path; //wxString to string
-	if (!score_path) {
+	if (!current_panel->score_path) {
 		wxMessageBox("No Score file selected");
 		return;
 	}
+	std::string score_path_; 
+	score_path_ = current_panel->score_path; //wxString to string
 	
 	//Read file into mx structures
 	using namespace mx::api;
@@ -1320,7 +1314,7 @@ void MFPG_Frame::Generate() {
 
 	std::shared_ptr<GraphSolver<int>> solver_i;
 	std::shared_ptr<GraphSolver<double>> solver_d;
-	switch (ST_SOLVER) {
+	switch (current_panel->ST_SOLVER) {
 		case SOLVER_GREEDY:
 			solver_i = std::shared_ptr<GraphSolver<int>>(new GreedySolver());
 			if (output_type == 'd') {
@@ -1329,7 +1323,7 @@ void MFPG_Frame::Generate() {
 			}
 			break;
 		case SOLVER_SPS:
-			switch (ST_OPT) {
+			switch (current_panel->ST_OPT) {
 				case OPT_0:
 					solver_i = std::shared_ptr<GraphSolver<int>>(
 										new SPSolver<int>(0));

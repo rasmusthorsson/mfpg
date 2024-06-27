@@ -41,10 +41,6 @@ class MFPG_Frame : public wxFrame {
 	public:
 		MFPG_Frame(bool);
 
-		//Framewide settings
-		Settings ST_SOLVER = UNDEFINED;
-		Settings ST_OPT = UNDEFINED;
-
 		//Interactive structures in the GUI
 		//Menu
 		void MenuNewScore(wxCommandEvent&);
@@ -88,7 +84,6 @@ class MFPG_Frame : public wxFrame {
 		void BTClearColumns(wxCommandEvent&);
 
 		//Programwide paths
-		wxString score_path;
 		wxString configs_path;
 		
 		//Output columns
@@ -112,14 +107,13 @@ class MFPG_Frame : public wxFrame {
 		void SetActionSet(Settings);
 		void SetOutputToFile(Settings);
 		void SetOutput(Settings);
+		void SetSolver(Settings);
+		void SetOpt(Settings);
 
 		void SelectDSLFile(wxString);
 		void SelectNoteMapFile(wxString);
 		void SelectOutputFile(wxString);
 
-		//Framewide settings
-		void SetSolver(Settings);
-		void SetOpt(Settings);
 		
 		void SelectScore(wxString);
 

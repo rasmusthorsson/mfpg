@@ -30,11 +30,14 @@ class MFPG_Panel : public wxPanel {
 		Settings ST_INSTRUMENT = UNDEFINED;
 		Settings ST_OUTPUTTYPE = UNDEFINED;
 		Settings ST_OUTPUTTOFILE = UNDEFINED;
+		Settings ST_SOLVER = UNDEFINED;
+		Settings ST_OPT = UNDEFINED;
 
 		//Relevant filepaths
 		wxString FilePath_Notemap;
 		wxString FilePath_DSL;
 		wxString FilePath_Output;
+		wxString score_path;
 		
 		//Other
 		wxStaticText *score_selected_text;
