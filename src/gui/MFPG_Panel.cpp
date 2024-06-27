@@ -31,18 +31,6 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		ST_NOTEMAPPER = NOTEMAPPER_BASIC;
 		
 		notemap_filepicker = XRCCTRL(*this, "ID_FPCSVNoteMap", wxFilePickerCtrl);
-#ifdef STATICBOXSIZER
-		solver_area = XRCCTRL(*this, "SolverBox", wxStaticBoxSizer)->GetStaticBox();
-#else
-		solver_area = XRCCTRL(*this, "SolverBox", wxStaticBox);
-#endif
-		solver_box = XRCCTRL(*this, "ID_CBSolver", wxComboBox);
-		solver_box->SetSelection(0);
-		ST_SOLVER = SOLVER_SPS;
-		
-		sps_opt_1 = XRCCTRL(*this, "ID_CHBSPSOpt1", wxCheckBox);
-		sps_opt_2 = XRCCTRL(*this, "ID_CHBSPSOpt2", wxCheckBox);
-		ST_OPT = OPT_3;
 		
 		files_area = XRCCTRL(*this, "FilesBox", STATIC_BOX);
 		files_book = XRCCTRL(*this, "ID_NBOOKChange", wxNotebook);
@@ -81,6 +69,8 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		information_area = XRCCTRL(*this, "InformationBox", STATIC_BOX);
 		information_text = XRCCTRL(*this, "InformationText", wxTextCtrl);
 		clear_info_button = XRCCTRL(*this, "ID_BTClearInfo", wxButton);
+		ST_SOLVER = SOLVER_SPS;
+		ST_OPT = OPT_3;
 	} else {
 //------------------------------------------------REMOVE_CONFIG----------------------------------------
 		remove_config_button = new wxButton(this, ID_BTRemoveConfig, "Remove Config", wxPoint(25, 2),
@@ -108,7 +98,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Instrument Name
 		wxStaticBox *instrument_text_area = new wxStaticBox(instrument_area, wxID_ANY, "Instrument Name", wxPoint(20, 60),
 			wxSize(360, 60), 0, wxStaticBoxNameStr);
-		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString("ID_IName"), wxPoint(10, 20), 
+		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString(""), wxPoint(10, 20), 
 			wxSize(320, 20), 0, wxDefaultValidator, wxString("Violin")); 
 		instrument_text->SetLabel("Violin");
 		//Text: DSL File:
@@ -127,7 +117,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Selection: Instrument
 		wxString inst_choices[] = {"Violin"};
 		instrument_box = new wxComboBox(instrument_area, ID_CBInstrument, _T("Violin"), 
-			wxPoint(20, 250), wxSize(160, 40), 1, inst_choices, wxCB_READONLY, 
+			wxPoint(20, 250), wxSize(160, 20), 1, inst_choices, wxCB_READONLY, 
 			wxDefaultValidator, wxComboBoxNameStr);
 		ST_INSTRUMENT = INSTRUMENT_VIOLIN;
 		//Text: ActionSet
@@ -144,7 +134,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 //-----------------------------------------NOTE MAPPER SETTINGS----------------------------------------
 		//Box: Area for NoteMapper settings
 		notemap_area = new wxStaticBox(this, wxID_ANY, "Note Mapper", wxPoint(10, 340), 
-			wxSize(400, 180), 0, wxStaticBoxNameStr);
+			wxSize(400, 200), 0, wxStaticBoxNameStr);
 		//Selection: NoteMapper
 		wxString nm_choices[] = {"Basic", "CSV File"};
 		notemap_box = new wxComboBox(notemap_area, ID_CBNoteMapper, _T("Basic"), wxPoint(20, 30), 
@@ -160,39 +150,6 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxSize(320, 40), wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR, 
 			wxDefaultValidator, wxFilePickerCtrlNameStr);
 		notemap_filepicker->Disable();
-
-//-------------------------------------------SOLVER SETTINGS------------------------------------------
-		//Box: Area for Solver selection
-		solver_area = new wxStaticBox(this, wxID_ANY, "Solver", wxPoint(10, 530), wxSize(400, 230), 
-			0, wxStaticBoxNameStr);
-		//Selection: Solver
-		wxString solver_choices[] = {"Shortest Path", "Greedy"};
-		solver_box = new wxComboBox(solver_area, ID_CBSolver, _T("Shortest Path"), wxPoint(20, 30), 
-			wxSize(360, 40), 2, solver_choices, wxCB_READONLY, wxDefaultValidator);
-		//Text: Opt 1 Label
-		wxStaticText *opt1_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 110),
-			wxSize(360, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT1_TEXT");
-		opt1_text->SetLabel("Invalidates previous layers if a layer has been completely been visited.");
-		opt1_text->Wrap(360);
-		opt1_text->Refresh();
-		//Checkbox: Shortest Path solver optimization 1
-		sps_opt_1 = new wxCheckBox(solver_area, ID_CHBSPSOpt1, "Shortest Path Optimization 1", 
-			wxPoint(20, 80), wxSize(360, 20), 0, wxDefaultValidator, "OPT1");
-		//Text: Opt 1 Label
-		wxStaticText *opt2_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 190),
-			wxSize(360, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT2_TEXT");
-		opt2_text->SetLabel("Stops solving after finding one solution.");
-		opt2_text->Wrap(360);
-		opt2_text->Refresh();
-		//Checkbox: Shortest Path solver optimization 2
-		sps_opt_2 = new wxCheckBox(solver_area, ID_CHBSPSOpt2, "Shortest Path Optimization 2", 
-			wxPoint(20, 160), wxSize(360, 20), 0, wxDefaultValidator, "OPT2");
-		sps_opt_1->SetValue(true);
-		sps_opt_2->SetValue(true);
-		ST_SOLVER = SOLVER_SPS;
-		ST_OPT = OPT_3;
-
-//-------------------------------------------FILES AREA-------------------------------------------
 		//Box: Area for opened files
 		files_area = new wxStaticBox(this, wxID_ANY, "Files", wxPoint(430, 30), wxSize(400, 650), 0, 
 			wxStaticBoxNameStr);
@@ -274,6 +231,8 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Button: Clear Info
 		clear_info_button = new wxButton(information_area, ID_BTClearInfo, "Clear Info", 
 			wxPoint(20, 180), wxSize(80, 30), 0, wxDefaultValidator, "CLEAR_INFO_BUTTON");
+		ST_SOLVER = SOLVER_SPS;
+		ST_OPT = OPT_3;
 	}
 }
 

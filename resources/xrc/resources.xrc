@@ -204,68 +204,6 @@
 									</object>
 								</object>
 							</object>
-							<object class="sizeritem">
-								<flag>wxALL|wxEXPAND</flag>
-								<border>5</border>
-								<object class="wxStaticBoxSizer" name="SolverBox">
-									<orient>wxVERTICAL</orient>
-									<label>Solver Settings</label>
-									<object class="sizeritem">
-										<flag>wxALL|wxEXPAND</flag>
-										<border>5</border>
-										<object class="wxComboBox" name="ID_CBSolver">
-											<content>
-												<item>Shortest Path</item>
-												<item>Greedy</item>
-											</content>
-											<value>"Shortest Path"</value>
-											<style>wxCB_READONLY</style>
-											<!--You cannot use selection_string for the selection in XRC.-->
-										</object>
-									</object>
-									<object class="sizeritem">
-										<flag>wxALL</flag>
-										<border>5</border>
-										<object class="wxBoxSizer" name="OptColumn">
-											<orient>wxVERTICAL</orient>
-											<object class="sizeritem">
-												<flag>wxALL</flag>
-												<border>5</border>
-												<object class="wxCheckBox" name="ID_CHBSPSOpt1">
-													<label>Shortest Path Optimization 1</label>
-													<checked>1</checked>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<flag>wxALL</flag>
-												<border>5</border>
-												<object class="wxStaticText" name="OPT1_TEXT">
-													<label>Invalidates previous layers if a layer has been completely been visited.</label>
-													<wrap>200</wrap>
-													<style>wxALIGN_LEFT|wxST_ELLIPSIZE_END</style>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<flag>wxALL</flag>
-												<border>5</border>
-												<object class="wxCheckBox" name="ID_CHBSPSOpt2">
-													<label>Shortest Path Optimization 2</label>
-													<checked>1</checked>
-												</object>
-											</object>
-											<object class="sizeritem">
-												<flag>wxALL</flag>
-												<border>5</border>
-												<object class="wxStaticText" name="OPT2_TEXT">
-													<label>Stops solving after finding one solution.</label>
-													<wrap>200</wrap>
-													<style>wxALIGN_LEFT|wxST_ELLIPSIZE_END</style>
-												</object>
-											</object>
-										</object>
-									</object>
-								</object>
-							</object>
 						</object>
 					</object>
 					<object class="sizeritem">
