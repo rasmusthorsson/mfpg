@@ -83,34 +83,71 @@
     </div>
     <div class="homemenu">
       <div class="hometitle"> 
-        Frequently Asked Question
+        Upcoming Features
       </div>
       <h1>
-        General
+        General Features
       </h1>
       <h3 align="center">
-        Q: Placeholder 1
+        Note History
       </h3>
       <p style="text-align: center;">
-        A: Placeholder text 1
+        It would be useful to be able to refer to a history of recent notes in some cases, one can imagine
+        an action where the previous two notes are checked for their duration before deciding on an action.
+        This history would likely be limited to 3-5 notes, and could possibly also extend into the future
+        so that future notes could be checked.
+      </p>
+      <h3 align="center">
+         Additional CSV Notemapper Attributes/Files
+      </h3>
+      <p style="text-align: center;">
+        There are only 3 attributes for the violin CSV Notemapper currently, this can be expanded to 5-7
+        to get more usable attributes for users who do not want to define their own notemapper. There
+        is also only a notemapper for the violin currently, other instruments will need their own 
+        notemappers.
+      </p>
+      <h3 align="center">
+        Tool for CSV Notemapper generation
+      </h3>
+      <p style="text-align: center;">
+        The way to build your own CSV Notemapper files currently involves writing your own code to do so. 
+        This is not a long term solution and in the future a tool which is easier to use should be developed
+        for this purpose. It is currently not clear how this tool might look, but it should be intuitive
+        and usable for people with little to no programming experience.
+      </p>
+      <h3 align="center">
+        Improved Output
+      </h3>
+      <p style="text-align: center;">
+        The output is currently given as either a direct output which a direct representation of the 
+        solution in the code. The other option is outputting a CSV file. None of these are easy to parse 
+        for a human and ideally a readable output option should be added. This could be done by taking the
+        CSV output and using it to construct an output overlayed on the original score to specify hand 
+        positions for example.
       </p>
       <h1>
-        GUI
+        GUI Features
       </h1>
       <h3 align="center">
-        Q: Placeholder 2
+        DSL Menu selections
       </h3>
       <p style="text-align: center;">
-        A: Placeholder text 2
+        Rather than having to write out most parts of the DSL there could be a menu selection of those parts.
+        This would be for selections with limits, such as which action type is used, or which attribute
+        is used in actions (the attributes themselves would be typed in the attributes part, but then the
+        selection would give you a list of pre-defined attributes.).
       </p>
       <h1>
-        DSL
+        DSL Features
       </h1>
       <h3 align="center">
-        Q: Placeholder 3
+        DSL Typechecker
       </h3>
       <p style="text-align: center;">
-        A: Placeholder text 3
+        Any errors or mistakes in writing the DSL will only be found at runtime, and these errors can be 
+        difficult to locate with the exception messages alone. A typechecker for the DSL should be
+        developed to check the code in the DSL file window in the GUI, and possibly with an option in the
+        CLI to check that the DSL is without errors. 
       </p>
     </div>
   </body>
