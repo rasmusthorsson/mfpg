@@ -5,27 +5,27 @@ else(MSVC)
 endif()
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_DSL.csv --format=csv --greedy
 			../tests/cases/A_D_o_F.xml)
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL.csv --format=csv --greedy
 			../tests/cases/A_W.xml)
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv --csv --shortest-path=2
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_sps.csv --format=csv --shortest-path=2
 			../tests/cases/A_W.xml)
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1_with_defs.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_DSL_with_defs.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1_with_defs.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_DSL_with_defs.csv --format=csv --greedy
 			../tests/cases/A_D_o_F.xml)
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1_with_defs.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_with_defs.csv --csv --greedy
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1_with_defs.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_with_defs.csv --format=csv --greedy
 			../tests/cases/A_W.xml)
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1_with_defs.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv --csv --shortest-path=2
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_1_with_defs.mfpg -o ${CMAKE_BINARY_DIR}/A_W_DSL_sps_with_defs.csv --format=csv --shortest-path=2
 			../tests/cases/A_W.xml)
 
 

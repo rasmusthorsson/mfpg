@@ -5,7 +5,7 @@ else(MSVC)
 endif()
 
 execute_process(
-	COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/CSV_Basic.csv --csv --shortest-path=2 --notemapper=../resources/dsl_files/BasicNoteMapper.csv
+	COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/CSV_Basic.csv --format=csv --shortest-path=2 --notemapper=../resources/dsl_files/BasicNoteMapper.csv
 			../tests/cases/A_W.xml
 	       )
 execute_process(

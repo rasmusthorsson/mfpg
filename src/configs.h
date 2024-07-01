@@ -22,7 +22,8 @@ namespace configs {
 	
 	enum OUTPUT_TYPE {
 		BASIC,
-		CSV
+		CSV,
+		READABLE
 	};
 	void writeOutput(ostream& out, shared_ptr<GraphSolver<int>> solver, OUTPUT_TYPE output,
 			std::set<std::string> columns) {
@@ -30,101 +31,186 @@ namespace configs {
 		int count = 1;
 		int total_cost = 0;
 		bool c = columns.size() == 0;
-		switch (output) {
-			case OUTPUT_TYPE::BASIC:
-				for (auto sol : solver->getSolution()) {
-					out << "Note number: " << count << "\n";
-					for (string def : DEFINITIVES) {
-						if (def == "NOTE") {
-							out << "Note: " << get<0>(sol).getNote().getNote() << "\n";
-						} else if (def == "DURATION") {
-							out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
-						}
-					}
-					out << get<0>(sol).getState().to_string() << "\n";
-					out << "Cost of transition: " << get<1>(sol) << "\n";
-					out << "Amount of possible fingerings: " 
-						<< get<0>(sol).getLayerList().getElem().getSize() << "\n";
-					out << "--------------------------------------------------" << "\n";
-					count++;
-					if (get<1>(sol) > -1) {
-						total_cost += get<1>(sol);
+		if (output == OUTPUT_TYPE::BASIC) {
+			for (auto sol : solver->getSolution()) {
+				out << "Note number: " << count << "\n";
+				for (string def : DEFINITIVES) {
+					if (def == "NOTE") {
+						out << "Note: " << get<0>(sol).getNote().getNote() << "\n";
+					} else if (def == "DURATION") {
+						out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
 					}
 				}
-				break;
-			case OUTPUT_TYPE::CSV:
-				//Headers
+				out << get<0>(sol).getState().to_string() << "\n";
+				out << "Cost of transition: " << get<1>(sol) << "\n";
+				out << "Amount of possible fingerings: " 
+					<< get<0>(sol).getLayerList().getElem().getSize() << "\n";
+				out << "--------------------------------------------------" << "\n";
+				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
+			}
+		}
+
+		else if (output == OUTPUT_TYPE::CSV) {
+			//Headers
+			if (columns.contains("NoteCount") || c) {
+				if (not_first) out << ","; else not_first = true;
+				out << "NoteCount";
+			}
+			for (string def : DEFINITIVES) {
+				if (columns.contains(def) || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << def;
+				}
+			}
+			if (columns.contains("Cost") || c) {
+				if (not_first) out << ","; else not_first = true;
+				out << "Cost";
+			}
+			if (columns.contains("Combinations") || c) {
+				if (not_first) out << ","; else not_first = true;
+				out << "Combinations";
+			}
+			for (int i = 0; i < ATTRIBUTES.size(); i++) {
+				if (columns.contains(ATTRIBUTES[i]) || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << ATTRIBUTES[i];
+				}
+			}
+			not_first = false;
+			out << "\r\n";
+			//Columns
+			for (auto sol : solver->getSolution()) {
 				if (columns.contains("NoteCount") || c) {
 					if (not_first) out << ","; else not_first = true;
-					out << "NoteCount";
+					out << count;
 				}
 				for (string def : DEFINITIVES) {
-					if (columns.contains(def) || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << def;
+					if (def == "NOTE") {
+						if (columns.contains("NOTE") || c) {
+							if (not_first) out << ","; else not_first = true;
+							out << get<0>(sol).getNote().getNote();
+						}
+					} else if (def == "DURATION") {
+						if (columns.contains("DURATION") || c) {
+							if (not_first) out << ","; else not_first = true;
+							out << get<0>(sol).getNote().getDuration();
+						}
 					}
 				}
 				if (columns.contains("Cost") || c) {
 					if (not_first) out << ","; else not_first = true;
-					out << "Cost";
+					out << get<1>(sol);
 				}
 				if (columns.contains("Combinations") || c) {
 					if (not_first) out << ","; else not_first = true;
-					out << "Combinations";
+					out << get<0>(sol).getLayerList().getElem().getSize();
 				}
 				for (int i = 0; i < ATTRIBUTES.size(); i++) {
 					if (columns.contains(ATTRIBUTES[i]) || c) {
 						if (not_first) out << ","; else not_first = true;
-						out << ATTRIBUTES[i];
+						out << get<0>(sol).getState().getVal(ATTRIBUTES[i])
+							.to_string_csv();
 					}
 				}
 				not_first = false;
 				out << "\r\n";
-				//Columns
-				for (auto sol : solver->getSolution()) {
-					if (columns.contains("NoteCount") || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << count;
-					}
+				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
+			}
+		}
+
+		else if (output == OUTPUT_TYPE::READABLE) {
+			std::shared_ptr<HandPosition<int>> current(new HandPosition<int>(get<0>(solver->getSolution().front())));
+			std::shared_ptr<HandPosition<int>> prev(new HandPosition<int>(get<0>(solver->getSolution().front())));
+			bool first = true;
+			int prev_cost = 0;
+			for (auto sol : solver->getSolution()) {
+				if (first) {
 					for (string def : DEFINITIVES) {
-						if (def == "NOTE") {
-							if (columns.contains("NOTE") || c) {
-								if (not_first) out << ","; else not_first = true;
-								out << get<0>(sol).getNote().getNote();
-							}
-						} else if (def == "DURATION") {
-							if (columns.contains("DURATION") || c) {
-								if (not_first) out << ","; else not_first = true;
-								out << get<0>(sol).getNote().getDuration();
-							}
+						if (def == "NOTE" && (columns.contains("NOTE") || c)) {
+							out << "First note to be played is: " << get<0>(sol)
+								.getNote().getNote() << "\n";
+							break;
 						}
 					}
-					if (columns.contains("Cost") || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << get<1>(sol);
-					}
-					if (columns.contains("Combinations") || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << get<0>(sol).getLayerList().getElem().getSize();
-					}
+					out << "\n";
 					for (int i = 0; i < ATTRIBUTES.size(); i++) {
 						if (columns.contains(ATTRIBUTES[i]) || c) {
-							if (not_first) out << ","; else not_first = true;
-							out << get<0>(sol).getState().getVal(ATTRIBUTES[i])
-								.to_string_csv();
+							out << "Start " << ATTRIBUTES[i];
+							out << " at ";
+							out << get<0>(sol).getState()
+							    .getVal(ATTRIBUTES[i]).to_string_csv();
+							out << "\n";
 						}
+					}	
+					out << "\n";
+					if (columns.contains("Combinations") || c) {
+						out << "There were " << get<0>(sol).getLayerList().getElem()
+							.getSize() << " possible ways to start.\n";
 					}
-					not_first = false;
-					out << "\r\n";
+					out << "---------------------------------------------------\n";
+					first = false;
+				} else {
+					if (current->getState() != get<0>(sol).getState()) {
+						if (columns.contains("NoteCount") || c) {
+							out << "Change of position for note number: " << count 
+								<< "\n";
+						}
+						for (string def : DEFINITIVES) {
+							if (def == "NOTE" && (columns.contains("NOTE") || c)) {
+								out << "Note goes from " << prev->getNote().getNote()
+									<< " to " << get<0>(sol).getNote().getNote()
+									<< "\n";
+								break;
+							}
+						}
+						out << "\n";
+						for (int i = 0; i < ATTRIBUTES.size(); i++) {
+							if (columns.contains(ATTRIBUTES[i]) || c) {
+								if (current->getState().getVal(ATTRIBUTES[i]) !=
+								    get<0>(sol).getState().getVal(ATTRIBUTES[i])) {
+									out << "Change " << ATTRIBUTES[i];
+									out << " from ";
+									out << current->getState()
+									    .getVal(ATTRIBUTES[i]).to_string_csv();
+									out << " to ";
+									out << get<0>(sol).getState()
+									    .getVal(ATTRIBUTES[i]).to_string_csv();
+									out << "\n";
+								} else {
+									out << "Keep " << ATTRIBUTES[i];
+									out << " "; 
+									out << get<0>(sol).getState()
+									    .getVal(ATTRIBUTES[i]).to_string_csv();
+									out << "\n";
+								}
+							}
+						}	
+						out << "\n";
+						if (columns.contains("Cost") || c) {
+							out << "This transition costs: " << prev_cost << "\n";
+						}
+						if (columns.contains("Combinations") || c) {
+							out << "There were " << get<0>(sol).getLayerList().getElem()
+								.getSize() << " possible transitions.\n";
+						}
+						out << "---------------------------------------------------\n";
+						current = shared_ptr<HandPosition<int>>(new HandPosition<int>(get<0>(sol)));
+					}
+					prev = shared_ptr<HandPosition<int>>(new HandPosition<int>(get<0>(sol)));
+					prev_cost = get<1>(sol);
 					count++;
-					if (get<1>(sol) > -1) {
-						total_cost += get<1>(sol);
-					}
 				}
-				break;
-			default:
-				break;
-		} 
+			}
+		}
+		else {
+			return;
+		}
 		mfpg_log::Log::verbose_out(std::cout,
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
@@ -135,105 +221,186 @@ namespace configs {
 		int count = 1;
 		double total_cost = 0;
 		bool c = columns.size() == 0;
-		switch (output) {
-			case OUTPUT_TYPE::BASIC:
-				for (auto sol : solver->getSolution()) {
-					out << "Note number: " << count << "\n";
-					for (string def : DEFINITIVES) {
-						if (def == "NOTE") {
-							out << "Note: " << get<0>(sol).getNote().getNote() << "\n";
-						} else if (def == "DURATION") {
-							out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
-						}
-					}
-					out << get<0>(sol).getState().to_string() 
-						<< "\n"
-						<< "Cost of transition: " << get<1>(sol) 
-						<< "\n"
-						<< "Amount of possible fingerings: " 
-						<< get<0>(sol).getLayerList().getElem().getSize() 
-						<< "\n"
-						<< "-------------------------------------------------------" 
-						<< "\n";
-					count++;
-					if (get<1>(sol) > -1) {
-						total_cost += get<1>(sol);
+		if (output == OUTPUT_TYPE::BASIC) {
+			for (auto sol : solver->getSolution()) {
+				out << "Note number: " << count << "\n";
+				for (string def : DEFINITIVES) {
+					if (def == "NOTE") {
+						out << "Note: " << get<0>(sol).getNote().getNote() << "\n";
+					} else if (def == "DURATION") {
+						out << "Duration: " << get<0>(sol).getNote().getDuration() << "\n";
 					}
 				}
-				break;
-			case OUTPUT_TYPE::CSV:
-				//Headers
+				out << get<0>(sol).getState().to_string() 
+					<< "\n"
+					<< "Cost of transition: " << get<1>(sol) 
+					<< "\n"
+					<< "Amount of possible fingerings: " 
+					<< get<0>(sol).getLayerList().getElem().getSize() 
+					<< "\n"
+					<< "-------------------------------------------------------" 
+					<< "\n";
+				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
+			}
+		}
+		else if (output == OUTPUT_TYPE::CSV) {
+			//Headers
+			if (columns.contains("NoteCount") || c) {
+				if (not_first) out << ","; else not_first = true;
+				out << "NoteCount";
+			}
+			for (string def : DEFINITIVES) {
+				if (columns.contains(def) || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << def;
+				}
+			}
+			if (columns.contains("Cost") || c) {
+				if (not_first) out << ","; else not_first = true;
+				out << "Cost";
+			}
+			if (columns.contains("Combinations") || c) {
+				if (not_first) out << ","; else not_first = true;
+				out << "Combinations";
+			}
+			for (int i = 0; i < ATTRIBUTES.size(); i++) {
+				if (columns.contains(ATTRIBUTES[i]) || c) {
+					if (not_first) out << ","; else not_first = true;
+					out << ATTRIBUTES[i];
+				}
+			}
+			not_first = false;
+			out << "\r\n";
+			//Columns
+			for (auto sol : solver->getSolution()) {
 				if (columns.contains("NoteCount") || c) {
 					if (not_first) out << ","; else not_first = true;
-					out << "NoteCount";
+					out << count;
 				}
 				for (string def : DEFINITIVES) {
-					if (columns.contains(def) || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << def;
+					if (def == "NOTE") {
+						if (columns.contains("NOTE") || c) {
+							if (not_first) out << ","; else not_first = true;
+							out << get<0>(sol).getNote().getNote();
+						}
+					} else if (def == "DURATION") {
+						if (columns.contains("DURATION") || c) {
+							if (not_first) out << ","; else not_first = true;
+							out << get<0>(sol).getNote().getDuration();
+						}
 					}
 				}
 				if (columns.contains("Cost") || c) {
 					if (not_first) out << ","; else not_first = true;
-					out << "Cost";
+					out << get<1>(sol);
 				}
 				if (columns.contains("Combinations") || c) {
 					if (not_first) out << ","; else not_first = true;
-					out << "Combinations";
+					out << get<0>(sol).getLayerList().getElem().getSize();
 				}
 				for (int i = 0; i < ATTRIBUTES.size(); i++) {
 					if (columns.contains(ATTRIBUTES[i]) || c) {
 						if (not_first) out << ","; else not_first = true;
-						out << ATTRIBUTES[i];
+						out << get<0>(sol).getState().getVal(ATTRIBUTES[i])
+							.to_string_csv();
 					}
 				}
 				not_first = false;
 				out << "\r\n";
-				//Columns
-				for (auto sol : solver->getSolution()) {
-					if (columns.contains("NoteCount") || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << count;
-					}
+				count++;
+				if (get<1>(sol) > -1) {
+					total_cost += get<1>(sol);
+				}
+			}
+		}
+		else if (output == OUTPUT_TYPE::READABLE) {
+			std::shared_ptr<HandPosition<double>> current(new HandPosition<double>(get<0>(solver->getSolution().front())));
+			std::shared_ptr<HandPosition<double>> prev(new HandPosition<double>(get<0>(solver->getSolution().front())));
+			bool first = true;
+			double prev_cost = 0;
+			for (auto sol : solver->getSolution()) {
+				if (first) {
 					for (string def : DEFINITIVES) {
-						if (def == "NOTE") {
-							if (columns.contains("NOTE") || c) {
-								if (not_first) out << ","; else not_first = true;
-								out << get<0>(sol).getNote().getNote();
-							}
-						} else if (def == "DURATION") {
-							if (columns.contains("DURATION") || c) {
-								if (not_first) out << ","; else not_first = true;
-								out << get<0>(sol).getNote().getDuration();
-							}
+						if (def == "NOTE" && (columns.contains("NOTE") || c)) {
+							out << "First note to be played is: " << get<0>(sol)
+								.getNote().getNote() << "\n";
+							break;
 						}
 					}
-					if (columns.contains("Cost") || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << get<1>(sol);
-					}
-					if (columns.contains("Combinations") || c) {
-						if (not_first) out << ","; else not_first = true;
-						out << get<0>(sol).getLayerList().getElem().getSize();
-					}
+					out << "\n";
 					for (int i = 0; i < ATTRIBUTES.size(); i++) {
 						if (columns.contains(ATTRIBUTES[i]) || c) {
-							if (not_first) out << ","; else not_first = true;
-							out << get<0>(sol).getState().getVal(ATTRIBUTES[i])
-								.to_string_csv();
+							out << "Start " << ATTRIBUTES[i];
+							out << " at ";
+							out << get<0>(sol).getState()
+							    .getVal(ATTRIBUTES[i]).to_string_csv();
+							out << "\n";
 						}
+					}	
+					out << "\n";
+					if (columns.contains("Combinations") || c) {
+						out << "There were " << get<0>(sol).getLayerList().getElem()
+							.getSize() << " possible ways to start.\n";
 					}
-					not_first = false;
-					out << "\r\n";
+					out << "---------------------------------------------------\n";
+					first = false;
+				} else {
+					if (current->getState() != get<0>(sol).getState()) {
+						if (columns.contains("NoteCount") || c) {
+							out << "Change of position for note number: " << count 
+								<< "\n";
+						}
+						for (string def : DEFINITIVES) {
+							if (def == "NOTE" && (columns.contains("NOTE") || c)) {
+								out << "Note goes from " << prev->getNote().getNote()
+									<< " to " << get<0>(sol).getNote().getNote()
+									<< "\n";
+								break;
+							}
+						}
+						out << "\n";
+						for (int i = 0; i < ATTRIBUTES.size(); i++) {
+							if (columns.contains(ATTRIBUTES[i]) || c) {
+								if (current->getState().getVal(ATTRIBUTES[i]) != get<0>(sol).getState().getVal(ATTRIBUTES[i])) {
+									out << "Change " << ATTRIBUTES[i];
+									out << " from ";
+									out << current->getState()
+									    .getVal(ATTRIBUTES[i]).to_string_csv();
+									out << " to ";
+									out << get<0>(sol).getState()
+									    .getVal(ATTRIBUTES[i]).to_string_csv();
+									out << "\n";
+								} else {
+									out << "Keep " << ATTRIBUTES[i];
+									out << " "; 
+									out << get<0>(sol).getState()
+									    .getVal(ATTRIBUTES[i]).to_string_csv();
+									out << "\n";
+								}
+							}
+						}	
+						out << "\n";
+						if (columns.contains("Cost") || c) {
+							out << "This transition costs: " << prev_cost << "\n";
+						}
+						if (columns.contains("Combinations") || c) {
+							out << "There were " << get<0>(sol).getLayerList().getElem()
+								.getSize() << " possible transitions.\n";
+						}
+						out << "---------------------------------------------------\n";
+						current = shared_ptr<HandPosition<double>>(new HandPosition<double>(get<0>(sol)));
+					}
+					prev = shared_ptr<HandPosition<double>>(new HandPosition<double>(get<0>(sol)));
+					prev_cost = get<1>(sol);
 					count++;
-					if (get<1>(sol) > -1) {
-						total_cost += get<1>(sol);
-					}
 				}
-				break;
-			default:
-				break;
-		} 
+			}
+		} else {
+			return;
+		}
 		mfpg_log::Log::verbose_out(std::cout,
 				   "Total cost of the path: " + to_string(total_cost) + "\n",
 				   mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);

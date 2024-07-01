@@ -270,7 +270,8 @@
 												<object class="wxComboBox" name="ID_CBOutput">
 													<content>
 														<item>CSV Output</item>
-														<item>Direct Output</item>
+														<item>Readable Output</item>
+														<item>Basic Output</item>
 													</content>
 													<value>"CSV Output"</value>
 													<style>wxCB_READONLY</style>
