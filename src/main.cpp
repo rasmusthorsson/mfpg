@@ -52,7 +52,8 @@ int main (int argc, char *argv[]) {
 		("shortest-path", "Use shortest path solver with optional optimizing levels (0, 1, 2).", cxxopts::value<int>()->implicit_value("0"))
 		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
-		("c,csv", "Structure output as CSV.", cxxopts::value<std::vector<std::string>>()->implicit_value({}))
+		("a,attributes", "Which attributes are to be included in the output", cxxopts::value<std::vector<std::string>>()->implicit_value({}))
+		("f,format", "Output format (basic, csv, readable)", cxxopts::value<std::string>())
 		("t,test", "Select test parameters (1, 2).", cxxopts::value<int>())
 		("v,verbose", "Make output more verbose (0, 1, 2).", cxxopts::value<int>())
 		("o,output", "Specify where the output should be written.",cxxopts::value<std::string>())
@@ -85,10 +86,10 @@ int main (int argc, char *argv[]) {
 	if (result.count("instrument")) {
 		INSTRUMENT_NAME = result["instrument"].as<std::string>();
 	}
-	std::set<std::string> csv_out_cols({});
-	if (result.count("csv")) {
-		for (std::string s : result["csv"].as<std::vector<std::string>>()) {
-			if (s != "") csv_out_cols.insert(s);
+	std::set<std::string> attributes_out_cols({});
+	if (result.count("attributes")) {
+		for (std::string s : result["attributes"].as<std::vector<std::string>>()) {
+			if (s != "") attributes_out_cols.insert(s);
 		}
 	}
 
@@ -356,11 +357,20 @@ int main (int argc, char *argv[]) {
 			solver_d->solve(*list_d);
 		}
 //------------------------------ Output ----------------------------------
-		configs::OUTPUT_TYPE csv = configs::OUTPUT_TYPE::CSV;
-		if (result.count("csv")) {
-			csv = configs::OUTPUT_TYPE::CSV;
-		} else {
-			csv = configs::OUTPUT_TYPE::BASIC;
+		configs::OUTPUT_TYPE output_type = configs::OUTPUT_TYPE::CSV;
+		if (result.count("format")) {
+			if (result["format"].as<std::string>() == "basic") {
+				output_type = configs::OUTPUT_TYPE::BASIC;
+			} else if (result["format"].as<std::string>() == "csv") {
+				output_type = configs::OUTPUT_TYPE::CSV;
+			} else if (result["format"].as<std::string>() == "readable") {
+				output_type = configs::OUTPUT_TYPE::READABLE;
+			} else {
+				mfpg_log::Log::verbose_out(log, 
+					"No format recognized, defaulting to Basic...\n"
+					, mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
+				output_type = configs::OUTPUT_TYPE::BASIC;
+			}
 		}
 		if (result.count("output")) {
 			auto out_file = result["output"].as<std::string>();
@@ -372,17 +382,17 @@ int main (int argc, char *argv[]) {
 				return -1;
 			}
 			if (output == 'i') {
-				configs::writeOutput(out, solver_i, csv, csv_out_cols);
+				configs::writeOutput(out, solver_i, output_type, attributes_out_cols);
 			} else if (output == 'd') {
-				configs::writeOutput(out, solver_d, csv, csv_out_cols);
+				configs::writeOutput(out, solver_d, output_type, attributes_out_cols);
 			}
 			out.close();
 		} else {
 			ostream out(std::cout.rdbuf());
 			if (output == 'i') {
-				configs::writeOutput(out, solver_i, csv, csv_out_cols);
+				configs::writeOutput(out, solver_i, output_type, attributes_out_cols);
 			} else if (output == 'd') {
-				configs::writeOutput(out, solver_d, csv, csv_out_cols);
+				configs::writeOutput(out, solver_d, output_type, attributes_out_cols);
 			}
 		}
 		return 1;

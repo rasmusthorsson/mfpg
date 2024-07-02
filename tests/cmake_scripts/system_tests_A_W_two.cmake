@@ -5,7 +5,7 @@ else(MSVC)
 endif()
 
 execute_process(
-		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv --csv --greedy 
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_two.csv --format=csv --greedy 
 			../tests/cases/A_W.xml
 	       )
 execute_process(

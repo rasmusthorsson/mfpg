@@ -5,12 +5,12 @@ else(MSVC)
 endif()
 
 execute_process(
-		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/Air_notes_v1.csv --csv=NOTE --greedy 
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/Air_notes_v1.csv --attributes=NOTE --format=csv --greedy 
 			-i "Violin 1"
 			../tests/cases/Air.xml
 	       )
 execute_process(
-		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/Air_notes_v2.csv --csv=NOTE --greedy 
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/Air_notes_v2.csv --attributes=NOTE --format=csv --greedy 
 			-i "Violin 2"
 			../tests/cases/Air.xml
 	       )

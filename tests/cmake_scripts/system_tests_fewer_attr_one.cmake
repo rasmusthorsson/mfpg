@@ -5,11 +5,11 @@ else(MSVC)
 endif()
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_fewer_attr_one.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_fewer_attr_one.csv -n ../resources/dsl_files/BasicNoteMapper.csv --csv=Combinations --shortest-path=2
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_fewer_attr_one.mfpg -o ${CMAKE_BINARY_DIR}/A_D_o_F_fewer_attr_one.csv -n ../resources/dsl_files/BasicNoteMapper.csv --attributes=Combinations --format=csv --shortest-path=2
 			../tests/cases/A_D_o_F.xml)
 
 execute_process(
-	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_fewer_attr_one.mfpg -o ${CMAKE_BINARY_DIR}/A_W_fewer_attr_one.csv -n ../resources/dsl_files/BasicNoteMapper.csv --csv=Combinations --shortest-path=2
+	COMMAND ${MFPG_PATH} -d ../resources/dsl_files/DSL_test_configuration_fewer_attr_one.mfpg -o ${CMAKE_BINARY_DIR}/A_W_fewer_attr_one.csv -n ../resources/dsl_files/BasicNoteMapper.csv --attributes=Combinations --format=csv --shortest-path=2
 			../tests/cases/A_W.xml)
 
 execute_process(

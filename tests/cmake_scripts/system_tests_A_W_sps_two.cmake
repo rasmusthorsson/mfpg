@@ -5,11 +5,11 @@ else(MSVC)
 endif()
 
 execute_process(
-		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_one.csv --csv --shortest-path=0 
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_one.csv --format=csv --shortest-path=0 
 			../tests/cases/A_W.xml
 	       )
 execute_process(
-		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_two.csv --csv --shortest-path=2
+		COMMAND ${MFPG_PATH} -t 2 -o ${CMAKE_BINARY_DIR}/A_W_sps_two_two.csv --format=csv --shortest-path=2
 			../tests/cases/A_W.xml
 	       )
 execute_process(

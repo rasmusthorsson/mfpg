@@ -789,7 +789,10 @@ void MFPG_Frame::CBOutput(wxCommandEvent& event) {
 			SetOutput(CSV_OUTPUT);
 			break;
 		case 1:
-			SetOutput(DIRECT_OUTPUT);
+			SetOutput(READABLE_OUTPUT);
+			break;
+		case 2:
+			SetOutput(BASIC_OUTPUT);
 			break;
 		default:
 			SetOutput(UNDEFINED);
@@ -803,9 +806,13 @@ void MFPG_Frame::SetOutput(Settings s) {
 			current_panel->output_selection_box->SetSelection(0);
 			current_panel->ST_OUTPUTTYPE = CSV_OUTPUT;	
 			break;
-		case DIRECT_OUTPUT:
+		case READABLE_OUTPUT:
 			current_panel->output_selection_box->SetSelection(1);
-			current_panel->ST_OUTPUTTYPE = DIRECT_OUTPUT;	
+			current_panel->ST_OUTPUTTYPE = READABLE_OUTPUT;	
+			break;
+		case BASIC_OUTPUT:
+			current_panel->output_selection_box->SetSelection(2);
+			current_panel->ST_OUTPUTTYPE = BASIC_OUTPUT;	
 			break;
 		default:
 			current_panel->output_selection_box->SetSelection(-1);
@@ -1385,16 +1392,19 @@ void MFPG_Frame::Generate() {
 		wxMessageBox(e_msg);
 		return;
 	}
-	configs::OUTPUT_TYPE use_csv = configs::OUTPUT_TYPE::BASIC;
+	configs::OUTPUT_TYPE output_format = configs::OUTPUT_TYPE::BASIC;
 	switch (current_panel->ST_OUTPUTTYPE) {
 		case CSV_OUTPUT:
-			use_csv = configs::OUTPUT_TYPE::CSV;
+			output_format = configs::OUTPUT_TYPE::CSV;
 			break;
-		case DIRECT_OUTPUT:
-			use_csv = configs::OUTPUT_TYPE::BASIC;
+		case READABLE_OUTPUT:
+			output_format = configs::OUTPUT_TYPE::READABLE;
+			break;
+		case BASIC_OUTPUT:
+			output_format = configs::OUTPUT_TYPE::BASIC;
 			break;
 		case UNDEFINED:
-			use_csv = configs::OUTPUT_TYPE::BASIC;
+			output_format = configs::OUTPUT_TYPE::BASIC;
 			break;
 		default:
 			wxMessageBox("IMPOSSIBLE PROGRAM FLOW");
@@ -1411,9 +1421,9 @@ void MFPG_Frame::Generate() {
 		out_path = current_panel->FilePath_Output;
 		out.open(out_path, std::ofstream::binary);
 		if (output_type == 'i') {
-			configs::writeOutput(out, solver_i, use_csv, output_columns);
+			configs::writeOutput(out, solver_i, output_format, output_columns);
 		} else if (output_type == 'd') {
-			configs::writeOutput(out, solver_d, use_csv, output_columns);
+			configs::writeOutput(out, solver_d, output_format, output_columns);
 		}
 		out.close();
 		current_panel->output_text->LoadFile(current_panel->FilePath_Output);
@@ -1421,9 +1431,10 @@ void MFPG_Frame::Generate() {
 		std::ostream *to_out = new std::ostream{nullptr};
 		wxStreamToTextRedirector out_redirect(current_panel->output_text, to_out);
 		if (output_type == 'i') {
-			configs::writeOutput(*to_out, solver_i, use_csv, output_columns);
+			configs::writeOutput(*to_out, solver_i, output_format, output_columns);
 		} else if (output_type == 'd') {
-			configs::writeOutput(*to_out, solver_d, use_csv, output_columns);
+			configs::writeOutput(*to_out, solver_d, output_format, output_columns);
 		}
+		delete(to_out);
 	}
 }

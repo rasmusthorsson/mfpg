@@ -189,7 +189,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			"Output Type", wxPoint(20, 20), wxSize(160, 20), wxALIGN_LEFT|wxST_ELLIPSIZE_END, 
 			"OUTPUT_SELECTION_TEXT");
 		//Selection: Output Type
-		wxString output_choices[] = {"CSV Output", "Direct Output"};
+		wxString output_choices[] = {"CSV Output", "Readable Output","Basic Output"};
 		output_selection_box = new wxComboBox(output_settings_area, ID_CBOutput, _T("CSV Output"), 
 			wxPoint(20, 45), wxSize(160, 40), 2, output_choices, wxCB_READONLY,
 			wxDefaultValidator);
