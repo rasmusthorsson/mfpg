@@ -122,7 +122,9 @@
         <li><strong>score</strong>: The input file, must be an XML file in the form of musicXML, implicitly the last argument of the program and must be supplied.</li>
         <li><strong>--version</strong>: Check compiled version of MFPG.</li>
         <li><strong>-h</strong> or <strong>--help</strong>: Outputs all options.</li>
-        <li><strong>-c</strong> or <strong>--csv=column_list</strong>: direct the program to output the results in a CSV format. <b>column_list</b> can be specified to specify which csv columns should be outputted, the default is to output all columns.</li>
+        <li><strong>--interactive</strong>: Rudimentary interactive mode which is used to explore transitions of a constructed layerlist. Primarily used for debugging.</li>
+        <li><strong>-a column_list</strong> or <strong>--attributes=column_list</strong>: direct the program to output only the attributes listed in the <b>column_list</b>. Not applicable to basic output.</li>
+        <li><strong>-f output_format</strong> or <strong>--format output_format</strong>: Output in a supported format, <b>Basic</b> for a simplistic output, <b>CSV</b> for a CSV format output, and <b>Readable</b> for a user-focused readable format.</li>
         <li><strong>-v integer</strong> or <strong>--verbose=integer</strong>: Sets verbosity to different levels, 0 is silent, 1 is errors, 2 is everything.</li>
         <li><strong>--greedy</strong>: Directs the program to use the greedy solver instead of a shortest path solver, this is primarily used for testing.</li>
         <li><strong>shortest-path=integer</strong>: Sets the solver to be the shortest path solver with an optimization level. 0 is no optimization, 1 is invalidation of all previous layers on complete visitation of a layer, and 2 is stop when one solution has been found (and 1).</li>
@@ -131,7 +133,6 @@
         <li><strong>-t integer</strong> or <strong>--test=integer</strong>: Use a test configuration (1 or 2), these are two instrument configurations hardcoded into the program and used to test various parts.</li>
         <li><strong>-n notemapper_csv_file</strong> or <strong>--notemapper=notemapper_csv_file</strong>: Directs the program to use the CSVNoteMapper using the notemapper_csv_file supplied as the notemapper instead of the hardcoded one.</li>
         <li><strong>-i instrument_name</strong> or <strong>--instrument=instrument_name</strong>: Specify the name of the instrument as presented in the score. This could be something like "Violin 1" or "Viola". Defaults to "Violin".</li>
-        <li><strong>--interactive</strong>: Rudimentary interactive mode which is used to explore transitions of a constructed layerlist. Primarily used for debugging.</li>
         </ul>
       </div>
     </div>

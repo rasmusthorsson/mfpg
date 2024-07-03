@@ -176,6 +176,10 @@ th {
   width: 100.7%;
   min-height: 94%;
 }
+.homemenu p {
+  padding-right: 30px;
+  padding-left: 30px;
+}
 .hometitle {
   display: block;
   position: relative;
