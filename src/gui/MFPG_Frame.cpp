@@ -1435,6 +1435,5 @@ void MFPG_Frame::Generate() {
 		} else if (output_type == 'd') {
 			configs::writeOutput(*to_out, solver_d, output_format, output_columns);
 		}
-		delete(to_out);
 	}
 }
