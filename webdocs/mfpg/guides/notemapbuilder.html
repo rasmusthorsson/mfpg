@@ -129,13 +129,16 @@
         is calculating the most effective way to play a piece of music.</p>
         <a class="anchor" id="Existing"></a>
         <h2>Existing Attributes</h2>
-        <p>Currently a few different attributes have been mapped for the violin in the default
+        <p>Currently a few different attributes have been mapped for the violin in the basic
         CSV file available:</p>
         <ul>
         <li>String: The string being played, 1-4.</li>
         <li>Finger: The finger used to play the note, 0-4.</li>
-        <li>Hand Position: The position of the hand when playing the note: 1-12.</li>
+        <li>Hand Position: The position of the hand when playing the note: 1-12. </li>
         </ul>
+        <b>(Note that this hand position definition does not correspond to conventional violin hand 
+          positions, this is a simplification for testing and learning purposes.)</b>
+        <br>
         <p>These attributes are mapped in the CSV format:</p>
         <p><code>Note,STRING,FINGER,HAND_POS</code></p>
         <p>With the following rows as the mapped values, e.g:</p>
@@ -145,7 +148,8 @@
         Each Note is generally not exclusive in the mapping, for example in the same file
         you would have the CSV values:</p>
         <p><code>G_4,1,4,3</code></p>
-        <p>As they are both valid ways of playing the G 4 note on the violin.</p>
+        <p>As they are both valid ways of playing the G 4 note on the violin (As defined by these 
+        attrbutes).</p>
         <a class="anchor" id="Defining"></a>
         <h2>Defining Attributes</h2>
         <p>Attributes should often be 
@@ -187,16 +191,21 @@
         <p>The next step is to write
         a program to generate CSV files where this attribute is present. In the GitHub repo
         for this project there is a skeleton program which generates CSV files, found in 
-        <strong>resources/csv_note_map_builder/</strong>. The <strong>Builder.cpp</strong> file contains two functions
-        named <em>build_file()</em> and <em>build_file_CUSTOM()</em>, <em>build_file()</em> has a basic 
-        implementation for generating <strong>STRING</strong>, <strong>FINGER</strong>, and <strong>HAND_POS</strong> attribute 
-        values for all playable notes on a violin.</p>
+        <strong>resources/csv_note_map_builder/</strong>. The <strong>Builder.cpp</strong> file contains 
+        three functions named <em>build_file()</em> <em>build_file_full()</em> and 
+        <em>build_file_CUSTOM()</em>. <em>build_file()</em> has a basic implementation for generating 
+        <strong>STRING</strong>, <strong>FINGER</strong>, and <strong>HAND_POS</strong> attribute values 
+        for all playable notes on a violin, <em>build_file_full()</em> is a more extensive and accurate
+        version (with <b>HAND_POS</b> values more representative of conventional violin positions.), 
+        and <em>build_file_CUSTOM</em> is an empty function where your own notemapper can be
+        implemented if desired.</p> 
         <p>To create your own implementation you can copy over the code from 
-        <em>build_file()</em> to <em>build_file_CUSTOM()</em> (alternatively build your custom function
+        <em>build_file_full()</em> to <em>build_file_CUSTOM()</em> (alternatively build your custom function
         from scratch) and then add the code for generating the new attribute there. To
         activate the custom function you also need to go into the <strong>Builder.h</strong> file in the
-        same directory and uncomment the line <em>#define CUSTOM</em>, which will enable the custom
-        function instead of the default one. The default function contains some documentation
+        same directory and uncomment the line <em>#define CUSTOM</em> while commenting out the line 
+        <em>#define FULL</em>, which will enable the custom
+        function instead of the full one. The full and basic function contains some documentation
         in the form of comments on what the different lines are meant to accomplish, which
         might help with the implementation of a new attribute addition. </p>
         <a class="anchor" id="Usage"></a>
