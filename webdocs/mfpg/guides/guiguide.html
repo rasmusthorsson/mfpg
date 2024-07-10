@@ -154,7 +154,7 @@
         decide which output columns should be outputted when using the <i>CSV</i> output format, as well
         as letting the user decide on specifics regarding the solver. </p>
         <a class="anchor" id="Columns"></a>
-        <h4>Columns Settings</h4>
+        <h4>Output Settings</h4>
         <p align="left">
             <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_columns.png">
         </p>
@@ -169,19 +169,14 @@
         <p align="left">
             <img style="border:2px solid #737373" src="/mfpg/images/MFPG_GUI_solver.png">
         </p>
-        <p>The solver section is allows for configuration of output accuracy and efficiency. The Shortest
-        Path solver gives an accurate output based on the entire score. The greedy solver 
-        selects the easiest path based on the easiest next step. This means that the shortest
-        path solver is the solver that should be used unless there is a specific reason to
-        use the greedy solver. </p>
-        <p>The checkboxes are efficiency optimizations to the shortest
-        path solver allow for faster solutions. This will in general not be a problem since 
-        the solver will often times be fast enough without these optimizations, but for some
-        extreme cases they might improve performance noticably. In the future, multiple 
-        fingerings might be generated to give the user a set of fingerings to choose from 
-        rather than the current method of selecting the &#39;optimal&#39; solution only. When this
-        is implemented these optimizations might need to be disabled to allow for multiple
-        solutions.</p>
+        <p>There are three options for the solver. The <i>Greedy</i> solver is a solver primarily used for
+        testing, as it allows for an easy way to verify that the program performs as expected, although it
+        does not yield a correct solution. The <i>Shortest Path</i> solver uses Dijkstras Algorithm to solve
+        the graph. While this solver returns a correct solution and allows for added optimization options
+        which could be used in the future for things such as generating multiple solutions. The final solver
+        is the <i>TLS</i> solver. This is a topological sorting based solver which is a faster shortest
+        path solver than the <i>Shortest Path</i> solver.
+        </p>
         </li>
         </ul>
         <a class="anchor" id="Config"></a>
