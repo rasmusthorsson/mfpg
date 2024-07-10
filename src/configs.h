@@ -235,8 +235,11 @@ namespace configs {
 				prev = shared_ptr<HandPosition<Output>>(
 						new HandPosition<Output>(get<0>(sol)));
 				prev_cost = get<1>(sol);
-				count++;
 			}
+			if (get<1>(sol) > -1) {
+				total_cost += get<1>(sol);
+			}
+			count++;
 		}
 		mfpg_log::Log::verbose_out(std::cout,
 				   "Total cost of the path: " + to_string(total_cost) + "\n",

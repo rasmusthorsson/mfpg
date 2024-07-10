@@ -45,9 +45,9 @@ MFPG_AdvFrame::MFPG_AdvFrame(wxWindow* parent) : wxFrame(parent, wxID_ANY, "Adva
 	solver_area = new wxStaticBox(solver_panel, wxID_ANY, "Solver", wxPoint(10, 10), wxSize(570, 300), 
 		0, wxStaticBoxNameStr);
 	//Selection: Solver
-	wxString solver_choices[] = {"Shortest Path", "Greedy"};
+	wxString solver_choices[] = {"Shortest Path", "Greedy", "TLS"};
 	solver_box = new wxComboBox(solver_area, ID_CBSolver, _T("Shortest Path"), wxPoint(20, 30), 
-		wxSize(360, 40), 2, solver_choices, wxCB_READONLY, wxDefaultValidator);
+		wxSize(360, 40), 3, solver_choices, wxCB_READONLY, wxDefaultValidator);
 	//Text: Opt 1 Label
 	wxStaticText *opt1_text = new wxStaticText(solver_area, wxID_ANY, "", wxPoint(20, 110),
 		wxSize(360, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "OPT1_TEXT");
