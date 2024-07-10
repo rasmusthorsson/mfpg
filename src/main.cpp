@@ -20,6 +20,7 @@
 #include "PhysAttrMap.h"
 #include "ExValException.h"
 #include "SPSolver.h"
+#include "TLSSolver.h"
 #include "InstrumentBuilder.h"
 #include "NoteMapperException.h"
 
@@ -50,6 +51,7 @@ int main (int argc, char *argv[]) {
 		("version", "Shows program version.")
 		("greedy", "Use GreedySolver instead of standard solver, for testing.")
 		("shortest-path", "Use shortest path solver with optional optimizing levels (0, 1, 2).", cxxopts::value<int>()->implicit_value("0"))
+		("tls-solver", "Use Topological Sorting Solver.")
 		("n,notemapper", "Select which notemapper to use.", cxxopts::value<std::string>())
 		("h,help", "Show this message.")
 		("a,attributes", "Which attributes are to be included in the output", cxxopts::value<std::vector<std::string>>()->implicit_value({}))
@@ -341,6 +343,15 @@ int main (int argc, char *argv[]) {
 			} else if (output == 'd') {
 				solver_d = std::shared_ptr<GraphSolver<double>>(new SPSolver<double>(opt));
 			}
+		} else if (result.count("tls-solver")) {
+			if (output == 'i') {
+				solver_i = std::shared_ptr<GraphSolver<int>>(new TLSSolver<int>());
+			} else if (output == 'd') {
+				solver_d = std::shared_ptr<GraphSolver<double>>(new TLSSolver<double>());
+			}
+			mfpg_log::Log::verbose_out(log, 
+					"Using Topological sorter solver\n",
+					mfpg_log::VERBOSE_LEVEL::VERBOSE_ALL);
 		} else {
 			mfpg_log::Log::verbose_out(log, 
 					"No solver selected, defaulting to Shortest Path solver with optimizing level 1\n",

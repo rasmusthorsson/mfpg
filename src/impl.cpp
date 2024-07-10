@@ -5,6 +5,7 @@
 #include "HandPosition.cpp"
 #include "Instrument.cpp"
 #include "SPSolver.cpp"
+#include "TLSSolver.cpp"
 
 //Generation of templated classes possible for outputs.
 template class LayerList<int>;
@@ -27,3 +28,6 @@ template class Instrument<double>;
 
 template class SPSolver<int>;
 template class SPSolver<double>;
+
+template class TLSSolver<int>;
+template class TLSSolver<double>;

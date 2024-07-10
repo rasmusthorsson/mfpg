@@ -36,6 +36,7 @@
 #include "InstrumentBuilder.h"
 #include "NoteMapperException.h"
 #include "ExValException.h"
+#include "TLSSolver.h"
 
 #include "Parser.H"
 #include "ParserError.H"
@@ -956,9 +957,12 @@ void MFPG_Frame::CBSolver(wxCommandEvent& event) {
 		case 1:
 			SetSolver(SOLVER_GREEDY);
 			break;
+		case 2:
+			SetSolver(SOLVER_TLS);
+			break;
 		default:
 			SetSolver(UNDEFINED);
-			wxMessageBox("UNDEFINED NOTEMAPPER");
+			wxMessageBox("UNDEFINED SOLVER");
 			break;
 	}
 }
@@ -989,6 +993,17 @@ void MFPG_Frame::SetSolver(Settings s) {
 			adv_frame->sps_opt_2->Disable();
 			adv_frame->solver_box->SetSelection(1);
 			current_panel->ST_SOLVER = SOLVER_GREEDY;
+			break;
+		case SOLVER_TLS:
+			for (auto text : adv_frame->solver_area->GetChildren()) {
+				if (text->GetName() == "OPT1_TEXT" || text->GetName() == "OPT2_TEXT") {
+					text->Disable();
+				}
+			}
+			adv_frame->sps_opt_1->Disable();
+			adv_frame->sps_opt_2->Disable();
+			adv_frame->solver_box->SetSelection(2);
+			current_panel->ST_SOLVER = SOLVER_TLS;
 			break;
 		default:
 			adv_frame->solver_box->SetSelection(-1);
@@ -1364,6 +1379,13 @@ void MFPG_Frame::Generate() {
 				default:
 					wxMessageBox("IMPOSSIBLE PROGRAM FLOW");
 					return;
+			}
+			break;
+		case SOLVER_TLS:
+			if (output_type == 'i') {
+				solver_i = std::shared_ptr<GraphSolver<int>>(new TLSSolver<int>());
+			} else if (output_type == 'd') {
+				solver_d = std::shared_ptr<GraphSolver<double>>(new TLSSolver<double>());
 			}
 			break;
 		case UNDEFINED:
