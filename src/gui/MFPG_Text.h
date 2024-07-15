@@ -6,8 +6,6 @@
 class MFPG_Text : public wxTextCtrl {
 	public:
 		MFPG_Text(wxWindow*, long, std::string);
-
-		void keyUndo(wxKeyEvent&);
 };
 
 #endif
