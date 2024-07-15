@@ -15,7 +15,7 @@ MFPG_Text::MFPG_Text(wxWindow* window, long style, std::string name) : wxTextCtr
 void MFPG_Text::keyUndo(wxKeyEvent& event) {
 	if ((event.GetEventType() == wxEVT_KEY_DOWN) || 
 		(((wxKeyEvent&)event).GetUnicodeKey() == WXK_CONTROL_Z)) {
-		this->Undo;
+		this->Undo();
 		wxMessageBox("HELLO");
 		return;
 	}
