@@ -1,4 +1,5 @@
 #include "MFPG_Panel.h"
+#include "MFPG_Text.h"
 #include "wx/xrc/xmlres.h"
 #include "wx/valtext.h"
 
@@ -37,16 +38,32 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		save_file_button = XRCCTRL(*this, "ID_BTSavetext", wxButton);
 		save_as_file_button = XRCCTRL(*this, "ID_BTSaveastext", wxButton);
 		//Manually adding pages since wxUiEditor can not
+		output_text = new MFPG_Text(files_book, 
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY|wxTE_RICH2,
+				"OUTPUT_TEXT");
+		notemapper_text = new MFPG_Text(files_book, 
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_RICH2,
+				"NOTEMAPPER_TEXT");
+		dsl_text = new MFPG_Text(files_book,
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_RICH2, 
+				"OUTPUT_TEXT");
+		/*
 		output_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), wxSize(500, 520), 
 			wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY, wxDefaultValidator, 
 			"OUTPUT_TEXT");
+		*/
 		output_text->Enable();
+		/*
 		notemapper_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), 
-				wxSize(500, 520), wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator,
-				"NOTEMAPPER_TEXT");
+				wxSize(500, 520), wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_PROCESS_TAB,
+				wxDefaultValidator, "NOTEMAPPER_TEXT");
+		*/
 		notemapper_text->Disable();
+		/*
 		dsl_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), wxSize(500, 520), 
-				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP, wxDefaultValidator, "DSL_TEXT");
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_PROCESS_TAB,
+				wxDefaultValidator, "DSL_TEXT");
+		*/
 		dsl_text->Disable();
 
 		files_book->AddPage(output_text, "Output", true, -1);
