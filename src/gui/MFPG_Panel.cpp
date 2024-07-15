@@ -39,13 +39,14 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		save_as_file_button = XRCCTRL(*this, "ID_BTSaveastext", wxButton);
 		//Manually adding pages since wxUiEditor can not
 		output_text = new MFPG_Text(files_book, 
-				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY|wxTE_RICH2,
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY|wxTE_RICH2|
+				wxTE_PROCESS_TAB,
 				"OUTPUT_TEXT");
 		notemapper_text = new MFPG_Text(files_book, 
-				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_RICH2,
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_RICH2|wxTE_PROCESS_TAB,
 				"NOTEMAPPER_TEXT");
 		dsl_text = new MFPG_Text(files_book,
-				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_RICH2, 
+				wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_RICH2|wxTE_PROCESS_TAB, 
 				"OUTPUT_TEXT");
 		/*
 		output_text = new wxTextCtrl(files_book, wxID_ANY, "",  wxPoint(10, 10), wxSize(500, 520), 
