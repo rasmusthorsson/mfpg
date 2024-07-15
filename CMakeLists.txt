@@ -54,7 +54,8 @@ add_executable(mfpg ${CLI_BASE})
 
 if (BUILD_GUI) 
   file(GLOB_RECURSE GUI_BASE src/gui/MFPG_Gui.cpp src/gui/MFPG_Frame.cpp src/gui/MFPG_Panel.cpp 
-	  src/gui/MFPG_Choicebook.cpp src/gui/MFPG_AdvFrame.cpp src/gui/Gui_Settings.cpp ${BASE})
+	  src/gui/MFPG_Choicebook.cpp src/gui/MFPG_AdvFrame.cpp src/gui/MFPG_Text.cpp 
+	  src/gui/Gui_Settings.cpp ${BASE})
   if(MSVC)
 	set(wxWidgets_ROOT_DIR ${WXW_ROOT_DIR})
 	set(wxWidgets_LIB_DIR ${WXW_LIB_DIR})
