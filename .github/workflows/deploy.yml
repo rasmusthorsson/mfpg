@@ -6,22 +6,28 @@ on:
 
 jobs:
   ubuntu-build-test:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/wf-main.yml
+    with: 
+      os: ubuntu-latest
+      c-compiler: gcc
+      cxx-compiler: g++
+      mx-rebuild: false
+      build-tests: true
+      build-type: Release
+      upload-artifact: true
+  deploy-ubuntu:
     environment:
       name: production
+    needs: ubuntu-build-test
+    runs-on: ubuntu-latest
     steps:
-      - name: Build and Test
-        uses: ./.github/workflows/wf-main.yml
-        with: 
-          os: ubuntu-latest
-          c-compiler: gcc
-          cxx-compiler: g++
-          mx-rebuild: false
-          build-tests: true
-          build-type: Release
+      - name: Get Gui
+        uses: actions/download-artifact@v4
+        with:
+          name: mfpg_gui_artifact
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: mfpg/mfpg_build/mfpg_gui
+         files: mfpg/mfpg_build/mfpg_gui
       
     
