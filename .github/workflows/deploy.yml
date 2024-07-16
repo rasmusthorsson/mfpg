@@ -1,8 +1,6 @@
 name: Deploy-Master
 
-on: 
-  push:
-  workflow_dispatch:
+on: push
 
 jobs:
   ubuntu-build-test:
@@ -19,9 +17,9 @@ jobs:
       name: production
     runs-on: ubuntu-latest
     steps:
-      name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: mfpg/mfpg_build/mfpg_gui
+      - name: Release
+        uses: softprops/action-gh-release@v2
+      - with:
+         files: mfpg/mfpg_build/mfpg_gui
       
     
