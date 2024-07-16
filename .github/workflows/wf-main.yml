@@ -104,6 +104,8 @@ jobs:
                 --output-on-failure
                 --build-config ${{ inputs.build-type }}
             
+            - name: test
+              run: ./mfpg/mfpg_build/mfpg_gui
             - name: upload-gui-ubuntu
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
