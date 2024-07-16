@@ -1,6 +1,8 @@
 name: Deploy-Master
 
-on: push
+on: 
+  push:
+  workflow_dispatch:
 
 jobs:
   ubuntu-build-test:
