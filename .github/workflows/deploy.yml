@@ -11,17 +11,17 @@ jobs:
       name: production
     steps:
       - name: Build and Test
-          uses: ./.github/workflows/wf-main.yml
-          with: 
-            os: ubuntu-latest
-            c-compiler: gcc
-            cxx-compiler: g++
-            mx-rebuild: false
-            build-tests: true
-            build-type: Release
+        uses: ./.github/workflows/wf-main.yml
+        with: 
+          os: ubuntu-latest
+          c-compiler: gcc
+          cxx-compiler: g++
+          mx-rebuild: false
+          build-tests: true
+          build-type: Release
       - name: Release
-          uses: softprops/action-gh-release@v2
-          with:
-            files: mfpg/mfpg_build/mfpg_gui
+        uses: softprops/action-gh-release@v2
+        with:
+          files: mfpg/mfpg_build/mfpg_gui
       
     
