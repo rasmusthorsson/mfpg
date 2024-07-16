@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Release
         uses: softprops/action-gh-release@v2
-      - with:
+        with:
          files: mfpg/mfpg_build/mfpg_gui
       
     
