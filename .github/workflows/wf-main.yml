@@ -24,7 +24,7 @@ on:
                 default: Release
             upload-artifact:
                 required: false
-                type: bool
+                type: boolean
                 default: false
 
 jobs:

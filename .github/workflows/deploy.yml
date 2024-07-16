@@ -15,6 +15,7 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
+
   deploy-ubuntu:
     environment:
       name: production
