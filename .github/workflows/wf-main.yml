@@ -105,7 +105,7 @@ jobs:
                 --build-config ${{ inputs.build-type }}
             
             - name: upload-gui-ubuntu
-              if: inputs.upload-artifact && input.os == 'ubuntu-latest'
+              if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact
