@@ -6,6 +6,9 @@ on:
 
 jobs:
   ubuntu-build-test:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
@@ -14,11 +17,6 @@ jobs:
       mx-rebuild: false
       build-tests: true
       build-type: Release
-  deploy-ubuntu:
-    environment:
-      name: production
-    needs: ubuntu-build-test
-    runs-on: ubuntu-latest
     steps:
       - name: Release
         uses: softprops/action-gh-release@v2
