@@ -15,6 +15,7 @@ jobs:
   deploy-ubuntu:
     environment:
       name: production
+    needs: ubuntu-build-test
     runs-on: ubuntu-latest
     steps:
       - name: Release
