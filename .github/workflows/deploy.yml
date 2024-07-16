@@ -5,9 +5,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write 
+  discussions: write
 
 jobs:
   ubuntu-build-test:
