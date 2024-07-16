@@ -4,6 +4,11 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   ubuntu-build-test:
     uses: ./.github/workflows/wf-main.yml
@@ -26,8 +31,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: mfpg_gui_artifact
-      - name: LS
-        run: ls -R
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
