@@ -26,9 +26,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: mfpg_gui_artifact
+          path: mfpg_artifacts
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: mfpg/mfpg_build/mfpg_gui
+         files: mfpg_artifacts/mfpg_gui_artifact
       
     
