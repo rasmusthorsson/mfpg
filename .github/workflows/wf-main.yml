@@ -75,7 +75,7 @@ jobs:
               run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
 
             - name: Cache WX Ubuntu
-              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-x86.outputs.cache-hit != 'true'
+              if: inputs.os == 'ubuntu-latest'
               id: cache-wx-ubuntu
               uses: actions/cache@v3
               with:
@@ -85,7 +85,7 @@ jobs:
                   wx-build-3.2.4-ubuntu
 
             - name: Checkout WX Ubuntu
-              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-x86.outputs.cache-hit != 'true'
+              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-ubuntu.outputs.cache-hit != 'true'
               uses: actions/checkout@v3
               with:
                 repository: WxWidgets/WxWidgets
@@ -94,7 +94,7 @@ jobs:
                 submodules: 'true'
 
             - name: Configure WX Ubuntu
-              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-x86.outputs.cache-hit != 'true'
+              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-ubuntu.outputs.cache-hit != 'true'
               run: >
                 cmake ${{ github.workspace  }}/wxWidgets
                 -DCMAKE_INSTALL_PREFIX='/usr/local/wx_build'
@@ -102,7 +102,7 @@ jobs:
                 -B ${{ github.workspace }}/wx-build-ubuntu
 
             - name: Build WX Ubuntu
-              if: inputs.os == 'ubuntu-latest'
+              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-ubuntu.outputs.cache-hit != 'true'
               run: > 
                 sudo cmake --build ${{ github.workspace }}/wx-build-ubuntu --target install --config Release 
             
