@@ -102,7 +102,7 @@ jobs:
             - name: Build WX Ubuntu
               if: inputs.os == 'ubuntu-latest'
               run: > 
-                sudo cmake --build ${{ github.workspace }}/wx-build-ubuntu --target install -DCMAKE_INSTALL_PREFIX=/usr/local/wx-3.2-build/ --config Release  
+                sudo cmake --build ${{ github.workspace }}/wx-build-ubuntu --target install --prefix /usr/local/wx-3.2-build/ --config Release  
             
             - uses: actions/checkout@v3
               with:
