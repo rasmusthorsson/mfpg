@@ -75,9 +75,8 @@ jobs:
               if: inputs.os == 'ubuntu-latest'
               id: cache-wx-ubuntu
               uses: actions/cache@v3
-
               with:
-                path: ${{ github.workspace  }}/wxWidgets
+                path: /usr/local/include/wx-3.2/wx
                 key: wx-build-3.2.4-ubuntu
                 restore-keys: |
                   wx-build-3.2.4-ubuntu
