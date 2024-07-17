@@ -70,7 +70,9 @@ jobs:
               run: |
                 sudo apt-get install libgtk-3-dev
             
-            #Building WX on windows takes some time, cache when possible
+            - name: Sudo tar for Cache
+              run: sudo chown root:wheel /bin/tar && sudo chmod u+s /bin/tar
+
             - name: Cache WX Ubuntu
               if: inputs.os == 'ubuntu-latest'
               id: cache-wx-ubuntu
