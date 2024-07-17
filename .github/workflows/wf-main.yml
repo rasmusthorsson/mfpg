@@ -31,8 +31,7 @@ jobs:
     build:
         runs-on: ${{ inputs.os }}
         steps:
-
-            #Building WX on windows takes some time, cache when possible
+          #Different behaviour for windows and ubuntu when installing wxWidgets.
             - name: Cache WX x86 Windows
               if: inputs.os == 'windows-latest'
               id: cache-wx-x86
@@ -76,6 +75,7 @@ jobs:
               if: inputs.os == 'ubuntu-latest'
               id: cache-wx-ubuntu
               uses: actions/cache@v3
+
               with:
                 path: ${{ github.workspace  }}/wxWidgets
                 key: wx-build-3.2.4-ubuntu
@@ -135,11 +135,17 @@ jobs:
                 --output-on-failure
                 --build-config ${{ inputs.build-type }}
             
-            - name: upload-gui-ubuntu
+            - name: Upload GUI Artifact Ubuntu 
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_gui_artifact
+                name: mfpg_gui_artifact_ubuntu
                 path: mfpg/mfpg_build/mfpg_gui
 
+            - name: Upload GUI Artifact Windows 
+              if: inputs.upload-artifact && inputs.os == 'windows-latest'
+              uses: actions/upload-artifact@v4
+              with:
+                name: mfpg_gui_artifact_windows
+                path: mfpg/mfpg_build/Release/mfpg_gui
 
