@@ -78,7 +78,7 @@ jobs:
               id: cache-wx-ubuntu
               uses: actions/cache@v3
               with:
-                path: /usr/local/include/wx-3.2/wx
+                path: /usr/local/wx-3.2-build/
                 key: wx-build-3.2.4-ubuntu
                 restore-keys: |
                   wx-build-3.2.4-ubuntu
@@ -103,7 +103,7 @@ jobs:
               if: inputs.os == 'ubuntu-latest'
               run: > 
                 sudo cmake --build ${{ github.workspace }}/wx-build-ubuntu
-                --target install --config Release 
+                --target install --config Release -B /usr/local/wx-3.2-build/ 
             
             - uses: actions/checkout@v3
               with:
