@@ -84,7 +84,7 @@ jobs:
                   wx-build-3.2.4-ubuntu
 
             - name: Checkout WX Ubuntu
-              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-ubuntu.outputs.cache-hit != 'true'
+              if: inputs.os == 'ubuntu-latest'
               uses: actions/checkout@v3
               with:
                 repository: WxWidgets/WxWidgets
@@ -93,7 +93,7 @@ jobs:
                 submodules: 'true'
 
             - name: Configure WX Ubuntu
-              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-ubuntu.outputs.cache-hit != 'true'
+              if: inputs.os == 'ubuntu-latest'
               run: >
                 cmake ${{ github.workspace  }}/wxWidgets
                 -DwxBUILD_SHARED=OFF
