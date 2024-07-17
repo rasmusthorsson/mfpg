@@ -100,7 +100,7 @@ jobs:
                 -B ${{ github.workspace }}/wx-build-ubuntu
 
             - name: Build WX Ubuntu
-              if: inputs.os == 'ubuntu-latest' && steps.cache-wx-ubuntu.outputs.cache-hit != 'true'
+              if: inputs.os == 'ubuntu-latest'
               run: > 
                 sudo cmake --build ${{ github.workspace }}/wx-build-ubuntu
                 --target install --config Release 
