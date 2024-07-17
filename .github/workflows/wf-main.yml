@@ -136,7 +136,7 @@ jobs:
                 -DBUILD_TESTS=${{ inputs.build-tests }}
                 -DWXW_ROOT_DIR="/usr/local/wx-3.2-build"
                 -DWXW_LIB_DIR="/usr/local/wx-3.2-build/lib"
-                -DWXW_INC_DIR="/usr/local/wx-3.2-build/include"
+                -DWXW_INC_DIR="/usr/local/wx-3.2-build/include/wx-3.2/"
                 
             - name: Build MFPG
               run: > 
