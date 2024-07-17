@@ -96,13 +96,14 @@ jobs:
               if: inputs.os == 'ubuntu-latest'
               run: >
                 cmake ${{ github.workspace  }}/wxWidgets
+                -DCMAKE_INSTALL_PREFIX='/usr/local/wx-3.2-build'
                 -DwxBUILD_SHARED=OFF
                 -B ${{ github.workspace }}/wx-build-ubuntu
 
             - name: Build WX Ubuntu
               if: inputs.os == 'ubuntu-latest'
               run: > 
-                sudo cmake -DCMAKE_INSTALL_PREFIX='/usr/local/wx-3.2-build' --build ${{ github.workspace }}/wx-build-ubuntu --target install  
+                sudo cmake --build ${{ github.workspace }}/wx-build-ubuntu --target install --config Release 
             
             - uses: actions/checkout@v3
               with:
