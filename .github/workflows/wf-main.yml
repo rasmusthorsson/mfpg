@@ -54,7 +54,7 @@ jobs:
             - name: Configure WX x86 Windows
               if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cache-hit != 'true'
               run: >
-                cmake ${{ github.workspace }}/WxWidgets
+                cmake ${{ github.workspace  }}/WxWidgets
                 -DwxBUILD_SHARED=OFF
                 -B ${{ github.workspace }}/wx-build-windows-x86
 
@@ -174,5 +174,5 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_windows
-                path: ${{ github.workspace }}/mfpg/mfpg_build/Release/mfpg_gui_windows
+                path: mfpg/mfpg_build/Release/mfpg_gui_windows
 
