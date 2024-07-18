@@ -149,17 +149,29 @@ jobs:
                 --output-on-failure
                 --build-config ${{ inputs.build-type }}
             
+            - name: Rename Binaries Ubuntu
+              if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
+              run: |
+                mv mfpg/mfpg_build/mfpg_gui mfpg/mfpg_build/mfpg_gui_linux
+                mv mfpg/mfpg_build/mfpg mfpg/mfpg_build/mfpg_linux
+            
+            - name: Rename Binaries Windows
+              if: inputs.upload-artifact && inputs.os == 'windows-latest'
+              run: |
+                mv mfpg/mfpg_build/Release/mfpg_gui mfpg/mfpg_build/Release/mfpg_gui_x86
+                mv mfpg/mfpg_build/Release/mfpg mfpg/mfpg_build/Release/mfpg_x86
+
             - name: Upload GUI Artifact Ubuntu 
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_ubuntu
-                path: mfpg/mfpg_build/mfpg_gui
+                path: mfpg/mfpg_build/mfpg_gui_linux
 
             - name: Upload GUI Artifact Window 
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_windows
-                path: mfpg/mfpg_build/Release/mfpg_gui
+                path: mfpg/mfpg_build/Release/mfpg_gui_windows
 

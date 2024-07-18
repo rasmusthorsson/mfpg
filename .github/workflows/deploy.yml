@@ -19,6 +19,17 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
+  
+  windows-build-test:
+    uses: ./.github/workflows/wf-main.yml
+    with: 
+      os: windows-latest
+      c-compiler: cl
+      cxx-compiler: cl
+      mx-rebuild: false
+      build-tests: true
+      build-type: Release
+      upload-artifact: true
 
   deploy-ubuntu:
     environment:
@@ -33,6 +44,19 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: mfpg_gui
+         files: mfpg_gui_linux
       
-    
+  deploy-windows:
+    environment:
+      name: production
+    needs: windows-build-test
+    runs-on: windows-latest
+    steps:
+      - name: Get Gui
+        uses: actions/download-artifact@v4
+        with:
+          name: mfpg_gui_artifact_windows
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+         files: mfpg_gui_windows
