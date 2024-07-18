@@ -174,5 +174,5 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_windows
-                path: mfpg/mfpg_build/Release/mfpg_gui_windows
+                path: mfpg/mfpg_build/Release/mfpg_gui_x86.exe
 
