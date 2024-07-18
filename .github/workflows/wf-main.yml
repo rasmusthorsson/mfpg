@@ -54,7 +54,7 @@ jobs:
             - name: Configure WX x86 Windows
               if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cache-hit != 'true'
               run: >
-                cmake ${{ github.workspace  }}/WxWidgets
+                cmake ${{ github.workspace }}/WxWidgets
                 -DwxBUILD_SHARED=OFF
                 -B ${{ github.workspace }}/wx-build-windows-x86
 
@@ -159,8 +159,8 @@ jobs:
             - name: Rename Binaries Windows
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               run: |
-                mv mfpg/mfpg_build/Release/mfpg_gui mfpg/mfpg_build/Release/mfpg_gui_x86
-                mv mfpg/mfpg_build/Release/mfpg mfpg/mfpg_build/Release/mfpg_x86
+                mv mfpg/mfpg_build/Release/mfpg_gui.exe mfpg/mfpg_build/Release/mfpg_gui_x86.exe
+                mv mfpg/mfpg_build/Release/mfpg.exe mfpg/mfpg_build/Release/mfpg_x86.exe
 
             - name: Upload GUI Artifact Ubuntu 
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
@@ -174,5 +174,5 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_windows
-                path: mfpg/mfpg_build/Release/mfpg_gui_windows
+                path: ${{ github.workspace }}/mfpg/mfpg_build/Release/mfpg_gui_windows
 
