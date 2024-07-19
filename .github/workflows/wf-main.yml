@@ -154,25 +154,29 @@ jobs:
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               run: |
                 mv mfpg/mfpg_build/mfpg_gui mfpg/mfpg_build/mfpg_gui_linux
-                mv mfpg/mfpg_build/mfpg mfpg/mfpg_build/mfpg_linux
+                mv mfpg/mfpg_build/mfpg mfpg/mfpg_build/mfpg_cli_linux
             
             - name: Rename Binaries Windows
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               run: |
                 mv mfpg/mfpg_build/Release/mfpg_gui.exe mfpg/mfpg_build/Release/mfpg_gui_x86.exe
-                mv mfpg/mfpg_build/Release/mfpg.exe mfpg/mfpg_build/Release/mfpg_x86.exe
+                mv mfpg/mfpg_build/Release/mfpg.exe mfpg/mfpg_build/Release/mfpg_cli_x86.exe
 
             - name: Upload GUI Artifact Ubuntu 
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_ubuntu
-                path: mfpg/mfpg_build/mfpg_gui_linux
+                path: |
+                  mfpg/mfpg_build/mfpg_gui_linux
+                  mfpg/mfpg_build/mfpg_cli_linux
 
             - name: Upload GUI Artifact Window 
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               uses: actions/upload-artifact@v4
               with:
                 name: mfpg_gui_artifact_windows
-                path: mfpg/mfpg_build/Release/mfpg_gui_x86.exe
+                path: |
+                  mfpg/mfpg_build/Release/mfpg_gui_x86.exe
+                  mfpg/mfpg_build/Release/mfpg_cli_x86.exe
 
