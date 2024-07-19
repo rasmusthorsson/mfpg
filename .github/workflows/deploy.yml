@@ -47,7 +47,7 @@ jobs:
         with:
          files: | 
            mfpg_gui_linux
-           mfpg_linux
+           mfpg_cli_linux
       
   deploy-windows:
     environment:
@@ -64,4 +64,4 @@ jobs:
         with:
          files: | 
            mfpg_gui_x86.exe
-           mfpg_x86.exe
+           mfpg_cli_x86.exe
