@@ -45,7 +45,9 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: mfpg_gui_linux
+         files: | 
+           mfpg_gui_linux
+           mfpg_cli_linux
       
   deploy-windows:
     environment:
@@ -60,4 +62,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: mfpg_gui_x86.exe
+         files: | 
+           mfpg_gui_x86.exe
+           mfpg_cli_x86.exe
