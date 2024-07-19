@@ -60,4 +60,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: mfpg_gui_windows.exe
+         files: mfpg_gui_x86.exe
