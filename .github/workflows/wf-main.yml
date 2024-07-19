@@ -42,7 +42,7 @@ jobs:
                 restore-keys: |
                   wx-build-3.2.4-windows-x86
 
-            - name: Checkout WX Windows
+            - name: Checkout WX x86 Windows
               if: inputs.os == 'windows-latest' && steps.cache-wx-x86.outputs.cache-hit != 'true'
               uses: actions/checkout@v3
               with:
