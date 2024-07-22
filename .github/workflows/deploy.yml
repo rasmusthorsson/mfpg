@@ -10,7 +10,19 @@ permissions:
   discussions: write
 
 jobs:
+  get-version:
+    outputs:
+      v-major: ${{ steps.major.outputs.major }}
+      v-minor: ${{ steps.major.outputs.major }}
+      patch: ${{ steps.major.outputs.major }}
+    steps:
+      - uses: little-core-labs/get-git-tag@v3.0.2
+        id: major
+        with:
+          tagRegex: 
+
   ubuntu-build-test:
+    needs: get-version
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
@@ -20,8 +32,10 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
+      v-major: jobs.
   
   windows-build-test:
+    needs: get-version
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: windows-latest
