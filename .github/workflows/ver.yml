@@ -17,6 +17,7 @@ jobs:
           tagRegex: "v(?<major>).(?<minor>).(?<patch>)*" 
 
   output-ver:
+    runs-on: ubuntu-latest
     needs: get-version
     steps:
       - output:
