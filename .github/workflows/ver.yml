@@ -21,6 +21,9 @@ jobs:
     needs: get-version
     steps:
         - name: output ver
-          run: echo ${{ needs.get-version.outputs.v-major }}
+          run: | 
+            echo ${{ needs.get-version.outputs.v-major }}
+            echo ${{ needs.get-version.outputs.v-minor }}
+            echo ${{ needs.get-version.outputs.patch }}
 
 
