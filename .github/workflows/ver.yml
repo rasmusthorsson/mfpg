@@ -7,11 +7,21 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ step.output.outputs.ver }}
     steps:
       - uses: actions/checkout@v2
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Test
+        run: "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Output
+        id: output
         run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+          echo ${{ env.tag }} | grep '[0-9]+.[0-9]+.[0-9]+' >> "$GITHUB_OUTPUT"
+  out:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - env:
+        VERSION: ${{needs.test.outputs.version}}
+      - name: test
+        run: echo "$VERSION"
