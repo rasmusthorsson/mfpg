@@ -20,7 +20,7 @@ jobs:
       - uses: little-core-labs/get-git-tag@v3.0.2
         id: major
         with:
-          tagRegex: "v(?<major>).(?<minor>).(?<patch>)*" 
+          tagRegex: "v(?<major>*).(?<minor>*).(?<patch>*)*" 
 
   ubuntu-build-test:
     needs: get-version
