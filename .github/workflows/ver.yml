@@ -5,6 +5,7 @@ on:
 
 jobs:
   get-version:
+    runs-on: ubuntu-latest
     outputs:
       v-major: ${{ steps.tag.outputs.major }}
       v-minor: ${{ steps.tag.outputs.minor }}
