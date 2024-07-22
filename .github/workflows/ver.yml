@@ -8,7 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ step.output.outputs.ver }}
+      version: ${{ steps.output.outputs.ver }}
     steps:
       - uses: actions/checkout@v2
       - name: Set env
