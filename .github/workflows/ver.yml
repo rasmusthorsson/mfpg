@@ -16,7 +16,7 @@ jobs:
       - name: Output
         id: output
         run: |
-          echo "${{ env.tag }}" | grep '[0-9]+.[0-9]+.[0-9]+' >> $GITHUB_OUTPUT
+          echo "version=${{ env.tag }} | grep '[0-9]+.[0-9]+.[0-9]+'" >> "$GITBUH_OUTPUT"
   out:
     runs-on: ubuntu-latest
     needs: test
