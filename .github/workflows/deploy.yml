@@ -2,8 +2,6 @@ name: Deploy-Master
 
 on: 
   push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 permissions:
   contents: write 
@@ -25,8 +23,6 @@ jobs:
   
   ubuntu-build-test:
     needs: get-version
-    env:
-      VERSION: ${{needs.test.outputs.version}}
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
