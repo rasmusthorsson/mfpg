@@ -16,7 +16,7 @@ jobs:
       - name: Output
         id: output
         run: |
-          version="0" >> $GITHUB_OUTPUT
+          ver="0" >> $GITHUB_OUTPUT
   out:
     runs-on: ubuntu-latest
     needs: test
