@@ -1,10 +1,9 @@
 name: Deploy-Master
 
 on: 
-  workflow-call:
-    # push:
-    #tags:
-    #  - 'v[0-9]+.[0-9]+.[0-9]+*'
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 permissions:
   contents: write 
@@ -12,18 +11,22 @@ permissions:
 
 jobs:
   get-version:
+    runs-on: ubuntu-latest
     outputs:
-      v-major: ${{ steps.major.outputs.major }}
-      v-minor: ${{ steps.major.outputs.major }}
-      patch: ${{ steps.major.outputs.major }}
+      version: ${{ steps.output.outputs.ver }}
     steps:
-      - uses: little-core-labs/get-git-tag@v3.0.2
-        id: major
-        with:
-          tagRegex: "v(?<major>*.)(?<minor>*.)(?<patch>*)*" 
-
+      - uses: actions/checkout@v2
+      - name: Set tag
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Get Version
+        id: get-ver
+        run: |
+          echo "ver=`echo '${{ env.tag }}' | grep -Eo '[0-9]+.[0-9]+.[0-9]+'`" >> $GITHUB_OUTPUT
+  
   ubuntu-build-test:
     needs: get-version
+    env:
+      VERSION: ${{needs.test.outputs.version}}
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
@@ -33,7 +36,7 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
-      v-major: jobs.
+      version: ${{ needs.get-version.outputs.version }}
   
   windows-build-test:
     needs: get-version
@@ -46,6 +49,7 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
+      version: ${{ needs.get-version.outputs.version }}
 
   deploy-ubuntu:
     environment:
