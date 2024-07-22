@@ -16,12 +16,12 @@ jobs:
       - name: Output
         id: output
         run: |
-          ver="0" >> $GITHUB_OUTPUT
+          echo "ver=0" >> $GITHUB_OUTPUT
   out:
     runs-on: ubuntu-latest
     needs: test
     env:
-      VERSION: ${{needs.test.outputs.version}}
+      VERSION: ${{jobs.test.outputs.version}}
     steps:
       - name: test
         run: echo "$VERSION"
