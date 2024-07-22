@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set env
-        run: "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Output
         id: output
         run: |
