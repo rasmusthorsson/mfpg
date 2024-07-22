@@ -24,4 +24,4 @@ jobs:
       VERSION: ${{needs.test.outputs.version}}
     steps:
       - name: test
-        run: echo "$VERSION"
+        run: echo $VERSION
