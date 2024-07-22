@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     env:
-      VERSION: ${{jobs.test.outputs.version}}
+      VERSION: ${{needs.test.outputs.version}}
     steps:
       - name: test
         run: echo "$VERSION"
