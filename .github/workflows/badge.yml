@@ -3,6 +3,7 @@ name: Badge
 on:
   push:
 
+jobs:
   finish-deployment:
     environment:
       name: production
