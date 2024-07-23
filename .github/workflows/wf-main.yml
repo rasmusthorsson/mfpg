@@ -166,14 +166,14 @@ jobs:
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_gui_artifact_ubuntu
+                name: mfpg_artifact_ubuntu
                 path: mfpg_linux.tar
 
             - name: Upload Artifact Windows 
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_gui_artifact_windows
+                name: mfpg_artifact_windows
                 path: |
                   mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe
                   mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe
