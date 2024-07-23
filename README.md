@@ -1,5 +1,6 @@
 ![ubuntu](https://github.com/rasmusthorsson/mfpg/actions/workflows/ubuntu.yml/badge.svg)
 ![windows](https://github.com/rasmusthorsson/mfpg/actions/workflows/windows.yml/badge.svg)
+![version](resources/images/Version_Badge.png)
 
 # Music Fingering Position Generator
 
