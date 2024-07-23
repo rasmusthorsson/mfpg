@@ -10,7 +10,21 @@ permissions:
   discussions: write
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-ver.outputs.ver }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Tag
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Get Version
+        id: get-ver
+        run: |
+          echo "ver=`echo '${{ env.tag }}' | grep -Eo '[0-9]+.[0-9]+.[0-9]+'`" >> $GITHUB_OUTPUT
+  
   ubuntu-build-test:
+    needs: get-version
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: ubuntu-latest
@@ -20,8 +34,10 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
+      version: ${{ needs.get-version.outputs.version }}
   
   windows-build-test:
+    needs: get-version
     uses: ./.github/workflows/wf-main.yml
     with: 
       os: windows-latest
@@ -31,11 +47,12 @@ jobs:
       build-tests: true
       build-type: Release
       upload-artifact: true
+      version: ${{ needs.get-version.outputs.version }}
 
   deploy-ubuntu:
     environment:
       name: production
-    needs: ubuntu-build-test
+    needs: [ubuntu-build-test, get-version]
     runs-on: ubuntu-latest
     steps:
       - name: Get Gui
@@ -46,13 +63,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
          files: | 
-           mfpg_gui_linux
-           mfpg_cli_linux
+           mfpg_gui_linux-v${{ needs.get-version.outputs.version }}
+           mfpg_cli_linux-v${{ needs.get-version.outputs.version }}
       
   deploy-windows:
     environment:
       name: production
-    needs: windows-build-test
+    needs: [windows-build-test, get-version]
     runs-on: windows-latest
     steps:
       - name: Get Gui
@@ -63,5 +80,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
          files: | 
-           mfpg_gui_x86.exe
-           mfpg_cli_x86.exe
+           mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe
+           mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe

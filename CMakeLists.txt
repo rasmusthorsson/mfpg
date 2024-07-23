@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.17)
 
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 01)
-set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR})
+if (DEFINED VER)
+  set(VERSION_MFPG ${VER})
+else()
+  set(VERSION_MAJOR 0)
+  set(VERSION_MINOR 1)
+  set(PATCH 0)
+  set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR}.${PATCH})
+endif()
 
 configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_cmake.h)
 
