@@ -14,6 +14,8 @@ The program is available through binaries for Linux and Windows, either using a
 command-line interface or a GUI which can be found under the <i>Releases</i> 
 section.
 
+## Manual Compilation
+
 If you want to compile it yourself the easiest method is to clone the
 repo and use CMake. This can be done by first creating a <i>build</i> directory in 
 the root directory for the repo, then in the new build directory configure cmake using 
@@ -32,9 +34,10 @@ be turned on to rebuild the entire **mx** library, this is a lengthy process. Te
 can also be turned off by specifying the <b>BUILD_TESTS</b> to be <b>OFF</b>.
 
 Using other installation methods of WxWidgets has worked in the past, although then
-some changes to the CMakeLists.txt file in the MFPG root directory might need to be
-changed slightly (More information will be added in the future about compiling the
-software from scratch).
+some changes to the CMakeLists.txt file in the MFPG root directory might be needed 
+(More information will be added in the future about compiling the software from scratch).
+
+## GitHub Pages
 
 For more information, useful links, guides, and tutorials, check out the GitHub pages 
 webpage at https://rasmusthorsson.github.io/mfpg/
