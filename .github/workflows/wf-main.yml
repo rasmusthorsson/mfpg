@@ -161,27 +161,21 @@ jobs:
                 mv mfpg/mfpg_build/mfpg_cli_linux-v${{ inputs.version }} .
                 mv mfpg/resources/xrc/resources.xrc .
                 sudo tar -cf mfpg_linux.tar mfpg_gui_linux-v${{ inputs.version }} mfpg_cli_linux-v${{ inputs.version }} resources.xrc
-            
-            - name: ZIP Artifact Windows 
-              if: inputs.upload-artifact && inputs.os == 'windows-latest'
-              run: |
-                mv mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe .
-                mv mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe .
-                mv mfpg/resources/xrc/resources.xrc .
-                zip -r mfpg_windows.zip mfpg_gui_x86-v${{ inputs.version }}.exe mfpg_cli_x86-v${{ inputs.version }}.exe resources.xrc
 
             - name: Upload Artifact Ubuntu 
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_artifact_ubuntu
+                name: mfpg_gui_artifact_ubuntu
                 path: mfpg_linux.tar
 
             - name: Upload Artifact Windows 
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_artifact_windows
-                path: mfpg_windows.zip
-
+                name: mfpg_gui_artifact_windows
+                path: |
+                  mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe
+                  mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe
+                  mfpg/resources/xrc/resources.xrc
 

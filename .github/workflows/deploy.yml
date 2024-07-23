@@ -68,12 +68,15 @@ jobs:
     environment:
       name: production
     needs: [windows-build-test, get-version]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Get Artifact
         uses: actions/download-artifact@v4
         with:
           name: mfpg_artifact_windows
+      - name: ZIP Artifact Windows
+        run: |
+            zip -r mfpg_windows.zip mfpg_gui_x86-v${{ inputs.version }}.exe mfpg_cli_x86-v${{ inputs.version }}.exe resources.xrc
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
