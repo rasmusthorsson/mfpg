@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.17)
 
+#If no version is specified, the version is 0.0.0
 if (DEFINED VER)
   set(VERSION_MFPG ${VER})
 else()
   set(VERSION_MAJOR 0)
-  set(VERSION_MINOR 1)
+  set(VERSION_MINOR 0)
   set(PATCH 0)
   set(VERSION_MFPG ${VERSION_MAJOR}.${VERSION_MINOR}.${PATCH})
 endif()
@@ -13,7 +14,7 @@ configure_file(cmake_files/conf_cmake.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/conf_
 
 option(REBUILD_MX "Recompile mx library .a file" OFF)
 option(BUILD_TESTS "Build tests" ON)
-option(BUILD_GUI "Build gui version" ON)
+option(BUILD_GUI "Build GUI version" ON)
 
 project(mfpg VERSION ${VERSION_MFPG})
 
@@ -92,6 +93,7 @@ if(REBUILD_MX)
  )
  FetchContent_MakeAvailable(mx)
  
+#The mx library is also shipped in the deps directory if needed.
 # add_subdirectory(deps/mx)
 endif()
 
