@@ -22,7 +22,7 @@ bool MFPG_Gui::OnInit() {
 			xrc_stream.close();
 			wxXmlResource::Get()->InitAllHandlers();
 			wxXmlResource::Get()->Load(s);
-			frame = new MFPG_Frame(false);
+			frame = new MFPG_Frame(true);
 			frame->Show(true);
 			return true;
 		}

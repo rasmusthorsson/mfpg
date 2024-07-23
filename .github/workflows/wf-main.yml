@@ -68,7 +68,6 @@ jobs:
                 cmake --build ${{ github.workspace }}/wx-build-windows-x86 
                 --target install --config Release 
 
-            #On ubuntu we get the packages through apt.
             - name: Get GTK Ubuntu
               if: inputs.os == 'ubuntu-latest'
               run: |
@@ -157,24 +156,32 @@ jobs:
 
             - name: ZIP Artifact Ubuntu
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
-              run: >
-                sudo tar -cf mfpg_linux.tar 
-                mfpg/mfpg_build/mfpg_gui_linux-v${{ inputs.version }}
-                mfpg/mfpg_build/mfpg_cli_linux-v${{ inputs.version }}
-                mfpg/resources/xrc/resources.xrc
+              run: |
+                mv mfpg/mfpg_build/mfpg_gui_linux-v${{ inputs.version }} .
+                mv mfpg/mfpg_build/mfpg_cli_linux-v${{ inputs.version }} .
+                mv mfpg/resources/xrc/resources.xrc .
+                sudo tar -cf mfpg_linux.tar mfpg_gui_linux-v${{ inputs.version }} mfpg_cli_linux-v${{ inputs.version }} resources.xrc
+            
+            - name: ZIP Artifact Windows 
+              if: inputs.upload-artifact && inputs.os == 'windows-latest'
+              run: |
+                mv mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe .
+                mv mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe .
+                mv mfpg/resources/xrc/resources.xrc .
+                zip -r mfpg_windows.zip mfpg_gui_x86-v${{ inputs.version }}.exe mfpg_cli_x86-v${{ inputs.version }}.exe resources.xrc
+
             - name: Upload Artifact Ubuntu 
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_gui_artifact_ubuntu
+                name: mfpg_artifact_ubuntu
                 path: mfpg_linux.tar
 
             - name: Upload Artifact Windows 
               if: inputs.upload-artifact && inputs.os == 'windows-latest'
               uses: actions/upload-artifact@v4
               with:
-                name: mfpg_gui_artifact_windows
-                path: |
-                  mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe
-                  mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe
+                name: mfpg_artifact_windows
+                path: mfpg_windows.zip
+
 

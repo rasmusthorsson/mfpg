@@ -55,10 +55,10 @@ jobs:
     needs: [ubuntu-build-test, get-version]
     runs-on: ubuntu-latest
     steps:
-      - name: Get Gui
+      - name: Get Artifact
         uses: actions/download-artifact@v4
         with:
-          name: mfpg_gui_artifact_ubuntu
+          name: mfpg_artifact_ubuntu
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
@@ -70,13 +70,11 @@ jobs:
     needs: [windows-build-test, get-version]
     runs-on: windows-latest
     steps:
-      - name: Get Gui
+      - name: Get Artifact
         uses: actions/download-artifact@v4
         with:
-          name: mfpg_gui_artifact_windows
+          name: mfpg_artifact_windows
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: | 
-           mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe
-           mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe
+         files: mfpg_windows.zip
