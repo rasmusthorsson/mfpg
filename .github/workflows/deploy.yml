@@ -82,3 +82,19 @@ jobs:
          files: | 
            mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe
            mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe
+  
+  finish-deployment:
+    environment:
+      name: production
+    needs: [get-version, deploy-ubuntu, deploy-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MFPG
+        uses: actions/checkout@v2
+        with: 
+          path: mfpg
+          submodules: 'true'
+      - name: Finish Deployment
+        run: >
+          wget --output-document=${{ github.workspace }}/mfpg/mfpg/resources/docs/images/Version_Badge.png 
+          https://raster.shields.io/badge/version-v${{ needs.get-version.outputs.version }}-blue.png
