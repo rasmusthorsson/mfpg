@@ -1,0 +1,19 @@
+name: Badge
+
+on:
+  push:
+
+  finish-deployment:
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MFPG
+        uses: actions/checkout@v2
+        with: 
+          path: mfpg
+          submodules: 'true'
+      - name: Finish Deployment
+        run: >
+          wget --output-document=${{ github.workspace }}/mfpg/mfpg/resources/docs/images/Version_Badge.png 
+          https://raster.shields.io/badge/version-v1.1.1-blue.png
