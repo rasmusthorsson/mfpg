@@ -76,11 +76,9 @@ jobs:
           name: mfpg_artifact_windows
       - name: ZIP Artifact Windows
         run: |
-          ls -R .
-          mv mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe .
-          mv mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe .
-          mv mfpg/resources/xrc/resources.xrc .
-          ls -R .
+          mv mfpg_build/Release/mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe .
+          mv mfpg_build/Release/mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe .
+          mv resources/xrc/resources.xrc .
           zip -r mfpg_windows.zip mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe resources.xrc
       - name: Release
         uses: softprops/action-gh-release@v2
