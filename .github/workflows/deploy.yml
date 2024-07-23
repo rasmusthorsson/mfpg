@@ -62,9 +62,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: | 
-           mfpg_gui_linux-v${{ needs.get-version.outputs.version }}
-           mfpg_cli_linux-v${{ needs.get-version.outputs.version }}
+         files: mfpg_linux.tar 
       
   deploy-windows:
     environment:
