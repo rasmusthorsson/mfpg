@@ -157,9 +157,11 @@ jobs:
             - name: ZIP Artifact Ubuntu
               if: inputs.upload-artifact && inputs.os == 'ubuntu-latest'
               run: |
+                ls -R .
                 mv mfpg/mfpg_build/mfpg_gui_linux-v${{ inputs.version }} .
                 mv mfpg/mfpg_build/mfpg_cli_linux-v${{ inputs.version }} .
                 mv mfpg/resources/xrc/resources.xrc .
+                ls -R .
                 sudo tar -cf mfpg_linux.tar mfpg_gui_linux-v${{ inputs.version }} mfpg_cli_linux-v${{ inputs.version }} resources.xrc
 
             - name: Upload Artifact Ubuntu 
