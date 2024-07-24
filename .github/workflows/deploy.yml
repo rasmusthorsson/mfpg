@@ -70,7 +70,6 @@ jobs:
         run: |
           mv mfpg_build/Release/mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe .
           mv mfpg_build/Release/mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe .
-          mv resources/xrc/resources.xrc .
           zip -r mfpg_windows.zip mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe resources.xrc
 
       - name: Release
