@@ -3,6 +3,15 @@
 #include "wx/xrc/xmlres.h"
 #include "wx/valtext.h"
 
+inline int y_(int i) {
+#ifdef _WIN32
+    return i + 15;
+#else
+    return i;
+#endif
+}
+
+
 void MFPG_Panel::InitPanel(bool use_xrc) {
 	if (use_xrc) {
 		remove_config_button = XRCCTRL(*this, "ID_BTRemoveConfig", wxButton);
@@ -110,13 +119,13 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		//Selection: Instrument settings
 		wxString instrument_setting_choices[] = {"Presets", "DSL File"};
 		instrument_settings_box = new wxComboBox(instrument_area, ID_CBInstSettings, _T("Presets"), 
-			wxPoint(30, 25), wxSize(320, 20), 2, instrument_setting_choices, wxCB_READONLY, 
+			wxPoint(30, y_(15)), wxSize(320, 30), 2, instrument_setting_choices, wxCB_READONLY, 
 			wxDefaultValidator);
 		ST_INSTRUMENT_SETTING = USE_PRESETS;
 		//Instrument Name
-		wxStaticBox *instrument_text_area = new wxStaticBox(instrument_area, wxID_ANY, "Instrument Name", wxPoint(20, 60),
-			wxSize(360, 60), 0, wxStaticBoxNameStr);
-		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString(""), wxPoint(10, 20), 
+		wxStaticBox *instrument_text_area = new wxStaticBox(instrument_area, wxID_ANY, "Instrument Name", 
+			wxPoint(20, 60), wxSize(360, 60), 0, wxStaticBoxNameStr);
+		instrument_text = new wxTextCtrl(instrument_text_area, wxID_ANY, wxString(""), wxPoint(10, y_(10)), 
 			wxSize(320, 20), 0, wxDefaultValidator, wxString("Violin")); 
 		instrument_text->SetLabel("Violin");
 		//Text: DSL File:
@@ -124,7 +133,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxPoint(20, 130), wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: DSL
 		dsl_filepicker = new wxFilePickerCtrl(dsl_box, ID_FPDSL, wxEmptyString,
-			wxFileSelectorPromptStr, _("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, 20),
+			wxFileSelectorPromptStr, _("MFPG Files (*.mfpg)|*.mfpg"), wxPoint(20, y_(10)),
 			wxSize(320, 40), wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR, 
 			wxDefaultValidator, wxFilePickerCtrlNameStr);
 		dsl_filepicker->Disable();
@@ -164,7 +173,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: NoteMapper CSV
 		notemap_filepicker = new wxFilePickerCtrl(csv_box, ID_FPCSVNoteMap, wxEmptyString, 
-			wxFileSelectorPromptStr,_("CSV Files (*.csv)|*.csv"), wxPoint(20, 20), 
+			wxFileSelectorPromptStr,_("CSV Files (*.csv)|*.csv"), wxPoint(20, y_(10)), 
 			wxSize(320, 40), wxFLP_DEFAULT_STYLE|wxFLP_USE_TEXTCTRL|wxFLP_CHANGE_DIR, 
 			wxDefaultValidator, wxFilePickerCtrlNameStr);
 		notemap_filepicker->Disable();
@@ -219,10 +228,10 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		ST_OUTPUTTOFILE = OUTPUT_TO_FILE;
 		//Text: Output File:
 		wxStaticBox *output_file_box = new wxStaticBox(output_settings_area, wxID_ANY, 
-			"Output File", wxPoint(20, 80), wxSize(360, 80), 0, wxStaticBoxNameStr);
+			"Output File", wxPoint(20, 90), wxSize(360, 80), 0, wxStaticBoxNameStr);
 		//File Selection: Output
 		output_filepicker = new wxFilePickerCtrl(output_file_box, ID_FPCSVOutput, wxEmptyString, 
-			wxFileSelectorPromptStr, wxFileSelectorDefaultWildcardStr, wxPoint(20, 20), 
+			wxFileSelectorPromptStr, wxFileSelectorDefaultWildcardStr, wxPoint(20, y_(10)), 
 			wxSize(320, 40), 
 			wxFLP_SAVE|wxFLP_USE_TEXTCTRL|wxFLP_OVERWRITE_PROMPT|wxFLP_CHANGE_DIR, 
 			wxDefaultValidator, wxFilePickerCtrlNameStr);
@@ -232,7 +241,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 		generation_area = new wxStaticBox(this, wxID_ANY, "Output Generation", wxPoint(950, 250),
 			wxSize(200, 90), 0, wxStaticBoxNameStr);
 		//Button: Generate
-		generate_button = new wxButton(generation_area, ID_BTGenerate, "Generate", wxPoint(50, 30),
+		generate_button = new wxButton(generation_area, ID_BTGenerate, "Generate", wxPoint(50, y_(10)),
 			wxSize(100, 40), 0, wxDefaultValidator, "GENERATE_BUTTON");
 
 //----------------------------------------INFORMATION--------------------------------------------
@@ -241,7 +250,7 @@ void MFPG_Panel::InitPanel(bool use_xrc) {
 			wxSize(400, 230), 0, "INFORMATION_BOX");
 		//Text: Output Info:
 		wxStaticText *output_info_text = new wxStaticText(information_area, wxID_ANY, "Output Info", 
-			wxPoint(20, 20), wxSize(160, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INFO_OUT_TEXT");
+			wxPoint(20, y_(15)), wxSize(160, 40), wxALIGN_LEFT|wxST_ELLIPSIZE_END, "INFO_OUT_TEXT");
 		//Contents: std::cout
 		information_text = new wxTextCtrl(information_area, wxID_ANY, "", wxPoint(20, 50), 
 			wxSize(360, 120), wxTE_LEFT|wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_READONLY, 

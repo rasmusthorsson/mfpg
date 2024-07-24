@@ -1,4 +1,4 @@
-name: Deploy-Master
+name: Deploy from Master
 
 on: 
   push:
@@ -25,11 +25,8 @@ jobs:
   
   ubuntu-build-test:
     needs: get-version
-    uses: ./.github/workflows/wf-main.yml
+    uses: ./.github/workflows/ubuntu.yml
     with: 
-      os: ubuntu-latest
-      c-compiler: gcc
-      cxx-compiler: g++
       mx-rebuild: false
       build-tests: true
       build-type: Release
@@ -38,47 +35,46 @@ jobs:
   
   windows-build-test:
     needs: get-version
-    uses: ./.github/workflows/wf-main.yml
+    uses: ./.github/workflows/windows.yml
     with: 
-      os: windows-latest
-      c-compiler: cl
-      cxx-compiler: cl
       mx-rebuild: false
       build-tests: true
       build-type: Release
       upload-artifact: true
       version: ${{ needs.get-version.outputs.version }}
-
-  deploy-ubuntu:
+      
+  deploy:
     environment:
       name: production
-    needs: [ubuntu-build-test, get-version]
+    needs: [windows-build-test, ubuntu-build-test, get-version]
     runs-on: ubuntu-latest
     steps:
-      - name: Get Gui
+      - name: Get Ubuntu Artifact
         uses: actions/download-artifact@v4
         with:
-          name: mfpg_gui_artifact_ubuntu
+          name: mfpg_artifact_ubuntu
+
+      - name: Get Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mfpg_artifact_windows
+
+      - name: Compress Artifacts Ubuntu 
+        run: |
+          mv mfpg_build/mfpg_gui_linux-v${{ needs.get-version.outputs.version }} .
+          mv mfpg_build/mfpg_cli_linux-v${{ needs.get-version.outputs.version }} .
+          mv resources/xrc/resources.xrc .
+          sudo tar -cf mfpg_linux.tar mfpg_gui_linux-v${{ needs.get-version.outputs.version }} mfpg_cli_linux-v${{ needs.get-version.outputs.version }} resources.xrc
+
+      - name: Compress Artifact Windows
+        run: |
+          mv mfpg_build/Release/mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe .
+          mv mfpg_build/Release/mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe .
+          zip -r mfpg_windows.zip mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe resources.xrc
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-         files: | 
-           mfpg_gui_linux-v${{ needs.get-version.outputs.version }}
-           mfpg_cli_linux-v${{ needs.get-version.outputs.version }}
-      
-  deploy-windows:
-    environment:
-      name: production
-    needs: [windows-build-test, get-version]
-    runs-on: windows-latest
-    steps:
-      - name: Get Gui
-        uses: actions/download-artifact@v4
-        with:
-          name: mfpg_gui_artifact_windows
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-         files: | 
-           mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe
-           mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe
+         files: |
+           mfpg_windows.zip
+           mfpg_linux.tar

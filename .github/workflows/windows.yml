@@ -1,16 +1,107 @@
 name: Windows
 
 on:
-  pull_request:
-    branches: [ "master" ]
+  workflow_call:
+      inputs:
+          mx-rebuild:
+              required: false
+              type: boolean
+              default: false
+          build-tests:
+              required: false
+              type: boolean
+              default: true
+          build-type:
+              required: false
+              type: string
+              default: Release
+          upload-artifact:
+              required: false
+              type: boolean
+              default: false
+          version:
+              required: false
+              type: string
+              default: "0.0.0"
 
 jobs:
-  windows-build-test:
-    uses: ./.github/workflows/wf-main.yml
-    with: 
-      os: windows-latest
-      c-compiler: cl
-      cxx-compiler: cl
-      mx-rebuild: false
-      build-tests: true
-      build-type: Release
+  windows-build-test-upload:
+    runs-on: windows-latest 
+    steps:
+      - name: Cache WX x86 Windows
+        id: cache-wx-x86
+        uses: actions/cache@v3
+        with:
+          path: C:/Program Files (x86)/wxWidgets
+          key: wx-build-3.2.4-windows-x86
+          restore-keys: wx-build-3.2.4-windows-x86
+
+      - name: Checkout WX x86 Windows
+        if: steps.cache-wx-x86.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: WxWidgets/WxWidgets
+          ref: v3.2.4
+          path: ${{ github.workspace }}/wxWidgets
+          submodules: 'true'
+
+      - name: Configure WX x86 Windows
+        if: steps.cache-wx-x86.outputs.cache-hit != 'true'
+        run: >
+          cmake ${{ github.workspace  }}/WxWidgets
+          -DwxBUILD_SHARED=OFF
+          -B ${{ github.workspace }}/wx-build-windows-x86
+
+      - name: Build WX x86 Windows
+        if: steps.cache-wx-x86.outputs.cache-hit != 'true'
+        run: > 
+          cmake --build ${{ github.workspace }}/wx-build-windows-x86 
+          --target install --config Release 
+
+      - uses: actions/checkout@v3
+        with:
+          path: mfpg
+          submodules: 'true'
+
+      - name: Configure MFPG
+        run: >
+          cmake mfpg
+          -B mfpg/mfpg_build
+          -DCMAKE_CXX_COMPILER=cl
+          -DCMAKE_C_COMPILER=cl
+          -DCMAKE_BUILD_TYPE=Release
+          -DREBUILD_MX=${{ inputs.mx-rebuild }}
+          -DBUILD_TESTS=${{ inputs.build-tests }}
+          -DWXW_ROOT_DIR="C:/Program Files (x86)/wxWidgets"
+          -DWXW_LIB_DIR="C:/Program Files (x86)/wxWidgets/lib/vc_x64_lib"
+          -DWXW_INC_DIR="C:/Program Files (x86)/wxWidgets/include"
+          -DVER=${{ inputs.version }}
+
+      - name: Build MFPG
+        run: > 
+          cmake 
+          --build mfpg/mfpg_build 
+          --config Release
+
+      - name: Test MFPG
+        working-directory: mfpg/mfpg_build
+        run: >
+          ctest 
+          --output-on-failure
+          --build-config Release
+
+      - name: Rename Binaries Windows
+        if: inputs.upload-artifact 
+        run: |
+          mv mfpg/mfpg_build/Release/mfpg_gui.exe mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe
+          mv mfpg/mfpg_build/Release/mfpg.exe mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe
+
+      - name: Upload Artifact Windows 
+        if: inputs.upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mfpg_artifact_windows
+          path: |
+            mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe
+            mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe
+            mfpg/resources/xrc/resources.xrc
