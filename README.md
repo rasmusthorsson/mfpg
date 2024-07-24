@@ -11,11 +11,11 @@ sheet music MusicXML file. Uses the **mx** library (found at
 https://github.com/webern/mx) for MusicXML parsing.
 
 The program is available through binaries for Linux and Windows, either using a 
-command-line interface or a GUI which can be found under the <i>Releases</i> 
-section. The GUI looks for the <i>resources.xrc</i> file in the same directory
-for graphical elements and as such should be placed in the same directory as the
-binary. However, the GUI can run without the xrc file if preferred, albeit with a 
-different look.
+command-line interface or a GUI. Both of these binaries can be found in the respective
+compressed directories under <i>Releases</i>. The <i>resources.xrc</i> file is also
+included in the same compressed directory and is used by the GUI for graphical 
+elements and as such should be kept in the same directory as the binary. However, 
+the GUI can run without the xrc file if preferred, albeit with a different look.
 
 ## Manual Compilation
 
