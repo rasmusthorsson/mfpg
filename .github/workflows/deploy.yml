@@ -1,4 +1,4 @@
-name: Deploy from Master
+name: Deploy
 
 on: 
   push:
@@ -64,17 +64,17 @@ jobs:
           mv mfpg_build/mfpg_gui_linux-v${{ needs.get-version.outputs.version }} .
           mv mfpg_build/mfpg_cli_linux-v${{ needs.get-version.outputs.version }} .
           mv resources/xrc/resources.xrc .
-          sudo tar -cf mfpg_linux.tar mfpg_gui_linux-v${{ needs.get-version.outputs.version }} mfpg_cli_linux-v${{ needs.get-version.outputs.version }} resources.xrc
+          sudo tar -cf mfpg_linux-v${{ needs.get-version.outputs.version }}.tar mfpg_gui_linux-v${{ needs.get-version.outputs.version }} mfpg_cli_linux-v${{ needs.get-version.outputs.version }} resources.xrc
 
       - name: Compress Artifact Windows
         run: |
           mv mfpg_build/Release/mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe .
           mv mfpg_build/Release/mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe .
-          zip -r mfpg_windows.zip mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe resources.xrc
+          zip -r mfpg_windows-v${{ needs.get-version.outputs.version }}.zip mfpg_gui_x86-v${{ needs.get-version.outputs.version }}.exe mfpg_cli_x86-v${{ needs.get-version.outputs.version }}.exe resources.xrc
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
          files: |
-           mfpg_windows.zip
-           mfpg_linux.tar
+           mfpg_windows-v${{ needs.get-version.outputs.version }}.zip
+           mfpg_linux-v${{ needs.get-version.outputs.version }}.tar
