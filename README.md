@@ -1,5 +1,5 @@
-![ubuntu](https://github.com/rasmusthorsson/mfpg/actions/workflows/ubuntu.yml/badge.svg)
-![windows](https://github.com/rasmusthorsson/mfpg/actions/workflows/windows.yml/badge.svg)
+![ubuntu](https://github.com/rasmusthorsson/mfpg/actions/workflows/merge-ubuntu.yml/badge.svg)
+![windows](https://github.com/rasmusthorsson/mfpg/actions/workflows/merge-windows.yml/badge.svg)
 
 # Music Fingering Position Generator
 
@@ -17,7 +17,7 @@ included in the same compressed directory and is used by the GUI for graphical
 elements and as such should be kept in the same directory as the binary. However, 
 the GUI can run without the xrc file if preferred, albeit with a different look.
 
-## Manual Compilation
+## Compilation
 
 If you want to compile it yourself the easiest method is to clone the
 repo and use CMake. This can be done by first creating a <i>build</i> directory in 
