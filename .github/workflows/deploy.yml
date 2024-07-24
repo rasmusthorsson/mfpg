@@ -61,10 +61,9 @@ jobs:
 
       - name: Compress Artifacts Ubuntu 
         run: |
-          ls -R .
-          mv mfpg/mfpg_build/mfpg_gui_linux-v${{ needs.get-version.outputs.version }} .
-          mv mfpg/mfpg_build/mfpg_cli_linux-v${{ needs.get-version.outputs.version }} .
-          mv mfpg/resources/xrc/resources.xrc .
+          mv mfpg_build/mfpg_gui_linux-v${{ needs.get-version.outputs.version }} .
+          mv mfpg_build/mfpg_cli_linux-v${{ needs.get-version.outputs.version }} .
+          mv resources/xrc/resources.xrc .
           sudo tar -cf mfpg_linux.tar mfpg_gui_linux-v${{ needs.get-version.outputs.version }} mfpg_cli_linux-v${{ needs.get-version.outputs.version }} resources.xrc
 
       - name: Compress Artifact Windows
