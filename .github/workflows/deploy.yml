@@ -49,12 +49,15 @@ jobs:
     needs: [windows-build-test, ubuntu-build-test, get-version]
     runs-on: ubuntu-latest
     steps:
-      - name: Get Artifacts
+      - name: Get Ubuntu Artifact
         uses: actions/download-artifact@v4
         with:
-          name: |
-            mfpg_artifact_windows
-            mfpg_artifact_ubuntu
+          name: mfpg_artifact_ubuntu
+
+      - name: Get Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: mfpg_artifact_windows
 
       - name: Compress Artifacts Ubuntu 
         run: |
