@@ -1,0 +1,13 @@
+name: Ubuntu
+
+on:
+  pull_request: 
+    branches: [ "master" ]
+
+jobs:
+  ubuntu-build-test:
+    uses: ./.github/workflows/ubuntu.yml
+    with: 
+      mx-rebuild: false
+      build-tests: true
+      build-type: Release
