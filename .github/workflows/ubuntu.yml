@@ -1,9 +1,6 @@
 name: Ubuntu
 
 on:
-  push:
-  pull_request:
-    branches: [ "master" ]
   workflow_call:
       inputs:
           mx-rebuild:
@@ -80,7 +77,7 @@ jobs:
           -B mfpg/mfpg_build
           -DCMAKE_CXX_COMPILER=g++
           -DCMAKE_C_COMPILER=gcc
-          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_BUILD_TYPE=${{ inputs.build-type }}
           -DREBUILD_MX=${{ inputs.mx-rebuild }}
           -DBUILD_TESTS=${{ inputs.build-tests }}
           -DVER=${{ inputs.version }}
@@ -89,14 +86,14 @@ jobs:
         run: > 
           cmake 
           --build mfpg/mfpg_build 
-          --config Release
+          --config ${{ inputs.build-type }} 
 
       - name: Test MFPG
         working-directory: mfpg/mfpg_build
         run: >
           ctest 
           --output-on-failure
-          --build-config Release
+          --build-config ${{ inputs.build-type }}
              
       - name: Upload Artifact Ubuntu 
         if: inputs.upload-artifact
