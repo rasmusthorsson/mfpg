@@ -94,6 +94,12 @@ jobs:
           ctest 
           --output-on-failure
           --build-config ${{ inputs.build-type }}
+      
+      - name: Rename Binaries Ubuntu
+        if: inputs.upload-artifact 
+        run: |
+          mv mfpg/mfpg_build/mfpg_gui mfpg/mfpg_build/mfpg_gui_linux-v${{ inputs.version }}
+          mv mfpg/mfpg_build/mfpg mfpg/mfpg_build/mfpg_cli_linux-v${{ inputs.version }}
              
       - name: Upload Artifact Ubuntu 
         if: inputs.upload-artifact

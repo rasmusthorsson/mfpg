@@ -90,6 +90,12 @@ jobs:
           --output-on-failure
           --build-config Release
 
+      - name: Rename Binaries Windows
+        if: inputs.upload-artifact 
+        run: |
+          mv mfpg/mfpg_build/Release/mfpg_gui.exe mfpg/mfpg_build/Release/mfpg_gui_x86-v${{ inputs.version }}.exe
+          mv mfpg/mfpg_build/Release/mfpg.exe mfpg/mfpg_build/Release/mfpg_cli_x86-v${{ inputs.version }}.exe
+
       - name: Upload Artifact Windows 
         if: inputs.upload-artifact
         uses: actions/upload-artifact@v4
