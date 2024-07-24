@@ -3,26 +3,26 @@
 
 # Music Fingering Position Generator
 
-A personal project with the goal of creating software to automically construct a 
+A personal project with the goal of creating a program to automically construct a 
 fingering position sequence for a given	music score (only for a single bowed string 
 instrument currently). By using user defined preferences and instrument definitions 
 the software should be able to give a good base of fingering positions when fed a 
 sheet music MusicXML file. Uses the **mx** library (found at 
 https://github.com/webern/mx) for MusicXML parsing.
 
-The program is available through binaries for Linux and Windows, either using a 
+The program is available for Linux and Windows, either using a 
 command-line interface or a GUI. Both of these binaries can be found in the respective
-compressed directories under <i>Releases</i>. The <i>resources.xrc</i> file is also
-included in the same compressed directory and is used by the GUI for graphical 
+compressed archives under <i>Releases</i>. The <i>resources.xrc</i> file is also
+included in the same compressed archive and is used by the GUI for graphical 
 elements and as such should be kept in the same directory as the binary. However, 
 the GUI can run without the xrc file if preferred, albeit with a different look.
 
 ## Compilation
 
-If you want to compile it yourself the easiest method is to clone the
+If you want to compile <b>MFPG</b> yourself the easiest method is to clone the
 repo and use CMake. This can be done by first creating a <i>build</i> directory in 
 the root directory for the repo, then in the new build directory configure cmake using 
-<i>cmake ..</i>, and finally building using <i>cmake --build .</i> in the build 
+<i>'cmake ..'</i>, and finally building using <i>'cmake --build .'</i> in the build 
 directory. To build the GUI you will need wxWidgets installed at (on linux) 
 <i>/usr/local/wx_build/lib/cmake/WxWidgets/</i>. This can be achieved by specifying
 the <b>CMAKE_INSTALL_PREFIX</b> variable to be <i>/usr/local/wx_build/</i> when 
@@ -30,7 +30,7 @@ configuring the WxWidget cmake project prior to installing it. For more informat
 on how to install WxWidget for cmake, see 
 https://docs.wxwidgets.org/latest/overview\_cmake.html . Alternatively, building the
 GUI can be disabled by specifying <b>-DBUILD_GUI=OFF</b> when configuring the MFPG
-cmake project (i.e. <i>cmake .. <b>-DBUILD_GUI=OFF</b></i>). If there is a problem
+cmake project (i.e. <i>'cmake .. <b>-DBUILD_GUI=OFF</b>'</i>). If there is a problem
 with the MX library when trying to build the project, using the <b>REBUILD_MX</b>
 (in the same way as the <b>BUILD_GUI</b> option previously mentioned) option can
 be turned on to rebuild the entire **mx** library, this is a lengthy process. Tests
